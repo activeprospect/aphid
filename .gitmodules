@@ -1,0 +1,12 @@
+[submodule "Vendor/script.aculo.us"]
+	path = Vendor/script.aculo.us
+	url = http://github.com/madrobby/scriptaculous.git
+[submodule "Vendor/Prototype"]
+	path = Vendor/Prototype
+	url = http://github.com/sstephenson/prototype.git
+[submodule "Vendor/PDoc"]
+	path = Vendor/PDoc
+	url = http://github.com/tobie/pdoc.git
+[submodule "Vendor/Sprockets"]
+	path = Vendor/Sprockets
+	url = http://github.com/sstephenson/sprockets.git
