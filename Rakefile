@@ -3,12 +3,11 @@ require 'rake/packagetask'
 
 ROOT_PATH = File.expand_path(File.dirname(__FILE__))
 
-task :default => :build
-task :build => [ :sprocketize, :update_demo ]
+task :default => [ :build, "demo:update" ]
 
-#
-# Sprocketize
-#
+desc "Build Aphid"
+task :build => [ :sprocketize ]
+
 task :sprocketize do
   begin
     require "sprockets"
@@ -29,6 +28,14 @@ task :sprocketize do
   secretary.concatenation.save_to(File.join("Build", "Aphid.js"))
 end
 
-task :update_demo do
-  cp "Build/Aphid.js", "Demo/JavaScripts/Aphid.js"
+desc "Update and launch the Demo application"
+task :demo => [ 'demo:update' ] do
+  `open "#{ROOT_PATH}/Demo/index.html"`
+end
+
+namespace "demo" do
+  desc "Update the Demo Application with the latest Aphid assets"
+  task :update => [ :build ] do
+    cp "Build/Aphid.js", "Demo/JavaScripts/Aphid.js"
+  end
 end

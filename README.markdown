@@ -30,9 +30,13 @@ folder.
 The results of the build will be placed in the Build subfolder of the Aphid
 source folder.
 
-## Testing Aphid
+## Demo
 
-*work in progress*
+There is a self-consuming demonstration application in the Demo directory. You
+must first build Aphid and update the demo with the built product (simply
+running `rake` will do both of these things) or you may launch it by running
+`rake demo` from the Aphid source folder, which takes care of both building,
+updating and launching the demo in your default web browser.
 
 ## Notes
 
