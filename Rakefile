@@ -102,6 +102,7 @@ namespace "demo" do
   desc "Update the demo application with the built project files and vendor libraries"
   task :update => [ :build ] do
     header "Updating Demo"
+    sprocketize("Demo/JavaScripts/Vendor/Prototype.js", { :source_files => [ "Vendor/Prototype/src/prototype.js" ] })
     cp "Build/Aphid.js", "Demo/JavaScripts/Aphid.js"
     puts
   end
@@ -110,12 +111,12 @@ end
 # Support Methods ------------------------------------------------------------
 
 def sprocketize(output, options = {})
-  puts "Sprocketizing to #{output} ..."
   secretary_options = {
     :root         => ROOT_PATH,
     :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src" ],
     :source_files => [ "Library/**/*.js" ]
   }.merge(options)
+  puts "Sprocketizing #{secretary_options[:source_files]} to #{output} ..."
   secretary = Sprockets::Secretary.new(secretary_options)
   secretary.concatenation.save_to(output)
 end
