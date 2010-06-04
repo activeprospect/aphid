@@ -1,33 +1,24 @@
-//
-// String Extensions - Aphid Version <%= APHID_VERSION %>
-// Written by Justin Mecham <justin@activeprospect.com>
-//
+/**
+ * Aphid.Support.Extensions.String
+**/
+Aphid.Support.Extensions.String = {
 
-Object.extend(String.prototype,
+  /**
+   * Aphid.Support.Extensions.String#lowerCaseFirst() -> String
+  **/
+  lowerCaseFirst: function()
   {
-    lowerCaseFirst: function()
-    {
-      return this.charAt(0).toLowerCase() + this.substring(1);
-    },
-    toInt: function()
-    {
-      return parseInt(this);
-    }
-  }
-);
+    return this.charAt(0).toLowerCase() + this.substring(1);
+  },
 
-if (Object.isUndefined(''.trim))
-{
-  String.prototype.trim = function()
+  /**
+   * Aphid.Support.Extensions.String#toInt() -> Number
+  **/
+  toInt: function()
   {
-    return this.replace(/^\s+|\s+$/g,"");
+    return parseInt(this);
   }
-  String.prototype.trimLeft = function()
-  {
-    return this.replace(/^\s+/,"");
-  }
-  String.prototype.trimRight = function()
-  {
-    return this.replace(/\s+$/,"");
-  }
-}
+
+};
+
+Object.extend(String.prototype, Aphid.Support.Extensions.String);

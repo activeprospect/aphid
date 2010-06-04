@@ -82,6 +82,76 @@ Aphid.Support.Compatibility.HTML5 = {
 if (Prototype.Browser.IE)
   Aphid.Support.Compatibility.HTML5.createHTML5Elements();
 /**
+ * Aphid.Support.Compatibility.String
+**/
+
+Aphid.Support.Compatibility.String = {}
+
+/**
+ * class Aphid.Support.Compatibility.String.Trim
+ *
+ * Adds the *trim()*, *trimLeft()* and *trimRight()* methods to the String
+ * class for legacy browsers that do not define these methods.
+**/
+Aphid.Support.Compatibility.String.Trim = {
+
+  /**
+   * Aphid.Support.Compatibility.String.Trim#trim() -> String
+   *
+   * Trims any leading and trailing whitepace from the string.
+   *
+   * **Example**
+   *
+   *     "  Foo Bar  ".trim()
+   *     // => "Foo Bar"
+   *
+  **/
+  trim: function()
+  {
+    return this.replace(/^\s+|\s+$/g,"");
+  },
+
+  /**
+   * Aphid.Support.Compatibility.String.Trim#trimLeft() -> String
+   *
+   * Trims any leading whitepace from the string.
+   *
+   * **Example**
+   *
+   *     "  Foo Bar  ".trimLeft()
+   *     // => "Foo Bar  "
+   *
+  **/
+  trimLeft: function()
+  {
+    return this.replace(/^\s+/,"");
+  },
+
+  /**
+   * Aphid.Support.Compatibility.String.Trim#trimRight() -> String
+   *
+   * Trims any trailing whitepace from the string.
+   *
+   * **Example**
+   *
+   *     "  Foo Bar  ".trimRight()
+   *     // => "  Foo Bar"
+   *
+  **/
+  trimRight: function()
+  {
+    return this.replace(/\s+$/,"");
+  }
+
+}
+
+//
+// Extend the String class only for browsers that do not already define the
+// *trim()* method on String.
+//
+if (Object.isUndefined("".trim))
+  Object.extend(String.prototype, Aphid.Support.Compatibility.String.TrimSupport);
+/**
  * Aphid.Support.Extensions
  *
  * Extentions to the core JavaScript engine as well as vendored, 3rd-party
@@ -90,78 +160,97 @@ if (Prototype.Browser.IE)
 
 Aphid.Support.Extensions = {};
 
-//
-// Element Extensions for Prototype - Aphid Version 1.0.0-alpha
-// Written by Justin Mecham <justin@activeprospect.com>
-//
-//#= require <prototype>
+/**
+ * Aphid.Support.Extensions.Vendor
+**/
 
-//
-// Element#fromString (for Prototype)
-//
-// Returns a new Element instance from an HTML string.  This is primarily useful
-// for accessing the result of a Template evaluation that returns an HTML snippet
-// before adding the snippet to the DOM.
-//
-// Usage:
-//
-//   var myElement = Element.fromString('<div class="new">Foo</div>');
-//
-Element.fromString = function(string)
-{
-  return new Element('div').update(string.trim()).firstChild;
-}
+Aphid.Support.Extensions.Vendor = {};
 
-Element.addMethods(
+/**
+ * Aphid.Support.Extensions.Vendor.Prototype
+ *
+ * Custom extensions to the Prototype framework.
+**/
+
+Aphid.Support.Extensions.Vendor.Prototype = {};
+
+/**
+ * mixin Aphid.Support.Extensions.Vendor.Prototype.Element
+**/
+
+Aphid.Support.Extensions.Vendor.Prototype.Element = {
+
+  /**
+   * Aphid.Support.Extensions.Vendor.Prototype.Element#fromString(htmlString) -> Element
+   *
+   * - htmlString (String): an HTML-formatted string with a single outer
+   *   element.
+   *
+   * Returns a new Element instance from an HTML string.  This is primarily
+   * useful for accessing the result of a Template evaluation that returns an
+   * HTML snippet before adding the snippet to the DOM.
+   *
+   * **Example**
+   *
+   *     var myElement = Element.fromString('<div class="new">Foo</div>');
+   *     // => Element
+   *
+  **/
+  Element.fromString = function(string)
   {
-    insert: Element.insert.wrap(
-      function(insert, element, insertation)
-      {
-        if (!Object.isArray(insertation))
-          return insert(element, insertation);
-
-          element = $(element);
-          insertation.each(insert.curry(element));
-          return element;
-      }
-    )
+    return new Element('div').update(string.trim()).firstChild;
   }
-)
-//
-// String Extensions - Aphid Version 1.0.0-alpha
-// Written by Justin Mecham <justin@activeprospect.com>
-//
 
-// require <prototype>
+};
 
-Object.extend(String.prototype,
-  {
-    lowerCaseFirst: function()
+/**
+ * mixin Aphid.Support.Extensions.Vendor.Prototype.Element.Methods
+**/
+Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
+
+  /**
+   * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#insert -> Element
+   *
+   * Adds support for inserting an Array of Elements
+  **/
+  insert: Element.insert.wrap(
+    function(insert, element, insertation)
     {
-      return this.charAt(0).toLowerCase() + this.substring(1);
-    },
-    toInt: function()
-    {
-      return parseInt(this);
+      if (!Object.isArray(insertation))
+        return insert(element, insertation);
+
+      element = $(element);
+      insertation.each(insert.curry(element));
+      return element;
     }
-  }
-);
+  )
 
-if (Object.isUndefined(''.trim))
-{
-  String.prototype.trim = function()
-  {
-    return this.replace(/^\s+|\s+$/g,"");
-  }
-  String.prototype.trimLeft = function()
-  {
-    return this.replace(/^\s+/,"");
-  }
-  String.prototype.trimRight = function()
-  {
-    return this.replace(/\s+$/,"");
-  }
 }
+Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
+/**
+ * Aphid.Support.Extensions.String
+**/
+Aphid.Support.Extensions.String = {
+
+  /**
+   * Aphid.Support.Extensions.String#lowerCaseFirst() -> String
+  **/
+  lowerCaseFirst: function()
+  {
+    return this.charAt(0).toLowerCase() + this.substring(1);
+  },
+
+  /**
+   * Aphid.Support.Extensions.String#toInt() -> Number
+  **/
+  toInt: function()
+  {
+    return parseInt(this);
+  }
+
+};
+
+Object.extend(String.prototype, Aphid.Support.Extensions.String);
 /**
  * class Aphid.Support.Logger
  *

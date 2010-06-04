@@ -33,59 +33,79 @@ Aphid.Support.Compatibility.HTML5 = {
 if (Prototype.Browser.IE)
   Aphid.Support.Compatibility.HTML5.createHTML5Elements();
 
-Aphid.Support.Extensions = {};
+Aphid.Support.Compatibility.String = {}
 
+Aphid.Support.Compatibility.String.Trim = {
 
-Element.fromString = function(string)
-{
-  return new Element('div').update(string.trim()).firstChild;
-}
-
-Element.addMethods(
-  {
-    insert: Element.insert.wrap(
-      function(insert, element, insertation)
-      {
-        if (!Object.isArray(insertation))
-          return insert(element, insertation);
-
-          element = $(element);
-          insertation.each(insert.curry(element));
-          return element;
-      }
-    )
-  }
-)
-
-
-Object.extend(String.prototype,
-  {
-    lowerCaseFirst: function()
-    {
-      return this.charAt(0).toLowerCase() + this.substring(1);
-    },
-    toInt: function()
-    {
-      return parseInt(this);
-    }
-  }
-);
-
-if (Object.isUndefined(''.trim))
-{
-  String.prototype.trim = function()
+  trim: function()
   {
     return this.replace(/^\s+|\s+$/g,"");
-  }
-  String.prototype.trimLeft = function()
+  },
+
+  trimLeft: function()
   {
     return this.replace(/^\s+/,"");
-  }
-  String.prototype.trimRight = function()
+  },
+
+  trimRight: function()
   {
     return this.replace(/\s+$/,"");
   }
+
 }
+
+if (Object.isUndefined("".trim))
+  Object.extend(String.prototype, Aphid.Support.Compatibility.String.TrimSupport);
+
+Aphid.Support.Extensions = {};
+
+
+Aphid.Support.Extensions.Vendor = {};
+
+
+Aphid.Support.Extensions.Vendor.Prototype = {};
+
+
+Aphid.Support.Extensions.Vendor.Prototype.Element = {
+
+  Element.fromString = function(string)
+  {
+    return new Element('div').update(string.trim()).firstChild;
+  }
+
+};
+
+Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
+
+  insert: Element.insert.wrap(
+    function(insert, element, insertation)
+    {
+      if (!Object.isArray(insertation))
+        return insert(element, insertation);
+
+      element = $(element);
+      insertation.each(insert.curry(element));
+      return element;
+    }
+  )
+
+}
+Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
+Aphid.Support.Extensions.String = {
+
+  lowerCaseFirst: function()
+  {
+    return this.charAt(0).toLowerCase() + this.substring(1);
+  },
+
+  toInt: function()
+  {
+    return parseInt(this);
+  }
+
+};
+
+Object.extend(String.prototype, Aphid.Support.Extensions.String);
 Aphid.Support.Logger = Class.create();
 
 Aphid.Support.Logger.DEBUG_LEVEL = 4;
