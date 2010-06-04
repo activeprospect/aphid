@@ -4,5 +4,6 @@
 .rake_tasks
 .rvmrc
 #Build
-Demo/JavaScripts/Aphid.js
+Demo/JavaScripts/Aphid*.js
 Documentation
+Build/Aphid.Combined.js

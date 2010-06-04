@@ -6,3 +6,5 @@
 **/
 
 Aphid.Core = {};
+
+//= require "Core/Application"

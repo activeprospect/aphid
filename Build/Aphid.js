@@ -172,7 +172,6 @@ Aphid.Support.Logger.prototype = {
 
 Aphid.Core = {};
 
-Aphid.UI = {};
 Aphid.Core.Application = Class.create();
 
 Aphid.Core.Application.prototype = {
@@ -200,3 +199,5 @@ Aphid.Core.Application.prototype = {
   }
 
 };
+
+Aphid.UI = {};

@@ -44,8 +44,9 @@ end
 desc "Build the project"
 task :build do
   header "Building Aphid"
-  sprocketize(File.join("Build", "Aphid.js"))
-  sprocketize(File.join("Build", "Aphid.Documented.js"), { :strip_comments => false })
+  sprocketize(File.join("Build", "Aphid.js"), { :source_files => "Library/Aphid.js" })
+  sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => "Library/Aphid.Combined.js" })
+  sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => "Library/Aphid.Documented.js", :strip_comments => false })
   puts
 end
 
@@ -102,7 +103,7 @@ namespace "demo" do
   desc "Update the demo application with the built project files and vendor libraries"
   task :update => [ :build ] do
     header "Updating Demo"
-    cp "Build/Aphid.js", "Demo/JavaScripts/Aphid.js"
+    cp "Build/Aphid.Combined.js", "Demo/JavaScripts/Aphid.Combined.js"
     puts
   end
 end
