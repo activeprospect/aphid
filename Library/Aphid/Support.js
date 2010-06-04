@@ -1,7 +1,9 @@
-//
-// "Support" Namespace - Aphid Version <%= Aphid.version %>
-// Written by Justin Mecham <justin@activeprospect.com>
-//
+/**
+ * Aphid.Support
+ *
+ * Contains common support code that is used by Aphid Core, Aphid UI and any
+ * application that is based on the Aphid framework and libraries.
+**/
 
 Aphid.Support = {};
 

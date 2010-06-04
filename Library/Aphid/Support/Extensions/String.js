@@ -3,8 +3,6 @@
 // Written by Justin Mecham <justin@activeprospect.com>
 //
 
-// require <prototype>
-
 Object.extend(String.prototype,
   {
     lowerCaseFirst: function()

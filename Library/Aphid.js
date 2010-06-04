@@ -1,17 +1,20 @@
-//
-// Aphid <%= APHID_VERSION %>
-// Written by Justin Mecham <justin@activeprospect.com>
-//
-// Copyright (c) 2010 ActiveProspect, Inc. All Rights Reserved.
-//
-
-//= require <prototype>
-
+/**
+ * Aphid
+ *
+ * The Aphid namespace is the main container for the various Aphid frameworks
+ * and contains other metadata for Aphid, including version.
+**/
 var Aphid = {
 
-  version: '<%= APHID_VERSION %>'
+  /**
+   * Aphid.Version = "<%= APHID_VERSION %>"
+   *
+   * The version number for Aphid in the *major.minor.build* format *(e.g. 1.0.123)*.
+  **/
+  Version: '<%= APHID_VERSION %>'
 
 };
 
 //= require <Aphid/Support>
 //= require <Aphid/Core>
+//= require <Aphid/UI>

@@ -2,7 +2,6 @@
 // Element Extensions for Prototype - Aphid Version <%= APHID_VERSION %>
 // Written by Justin Mecham <justin@activeprospect.com>
 //
-//= require <prototype>
 
 //
 // Element#fromString (for Prototype)

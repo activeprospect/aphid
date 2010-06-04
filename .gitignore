@@ -1,6 +1,8 @@
+*.pdoc.yaml
 *.tmproj
 .DS_Store
+.rake_tasks
 .rvmrc
-Build
+#Build
 Demo/JavaScripts/Aphid.js
 Documentation
