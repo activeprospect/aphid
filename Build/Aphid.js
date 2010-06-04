@@ -68,12 +68,14 @@ Aphid.Support.Extensions.Vendor.Prototype = {};
 
 Aphid.Support.Extensions.Vendor.Prototype.Element = {
 
-  Element.fromString = function(string)
+  fromString: function(string)
   {
     return new Element('div').update(string.trim()).firstChild;
   }
 
 };
+
+Object.extend(Element, Aphid.Support.Extensions.Vendor.Prototype.Element);
 
 Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 
@@ -89,7 +91,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     }
   )
 
-}
+};
+
 Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
 Aphid.Support.Extensions.String = {
 
