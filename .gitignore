@@ -8,5 +8,6 @@ Build/Aphid.css
 Assets/Stylesheets/*.css
 Assets/Stylesheets/**/*.css
 Demo/JavaScripts/Aphid*.js
+Demo/Stylesheets/Aphid*.css
 Documentation
 Build/Aphid.Combined.js
