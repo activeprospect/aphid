@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rake'
 require 'rake/packagetask'
 
@@ -6,12 +7,22 @@ ROOT_PATH = File.expand_path(File.dirname(__FILE__))
 # Check Vendor Dependencies --------------------------------------------------
 
 begin
+  require "less"
+rescue LoadError
+  puts "\nYou'll need Less to build this project. Simply run:\n\n"
+  puts "  $ gem install less"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
+begin
   require "#{ROOT_PATH}/Vendor/Sprockets/lib/sprockets"
 rescue LoadError
   puts "\nYou'll need Sprockets to build this project. Simply run:\n\n"
   puts "  $ git submodule init"
   puts "  $ git submodule update"
   puts "\nand you should be all set!\n\n"
+  exit
 end
 
 begin
@@ -47,6 +58,7 @@ task :build do
   sprocketize(File.join("Build", "Aphid.js"), { :source_files => "Library/Aphid.js" })
   sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => "Library/Aphid.Combined.js" })
   sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => "Library/Aphid.Documented.js", :strip_comments => false })
+  lessify(File.join("Assets", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
   puts
 end
 
@@ -104,6 +116,7 @@ namespace "demo" do
   task :update => [ :build ] do
     header "Updating Demo"
     cp "Build/Aphid.Combined.js", "Demo/JavaScripts/Aphid.Combined.js"
+    cp "Build/Aphid.css", "Demo/Stylesheets/Aphid.css"
     puts
   end
 end
@@ -111,14 +124,24 @@ end
 # Support Methods ------------------------------------------------------------
 
 def sprocketize(output, options = {})
-  puts "Sprocketizing to #{output} ..."
-  secretary_options = {
+  sprockets_options = {
     :root         => ROOT_PATH,
     :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src" ],
-    :source_files => [ "Library/**/*.js" ]
+    :source_files => "Library/**/*.js"
   }.merge(options)
-  secretary = Sprockets::Secretary.new(secretary_options)
-  secretary.concatenation.save_to(output)
+  puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."
+  sprockets = Sprockets::Secretary.new(sprockets_options)
+  sprockets.concatenation.save_to(output)
+end
+
+def lessify(input, output, options = {})
+  puts "Lessifying #{input} to #{output} ..."
+  template = File.read(input)
+  $LESS_LOAD_PATH = [ "Assets/Stylesheets" ]
+  less = Less::Engine.new(template)
+  File.open(output, 'w') do |file|
+    file.write less.to_css
+  end
 end
 
 def header(message)

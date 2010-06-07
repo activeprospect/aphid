@@ -4,6 +4,9 @@
 .rake_tasks
 .rvmrc
 #Build
+Build/Aphid.css
+Assets/Stylesheets/*.css
+Assets/Stylesheets/**/*.css
 Demo/JavaScripts/Aphid*.js
 Documentation
 Build/Aphid.Combined.js

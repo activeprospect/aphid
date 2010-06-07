@@ -1,0 +1,65 @@
+/* Segmented Control ------------------------------------------------------ */
+
+ul.segmented
+{
+  display: inline-block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 2em;
+}
+
+ul.segmented li
+{
+  display: inline-block;
+  float: left;
+  font-weight: bold;
+  color: #555;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+ul.segmented li:hover
+{
+  color: #222;
+}
+
+ul.segmented li a
+{
+  text-decoration: none;
+  color: inherit;
+}
+
+ul.segmented li label
+{
+  display: block;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+  border: 0.1em solid #cdcdcd;
+  padding: 0 1em;
+  font-size: 0.9em;
+}
+
+
+ul.segmented li:first-of-type label
+{
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-bottom-left-radius: 0.5em;
+  border-right-width: 0;
+}
+
+ul.segmented li:last-of-type label
+{
+  -webkit-border-top-right-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
+}
+
+ul.segmented li input[type=radio]
+{
+  display: none;
+}
+
+ul.segmented li input[type=radio]:checked + label,
+ul.segmented li.current label
+{
+  color: #222;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+}
