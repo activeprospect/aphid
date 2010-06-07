@@ -3,6 +3,7 @@ require 'rake'
 require 'rake/packagetask'
 
 ROOT_PATH = File.expand_path(File.dirname(__FILE__))
+DEFAULT_TASKS = [ :clean, :build, "docs:build", "demo:update" ]
 
 # Check Vendor Dependencies --------------------------------------------------
 
@@ -37,8 +38,8 @@ end
 
 # Default Tasks --------------------------------------------------------------
 
-desc "Defaults to [ clean, build, docs:build, demo:update ]"
-task :default => [ :clean, :build, "docs:build", "demo:update" ]
+desc "Defaults to #{DEFAULT_TASKS.inspect}"
+task :default => DEFAULT_TASKS
 
 # Clean Task -----------------------------------------------------------------
 
@@ -48,6 +49,28 @@ task :clean do
   rm_rf "#{ROOT_PATH}/Build"
   mkdir "#{ROOT_PATH}/Build"
   puts
+end
+
+# Watcher Task ---------------------------------------------------------------
+
+desc "Watches for changes and rebuilds the project and documentation as changes occur"
+task :watch do
+  begin
+    require "filewatcher"
+  rescue LoadError
+    puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
+    puts "  $ gem install filewatcher"
+    puts "\nand you should be all set!\n\n"
+    exit
+  end
+  header "Waiting for Change(s)"
+  watched_files = Dir["Library/**/*.js"] + Dir["Assets/Stylesheets/**/*.less"]
+  FileWatcher.new(watched_files).watch do |filename|
+    puts filename + " was changed. Rebuilding project...\n"
+    DEFAULT_TASKS.each { |task| Rake::Task[task].reenable }
+    DEFAULT_TASKS.each { |task| Rake::Task[task].invoke }
+    header "Waiting for Change(s)"
+  end
 end
 
 # Build Tasks ----------------------------------------------------------------
