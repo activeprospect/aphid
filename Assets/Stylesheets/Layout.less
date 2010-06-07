@@ -1,0 +1,424 @@
+/*
+* Standard Layout Styles
+*
+* These styles will be applied to the standard application layout and should
+* include layout for the application's interface.
+*
+* Currently, this means any velocity template that calls top.vm.
+*
+*/
+
+/* Page Header ------------------------------------------------------------ */
+
+body > header
+{
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6em;
+  background-color: white;
+}
+
+body > header h1
+{
+  position: absolute;
+  left: 20px;
+  top: 14px;
+  width: 200px;
+  height: 44px;
+  background-image: url('../../newimages/logo.png');
+  color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+/* Account / User Links --------------------------------------------------- */
+
+section#accountInfo
+{
+  display: none; /* TODO Style me */
+}
+
+section#accountLinks
+{
+  position: absolute;
+  top: 0.7em;
+  right: 1.7em;
+}
+
+section#accountLinks ul
+{
+  display: inline-block;
+  list-style: none;
+}
+
+section#accountLinks li
+{
+  display: inline-block;
+  list-style: none;
+}
+
+section#accountLinks a
+{
+  color: #555;
+  text-decoration: none;
+}
+
+section#accountLinks a:hover
+{
+  color: #222;
+  text-decoration: underline;
+}
+
+section#accountLinks li:not(.email):before
+{
+  content: "\2022";
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  font-size: 0.8em;
+  color: #888;
+}
+
+/* Primary Navigation ----------------------------------------------------- */
+
+nav#primaryNavigation
+{
+  display: block;
+  position: absolute;
+  left: 20em;
+  right: 0;
+  bottom: 0;
+}
+
+nav#primaryNavigation ul
+{
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -0.1em;
+  padding: 10px 10px 0px 0px;
+  margin: 0;
+  overflow: hidden;
+  z-index: 100;
+  list-style: none;
+  background-color: white;
+  line-height: 1.25em;
+}
+
+nav#primaryNavigation ul:before
+{
+  content: '.';
+  display: block;
+  color: transparent;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 10px;
+
+  margin-bottom: -10px;
+  margin-right: -10px;
+  margin-left: -10px;
+
+  border-top: 0.1em solid #cdcdcd;
+
+  z-index: 100;
+
+  -webkit-box-shadow: 0 0 0.6em #ddd;
+  -moz-box-shadow: 0 0 0.6em #ddd;
+}
+
+nav#primaryNavigation li
+{
+  display: block;
+  float: left;
+  position: relative;
+  margin-left: 0.4em;
+  border: 0.1em solid #e5e5e5;
+  border-bottom-color: #cdcdcd;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+}
+
+nav#primaryNavigation li a
+{
+  z-index: 101 !important;
+  display: block;
+  padding: 0.6em 1em;
+  background-color: #f3f4f5;
+  color: #555;
+  font-weight: bold;
+  text-decoration: none;
+  outline: none;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+}
+
+nav#primaryNavigation li a:hover
+{
+  color: #222;
+}
+
+/*
+nav#primaryNavigation li[data-badge]:after
+{
+  content: attr(data-badge);
+  background-color: red;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -0.8em;
+  margin-right: -0.8em;
+  text-shadow: 1px 1px 1px #000;
+  font-size: 0.8em;
+  width: 1.4em;
+  height: 1.4em;
+  line-height: 1.4em;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border: 0.4em solid white;
+}
+*/
+
+/* Highlight the current tab based on the value of the data-section attribute
+ * on the body element.
+ */
+
+body[data-section='home'] li#homeTab,
+body[data-section='accounts'] li#accountsTab,
+body[data-section='statistics'] li#statisticsTab,
+body[data-section='leads'] li#leadsTab,
+body[data-section='campaigns'] li#campaignsTab,
+body[data-section='sources'] li#sourcesTab,
+body[data-section='recipients'] li#recipientsTab,
+body[data-section='deliveries'] li#deliveriesTab,
+body[data-section='jobs'] li#jobsTab,
+body[data-section='servers'] li#serversTab
+{
+  border-left-color: #cdcdcd;
+  border-top-color: #cdcdcd;
+  border-right-color: #cdcdcd;
+  border-bottom-color: #f3f4f5;
+  z-index: 101;
+  -webkit-box-shadow: 0 0 0.6em #ddd;
+  -moz-box-shadow: 0 0 0.6em #ddd;
+}
+
+body[data-section='home'] li#homeTab > a,
+body[data-section='accounts'] li#accountsTab > a,
+body[data-section='statistics'] li#statisticsTab > a,
+body[data-section='leads'] li#leadsTab > a,
+body[data-section='campaigns'] li#campaignsTab > a,
+body[data-section='sources'] li#sourcesTab > a,
+body[data-section='recipients'] li#recipientsTab > a,
+body[data-section='deliveries'] li#deliveriesTab > a,
+body[data-section='jobs'] li#jobsTab > a,
+body[data-section='servers'] li#serversTab > a
+{
+  background-color: #ddd;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f4f5));
+  background-image: -moz-linear-gradient(top, #fff, #f3f4f5);
+  color: #222;
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+  z-index: 101;
+}
+
+/* Main Section ----------------------------------------------------------- */
+
+section#mainSection
+{
+  display: block;
+  position: absolute;
+  top: 6.0em;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  border-top: 0.1em solid #cdcdcd;
+  background-color: #f3f4f5;
+  -webkit-box-shadow: 0 0 0.6em #ddd;
+  -moz-box-shadow: 0 0 0.6em #ddd;
+}
+
+/* Main Section Header ---------------------------------------------------- */
+
+#mainSection > header
+{
+  margin: 1.7em;
+}
+
+#mainSection > header h1
+{
+  font-size: 1.6em;
+  color: #555;
+  text-shadow: 0 0.1em 0 white;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+               "Helvetica Neue", sans-serif;
+  font-weight: 300;
+}
+
+#mainSection > header p
+{
+  color: #555;
+  text-shadow: 0 0.1em 0 white;
+  margin-top: 1em;
+}
+
+/* Section Sidebar -------------------------------------------------------- */
+
+aside
+{
+  position: fixed;
+  top: 7.8em;
+  left: 1.7em;
+  width: 15em;
+}
+
+aside ul,
+aside li
+{
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+aside nav#sectionNavigation
+{
+  display: block;
+  background-color: white;
+  border: 0.1em solid #cdcdcd;
+  -webkit-border-radius: 0.6em;
+  -moz-border-radius: 0.6em;
+}
+
+aside nav#sectionNavigation a
+{
+  display: block;
+  text-decoration: none;
+  font-weight: bold;
+  color: #555;
+  margin: 0.2em;
+  padding: 0.8em 1.2em;
+  line-height: 180%;
+  font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+}
+
+aside nav#sectionNavigation a:hover
+{
+  color: #222;
+}
+
+aside nav#sectionNavigation li:after
+{
+  content: attr(data-count);
+  display: inline-block;
+  color: black;
+  background-color: white;
+  float: right;
+  margin-top: -2.8em;
+  margin-right: 1em;
+  padding: 0.3em 0.6em;
+  font-size: 0.9em;
+  font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;
+  font-weight: bold;
+  color: #888;
+  -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+}
+
+aside nav#sectionNavigation li.current:after
+{
+  color: black;
+}
+
+aside nav#sectionNavigation li.current:first-of-type a
+{
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+}
+
+aside nav#sectionNavigation li.current:last-of-type a
+{
+  -webkit-border-bottom-left-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
+  -moz-border-radius-bottomleft: 0.5em;
+  -moz-border-radius-bottomright: 0.5em;
+}
+
+aside nav#sectionNavigation li.current a
+{
+  background-color: #336699;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#586c8c), to(#224272));
+  background-image: -moz-linear-gradient(top, #586c8c, #224272);
+  color: white;
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+aside ul#sectionActions
+{
+  margin-top: 0.6em;
+  line-height: 1.25em;
+} 
+
+aside ul#sectionActions li
+{
+  margin-bottom: 0.6em;
+}
+
+aside ul#sectionActions li a
+{
+  display: block;
+  text-decoration: none;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+  -webkit-border-radius: 0.6em;
+  -moz-border-radius: 0.6em;
+  padding: 0.8em 1.2em;
+  border: 0.1em solid #cdcdcd;
+  background-color: #ddd;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+  background-image: -moz-linear-gradient(top, #fff, #ddd);
+  cursor: default;
+  outline: none;
+}
+
+aside ul#sectionActions li a:hover
+{
+  background-color: #eee;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+  background-image: -moz-linear-gradient(top, #fff, #eee);
+  color: #222;
+}
+
+aside ul#sectionActions li a:active
+{
+  background-color: #ddd;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+  background-image: -moz-linear-gradient(top, #ddd, #fff);
+  color: #222;
+}
+
+/* Page Footer ------------------------------------------------------------ */
+
+body > footer
+{
+  display: none;
+}
