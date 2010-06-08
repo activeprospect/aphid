@@ -3,7 +3,7 @@ require 'rake'
 require 'rake/packagetask'
 
 ROOT_PATH = File.expand_path(File.dirname(__FILE__))
-DEFAULT_TASKS = [ :clean, :build, "docs:build", "demo:update" ]
+DEFAULT_TASKS = [ :clean, :build, "docs:build", "demo:update", "templates:update" ]
 
 # Check Vendor Dependencies --------------------------------------------------
 
@@ -140,6 +140,23 @@ namespace "demo" do
     header "Updating Demo"
     cp "Build/Aphid.Combined.js", "Demo/JavaScripts/Aphid.Combined.js"
     cp "Build/Aphid.css", "Demo/Stylesheets/Aphid.css"
+    puts
+  end
+end
+
+# Template Tasks -------------------------------------------------------------
+
+# desc "Update and launch the demo application"
+# task :demo => [ 'demo:update' ] do
+#   `open "#{ROOT_PATH}/Demo/index.html"`
+# end
+
+namespace "templates" do
+  desc "Update the templates with the built project files and vendor libraries"
+  task :update => [ :build ] do
+    header "Updating Templates"
+    cp "Build/Aphid.Combined.js", "Templates/JavaScripts/Aphid.Combined.js"
+    cp "Build/Aphid.css", "Templates/Stylesheets/Aphid.css"
     puts
   end
 end

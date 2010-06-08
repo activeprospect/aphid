@@ -1,0 +1,94 @@
+
+body.errorLayout
+{
+  background-color: #f3f4f5;
+}
+
+/* Main Section ----------------------------------------------------------- */
+
+body.errorLayout section#mainSection
+{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 40em;
+  height: 20em;
+  margin-left: -22em;
+  margin-top: -12em;
+  padding: 2em;
+
+  border: 0.1em solid #ccc;
+  background-color: white;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+
+  -webkit-box-shadow: 0 0 0.5em #ddd;
+  -moz-box-shadow: 0 0 0.5em #ddd;
+}
+
+/* Main Section Header ---------------------------------------------------- */
+
+body.errorLayout header
+{
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 6em;
+  background-color: #ddd;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ddd));
+  background-image: -moz-linear-gradient(top, #f3f4f5, #ddd);
+  line-height: 6em;
+  padding-left: 1.7em;
+  border-bottom: 0.1em solid #aaa;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+}
+
+body.errorLayout header h1
+{
+  font-size: 2em;
+  text-shadow: 0 0.1em 0 rgba(255, 255, 255, 0.5);
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+               "Helvetica Neue", sans-serif;
+  font-weight: 300;
+  cursor: default;
+  color: #222;
+}
+
+body.errorLayout header .status
+{
+  color: #aaa;
+  margin-right: 0.2em;
+  display: inline-block;
+}
+
+/* Message Section -------------------------------------------------------- */
+
+body.errorLayout section#messageSection
+{
+  position: absolute;
+  top: 8.1em;
+  right: 2em;
+  bottom: 2em;
+  left: 2em;
+}
+
+body.errorLayout section#messageSection h2
+{
+  font-size: 1.2em;
+  margin-bottom: 0.8em;
+}
+
+body.errorLayout section#messageSection ul.actions
+{
+  margin-left: 2em;
+}
