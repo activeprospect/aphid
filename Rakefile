@@ -27,6 +27,33 @@ rescue LoadError
 end
 
 begin
+  require "json"
+rescue LoadError
+  puts "\nYou'll need the JSON gem to build this project. Simply run:\n\n"
+  puts "  $ gem install json"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
+begin
+  require "maruku"
+rescue LoadError
+  puts "\nYou'll need Maruku to build this project. Simply run:\n\n"
+  puts "  $ gem install maruku"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
+begin
+  require "coderay"
+rescue LoadError
+  puts "\nYou'll need CodeRay to build this project. Simply run:\n\n"
+  puts "  $ gem install coderay"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
+begin
   require "#{ROOT_PATH}/Vendor/PDoc/lib/pdoc"
 rescue LoadError
   puts "\nYou'll need PDoc to build this project. Simply run:\n\n"
