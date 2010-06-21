@@ -191,20 +191,7 @@ nav#primaryNavigation li[data-badge]:after
 }
 */
 
-/* Highlight the current tab based on the value of the data-section attribute
- * on the body element.
- */
-
-body[data-section='home'] li#homeTab,
-body[data-section='accounts'] li#accountsTab,
-body[data-section='statistics'] li#statisticsTab,
-body[data-section='leads'] li#leadsTab,
-body[data-section='campaigns'] li#campaignsTab,
-body[data-section='sources'] li#sourcesTab,
-body[data-section='recipients'] li#recipientsTab,
-body[data-section='deliveries'] li#deliveriesTab,
-body[data-section='jobs'] li#jobsTab,
-body[data-section='servers'] li#serversTab
+nav#primaryNavigation li.current
 {
   border-left-color: #cdcdcd;
   border-top-color: #cdcdcd;
@@ -215,16 +202,7 @@ body[data-section='servers'] li#serversTab
   -moz-box-shadow: 0 0 0.6em #ddd;
 }
 
-body[data-section='home'] li#homeTab > a,
-body[data-section='accounts'] li#accountsTab > a,
-body[data-section='statistics'] li#statisticsTab > a,
-body[data-section='leads'] li#leadsTab > a,
-body[data-section='campaigns'] li#campaignsTab > a,
-body[data-section='sources'] li#sourcesTab > a,
-body[data-section='recipients'] li#recipientsTab > a,
-body[data-section='deliveries'] li#deliveriesTab > a,
-body[data-section='jobs'] li#jobsTab > a,
-body[data-section='servers'] li#serversTab > a
+nav#primaryNavigation li.current > a
 {
   background-color: #ddd;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f4f5));
