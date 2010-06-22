@@ -6,3 +6,6 @@
 **/
 
 Aphid.UI = {};
+
+//= require "UI/View"
+//= require "UI/ViewController"
