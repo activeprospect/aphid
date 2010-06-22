@@ -7,5 +7,6 @@
 
 Aphid.UI = {};
 
+//= require "UI/LoadingIndicator"
 //= require "UI/View"
 //= require "UI/ViewController"

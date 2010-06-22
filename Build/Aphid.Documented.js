@@ -489,3 +489,465 @@ Aphid.Core.Application.prototype = {
 **/
 
 Aphid.UI = {};
+
+//
+// Loading Indicator Component
+//
+// This component manages the display of a loading indicator, which is
+// implemented with the HTML 5 canvas tag.
+//
+// To display the loading indicator, simply call LoadingIndicator.show()
+// anywhere on your site (after including this file, of course). Calling
+// LoadingIndicator.hide() will cause the indicator to fade out and stop
+// animating.
+//
+// Adapted for Prototype by Justin Mecham from the examples at:
+//   http://starkravingcoder.blogspot.com/2007/09/canvas-loading-indicator.html
+//
+
+var loadingIndicator;
+var LoadingIndicator = Class.create();
+
+//
+// Class Methods
+//
+LoadingIndicator.show = function() { loadingIndicator.show(); }
+LoadingIndicator.hide = function() { loadingIndicator.hide(); }
+
+//
+// Class Definition
+//
+LoadingIndicator.prototype = {
+
+  // Canvas
+  canvas: null,
+  context: null,
+
+  // Spinner Options
+  bars: null,
+  barSize: null,
+  barColor: null,
+  center: null,
+  innerRadius: null,
+
+  // Internal State
+  _animating: false,
+  _currentOffset: 0,
+
+  initialize: function()
+  {
+
+    this._log('Initializing...');
+
+    // Initialize the canvas
+    this.canvas = new Element("canvas",
+      {
+        id: "loadingIndicator",
+        width: 96,
+        height: 96
+      }
+    );
+
+    // Internet Explorer / Explorer Canvas
+    if (!(typeof G_vmlCanvasManager == 'undefined'))
+      G_vmlCanvasManager.initElement(this.canvas);
+
+    this.context = this.canvas.getContext("2d")
+    Element.insert(document.body, this.canvas);
+    this.canvas.hide()
+
+
+    // Initialize the Controller
+    this.bars = 10
+    this.barSize = { width: 4, height: 12 }
+
+    var color = $(this.canvas).getStyle('color')
+    if (color)
+    {
+      colors = color.split(',')
+      red = parseInt(colors[0].substr(4, 3))
+      green = parseInt(colors[1])
+      blue = parseInt(colors[2])
+      this.barColor = { red: red, green: green, blue: blue }
+    }
+    else this.barColor = { red: 85, green: 85, blue: 85 }
+    this.center = { x: 48, y: 48}
+    this.innerRadius = 10
+  },
+
+  //
+  // Shows the loading indicator with a fade-in transition.
+  //
+  show: function()
+  {
+    if (this._animating) return;
+
+    this._log('Showing the loading indicator...');
+
+    this._startAnimation()
+    var opacity = $(this.canvas).getStyle('opacity')
+    this.canvas.appear({ duration: 0.35, to: opacity })
+  },
+
+  //
+  // Hides the loading indicator with a quick fade-out transition.
+  //
+  hide: function()
+  {
+    this._log('Hiding the loading indicator...');
+
+    this.canvas.fade({ duration: 0.15 })
+    this._stopAnimation.bind(this).delay(0.15)
+  },
+
+  //
+  // Private API
+  //
+
+  _stopAnimation: function()
+  {
+    this._animating = false
+    this._clearFrame(this.context)
+  },
+
+  _startAnimation: function()
+  {
+    this._animating = true
+    this._animateNextFrame(0)
+  },
+
+  _draw: function(context, offset)
+  {
+    this._clearFrame(context)
+    context.save()
+    context.translate(this.center.x, this.center.y)
+    for(var i = 0; i < this.bars; i++)
+    {
+      var currentBar = (offset + i) % this.bars,
+          pos        = this._calculatePosition(currentBar)
+      context.save()
+      context.translate(pos.x, pos.y)
+      context.rotate(pos.angle)
+      this._drawBlock(this.context, i)
+      context.restore()
+    }
+    context.restore()
+  },
+
+  _drawBlock: function(context, barNumber)
+  {
+    context.fillStyle = this._makeRGBA(this.barColor.red, this.barColor.green, this.barColor.blue, (this.bars + 1 - barNumber) / (this.bars + 1));
+    context.fillRect(-this.barSize.width / 2, 0, this.barSize.width, this.barSize.height);
+  },
+
+  _animateNextFrame: function()
+  {
+    if (!this._animating) return;
+    this._currentOffset = (this._currentOffset + 1) % this.bars;
+    this._draw(this.context, this._currentOffset);
+    this._animateNextFrame.bind(this).delay(0.05);
+  },
+
+  _clearFrame: function(context)
+  {
+    context.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight)
+  },
+
+  _calculateAngle: function(barNumber)
+  {
+    return 2 * barNumber * Math.PI / this.bars;
+  },
+
+  _calculatePosition: function(barNumber)
+  {
+    var angle = this._calculateAngle(barNumber);
+    return {
+      y: (this.innerRadius * Math.cos(-angle)),
+      x: (this.innerRadius * Math.sin(-angle)),
+      angle: angle
+    };
+  },
+
+  _makeRGBA: function()
+  {
+    return "rgba(" + [].slice.call(arguments, 0).join(",") + ")"
+  },
+
+  // -------------------------------------------------------------------------
+
+  _log: function(message, level)
+  {
+    if (!window.console) return;
+    if (Object.isUndefined(level)) level = 'log';
+    eval('window.console.' + level + '("[LoadingIndicator] ' + message + '")');
+  }
+
+}
+
+//
+// Initialize Loading Indicator
+//
+
+Event.observe(document, 'dom:loaded',
+  function(event)
+  {
+
+    // Initialize Loading Indicator
+    loadingIndicator = new LoadingIndicator();
+
+    // Register for AJAX Callbacks
+    Ajax.Responders.register(
+      {
+        onCreate: LoadingIndicator.show,
+        onComplete: LoadingIndicator.hide
+      }
+    );
+  }
+);
+//
+// View Class & Base View Object
+//
+// All Views should extend this class.
+//
+
+Aphid.UI.View = Class.create(
+{
+
+  delegate: false,
+
+  viewName: false,
+  _element: false,
+
+  subviews: false,
+  superview: false,
+
+  initialize: function(viewName, delegate)
+  {
+    this.subviews = $A();
+    this.delegate = delegate;
+    if (viewName) this.viewName = viewName;
+    if (this.viewName)
+    {
+      this._loadViewFromTemplate();
+    }
+  },
+
+  initializeFromTemplate: function(element)
+  {
+    this.element = element;
+  },
+
+  //
+  // Clears all subviews of the current view and sets the specified view as
+  // the current view's only subview.
+  //
+  setView: function(view, animated)
+  {
+    // Remove existing views
+    this.subviews.invoke('removeFromSuperview', animated);
+
+    // Clear the Subviews
+    this.subviews = $A();
+
+    // Add the specified view as the view's only subview
+    this.addSubview(view, animated);
+
+    // if (animated)
+    // {
+    //   if (this.subviews.length > 0)
+    //   {
+    //     var currentView = this.subviews.first();
+    //     currentView.element.fade({ duration: 0.25 });
+    //   }
+    // }
+  },
+
+  addSubview: function(view, animated)
+  {
+    Logger.info('Adding subview to view…', 'View')
+
+    // Setup the View
+    view.element.hide();
+    view.superview = this;
+    this.subviews.push(view);
+
+    // "View Will Appear..."
+    if (view.viewWillAppear)
+      view.viewWillAppear();
+
+    // Insert the view into the DOM
+    this.element.insert(view.element);
+
+    // Display the View
+    animated ? view.element.appear({ duration: 0.25 }) : view.element.show();
+
+    // "View Did Appear..."
+    if (view.viewDidAppear)
+      view.viewDidAppear();
+  },
+
+  removeFromSuperview: function(animated)
+  {
+    // "View Will Disappear"
+    if (this.viewWillDisappear)
+      this.viewWillDisappear();
+
+    // Hide the View
+    animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
+
+    // Remove the View's element from the DOM
+    this.element = this.element.remove()
+
+    // Remove from superview's subviews
+    this.superview.subviews = this.superview.subviews.without(this);
+
+    // Remove reference to superview
+    this.superview = false;
+
+    // "View Did Disappear"
+    // TODO if animated, this needs to be called when the animation has completed instead...
+    if (this.viewDidDisappear)
+      this.viewDidDisappear();
+  },
+
+  _loadViewFromTemplate: function()
+  {
+    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
+        options  = {
+          asynchronous: true,
+          method: 'get',
+          onComplete: function(transport)
+          {
+            window.console.log(Element.fromString(transport.responseText))
+            this.element = Element.fromString(transport.responseText);
+            this._connectToOutlets();
+            this._wireActionsToInstance();
+            if (this.viewDidLoad)
+              this.viewDidLoad();
+            if (this.delegate)
+            {
+              this.delegate.viewDidFinishLoading(this);
+            }
+          }.bind(this),
+          onFailure: function(transport)
+          {
+            if (transport.status == 404)
+            {
+              Logger.error("Missing Template HTML (" + this.viewName + ")", "View")
+            }
+          }.bind(this)
+        };
+
+    new Ajax.Request(viewPath, options);
+  },
+
+  // -------------------------------------------------------------------------
+
+  _connectToOutlets: function()
+  {
+    Logger.debug('View._connectToOutlets')
+
+    var outletElements = this.element.select('*[data-outlet]');
+    window.console.log(outletElements)
+
+    outletElements.each(
+      function(element)
+      {
+        var outlet    = element.getAttribute('data-outlet'),
+            viewClass = element.getAttribute('data-viewClass');
+
+        if (!Object.isUndefined(this[outlet]))
+        {
+          var instance;
+          Logger.info('Connected outlet "' + outlet + '" to View...');
+          try {
+            if (viewClass)
+              instance = eval("new " + viewClass + "()");
+            else
+              instance = new View();
+            instance.initializeFromTemplate(element);
+          }
+          catch (error)
+          {
+            Logger.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error)
+            return;
+          }
+          this[outlet] = instance;
+          this.subviews.push(instance);
+        }
+        else
+          Logger.warn('Missing connection... ' + outlet);
+      }.bind(this)
+    );
+  },
+
+  _wireActionsToInstance: function()
+  {
+    var actionElements = this.element.select('*[data-action]');
+    actionElements.each(
+      function(element)
+      {
+        var action = element.getAttribute('data-action');
+        if (!Object.isUndefined(this[action]))
+        {
+          element.observe('click',
+            function(event)
+            {
+              eval('this.' + action + '()')
+            }.bind(this)
+          )
+
+          // var instance = eval("new " + viewClass + "()");
+          // instance.initializeFromTemplate(element);
+          // this[outlet] = instance;
+        }
+        else
+          Logger.warn('Missing action... ' + action);
+      }.bind(this)
+    );
+
+    window.console.log(actionElements)
+  }
+
+
+});
+
+// Method Mappings
+
+View.prototype._loadViewFromTemplate.displayName = "View._loadViewFromTemplate"
+//
+// View Class & Base View Object
+//
+// All Views should extend this class.
+//
+
+Aphid.UI.ViewController = Class.create(Aphid.UI.View,
+{
+
+  isModal: false,
+
+  // -------------------------------------------------------------------------
+
+  initialize: function($super, delegate)
+  {
+
+    $super(this.viewName, delegate);
+
+    // Load the View
+    // if (this.viewName)
+    // {
+    //   this.view = new View(this.viewName);
+    //   // this._connectToOutlets();
+    //   // this._wireActionsToInstance();
+    // }
+
+  },
+
+  // Modal View Controllers --------------------------------------------------
+
+  presentModalViewController: function(viewController)
+  {
+    viewController.show();
+  }
+
+});
