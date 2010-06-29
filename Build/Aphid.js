@@ -204,6 +204,294 @@ Aphid.Core.Application.prototype = {
 Aphid.UI = {};
 
 
+Aphid.UI.Window = Class.create(
+  {
+
+    container: false,
+    subviews: false,
+
+    initialize: function()
+    {
+      $L.info('Initializing window…', 'Aphid.UI.Window');
+      this.container = $(document.body);
+      this.subviews = $A();
+    },
+
+    addSubview: function(subview)
+    {
+      if (Object.isUndefined(subview) || Object.isUndefined(subview.element))
+      {
+        $L.error("A valid subclass of View was not provided. You must pass an Object to addSubview that returns the DOM structure of the view as the 'element' property of the object.", 'Aphid.UI.Window');
+        return;
+      }
+
+      $L.info('Adding subview to window…', 'Aphid.UI.Window');
+      this.subviews.push(subview);
+      this.container.insert(subview.element);
+    }
+
+  }
+);
+
+Aphid.UI.View = Class.create(
+{
+
+  delegate: false,
+
+  viewName: false,
+  _element: false,
+
+  subviews: false,
+  superview: false,
+
+  initialize: function(viewName, delegate)
+  {
+    this.subviews = $A();
+    this.delegate = delegate;
+    if (viewName) this.viewName = viewName;
+    if (this.viewName)
+    {
+      this._loadViewFromTemplate();
+    }
+  },
+
+  initializeFromTemplate: function(element)
+  {
+    this.element = element;
+  },
+
+  setView: function(view, animated)
+  {
+    this.subviews.invoke('removeFromSuperview', animated);
+
+    this.subviews = $A();
+
+    this.addSubview(view, animated);
+
+  },
+
+  addSubview: function(view, animated)
+  {
+    $L.info('Adding subview to view…', 'View')
+
+    view.element.hide();
+    view.superview = this;
+    this.subviews.push(view);
+
+    if (view.viewWillAppear)
+      view.viewWillAppear();
+
+    this.element.insert(view.element);
+
+    animated ? view.element.appear({ duration: 0.25 }) : view.element.show();
+
+    if (view.viewDidAppear)
+      view.viewDidAppear();
+  },
+
+  removeFromSuperview: function(animated)
+  {
+    if (this.viewWillDisappear)
+      this.viewWillDisappear();
+
+    animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
+
+    this.element = this.element.remove()
+
+    this.superview.subviews = this.superview.subviews.without(this);
+
+    this.superview = false;
+
+    if (this.viewDidDisappear)
+      this.viewDidDisappear();
+  },
+
+  _loadViewFromTemplate: function()
+  {
+    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
+        options  = {
+          asynchronous: true,
+          method: 'get',
+          onComplete: function(transport)
+          {
+            window.console.log(Element.fromString(transport.responseText))
+            this.element = Element.fromString(transport.responseText);
+            this._connectToOutlets();
+            this._wireActionsToInstance();
+            if (this.viewDidLoad)
+              this.viewDidLoad();
+            if (this.delegate)
+              this.delegate.viewDidFinishLoading(this);
+          }.bind(this),
+          onFailure: function(transport)
+          {
+            if (transport.status == 404)
+            {
+              $L.error("Missing Template HTML (" + this.viewName + ")", "View")
+            }
+          }.bind(this)
+        };
+
+    new Ajax.Request(viewPath, options);
+  },
+
+
+  _connectToOutlets: function()
+  {
+    var outletElements = this.element.select('*[data-outlet]');
+    $L.debug('Found ' + outletElements.length + ' outlet(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+
+    outletElements.each(
+      function(element)
+      {
+        var outlet    = element.getAttribute('data-outlet'),
+            viewClass = element.getAttribute('data-viewClass');
+
+        if (!Object.isUndefined(this[outlet]))
+        {
+          var instance;
+          $L.info('Connecting outlet "' + outlet + '" to view controller...', 'Aphid.UI.View');
+          try {
+            if (viewClass)
+              instance = eval("new " + viewClass + "()");
+            else
+              instance = new Aphid.UI.View();
+            instance.initializeFromTemplate(element);
+          }
+          catch (error)
+          {
+            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error)
+            return;
+          }
+          this[outlet] = instance;
+          this.subviews.push(instance);
+        }
+        else
+          $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', 'Aphid.UI.View');
+      }.bind(this)
+    );
+  },
+
+  _wireActionsToInstance: function()
+  {
+    var actionElements = this.element.select('*[data-action]');
+    $L.debug('Found ' + actionElements.length + ' action(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+
+    actionElements.each(
+      function(element)
+      {
+        var action = element.getAttribute('data-action');
+        if (!Object.isUndefined(this[action]))
+        {
+          element.observe('click',
+            function(event)
+            {
+              eval('this.' + action + '()')
+            }.bind(this)
+          )
+
+        }
+        else
+          $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', 'Aphid.UI.View');
+      }.bind(this)
+    );
+  }
+
+
+});
+
+
+Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate"
+
+Aphid.UI.ViewController = Class.create(Aphid.UI.View,
+{
+
+  isModal: false,
+
+
+  initialize: function($super, delegate)
+  {
+
+    $super(this.viewName, delegate);
+
+
+  },
+
+
+  presentModalViewController: function(viewController)
+  {
+    viewController.show();
+  }
+
+});
+
+Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
+
+  viewName: false,
+
+  tabs: false,
+
+  contentView: false,
+
+  currentTab: false,
+
+
+  initialize: function($super, delegate)
+  {
+    $super(delegate);
+  },
+
+
+  viewDidLoad: function()
+  {
+    var tabElements = this.element.select('li');
+    this.tabs = tabElements
+    this._setupObservers();
+  },
+
+
+  viewDidFinishLoading: function(view)
+  {
+  },
+
+
+  _setupObservers: function()
+  {
+    var observeTab = function(tab)
+    {
+      tab.observe('click', this._didSelectTab.bind(this));
+    }
+    this.tabs.each(observeTab.bind(this));
+  },
+
+
+  _didSelectTab: function(event)
+  {
+    var tab = event.element();
+
+    if (!this._shouldSelectTab(tab)) return;
+
+    this.currentTab = tab;
+
+    this.tabs.invoke('removeClassName', 'current');
+    tab.addClassName('current');
+
+    if (this.didSelectTab)
+      this.didSelectTab(tab);
+  },
+
+
+  _shouldSelectTab: function(tab)
+  {
+    var shouldSelect = true;
+    if (tab == this.currentTab) shouldSelect = false;
+    if (this.shouldSelectTab) shouldSelect = this.shouldSelectTab(tab);
+    return shouldSelect;
+  },
+
+
+});
+
 var loadingIndicator;
 var LoadingIndicator = Class.create();
 
@@ -376,199 +664,3 @@ Event.observe(document, 'dom:loaded',
     );
   }
 );
-
-Aphid.UI.View = Class.create(
-{
-
-  delegate: false,
-
-  viewName: false,
-  _element: false,
-
-  subviews: false,
-  superview: false,
-
-  initialize: function(viewName, delegate)
-  {
-    this.subviews = $A();
-    this.delegate = delegate;
-    if (viewName) this.viewName = viewName;
-    if (this.viewName)
-    {
-      this._loadViewFromTemplate();
-    }
-  },
-
-  initializeFromTemplate: function(element)
-  {
-    this.element = element;
-  },
-
-  setView: function(view, animated)
-  {
-    this.subviews.invoke('removeFromSuperview', animated);
-
-    this.subviews = $A();
-
-    this.addSubview(view, animated);
-
-  },
-
-  addSubview: function(view, animated)
-  {
-    Logger.info('Adding subview to view…', 'View')
-
-    view.element.hide();
-    view.superview = this;
-    this.subviews.push(view);
-
-    if (view.viewWillAppear)
-      view.viewWillAppear();
-
-    this.element.insert(view.element);
-
-    animated ? view.element.appear({ duration: 0.25 }) : view.element.show();
-
-    if (view.viewDidAppear)
-      view.viewDidAppear();
-  },
-
-  removeFromSuperview: function(animated)
-  {
-    if (this.viewWillDisappear)
-      this.viewWillDisappear();
-
-    animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
-
-    this.element = this.element.remove()
-
-    this.superview.subviews = this.superview.subviews.without(this);
-
-    this.superview = false;
-
-    if (this.viewDidDisappear)
-      this.viewDidDisappear();
-  },
-
-  _loadViewFromTemplate: function()
-  {
-    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
-        options  = {
-          asynchronous: true,
-          method: 'get',
-          onComplete: function(transport)
-          {
-            window.console.log(Element.fromString(transport.responseText))
-            this.element = Element.fromString(transport.responseText);
-            this._connectToOutlets();
-            this._wireActionsToInstance();
-            if (this.viewDidLoad)
-              this.viewDidLoad();
-            if (this.delegate)
-            {
-              this.delegate.viewDidFinishLoading(this);
-            }
-          }.bind(this),
-          onFailure: function(transport)
-          {
-            if (transport.status == 404)
-            {
-              Logger.error("Missing Template HTML (" + this.viewName + ")", "View")
-            }
-          }.bind(this)
-        };
-
-    new Ajax.Request(viewPath, options);
-  },
-
-
-  _connectToOutlets: function()
-  {
-    Logger.debug('View._connectToOutlets')
-
-    var outletElements = this.element.select('*[data-outlet]');
-    window.console.log(outletElements)
-
-    outletElements.each(
-      function(element)
-      {
-        var outlet    = element.getAttribute('data-outlet'),
-            viewClass = element.getAttribute('data-viewClass');
-
-        if (!Object.isUndefined(this[outlet]))
-        {
-          var instance;
-          Logger.info('Connected outlet "' + outlet + '" to View...');
-          try {
-            if (viewClass)
-              instance = eval("new " + viewClass + "()");
-            else
-              instance = new View();
-            instance.initializeFromTemplate(element);
-          }
-          catch (error)
-          {
-            Logger.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error)
-            return;
-          }
-          this[outlet] = instance;
-          this.subviews.push(instance);
-        }
-        else
-          Logger.warn('Missing connection... ' + outlet);
-      }.bind(this)
-    );
-  },
-
-  _wireActionsToInstance: function()
-  {
-    var actionElements = this.element.select('*[data-action]');
-    actionElements.each(
-      function(element)
-      {
-        var action = element.getAttribute('data-action');
-        if (!Object.isUndefined(this[action]))
-        {
-          element.observe('click',
-            function(event)
-            {
-              eval('this.' + action + '()')
-            }.bind(this)
-          )
-
-        }
-        else
-          Logger.warn('Missing action... ' + action);
-      }.bind(this)
-    );
-
-    window.console.log(actionElements)
-  }
-
-
-});
-
-
-View.prototype._loadViewFromTemplate.displayName = "View._loadViewFromTemplate"
-
-Aphid.UI.ViewController = Class.create(Aphid.UI.View,
-{
-
-  isModal: false,
-
-
-  initialize: function($super, delegate)
-  {
-
-    $super(this.viewName, delegate);
-
-
-  },
-
-
-  presentModalViewController: function(viewController)
-  {
-    viewController.show();
-  }
-
-});
