@@ -112,8 +112,11 @@ Aphid.UI.View = Class.create(
           method: 'get',
           onComplete: function(transport)
           {
-            window.console.log(Element.fromString(transport.responseText))
-            this.element = Element.fromString(transport.responseText);
+            var template = Element.fromString(transport.responseText);
+            if (Object.isElement(template))
+              this.element = template;
+            else
+              this.element = new Element("section", { className: 'view' }).update(transport.responseText);
             this._connectToOutlets();
             this._wireActionsToInstance();
             if (this.viewDidLoad)
@@ -125,7 +128,7 @@ Aphid.UI.View = Class.create(
           {
             if (transport.status == 404)
             {
-              $L.error("Missing Template HTML (" + this.viewName + ")", "View")
+              $L.error("Missing Template HTML (" + this.viewName + ")", "Aphid.UI.View");
             }
           }.bind(this)
         };
