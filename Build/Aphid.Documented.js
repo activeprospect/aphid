@@ -585,7 +585,7 @@ Aphid.UI.View = Class.create(
 
   addSubview: function(view, animated)
   {
-    $L.info('Adding subview to view…', 'View')
+    $L.info('Adding subview...', 'Aphid.UI.View');
 
     // Setup the View
     view.element.hide();
@@ -686,7 +686,7 @@ Aphid.UI.View = Class.create(
           }
           catch (error)
           {
-            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error)
+            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error);
             return;
           }
           this[outlet] = instance;
@@ -731,7 +731,7 @@ Aphid.UI.View = Class.create(
 
 // Method Mappings
 
-Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate"
+Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
 //
 // View Class & Base View Object
 //
