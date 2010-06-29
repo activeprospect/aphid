@@ -116,7 +116,7 @@ Aphid.UI.View = Class.create(
             if (Object.isElement(template))
               this.element = template;
             else
-              this.element = new Element("section", { className: 'view' }).update(transport.responseText);
+              this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
             this._connectToOutlets();
             this._wireActionsToInstance();
             if (this.viewDidLoad)
@@ -188,9 +188,10 @@ Aphid.UI.View = Class.create(
           element.observe('click', 
             function(event)
             {
-              eval('this.' + action + '()')
+              // TODO See if this can be made into this[action]()
+              eval('this.' + action + '()');
             }.bind(this)
-          )
+          );
 
           // var instance = eval("new " + viewClass + "()");
           // instance.initializeFromTemplate(element);
