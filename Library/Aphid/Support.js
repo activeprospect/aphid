@@ -9,4 +9,5 @@ Aphid.Support = {};
 
 //= require <Aphid/Support/Compatibility>
 //= require <Aphid/Support/Extensions>
+//= require <Aphid/Support/Cookie>
 //= require <Aphid/Support/Logger>

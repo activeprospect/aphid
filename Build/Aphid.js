@@ -110,6 +110,47 @@ Aphid.Support.Extensions.String = {
 };
 
 Object.extend(String.prototype, Aphid.Support.Extensions.String);
+
+
+Aphid.Support.Cookie = {
+
+  set: function(name, value, daysToExpire)
+  {
+    var expire = '';
+    if (!Object.isUndefined(daysToExpire))
+    {
+      var date = new Date()
+      date.setTime(date.getTime() + (86400000 * parseFloat(daysToExpire)));
+      expire = '; expires=' + date.toGMTString();
+    }
+    return (document.cookie = escape(name) + '=' + (value || '') + expire);
+  },
+
+  get: function(name)
+  {
+    var cookie = document.cookie.match(new RegExp('(^|;)\\s*' + escape(name) + '=([^;\\s]*)'));
+    return (cookie ? cookie[2] : false);
+  },
+
+  erase: function(name)
+  {
+    var cookie = Aphid.Support.Cookie.get(name) || false;
+    Aphid.Support.Cookie.set(name, '', -1);
+    return cookie;
+  },
+
+  acceptsCookies: function()
+  {
+    if (typeof navigator.cookieEnabled == 'boolean')
+      return navigator.cookieEnabled;
+    Cookie.set('_test', '1');
+    return Cookie.erase('_test') != false;
+  }
+
+
+}
+
+$C = Aphid.Support.Cookie;
 Aphid.Support.Logger = Class.create();
 
 Aphid.Support.Logger.DEBUG_LEVEL = 4;
