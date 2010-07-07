@@ -1523,34 +1523,92 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
  * Manages the display of a canvas-based spinning loading indicator.
 **/
 
-Aphid.UI.LoadingIndicator = Class.create();
+// TODO Make this a subclass of Aphid.UI.View...
 
-//
-// Class Definition
-//
-Aphid.UI.LoadingIndicator.prototype = {
+Aphid.UI.LoadingIndicator = Class.create({
 
-  // Canvas
-  canvas: null,
-  context: null,
+  /*
+   * Aphid.UI.LoadingIndicator#_canvas -> Element
+   *
+   * The canvas element where the loading indicator is drawn.
+  **/
+  _canvas: false,
 
-  // Spinner Options
-  bars: null,
-  barSize: null,
-  barColor: null,
-  center: null,
-  innerRadius: null,
+  /*
+   * Aphid.UI.LoadingIndicator#_canvas -> Element
+   *
+   * The canvas context for the loading indicator.
+  **/
+  _context: false,
 
-  // Internal State
-  _animating: false,
+  /**
+   * Aphid.UI.LoadingIndicator#barCount -> Integer
+   *
+   * The number of bars that should be drawn in the spinner. Defaults to 10.
+  **/
+  barCount: false,
+
+  /**
+   * Aphid.UI.LoadingIndicator#barSize -> Object
+   *
+   * The width and height of the bars. Defaults to `{ width: 4, height: 12 }`.
+  **/
+  barSize: false,
+
+  /**
+   * Aphid.UI.LoadingIndicator#barColor -> String
+  **/
+  barColor: false,
+
+  /**
+   * Aphid.UI.LoadingIndicator#centerPosition -> Object
+   *
+   * The x and y coordinates for the center point of the loading indicator
+   * within the canvas. This should typically be the canvas width and height
+   * divided by 2.
+  **/
+  centerPosition: false,
+
+  /**
+   * Aphid.UI.LoadingIndicator#innerRadius -> Integer
+   *
+   * The inner radius of the spinning indicator. Each bar will be drawn from
+   * this point, outward.
+  **/
+  innerRadius: false,
+
+  /**
+   * Aphid.UI.LoadingIndicator#isAnimating -> Boolean
+   *
+   * Whether or not the loading indicator is currently animating.
+  **/
+  isAnimating: false,
+
+  /*
+   * Aphid.UI.LoadingIndicator#_currentOffset -> Integer
+   *
+   * Whether or not the loading indicator is currently animating.
+  **/
   _currentOffset: 0,
 
+  /**
+   * new Aphid.UI.LoadingIndicator()
+   *
+   * Initializes a new instance of the Loading Indicator.
+  **/
   initialize: function()
   {
     $L.info('Initializing...', 'Aphid.UI.LoadingIndicator');
 
+    // Set Defaults
+    this.barCount       = 10;
+    this.barSize        = { width: 4, height: 12 };
+    this.centerPosition = { x: 48, y: 48 };
+    this.innerRadius    = 10;
+
     // Initialize the canvas
-    this.canvas = new Element("canvas",
+    // TODO Size needs to be configurable
+    this._canvas = new Element("canvas",
       {
         id: "loadingIndicator",
         width: 96,
@@ -1558,117 +1616,137 @@ Aphid.UI.LoadingIndicator.prototype = {
       }
     );
 
-    // Internet Explorer / Explorer Canvas
+    // If ExplorerCanvas is present, initialize the canvas element with it for
+    // compatibility with Internet Explorer
     if (!(typeof G_vmlCanvasManager == 'undefined'))
-      G_vmlCanvasManager.initElement(this.canvas);
+      G_vmlCanvasManager.initElement(this._canvas);
 
-    this.context = this.canvas.getContext("2d")
-    Element.insert(document.body, this.canvas);
-    this.canvas.hide()
+    this._context = this._canvas.getContext("2d")
+    Element.insert(document.body, this._canvas);
+    this._canvas.hide();
 
-
-    // Initialize the Controller
-    this.bars = 10
-    this.barSize = { width: 4, height: 12 }
-
-    var color = $(this.canvas).getStyle('color')
+    var color = $(this._canvas).getStyle('color');
     if (color)
     {
-      colors = color.split(',')
-      red = parseInt(colors[0].substr(4, 3))
-      green = parseInt(colors[1])
-      blue = parseInt(colors[2])
-      this.barColor = { red: red, green: green, blue: blue }
+      colors = color.split(',');
+      red    = parseInt(colors[0].substr(4, 3));
+      green  = parseInt(colors[1]);
+      blue   = parseInt(colors[2]);
+      this.barColor = { red: red, green: green, blue: blue };
     }
-    else this.barColor = { red: 85, green: 85, blue: 85 }
-    this.center = { x: 48, y: 48}
-    this.innerRadius = 10
+    else this.barColor = { red: 85, green: 85, blue: 85 };
   },
 
-  //
-  // Shows the loading indicator with a fade-in transition.
-  //
+  /**
+   * Aphid.UI.LoadingIndicator#show() -> null
+   *
+   * Shows the loading indicator with a fade-in transition.
+  **/
   show: function()
   {
-    if (this._animating) return;
+    if (this.isAnimating) return;
 
     $L.info('Showing the loading indicator...', 'Aphid.UI.LoadingIndicator');
 
-    this._startAnimation()
-    var opacity = $(this.canvas).getStyle('opacity')
-    this.canvas.appear({ duration: 0.35, to: opacity })
-
+    this._startAnimation();
+    var opacity = $(this._canvas).getStyle('opacity');
+    this._canvas.appear({ duration: 0.35, to: opacity });
   },
 
-  //
-  // Hides the loading indicator with a quick fade-out transition.
-  //
+  /**
+   * Aphid.UI.LoadingIndicator#hide() -> null
+   *
+   * Hides the loading indicator with a quick, fade-out transition.
+  **/
   hide: function()
   {
     $L.info('Hiding the loading indicator...', 'Aphid.UI.LoadingIndicator');
-
-    this.canvas.fade({ duration: 0.15 })
-    this._stopAnimation.bind(this).delay(0.15)
+    this._canvas.fade({ duration: 0.15 });
+    this._stopAnimation.bind(this).delay(0.15);
   },
 
-  //
-  // Private API
-  //
-
-  _stopAnimation: function()
-  {
-    this._animating = false
-    this._clearFrame(this.context)
-  },
-
+  /*
+   * Aphid.UI.LoadingIndicator#_startAnimation() -> null
+   *
+   * Starts the loading indicator animation.
+  **/
   _startAnimation: function()
   {
-    this._animating = true
-    this._animateNextFrame(0)
+    this.isAnimating = true;
+    this._animateNextFrame(0);
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_stopAnimation() -> null
+   *
+   * Stops drawing the loading indicator and clears its context state.
+  **/
+  _stopAnimation: function()
+  {
+    this.isAnimating = false;
+    this._clearFrame(this._context);
+  },
+
+  /*
+   * Aphid.UI.LoadingIndicator#_draw(context, offset) -> null
+  **/
   _draw: function(context, offset)
   {
-    this._clearFrame(context)
-    context.save()
-    context.translate(this.center.x, this.center.y)
-    for(var i = 0; i < this.bars; i++)
+    this._clearFrame(context);
+    context.save();
+    context.translate(this.centerPosition.x, this.centerPosition.y);
+    for (var i = 0; i < this.barCount; i++)
     {
-      var currentBar = (offset + i) % this.bars,
-          pos        = this._calculatePosition(currentBar)
-      context.save()
-      context.translate(pos.x, pos.y)
-      context.rotate(pos.angle)
-      this._drawBlock(this.context, i)
-      context.restore()
+      var currentBar = (offset + i) % this.barCount,
+          pos        = this._calculatePosition(currentBar);
+      context.save();
+      context.translate(pos.x, pos.y);
+      context.rotate(pos.angle);
+      this._drawBlock(this._context, i);
+      context.restore();
     }
-    context.restore()
+    context.restore();
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_drawBlock(context, barNumber) -> null
+  **/
   _drawBlock: function(context, barNumber)
   {
-    context.fillStyle = this._makeRGBA(this.barColor.red, this.barColor.green, this.barColor.blue, (this.bars + 1 - barNumber) / (this.bars + 1));
+    context.fillStyle = this._makeRGBA(this.barColor.red, this.barColor.green, this.barColor.blue, (this.barCount + 1 - barNumber) / (this.barCount + 1));
     context.fillRect(-this.barSize.width / 2, 0, this.barSize.width, this.barSize.height);
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_animateNextFrame() -> null
+  **/
   _animateNextFrame: function()
   {
-    if (!this._animating) return;
-    this._currentOffset = (this._currentOffset + 1) % this.bars;
-    this._draw(this.context, this._currentOffset);
+    if (!this.isAnimating) return;
+    this._currentOffset = (this._currentOffset + 1) % this.barCount;
+    this._draw(this._context, this._currentOffset);
     this._animateNextFrame.bind(this).delay(0.05);
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_clearFrame() -> null
+  **/
   _clearFrame: function(context)
   {
-    context.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight)
+    context.clearRect(0, 0, this._canvas.clientWidth, this._canvas.clientHeight);
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_calculateAngle(barNumber) -> Float
+  **/
   _calculateAngle: function(barNumber)
   {
-    return 2 * barNumber * Math.PI / this.bars;
+    return 2 * barNumber * Math.PI / this.barCount;
   },
 
+  /*
+   * Aphid.UI.LoadingIndicator#_calculatePosition(barNumber) -> Object
+  **/
   _calculatePosition: function(barNumber)
   {
     var angle = this._calculateAngle(barNumber);
@@ -1679,9 +1757,10 @@ Aphid.UI.LoadingIndicator.prototype = {
     };
   },
 
+  // TODO Move this to Aphid.UI.Support
   _makeRGBA: function()
   {
-    return "rgba(" + [].slice.call(arguments, 0).join(",") + ")"
+    return "rgba(" + [].slice.call(arguments, 0).join(",") + ")";
   }
 
-}
+});
