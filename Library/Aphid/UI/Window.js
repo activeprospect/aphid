@@ -13,7 +13,7 @@ Aphid.UI.Window = Class.create(
 
     initialize: function()
     {
-      $L.info('Initializing window…', 'Aphid.UI.Window');
+      $L.info('Initializing...', 'Aphid.UI.Window');
       this.container = $(document.body);
       this.subviews = $A();
     },

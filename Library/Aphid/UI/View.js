@@ -31,11 +31,12 @@
  *
  * ### View Templates
  *
- * View templates are asynchronously loaded by the [[Aphid.UI.View]] class
- * when the instance is first initialized. The template itself should be
- * located in the path defined by [[Application#baseViewPath]] (which defaults
- * to the relative path of *Views*) and its name should match the value of the
- * [[Aphid.UI.View#viewName]] property (i.e. *Views/FooBarView.html*).
+ * View templates are loaded asynchronously when the instance is first
+ * initialized. The view template itself should be located in the path
+ * that is defined by the `baseViewPath` instance property on your Application
+ * delegate (which defaults to the relative path of *Views*). The filename of
+ * the template should match the value of the [[Aphid.UI.View#viewName]]
+ * property (i.e. *Views/FooBarView.html*).
  *
  *     <header>
  *       <h1 data-outlet="fooLabel">Foo</h1>
@@ -51,7 +52,7 @@
  * #### Outlets
  *
  * In traditional JavaScript integrations, you must peruse the DOM to select
- * the elements on which you wish to operate. In Aphid, we got one step further
+ * the elements on which you wish to operate. In Aphid, we go one step further
  * and introduce the concept of outlets.
  *
  * An outlet is a reference to an element within a view template that is
@@ -299,8 +300,6 @@ Aphid.UI.View = Class.create(
   {
     if (Object.isUndefined(animated)) animated = false;
 
-    $L.info('Adding "' + view.viewName + '" as a subview to "' + this.viewName + '" (animated: ' + + ')...', 'Aphid.UI.View');
-
     // If the view has still not been loaded, delay this call again...
     if (!view.isLoaded)
     {
@@ -309,6 +308,8 @@ Aphid.UI.View = Class.create(
       this._addSubview.bind(this).delay(0.1, view, animated);
       return;
     }
+
+    $L.info('Adding "' + view.viewName + '" as a subview to "' + (this.viewName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
 
     // Setup the View
     view.element.hide();
@@ -474,7 +475,7 @@ Aphid.UI.View = Class.create(
   _connectToOutlets: function()
   {
     var outletElements = this.element.select('*[data-outlet]');
-    $L.debug('Found ' + outletElements.length + ' outlet(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
 
     outletElements.each(
       function(element)
@@ -532,7 +533,7 @@ Aphid.UI.View = Class.create(
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
-    $L.debug('Found ' + actionElements.length + ' action(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
 
     actionElements.each(
       function(element)

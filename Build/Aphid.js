@@ -270,7 +270,7 @@ Aphid.UI.Window = Class.create(
 
     initialize: function()
     {
-      $L.info('Initializing window…', 'Aphid.UI.Window');
+      $L.info('Initializing...', 'Aphid.UI.Window');
       this.container = $(document.body);
       this.subviews = $A();
     },
@@ -390,13 +390,13 @@ Aphid.UI.View = Class.create(
   {
     if (Object.isUndefined(animated)) animated = false;
 
-    $L.info('Adding "' + view.viewName + '" as a subview to "' + this.viewName + '" (animated: ' + + ')...', 'Aphid.UI.View');
-
     if (!view.isLoaded)
     {
       this._addSubview.bind(this).delay(0.1, view, animated);
       return;
     }
+
+    $L.info('Adding "' + view.viewName + '" as a subview to "' + (this.viewName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
 
     view.element.hide();
     view.superview = this;
@@ -532,7 +532,7 @@ Aphid.UI.View = Class.create(
   _connectToOutlets: function()
   {
     var outletElements = this.element.select('*[data-outlet]');
-    $L.debug('Found ' + outletElements.length + ' outlet(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
 
     outletElements.each(
       function(element)
@@ -589,7 +589,7 @@ Aphid.UI.View = Class.create(
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
-    $L.debug('Found ' + actionElements.length + ' action(s) in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
 
     actionElements.each(
       function(element)
