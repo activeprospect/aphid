@@ -501,12 +501,11 @@ Aphid.UI.View = Class.create(
       this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
     this._connectToOutlets();
     this._wireActionsToInstance();
-    if (this.viewDidLoad)
-      this.viewDidLoad();
-    if (this.delegate && this.delegate.viewDidFinishLoading)
-      this.delegate.viewDidFinishLoading(this);
     this.isLoaded  = true;
     this.isLoading = false;
+    this.viewDidLoad();
+    if (this.delegate && this.delegate.viewDidFinishLoading)
+      this.delegate.viewDidFinishLoading(this);
   },
 
 
@@ -609,6 +608,12 @@ Aphid.UI.View = Class.create(
           $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', 'Aphid.UI.View');
       }.bind(this)
     );
+  },
+
+
+  viewDidLoad: function()
+  {
+
   }
 
 });
@@ -669,8 +674,10 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   },
 
 
-  viewDidLoad: function()
+  viewDidLoad: function($super)
   {
+    $super();
+
     var tabElements = this.element.select('li');
     this.tabs = tabElements
     this._setupObservers();
