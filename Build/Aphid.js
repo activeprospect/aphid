@@ -632,26 +632,18 @@ Aphid.UI.View.prototype._viewDidFinishLoading.displayName = "Aphid.UI.View._view
 Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
 Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";
-
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
-  isModal: false,
 
 
   initialize: function($super, delegate)
   {
-
     $super(this.viewName, delegate);
-
-
   },
 
 
-  presentModalViewController: function(viewController)
-  {
-    viewController.show();
-  }
+
 
 });
 

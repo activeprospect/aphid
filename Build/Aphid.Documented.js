@@ -1264,40 +1264,46 @@ Aphid.UI.View.prototype._viewDidFinishLoading.displayName = "Aphid.UI.View._view
 Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
 Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";
-//
-// View Class & Base View Object
-//
-// All Views should extend this class.
-//
-
+/**
+ * class Aphid.UI.ViewController
+ *
+ * You should use view controllers for major views that are responsible for
+ * many subviews (including view controller subviews). Situations where a
+ * view controller may be desirable over a view would be the main interfaces
+ * of a web application.
+ *
+ * View controllers are typically long-lived and include additional callbacks
+ * and delegates that notify the class of view state changes, such as
+ * notifying that the view will be displayed or hidden, etc.
+ *
+ * ### Delegates Methods
+ *
+ *  -
+ *
+**/
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
-  isModal: false,
+  // isModal: false,
 
   // -------------------------------------------------------------------------
 
   initialize: function($super, delegate)
   {
-
     $super(this.viewName, delegate);
-
-    // Load the View
-    // if (this.viewName)
-    // {
-    //   this.view = new View(this.viewName);
-    //   // this._connectToOutlets();
-    //   // this._wireActionsToInstance();
-    // }
-
   },
 
   // Modal View Controllers --------------------------------------------------
 
-  presentModalViewController: function(viewController)
-  {
-    viewController.show();
-  }
+  // presentModalViewController: function(viewController)
+  // {
+  //   viewController.show();
+  // },
+
+  // dismissModalViewController: function()
+  // {
+  //
+  // }
 
 });
 /**
