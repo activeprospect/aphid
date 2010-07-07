@@ -1126,7 +1126,7 @@ Aphid.UI.View = Class.create(
     this._wireActionsToInstance();
     if (this.viewDidLoad)
       this.viewDidLoad();
-    if (this.delegate)
+    if (this.delegate && this.delegate.viewDidFinishLoading)
       this.delegate.viewDidFinishLoading(this);
     this.isLoaded  = true;
     this.isLoading = false;
