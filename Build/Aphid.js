@@ -290,13 +290,17 @@ Aphid.UI.View = Class.create(
   delegate: false,
 
   viewName: false,
-  _element: false,
+
+  element: false,
 
   subviews: false,
+
   superview: false,
 
   isLoaded: false,
+
   isLoading: false,
+
 
   initialize: function(viewName, delegate)
   {
@@ -314,19 +318,50 @@ Aphid.UI.View = Class.create(
     this.element = element;
   },
 
-  setView: function(view, animated)
+
+  setView: function(view)
   {
+    this._setView(view, false);
+  },
+
+  setViewAnimated: function(view, animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    this._setView(view, animated);
+  },
+
+  /*
+   * Aphid.UI.View#_setView(view[, animated = false]) -> null
+   *
+   * - view (View): the view that should be set
+   * - animated (Boolean): true if the view should be presented with animation
+   *
+   * Clears all subviews of the current view and presents the specified *view*
+   * with an animated effect (currently this effect is *appear*).
+  **/
+  _setView: function(view, animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
+
     this.subviews.invoke('removeFromSuperview', animated);
 
     this.subviews = $A();
 
     this.addSubview(view, animated);
-
   },
 
-  addSubview: function(view, animated)
+  addSubview: function(view)
   {
-    $L.info('Adding subview...', 'Aphid.UI.View');
+    if (view.isLoading)
+      this._addSubview.bind(this).delay(0.1, view, false);
+
+    else
+      this._addSubview(view, false);
+  },
+
+  addSubviewAnimated: function(view, animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
 
     if (view.isLoading)
       this._addSubview.bind(this).delay(0.1, view, animated);
@@ -335,8 +370,21 @@ Aphid.UI.View = Class.create(
       this._addSubview(view, animated);
   },
 
+  /*
+   * Aphid.UI.View#_addSubview(view[, animated = false]) -> null
+   *
+   * - view (View): the view that should be set
+   * - animated (Boolean): true if the view should be presented with animation
+   *
+   * Adds the specified *view* as a subview of the view instance and optionally
+   * presents it with an animated effect.
+  **/
   _addSubview: function(view, animated)
   {
+    if (Object.isUndefined(animated)) animated = false;
+
+    $L.info('Adding "' + view.viewName + '" as a subview to "' + this.viewName + '" (animated: ' + + ')...', 'Aphid.UI.View');
+
     if (!view.isLoaded)
     {
       this._addSubview.bind(this).delay(0.1, view, animated);
@@ -358,8 +406,32 @@ Aphid.UI.View = Class.create(
       view.viewDidAppear();
   },
 
-  removeFromSuperview: function(animated)
+  removeFromSuperview: function()
   {
+    this._removeFromSuperview(false);
+  },
+
+  removeFromSuperviewAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    this._removeFromSuperview(animated);
+  },
+
+  /*
+   * Aphid.UI.View#_removeFromSuperview([animated = false]) -> null
+   *
+   * - animated (Boolean): true if the view should be dismissed with animation
+   *
+   * Removes the view from its superview, with an optional animated effect.
+   * This method will return immediately if the view does not belong to a
+   * superview.
+  **/
+  _removeFromSuperview: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
+    if (!this.superview)
+      return;
+
     if (this.viewWillDisappear)
       this.viewWillDisappear();
 
@@ -368,8 +440,7 @@ Aphid.UI.View = Class.create(
     if (this.element.parentNode != null)
       this.element = this.element.remove()
 
-    if (this.superview)
-      this.superview.subviews = this.superview.subviews.without(this);
+    this.superview.subviews = this.superview.subviews.without(this);
 
     this.superview = false;
 
@@ -378,6 +449,12 @@ Aphid.UI.View = Class.create(
   },
 
 
+  /*
+   * Aphid.UI.View#_loadViewFromTemplate() -> null
+   *
+   * Loads the View template (as derived from the *viewName* and
+   * *Application.baseViewPath* properties) asynchronously.
+  **/
   _loadViewFromTemplate: function()
   {
     var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
@@ -400,6 +477,14 @@ Aphid.UI.View = Class.create(
     new Ajax.Request(viewPath, options);
   },
 
+  /*
+   * Aphid.UI.View#_viewDidFinishLoading(transport) -> null
+   *
+   * Callback method that is called once the view has finished loading
+   * asynchronously. This method sets up the View instance by wiring any
+   * outlets and actions found in the template and then calls the appropriate
+   * delegate methods.
+  **/
   _viewDidFinishLoading: function(transport)
   {
     var template = Element.fromString(transport.responseText);
@@ -418,6 +503,25 @@ Aphid.UI.View = Class.create(
   },
 
 
+  /*
+   * Aphid.UI.View#_connectToOutlets() -> null
+   *
+   * Scans the view template for elements that have the *data-outlet*
+   * attribute defined and attempts to wire them up to the View instance by
+   * the specified name.
+   *
+   * For example, if you have a property named `someView` defined on your View
+   * class and the following in your view template:
+   *
+   *     <section data-outlet="someView">...</section>
+   *
+   * ... your view instance will automatically have the `someView` property
+   * reference a View instance that wraps the DOM element.
+   *
+   * * TODO This is still a little early in its implementation and needs to be
+   *      thought out better on how to handle different event types or
+   *      different element types.
+  **/
   _connectToOutlets: function()
   {
     var outletElements = this.element.select('*[data-outlet]');
@@ -455,6 +559,26 @@ Aphid.UI.View = Class.create(
   },
 
 
+  /*
+   * Aphid.UI.View#_wireActionsToInstance() -> null
+   *
+   * Scans the view template for elements that have the *data-action*
+   * attribute defined and sets up Event observers to call the specified
+   * method on the View instance when the Element triggers the appropriate
+   * event.
+   *
+   * For example, if you have a method named `doSomething` defined on your View
+   * class and the following in your view template:
+   *
+   *     <input type="button" data-action="doSomething" />
+   *
+   * ... the element will automatically be set up to call doSomething() on
+   * your view instance when the user clicks the button.
+   *
+   * TODO This is still a little early in its implementation and needs to be
+   *      thought out better on how to handle different event types or
+   *      different element types.
+  **/
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
@@ -483,7 +607,19 @@ Aphid.UI.View = Class.create(
 });
 
 
+Aphid.UI.View.prototype.setView.displayName = "Aphid.UI.View.setView";
+Aphid.UI.View.prototype.setViewAnimated.displayName = "Aphid.UI.View.setViewAnimated";
+Aphid.UI.View.prototype._setView.displayName = "Aphid.UI.View._setView";
+Aphid.UI.View.prototype.addSubview.displayName = "Aphid.UI.View.addSubview";
+Aphid.UI.View.prototype.addSubviewAnimated.displayName = "Aphid.UI.View.addSubviewAnimated";
+Aphid.UI.View.prototype._addSubview.displayName = "Aphid.UI.View._addSubview";
+Aphid.UI.View.prototype.removeFromSuperview.displayName = "Aphid.UI.View.removeFromSuperview";
+Aphid.UI.View.prototype.removeFromSuperviewAnimated.displayName = "Aphid.UI.View.removeFromSuperviewAnimated";
+Aphid.UI.View.prototype._removeFromSuperview.displayName = "Aphid.UI.View._removeFromSuperview";
+Aphid.UI.View.prototype._viewDidFinishLoading.displayName = "Aphid.UI.View._viewDidFinishLoading";
 Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
+Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
+Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";
 
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
