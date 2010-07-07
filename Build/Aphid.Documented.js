@@ -175,6 +175,10 @@ Aphid.Support.Extensions = {};
 
 /**
  * Aphid.Support.Extensions.Vendor
+ *
+ * Extensions to 3rd-party JavaScript libraries and frameworks, such as
+ * Prototype and script.aculo.us.
+ *
 **/
 
 Aphid.Support.Extensions.Vendor = {};
@@ -243,7 +247,11 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 };
 
 Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
-
+/**
+ * Aphid.Support.Extensions.Object
+ *
+ * Extensions to the core JavaScript Object implementation.
+**/
 Aphid.Support.Extensions.Object = {
 
   /**
@@ -261,6 +269,9 @@ Aphid.Support.Extensions.Object = {
 Object.extend(Object, Aphid.Support.Extensions.Object);
 /**
  * Aphid.Support.Extensions.String
+ *
+ * Extensions to the core JavaScript String implementation.
+ *
 **/
 Aphid.Support.Extensions.String = {
 

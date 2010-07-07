@@ -95,7 +95,6 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 };
 
 Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
-
 Aphid.Support.Extensions.Object = {
 
   isEvent: function(object)

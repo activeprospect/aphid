@@ -1,4 +1,8 @@
-
+/**
+ * Aphid.Support.Extensions.Object
+ *
+ * Extensions to the core JavaScript Object implementation.
+**/
 Aphid.Support.Extensions.Object = {
 
   /**

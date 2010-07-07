@@ -17,7 +17,9 @@ JavaScripts for use within ActiveProspect's web-based projects.
       that use Aphid. This includes language and library extensions, a logger,
       browser compatibility shims and other useful common code.
     * **UI** - The UI namespace includes all of our custom components classes.
-  * **Templates** - *work in progress*
+  * **Templates** - Common templates, such as error documents (i.e. 404
+    messaging) that can be pulled into a project with little or no
+    modifications.
   * **Vendor** - Imported 3rd-party libraries and projects, such as Prototype
     and script.aculo.us.
 
@@ -30,13 +32,17 @@ folder.
 The results of the build will be placed in the Build subfolder of the Aphid
 source folder.
 
-## Demo
+## Automatically Building Aphid
+
+If you are actively developing within the Aphid framework itself, you may run
+`rake watch` from the Aphid source folder to watch the filesystem for changes
+and automatically rebuild the Aphid project.
+
+## Demo Application
 
 There is a self-consuming demonstration application in the Demo directory. You
 must first build Aphid and update the demo with the built product (simply
 running `rake` will do both of these things) or you may launch it by running
 `rake demo` from the Aphid source folder, which takes care of both building,
 updating and launching the demo in your default web browser.
-
-## Notes
 

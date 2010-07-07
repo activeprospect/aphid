@@ -1,5 +1,8 @@
 /**
  * Aphid.Support.Extensions.String
+ *
+ * Extensions to the core JavaScript String implementation.
+ *
 **/
 Aphid.Support.Extensions.String = {
 
