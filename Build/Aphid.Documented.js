@@ -611,6 +611,9 @@ Aphid.Core.Application.prototype = {
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
   logger: false,
 
+  // Loading Indicator
+  loadingIndicator: false,
+
   /**
    * new Aphid.Core.Application()
    *
@@ -619,12 +622,29 @@ Aphid.Core.Application.prototype = {
   initialize: function()
   {
     this._initializeLogger();
+    this._initializeLoadingIndicator();
+  },
+
+  /*
+   * Aphid.Core.Application#_initializeLoadingIndicator() -> Aphid.UI.LoadingIndicator
+   *
+   * Initializes a new LoadingIndicator instance to be shared by the
+   * application.
+   */
+  _initializeLoadingIndicator: function()
+  {
+    this.loadingIndicator = new Aphid.UI.LoadingIndicator();
+    Ajax.Responders.register({
+      onCreate:   this.loadingIndicator.show.bind(this.loadingIndicator),
+      onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
+    });
+    return this.loadingIndicator;
   },
 
   /*
    * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
    *
-   * Initializes a new Logger instances to be shared by the Application. The
+   * Initializes a new Logger instance to be shared by the Application. The
    * Logger instance is accessible as Application.sharedInstance.logger as
    * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
    */
@@ -1497,34 +1517,18 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 // Aphid.UI.TabViewController.Tab = Class.create({
 //
 // });
-//
-// Loading Indicator Component
-//
-// This component manages the display of a loading indicator, which is
-// implemented with the HTML 5 canvas tag.
-//
-// To display the loading indicator, simply call LoadingIndicator.show()
-// anywhere on your site (after including this file, of course). Calling
-// LoadingIndicator.hide() will cause the indicator to fade out and stop
-// animating.
-//
-// Adapted for Prototype by Justin Mecham from the examples at:
-//   http://starkravingcoder.blogspot.com/2007/09/canvas-loading-indicator.html
-//
+/**
+ * class Aphid.UI.LoadingIndicator
+ *
+ * Manages the display of a canvas-based spinning loading indicator.
+**/
 
-var loadingIndicator;
-var LoadingIndicator = Class.create();
-
-//
-// Class Methods
-//
-LoadingIndicator.show = function() { loadingIndicator.show(); }
-LoadingIndicator.hide = function() { loadingIndicator.hide(); }
+Aphid.UI.LoadingIndicator = Class.create();
 
 //
 // Class Definition
 //
-LoadingIndicator.prototype = {
+Aphid.UI.LoadingIndicator.prototype = {
 
   // Canvas
   canvas: null,
@@ -1543,8 +1547,7 @@ LoadingIndicator.prototype = {
 
   initialize: function()
   {
-
-    this._log('Initializing...');
+    $L.info('Initializing...', 'Aphid.UI.LoadingIndicator');
 
     // Initialize the canvas
     this.canvas = new Element("canvas",
@@ -1589,11 +1592,12 @@ LoadingIndicator.prototype = {
   {
     if (this._animating) return;
 
-    this._log('Showing the loading indicator...');
+    $L.info('Showing the loading indicator...', 'Aphid.UI.LoadingIndicator');
 
     this._startAnimation()
     var opacity = $(this.canvas).getStyle('opacity')
     this.canvas.appear({ duration: 0.35, to: opacity })
+
   },
 
   //
@@ -1601,7 +1605,7 @@ LoadingIndicator.prototype = {
   //
   hide: function()
   {
-    this._log('Hiding the loading indicator...');
+    $L.info('Hiding the loading indicator...', 'Aphid.UI.LoadingIndicator');
 
     this.canvas.fade({ duration: 0.15 })
     this._stopAnimation.bind(this).delay(0.15)
@@ -1678,36 +1682,6 @@ LoadingIndicator.prototype = {
   _makeRGBA: function()
   {
     return "rgba(" + [].slice.call(arguments, 0).join(",") + ")"
-  },
-
-  // -------------------------------------------------------------------------
-
-  _log: function(message, level)
-  {
-    if (!window.console) return;
-    if (Object.isUndefined(level)) level = 'log';
-    eval('window.console.' + level + '("[LoadingIndicator] ' + message + '")');
   }
 
 }
-
-//
-// Initialize Loading Indicator
-//
-
-Event.observe(document, 'dom:loaded',
-  function(event)
-  {
-
-    // Initialize Loading Indicator
-    loadingIndicator = new LoadingIndicator();
-
-    // Register for AJAX Callbacks
-    Ajax.Responders.register(
-      {
-        onCreate: LoadingIndicator.show,
-        onComplete: LoadingIndicator.hide
-      }
-    );
-  }
-);

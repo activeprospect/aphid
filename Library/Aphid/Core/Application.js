@@ -26,6 +26,9 @@ Aphid.Core.Application.prototype = {
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
   logger: false,
 
+  // Loading Indicator
+  loadingIndicator: false,
+
   /**
    * new Aphid.Core.Application()
    * 
@@ -34,12 +37,29 @@ Aphid.Core.Application.prototype = {
   initialize: function()
   {
     this._initializeLogger();
+    this._initializeLoadingIndicator();
+  },
+
+  /*
+   * Aphid.Core.Application#_initializeLoadingIndicator() -> Aphid.UI.LoadingIndicator
+   *
+   * Initializes a new LoadingIndicator instance to be shared by the
+   * application.
+   */
+  _initializeLoadingIndicator: function()
+  {
+    this.loadingIndicator = new Aphid.UI.LoadingIndicator();
+    Ajax.Responders.register({
+      onCreate:   this.loadingIndicator.show.bind(this.loadingIndicator),
+      onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
+    });
+    return this.loadingIndicator;
   },
 
   /*
    * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
    *
-   * Initializes a new Logger instances to be shared by the Application. The
+   * Initializes a new Logger instance to be shared by the Application. The
    * Logger instance is accessible as Application.sharedInstance.logger as
    * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
    */
