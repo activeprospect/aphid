@@ -182,6 +182,8 @@ namespace "templates" do
   desc "Update the templates with the built project files and vendor libraries"
   task :update => [ :build ] do
     header "Updating Templates"
+    mkdir "Templates/JavaScripts" unless File.exists? "Templates/JavaScripts"
+    mkdir "Templates/Stylesheets" unless File.exists? "Templates/Stylesheets"
     cp "Build/Aphid.Combined.js", "Templates/JavaScripts/Aphid.Combined.js"
     cp "Build/Aphid.css", "Templates/Stylesheets/Aphid.css"
     puts
