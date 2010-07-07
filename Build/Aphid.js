@@ -511,6 +511,8 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
   viewName: false,
+  persistSelectedTab: false,
+  defaultTab: false,
 
   tabs: false,
 
@@ -530,11 +532,76 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     var tabElements = this.element.select('li');
     this.tabs = tabElements
     this._setupObservers();
+
+    if (this.persistSelectedTab)
+    {
+      var selectedTab = $C.get(this.viewName + '.selectedTab');
+      if (selectedTab)
+      {
+        $L.info('Restoring previously selected tab "' + selectedTab + '"');
+        this.selectTab(selectedTab);
+        return;
+      }
+    }
+
+    $L.info('Selecting default tab "' + this.defaultTab + '"');
+    this.selectDefaultTab();
   },
 
 
-  viewDidFinishLoading: function(view)
+  selectTab: function(tab)
   {
+    if (!Object.isElement(tab))
+    {
+      if (Object.isEvent(tab))
+        tab = tab.element();
+      else if (Object.isString(tab))
+      {
+        var tabName = tab;
+        tab = this._findTab(tabName);
+        if (Object.isUndefined(tab))
+        {
+          $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template');
+          return;
+        }
+      }
+    }
+
+    if (!this._shouldSelectTab(tab))
+      return;
+
+    this.tabs.invoke('removeClassName', 'current');
+    tab.addClassName('current');
+
+    this.currentTab = tab;
+
+    if (this.persistSelectedTab)
+    {
+      var tabName = tab.getAttribute('data-tab');
+      $C.set(this.viewName + '.selectedTab', tabName);
+    }
+
+    if (this.didSelectTab)
+      this.didSelectTab(tab);
+  },
+
+  selectDefaultTab: function()
+  {
+    if (this.defaultTab)
+      this.selectTab(this.defaultTab);
+    else
+      this.selectTab(this.tabs.first());
+  },
+
+  _findTab: function(tabName)
+  {
+    return this.tabs.find(
+      function(tab)
+      {
+        if (tab.getAttribute('data-tab') == tabName)
+          return true;
+      }
+    )
   },
 
 
@@ -542,7 +609,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   {
     var observeTab = function(tab)
     {
-      tab.observe('click', this._didSelectTab.bind(this));
+      tab.observe('click', this.selectTab.bind(this));
     }
     this.tabs.each(observeTab.bind(this));
   },
@@ -550,7 +617,8 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
   _didSelectTab: function(event)
   {
-    var tab = event.element();
+    var tab     = event.element();
+    var tabName = tab.getAttribute('data-tab');
 
     if (!this._shouldSelectTab(tab)) return;
 
@@ -558,6 +626,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
     this.tabs.invoke('removeClassName', 'current');
     tab.addClassName('current');
+
 
     if (this.didSelectTab)
       this.didSelectTab(tab);
@@ -574,6 +643,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
 
 });
+
 
 var loadingIndicator;
 var LoadingIndicator = Class.create();
