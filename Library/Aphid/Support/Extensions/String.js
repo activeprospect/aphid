@@ -20,6 +20,16 @@ Aphid.Support.Extensions.String = {
   toInt: function()
   {
     return parseInt(this);
+  },
+
+  /**
+   * Aphid.Support.Extensions.String#pluralize(count[, plural]) -> String
+  **/
+  pluralize: function(count, plural)
+  {
+    if (Object.isUndefined(plural))
+      plural = this + 's';
+    return (count == 1 ? this + '' : plural);
   }
 
 };
