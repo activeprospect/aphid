@@ -296,6 +296,9 @@ Aphid.UI.View = Class.create(
   subviews: false,
   superview: false,
 
+  isLoaded: false,
+  isLoading: false,
+
   initialize: function(viewName, delegate)
   {
     this.subviews = $A();
@@ -326,6 +329,21 @@ Aphid.UI.View = Class.create(
   {
     $L.info('Adding subview...', 'Aphid.UI.View');
 
+    if (view.isLoading)
+      this._addSubview.bind(this).delay(0.1, view, animated);
+
+    else
+      this._addSubview(view, animated);
+  },
+
+  _addSubview: function(view, animated)
+  {
+    if (!view.isLoaded)
+    {
+      this._addSubview.bind(this).delay(0.1, view, animated);
+      return;
+    }
+
     view.element.hide();
     view.superview = this;
     this.subviews.push(view);
@@ -348,9 +366,11 @@ Aphid.UI.View = Class.create(
 
     animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
 
-    this.element = this.element.remove()
+    if (this.element.parentNode != null)
+      this.element = this.element.remove()
 
-    this.superview.subviews = this.superview.subviews.without(this);
+    if (this.superview)
+      this.superview.subviews = this.superview.subviews.without(this);
 
     this.superview = false;
 
@@ -358,26 +378,14 @@ Aphid.UI.View = Class.create(
       this.viewDidDisappear();
   },
 
+
   _loadViewFromTemplate: function()
   {
     var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
         options  = {
           asynchronous: true,
           method: 'get',
-          onComplete: function(transport)
-          {
-            var template = Element.fromString(transport.responseText);
-            if (Object.isElement(template))
-              this.element = template;
-            else
-              this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
-            this._connectToOutlets();
-            this._wireActionsToInstance();
-            if (this.viewDidLoad)
-              this.viewDidLoad();
-            if (this.delegate)
-              this.delegate.viewDidFinishLoading(this);
-          }.bind(this),
+          onComplete: this._viewDidFinishLoading.bind(this),
           onFailure: function(transport)
           {
             if (transport.status == 404)
@@ -387,7 +395,27 @@ Aphid.UI.View = Class.create(
           }.bind(this)
         };
 
+    this.isLoaded  = false;
+    this.isLoading = true;
+
     new Ajax.Request(viewPath, options);
+  },
+
+  _viewDidFinishLoading: function(transport)
+  {
+    var template = Element.fromString(transport.responseText);
+    if (Object.isElement(template))
+      this.element = template;
+    else
+      this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    this._connectToOutlets();
+    this._wireActionsToInstance();
+    if (this.viewDidLoad)
+      this.viewDidLoad();
+    if (this.delegate)
+      this.delegate.viewDidFinishLoading(this);
+    this.isLoaded  = true;
+    this.isLoading = false;
   },
 
 
@@ -427,6 +455,7 @@ Aphid.UI.View = Class.create(
     );
   },
 
+
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
@@ -451,7 +480,6 @@ Aphid.UI.View = Class.create(
       }.bind(this)
     );
   }
-
 
 });
 

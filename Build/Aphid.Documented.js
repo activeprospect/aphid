@@ -668,6 +668,9 @@ Aphid.UI.View = Class.create(
   subviews: false,
   superview: false,
 
+  isLoaded: false,
+  isLoading: false,
+
   initialize: function(viewName, delegate)
   {
     this.subviews = $A();
@@ -713,6 +716,27 @@ Aphid.UI.View = Class.create(
   {
     $L.info('Adding subview...', 'Aphid.UI.View');
 
+    // If the view is loading, we need to wait for it to finish loading before
+    // we can add it to the DOM.
+    if (view.isLoading)
+      this._addSubview.bind(this).delay(0.1, view, animated);
+
+    // Otherwise, we can add it immediately.
+    else
+      this._addSubview(view, animated);
+  },
+
+  _addSubview: function(view, animated)
+  {
+    // If the view has still not been loaded, delay this call again...
+    // TODO We need to add a counter to this so that we don't wait longer than
+    //      a few seconds before giving up...
+    if (!view.isLoaded)
+    {
+      this._addSubview.bind(this).delay(0.1, view, animated);
+      return;
+    }
+
     // Setup the View
     view.element.hide();
     view.superview = this;
@@ -743,10 +767,12 @@ Aphid.UI.View = Class.create(
     animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
 
     // Remove the View's element from the DOM
-    this.element = this.element.remove()
+    if (this.element.parentNode != null)
+      this.element = this.element.remove()
 
     // Remove from superview's subviews
-    this.superview.subviews = this.superview.subviews.without(this);
+    if (this.superview)
+      this.superview.subviews = this.superview.subviews.without(this);
 
     // Remove reference to superview
     this.superview = false;
@@ -757,26 +783,15 @@ Aphid.UI.View = Class.create(
       this.viewDidDisappear();
   },
 
+  // View Loading ------------------------------------------------------------
+
   _loadViewFromTemplate: function()
   {
     var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
         options  = {
           asynchronous: true,
           method: 'get',
-          onComplete: function(transport)
-          {
-            var template = Element.fromString(transport.responseText);
-            if (Object.isElement(template))
-              this.element = template;
-            else
-              this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
-            this._connectToOutlets();
-            this._wireActionsToInstance();
-            if (this.viewDidLoad)
-              this.viewDidLoad();
-            if (this.delegate)
-              this.delegate.viewDidFinishLoading(this);
-          }.bind(this),
+          onComplete: this._viewDidFinishLoading.bind(this),
           onFailure: function(transport)
           {
             if (transport.status == 404)
@@ -786,10 +801,30 @@ Aphid.UI.View = Class.create(
           }.bind(this)
         };
 
+    this.isLoaded  = false;
+    this.isLoading = true;
+
     new Ajax.Request(viewPath, options);
   },
 
-  // -------------------------------------------------------------------------
+  _viewDidFinishLoading: function(transport)
+  {
+    var template = Element.fromString(transport.responseText);
+    if (Object.isElement(template))
+      this.element = template;
+    else
+      this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    this._connectToOutlets();
+    this._wireActionsToInstance();
+    if (this.viewDidLoad)
+      this.viewDidLoad();
+    if (this.delegate)
+      this.delegate.viewDidFinishLoading(this);
+    this.isLoaded  = true;
+    this.isLoading = false;
+  },
+
+  // View Outlets ------------------------------------------------------------
 
   _connectToOutlets: function()
   {
@@ -827,6 +862,8 @@ Aphid.UI.View = Class.create(
     );
   },
 
+  // View Actions ------------------------------------------------------------
+
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
@@ -856,10 +893,9 @@ Aphid.UI.View = Class.create(
     );
   }
 
-
 });
 
-// Method Mappings
+// Method Name Mappings for Debugging ----------------------------------------
 
 Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
 //
