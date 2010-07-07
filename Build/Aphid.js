@@ -347,7 +347,7 @@ Aphid.UI.View = Class.create(
 
     this.subviews = $A();
 
-    this.addSubview(view, animated);
+    this.addSubviewAnimated(view, animated);
   },
 
   addSubview: function(view)

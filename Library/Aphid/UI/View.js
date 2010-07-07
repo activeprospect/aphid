@@ -241,7 +241,7 @@ Aphid.UI.View = Class.create(
     this.subviews = $A();
 
     // Add the specified view as the view's only subview
-    this.addSubview(view, animated);
+    this.addSubviewAnimated(view, animated);
   },
 
   /**
