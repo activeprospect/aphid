@@ -679,9 +679,9 @@ Aphid.UI.Window = Class.create(
  * ### Implementing Custom Views
  *
  * In general, [[Aphid.UI.View]] should be subclassed and not initialized
- * directly so that you may implement the functionality specific to your view
- * requirements. To implement a custom view, simply create a subclass of
- * [[Aphid.UI.View]]:
+ * directly so that you may implement the functionality that is specific to
+ * your custom view's requirements. To implement a custom view, simply create
+ * a subclass of [[Aphid.UI.View]]:
  *
  *     var FooBarView = Class.create(Aphid.UI.View, {
  *       viewName: "FooBarView",
@@ -705,8 +705,8 @@ Aphid.UI.Window = Class.create(
  *
  * View templates are asynchronously loaded by the [[Aphid.UI.View]] class
  * when the instance is first initialized. The template itself should be
- * located in the path defined by [[Application#baseViewPath]], which defaults
- * to the relative path of *Views* and its name should match the value of the
+ * located in the path defined by [[Application#baseViewPath]] (which defaults
+ * to the relative path of *Views*) and its name should match the value of the
  * [[Aphid.UI.View#viewName]] property (i.e. *Views/FooBarView.html*).
  *
  *     <header>
@@ -715,6 +715,10 @@ Aphid.UI.Window = Class.create(
  *     <section data-outlet="contentView">
  *       ...
  *     </section>
+ *
+ * View templates that are not wrapped in a single containing element will
+ * automatically be wrapped in a <section/> element with the DOM ID set to
+ * the `viewName` instance property.
  *
  * #### Outlets
  *
