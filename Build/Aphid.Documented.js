@@ -1193,6 +1193,7 @@ Aphid.UI.View = Class.create(
               instance = eval("new " + viewClass + "()");
             else
               instance = new Aphid.UI.View();
+            instance.delegate = this;
             instance.initializeFromTemplate(element);
           }
           catch (error)
