@@ -1184,15 +1184,16 @@ Aphid.UI.View = Class.create(
         var outlet    = element.getAttribute('data-outlet'),
             viewClass = element.getAttribute('data-view-class');
 
+        // If a custom view class was not provided, default to Aphid.UI.View
+        if (!viewClass)
+          viewClass = "Aphid.UI.View";
+
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
-          $L.info('Connecting outlet "' + outlet + '" to view controller...', 'Aphid.UI.View');
+          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            if (viewClass)
-              instance = eval("new " + viewClass + "()");
-            else
-              instance = new Aphid.UI.View();
+            instance = eval("new " + viewClass + "()");
             instance.delegate = this;
             instance.initializeFromTemplate(element);
           }
