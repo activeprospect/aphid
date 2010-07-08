@@ -556,7 +556,7 @@ Aphid.UI.View = Class.create(
       function(element)
       {
         var outlet    = element.getAttribute('data-outlet'),
-            viewClass = element.getAttribute('data-viewClass');
+            viewClass = element.getAttribute('data-view-class');
 
         if (!Object.isUndefined(this[outlet]))
         {
