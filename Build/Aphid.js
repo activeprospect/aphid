@@ -569,6 +569,7 @@ Aphid.UI.View = Class.create(
             instance = eval("new " + viewClass + "()");
             instance.delegate = this;
             instance.initializeFromTemplate(element);
+            if (instance.awakeFromHTML) instance.awakeFromHTML();
           }
           catch (error)
           {
@@ -652,6 +653,8 @@ Aphid.UI.View.prototype._viewDidFinishLoading.displayName = "Aphid.UI.View._view
 Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
 Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";
+
+
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
@@ -804,6 +807,8 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
 
 });
+
+
 
 
 
@@ -994,3 +999,198 @@ Aphid.UI.LoadingIndicator = Class.create({
   }
 
 });
+
+Aphid.UI.ListView = Class.create(Aphid.UI.View, {
+
+  viewName: false,
+
+  items: false,
+
+  selectedItem: false,
+
+  isSortable: false,
+
+  sortableOptions: false,
+
+  initialize: function($super)
+  {
+    $super();
+    this.items = $A();
+    this.sortableOptions = {
+      handle: "handle",
+      onChange: this._listViewOrderDidChange.bind(this),
+      onUpdate: this._listViewOrderDidUpdate.bind(this)
+    }
+  },
+
+  initializeFromTemplate: function($super, element)
+  {
+    $super(element);
+    if (this._validateContainer())
+    {
+      this.items = this.element.childElements();
+      this._setupObservers();
+      if (this.isSortable)
+        $L.info('sortable')
+    }
+  },
+
+  awakeFromHTML: function()
+  {
+    $L.info('Awoke from HTML', 'Aphid.UI.ListView');
+    if (this.isSortable)
+      this._setupSorting();
+    this.element.addClassName('ListView');
+  },
+
+
+  setItems: function(newItems)
+  {
+    this.items = this.element.update().insert(newItems).select('>li');
+    this._setupObservers();
+  },
+
+
+  selectItem: function(item)
+  {
+    if (!this._listViewShouldSelectItem(item))
+      return;
+
+    $L.info('Selecting item ' + this.items.indexOf(item) + ' in list...', 'Aphid.UI.ListView');
+
+    if (this.selectedItem && this.selectedItem == item)
+      return;
+
+    this.clearSelection();
+    this.selectedItem = item.addClassName('selected');
+
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, item);
+  },
+
+  clearSelection: function()
+  {
+    this.items.invoke('removeClassName', 'selected');
+    this.selectedItem = false;
+  },
+
+
+  /*
+   * Aphid.UI.ListView#_setupSorting() -> null
+  **/
+  _setupSorting: function()
+  {
+    this.element.addClassName('sortable');
+    this._addDragHandlesToItems();
+    this._addOrderedIdentitiesToItems();
+    Sortable.create(this.element, this.sortableOptions);
+  },
+
+  _addOrderedIdentitiesToItems: function()
+  {
+    this.items.each(this._addOrderedIdentityToItem.bind(this));
+  },
+
+  _addOrderedIdentityToItem: function(item)
+  {
+    $L.info(item.identify())
+  },
+
+  _addDragHandlesToItems: function()
+  {
+    this.items.each(this._addDragHandlesToItem.bind(this));
+  },
+
+  _addDragHandlesToItem: function(item)
+  {
+    var foo = new Element('div').addClassName('handle');
+    item.insert(foo)
+  },
+
+  _listViewOrderDidChange: function()
+  {
+    $L.info('_listViewOrderDidChange', 'Aphid.UI.ListView');
+    if (this.delegate && this.delegate.listViewOrderDidChange)
+      this.delegate.listViewOrderDidChange(this);
+  },
+
+  _listViewOrderDidUpdate: function()
+  {
+    $L.info('_listViewOrderDidUpdate', 'Aphid.UI.ListView');
+    if (this.delegate && this.delegate.listViewOrderDidUpdate)
+      this.delegate.listViewOrderDidUpdate(this);
+  },
+
+
+  /*
+   * Aphid.UI.ListView#_setupObservers() -> null
+   *
+   * Iterates across each item in the list adding event observers for handling
+   * click events and wiring them up to callbacks.
+  **/
+  _setupObservers: function()
+  {
+    var anchors = this.element.select('> li > a');
+    if (anchors.length > 0)
+      anchors.invoke('observe', 'click', this._handleClickEvent.bind(this));
+    else
+      this.items.invoke('observe', 'click', this._handleClickEvent.bind(this));
+  },
+
+  _handleClickEvent: function(event)
+  {
+    event.stop();
+    var item = event.findElement('li');
+    this.selectItem(item);
+  },
+
+
+  _listViewShouldSelectItem: function(item)
+  {
+    $L.info('_listViewShouldSelectItem', 'Aphid.UI.ListView');
+    var shouldSelect = true;
+    if (item == this.selectedItem)
+      shouldSelect = false;
+    if (this.delegate && this.delegate.listViewShouldSelectItem)
+      shouldSelect = this.delegate.listViewShouldSelectItem(item);
+    return shouldSelect;
+  },
+
+
+  /*
+   * Aphid.UI.ListView#_validateContainer() -> Boolean
+   *
+   * Evaluates the element for this instance to ensure that the element meets
+   * all requirements to be used with this class.
+  **/
+  _validateContainer: function()
+  {
+    if (this.element.tagName != 'UL')
+    {
+      $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', 'Aphid.UI.ListView');
+      return false;
+    }
+    return true;
+  }
+
+});
+
+
+Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initialize";
+Aphid.UI.ListView.prototype.initializeFromTemplate.displayName = "Aphid.UI.ListView.initializeFromTemplate";
+Aphid.UI.ListView.prototype.awakeFromHTML.displayName = "Aphid.UI.ListView.awakeFromHTML";
+Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
+Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
+Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
+Aphid.UI.ListView.prototype._setupSorting.displayName = "Aphid.UI.ListView._setupSorting";
+Aphid.UI.ListView.prototype._addOrderedIdentitiesToItems.displayName = "Aphid.UI.ListView._addOrderedIdentitiesToItems";
+Aphid.UI.ListView.prototype._addOrderedIdentityToItem.displayName = "Aphid.UI.ListView._addOrderedIdentityToItem";
+Aphid.UI.ListView.prototype._addDragHandlesToItems.displayName = "Aphid.UI.ListView._addDragHandlesToItems";
+Aphid.UI.ListView.prototype._addDragHandlesToItem.displayName = "Aphid.UI.ListView._addDragHandlesToItem";
+Aphid.UI.ListView.prototype._listViewOrderDidChange.displayName = "Aphid.UI.ListView._listViewOrderDidChange";
+Aphid.UI.ListView.prototype._listViewOrderDidUpdate.displayName = "Aphid.UI.ListView._listViewOrderDidUpdate";
+Aphid.UI.ListView.prototype._setupObservers.displayName = "Aphid.UI.ListView._setupObservers";
+Aphid.UI.ListView.prototype._handleClickEvent.displayName = "Aphid.UI.ListView._handleClickEvent";
+Aphid.UI.ListView.prototype._listViewShouldSelectItem.displayName = "Aphid.UI.ListView._listViewShouldSelectItem";
+Aphid.UI.ListView.prototype._validateContainer.displayName = "Aphid.UI.ListView._validateContainer";
+

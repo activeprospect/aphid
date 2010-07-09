@@ -1,0 +1,59 @@
+
+ul.ListView
+{
+}
+
+ul.ListView li
+{
+  margin: 0.2em;
+  line-height: 3em;
+  height: 3em;
+  padding-left: 1em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+ul.ListView li:nth-of-type(odd)
+{
+  background-color: #f3f4f5;
+}
+
+ul.ListView li.selected
+{
+  background-color: #336699;
+  color: white;
+}
+
+ul.ListView li:hover .handle
+{
+  opacity: 0.15;
+}
+
+ul.ListView li:hover .handle:hover
+{
+  opacity: 0.25;
+}
+
+ul.ListView li .handle:active
+{
+  opacity: 0.50 !important;
+}
+
+ul.ListView .handle
+{
+  position: absolute;
+  top: 0;
+  right: 1em;
+  height: inherit;
+  width: 16px;
+  background-image: url('../Assets/Images/UI/ListView/DragHandle.png');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  opacity: 0.1;
+}
+
+ul.ListView li.selected .handle
+{
+  opacity: 0.35;
+  background-image: url('../Assets/Images/UI/ListView/DragHandle.selected.png');
+}

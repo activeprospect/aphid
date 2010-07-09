@@ -494,6 +494,7 @@ Aphid.UI.View = Class.create(
             instance = eval("new " + viewClass + "()");
             instance.delegate = this;
             instance.initializeFromTemplate(element);
+            if (instance.awakeFromHTML) instance.awakeFromHTML();
           }
           catch (error)
           {

@@ -9,6 +9,13 @@ Aphid.UI = {};
 
 //= require "UI/Window"
 //= require "UI/View"
+
+// Controllers ---------------------------------------------------------------
+
 //= require "UI/ViewController"
 //= require "UI/TabViewController"
+
+// Views ---------------------------------------------------------------------
+
 //= require "UI/LoadingIndicator"
+//= require "UI/ListView"
