@@ -1,0 +1,32 @@
+
+.SplitViewController
+{
+}
+
+.SplitViewController .dragHandle
+{
+  position: absolute;
+  z-index: 1000;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  opacity: 0.4;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 0.5s;
+}
+
+.SplitViewController .vertical.dragHandle
+{
+  cursor: row-resize;
+  background-image: url('../Assets/Images/UI/SplitViewController/DragHandle.horizontal.png');
+}
+
+.SplitViewController .horizontal.dragHandle
+{
+  cursor: col-resize;
+  background-image: url('../Assets/Images/UI/SplitViewController/DragHandle.vertical.png');
+}
+
+.SplitViewController .dragHandle:hover
+{
+  opacity: 1.0;
+}

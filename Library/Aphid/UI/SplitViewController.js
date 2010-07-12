@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.SplitView
+ * class Aphid.UI.SplitViewController
  *
  * This class (which extends Draggable from Scriptaculous) handles the
  * resizing of two horizontally adjacent panes.
@@ -18,7 +18,7 @@
  *
 **/
 
-Aphid.UI.SplitView = Class.create(Aphid.UI.View, {
+Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   // Panes
   firstView: false,
@@ -29,36 +29,72 @@ Aphid.UI.SplitView = Class.create(Aphid.UI.View, {
 
   constraint: false, // "horizontal, vertical"
 
-  initialize: function($super)
+  initialize: function($super, delegate)
   {
-    $super();
+    $super(delegate);
   },
 
-  initializeFromTemplate: function($super, element)
+  // initializeFromTemplate: function($super, element)
+  // {
+  //   $super(element);
+  //   $L.error("Split views cannot be initialized from a template...", "Aphid.UI.SplitViewController");
+  // },
+
+  viewDidLoad: function($super)
   {
-    $super(element);
-  },
+    $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
+    this.element.addClassName('SplitViewController');
 
-  awakeFromHTML: function()
-  {
-    $L.info('Awoke from HTML', 'Aphid.UI.SplitView');
-    this.element.addClassName('SplitView');
+    // if (this.element.childElements().length != 2)
+    //   $L.error('Instances of Split View must have only 2 children', 'Aphid.UI.SplitViewController');
 
-    if (this.element.childElements().length != 2)
-      $L.error('Instances of Split View must have only 2 children', 'Aphid.UI.SplitView');
+    var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
+        maxHeight = parseInt(this.firstView.element.getStyle('max-height'));
 
-    this.firstView = this.element.childElements()[0];
-    this.secondView = this.element.childElements()[1];
-
-    this.draggableInstance = new Aphid.UI.SplitView.Draggable(this.firstView, this.secondView, { constraint: 'vertical' });
+    this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
+      this.firstView.element,
+      this.secondView.element,
+      {
+        constraint: 'vertical',
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        onStart: this.onStart.bind(this),
+        onDrag: this.onDrag.bind(this),
+        change: this.change.bind(this),
+        onEnd: this.onEnd.bind(this)
+      });
   },
 
   // Pane Callbacks ----------------------------------------------------------
 
+  onStart: function(arg)
+  {
+    $L.info("onStart", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  onDrag: function(arg)
+  {
+    $L.info("onDrag", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  change: function(arg)
+  {
+    $L.info("change", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  onEnd: function(arg)
+  {
+    $L.info("onEnd", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
 });
 
-/**
- * class Aphid.UI.SplitView.Draggable
+/*
+ * class Aphid.UI.SplitViewController.Draggable
  *
  * Draggable is a custom subclass of Draggable from script.aculo.us that adds
  * support for minimum/maximum widths and heights, as defined by the
@@ -68,7 +104,7 @@ Aphid.UI.SplitView = Class.create(Aphid.UI.View, {
  * 
  *  * Move some of the logic out of this to a delegate or callback
 **/
-Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
+Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   // DOM Elements
   firstPane: null,
@@ -90,13 +126,14 @@ Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
     // Set up Drag Handle
     this._insertDragHandle(options.constraint);
     $super(this.dragHandle, options);
-
+    window.console.log('hi')
     this._setupObservers();
     this._initializePaneDimensions();
   },
 
   updateDrag: function($super, event, pointer)
   {
+    $L.info("updateDrag", "Aphid.UI.SplitViewController.Draggable")
     var minWidth, maxWidth, minHeight, maxHeight;
     var offset = this.firstPane.cumulativeOffset();
 
@@ -159,8 +196,8 @@ Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
   resizeVertical: function(y)
   {
     this.firstPane.setStyle({ height: y - this.firstPane.cumulativeOffset()[1] + 'px' });
-    this.secondPane.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1]) + (this.dragHandle.getHeight() * 2) + 'px' });
-    this.dragHandle.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1] + this.dragHandle.getHeight()) + 'px' });
+    this.secondPane.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1] + this.dragHandle.getHeight()) + 'px' });
+    this.dragHandle.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1]) + 'px' });
   },
 
   // State Management --------------------------------------------------------
@@ -199,6 +236,15 @@ Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
     }
   },
 
+  // Drag Handle -------------------------------------------------------------
+
+  _insertDragHandle: function(constraint)
+  {
+    this.dragHandle = new Element("div").addClassName("dragHandle");
+    this.dragHandle.addClassName(constraint);
+    Element.insert(this.firstPane, { after: this.dragHandle });
+  },
+
   _setupObservers: function()
   {
     this.dragHandle.observe('mouseup', this._resetDragHandleClickOffset.bind(this));
@@ -223,15 +269,6 @@ Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
   {
     this.dragHandleClickOffset = null;
     this._persistState();
-  },
-
-  // Drag Handle -------------------------------------------------------------
-
-  _insertDragHandle: function(constraint)
-  {
-    this.dragHandle = new Element("div").addClassName("dragHandle");
-    this.dragHandle.addClassName(constraint);
-    Element.insert(this.firstPane, { after: this.dragHandle });
   }
 
 });

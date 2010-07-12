@@ -14,9 +14,9 @@ Aphid.UI = {};
 
 //= require "UI/ViewController"
 //= require "UI/TabViewController"
+//= require "UI/SplitViewController"
 
 // Views ---------------------------------------------------------------------
 
 //= require "UI/LoadingIndicator"
-//= require "UI/SplitView"
 //= require "UI/ListView"

@@ -809,6 +809,244 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 });
 
 
+Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
+
+  firstView: false,
+  secondView: false,
+
+  draggableInstance: false,
+
+  constraint: false, // "horizontal, vertical"
+
+  initialize: function($super, delegate)
+  {
+    $super(delegate);
+  },
+
+
+  viewDidLoad: function($super)
+  {
+    $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
+    this.element.addClassName('SplitViewController');
+
+
+    var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
+        maxHeight = parseInt(this.firstView.element.getStyle('max-height'));
+
+    this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
+      this.firstView.element,
+      this.secondView.element,
+      {
+        constraint: 'vertical',
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        onStart: this.onStart.bind(this),
+        onDrag: this.onDrag.bind(this),
+        change: this.change.bind(this),
+        onEnd: this.onEnd.bind(this)
+      });
+  },
+
+
+  onStart: function(arg)
+  {
+    $L.info("onStart", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  onDrag: function(arg)
+  {
+    $L.info("onDrag", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  change: function(arg)
+  {
+    $L.info("change", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+  onEnd: function(arg)
+  {
+    $L.info("onEnd", "Aphid.UI.SplitViewController");
+    window.console.log(arg)
+  },
+
+});
+
+/*
+ * class Aphid.UI.SplitViewController.Draggable
+ *
+ * Draggable is a custom subclass of Draggable from script.aculo.us that adds
+ * support for minimum/maximum widths and heights, as defined by the
+ * min-width and min-height CSS properties.
+ *
+ * ### TODO
+ *
+ *  * Move some of the logic out of this to a delegate or callback
+**/
+Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
+
+  firstPane: null,
+  secondPane: null,
+  dragHandle: null,
+
+  afterResize: null,
+
+  initialize: function($super, firstPane, secondPane)
+  {
+    var options = arguments[3] || { };
+    if (!options.constraint)
+      options.constraint = 'horizontal';
+
+    this.firstPane = $(firstPane);
+    this.secondPane = $(secondPane);
+
+    this._insertDragHandle(options.constraint);
+    $super(this.dragHandle, options);
+    window.console.log('hi')
+    this._setupObservers();
+    this._initializePaneDimensions();
+  },
+
+  updateDrag: function($super, event, pointer)
+  {
+    $L.info("updateDrag", "Aphid.UI.SplitViewController.Draggable")
+    var minWidth, maxWidth, minHeight, maxHeight;
+    var offset = this.firstPane.cumulativeOffset();
+
+    if (this.options.constraint == 'vertical')
+    {
+      minHeight = parseInt(this.firstPane.getStyle('min-height'));
+      maxHeight = parseInt(this.firstPane.getStyle('max-height'));
+
+      if (event.clientY - this.dragHandleClickOffset <= minHeight + offset[1])
+      {
+        this.resizeVertical(minHeight + offset[1]);
+        this._persistState();
+        return;
+      }
+      else if (event.clientY - this.dragHandleClickOffset >= maxHeight + offset[1])
+      {
+        this.resizeVertical(maxHeight + offset[1]);
+        this._persistState();
+        return;
+      }
+
+      $super(event, pointer);
+
+      var height = event.clientY - this.dragHandleClickOffset;
+      this.resizeVertical(height);
+    }
+    else
+    {
+      minWidth = parseInt(this.firstPane.getStyle('min-width'));
+      maxWidth = parseInt(this.firstPane.getStyle('max-width'));
+
+      if (event.clientX - this.dragHandleClickOffset <= minWidth + offset[0])
+      {
+        this.resizeHorizontal(minWidth + offset[0]);
+        this._persistState();
+        return;
+      }
+      else if (event.clientX - this.dragHandleClickOffset >= maxWidth + offset[0])
+      {
+        this.resizeHorizontal(maxWidth + offset[0]);
+        this._persistState();
+        return;
+      }
+
+      $super(event, pointer);
+
+      var width = event.clientX - this.dragHandleClickOffset;
+      this.resizeHorizontal(width);
+    }
+  },
+
+  resizeHorizontal: function(x)
+  {
+    this.firstPane.setStyle({ width: x - this.firstPane.cumulativeOffset()[0] + 'px' });
+    this.secondPane.setStyle({ left: x + this.dragHandle.getWidth() + 'px' });
+    this.dragHandle.setStyle({ left: x + 'px' });
+  },
+
+  resizeVertical: function(y)
+  {
+    this.firstPane.setStyle({ height: y - this.firstPane.cumulativeOffset()[1] + 'px' });
+    this.secondPane.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1] + this.dragHandle.getHeight()) + 'px' });
+    this.dragHandle.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1]) + 'px' });
+  },
+
+
+  _persistState: function()
+  {
+    if (this.options.constraint == 'vertical')
+      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getHeight());
+    else
+      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getWidth());
+  },
+
+  _restoreState: function()
+  {
+    var paneSize = parseInt($C.get("ResizablePanes." + this.paneSet));
+    var offset   = this.firstPane.cumulativeOffset();
+
+    if (this.options.constraint == 'vertical')
+      this.resizeVertical(paneSize + offset[1]);
+    else
+      this.resizeHorizontal(paneSize + offset[0]);
+  },
+
+  _initializePaneDimensions: function()
+  {
+    if (this.options.constraint == 'vertical')
+    {
+      var topOffset = parseInt(this.dragHandle.getStyle('top')) + parseInt(this.dragHandle.getStyle('height'));
+      this.secondPane.setStyle('top: ' + topOffset  + 'px');
+    }
+    else
+    {
+      var leftOffset = parseInt(this.dragHandle.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'));
+      this.secondPane.setStyle('left: ' + leftOffset + 'px');
+    }
+  },
+
+
+  _insertDragHandle: function(constraint)
+  {
+    this.dragHandle = new Element("div").addClassName("dragHandle");
+    this.dragHandle.addClassName(constraint);
+    Element.insert(this.firstPane, { after: this.dragHandle });
+  },
+
+  _setupObservers: function()
+  {
+    this.dragHandle.observe('mouseup', this._resetDragHandleClickOffset.bind(this));
+    this.dragHandle.observe('mousedown', this._determineDragHandleClickOffset.bind(this));
+  },
+
+  _determineDragHandleClickOffset: function(event)
+  {
+    if (this.options.constraint == 'vertical')
+    {
+      var offset = (this.firstPane.cumulativeOffset()[1] + this.firstPane.getHeight() + this.dragHandle.getHeight()) - event.clientY;
+      this.dragHandleClickOffset = this.dragHandle.getHeight() - offset;
+    }
+    else
+    {
+      var offset = (this.firstPane.cumulativeOffset()[0] + this.firstPane.getWidth() + this.dragHandle.getWidth()) - event.clientX;
+      this.dragHandleClickOffset = this.dragHandle.getWidth() - offset;
+    }
+  },
+
+  _resetDragHandleClickOffset: function(event)
+  {
+    this.dragHandleClickOffset = null;
+    this._persistState();
+  }
+
+});
+
 
 
 
@@ -996,203 +1234,6 @@ Aphid.UI.LoadingIndicator = Class.create({
   _makeRGBA: function()
   {
     return "rgba(" + [].slice.call(arguments, 0).join(",") + ")";
-  }
-
-});
-
-Aphid.UI.SplitView = Class.create(Aphid.UI.View, {
-
-  firstView: false,
-  secondView: false,
-
-  draggableInstance: false,
-
-  constraint: false, // "horizontal, vertical"
-
-  initialize: function($super)
-  {
-    $super();
-  },
-
-  initializeFromTemplate: function($super, element)
-  {
-    $super(element);
-  },
-
-  awakeFromHTML: function()
-  {
-    $L.info('Awoke from HTML', 'Aphid.UI.SplitView');
-    this.element.addClassName('SplitView');
-
-    if (this.element.childElements().length != 2)
-      $L.error('Instances of Split View must have only 2 children', 'Aphid.UI.SplitView');
-
-    this.firstView = this.element.childElements()[0];
-    this.secondView = this.element.childElements()[1];
-
-    this.draggableInstance = new Aphid.UI.SplitView.Draggable(this.firstView, this.secondView, { constraint: 'vertical' });
-  },
-
-
-});
-
-Aphid.UI.SplitView.Draggable = Class.create(Draggable, {
-
-  firstPane: null,
-  secondPane: null,
-  dragHandle: null,
-
-  afterResize: null,
-
-  initialize: function($super, firstPane, secondPane)
-  {
-    var options = arguments[3] || { };
-    if (!options.constraint)
-      options.constraint = 'horizontal';
-
-    this.firstPane = $(firstPane);
-    this.secondPane = $(secondPane);
-
-    this._insertDragHandle(options.constraint);
-    $super(this.dragHandle, options);
-
-    this._setupObservers();
-    this._initializePaneDimensions();
-  },
-
-  updateDrag: function($super, event, pointer)
-  {
-    var minWidth, maxWidth, minHeight, maxHeight;
-    var offset = this.firstPane.cumulativeOffset();
-
-    if (this.options.constraint == 'vertical')
-    {
-      minHeight = parseInt(this.firstPane.getStyle('min-height'));
-      maxHeight = parseInt(this.firstPane.getStyle('max-height'));
-
-      if (event.clientY - this.dragHandleClickOffset <= minHeight + offset[1])
-      {
-        this.resizeVertical(minHeight + offset[1]);
-        this._persistState();
-        return;
-      }
-      else if (event.clientY - this.dragHandleClickOffset >= maxHeight + offset[1])
-      {
-        this.resizeVertical(maxHeight + offset[1]);
-        this._persistState();
-        return;
-      }
-
-      $super(event, pointer);
-
-      var height = event.clientY - this.dragHandleClickOffset;
-      this.resizeVertical(height);
-    }
-    else
-    {
-      minWidth = parseInt(this.firstPane.getStyle('min-width'));
-      maxWidth = parseInt(this.firstPane.getStyle('max-width'));
-
-      if (event.clientX - this.dragHandleClickOffset <= minWidth + offset[0])
-      {
-        this.resizeHorizontal(minWidth + offset[0]);
-        this._persistState();
-        return;
-      }
-      else if (event.clientX - this.dragHandleClickOffset >= maxWidth + offset[0])
-      {
-        this.resizeHorizontal(maxWidth + offset[0]);
-        this._persistState();
-        return;
-      }
-
-      $super(event, pointer);
-
-      var width = event.clientX - this.dragHandleClickOffset;
-      this.resizeHorizontal(width);
-    }
-  },
-
-  resizeHorizontal: function(x)
-  {
-    this.firstPane.setStyle({ width: x - this.firstPane.cumulativeOffset()[0] + 'px' });
-    this.secondPane.setStyle({ left: x + this.dragHandle.getWidth() + 'px' });
-    this.dragHandle.setStyle({ left: x + 'px' });
-  },
-
-  resizeVertical: function(y)
-  {
-    this.firstPane.setStyle({ height: y - this.firstPane.cumulativeOffset()[1] + 'px' });
-    this.secondPane.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1]) + (this.dragHandle.getHeight() * 2) + 'px' });
-    this.dragHandle.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1] + this.dragHandle.getHeight()) + 'px' });
-  },
-
-
-  _persistState: function()
-  {
-    if (this.options.constraint == 'vertical')
-      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getHeight());
-    else
-      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getWidth());
-  },
-
-  _restoreState: function()
-  {
-    var paneSize = parseInt($C.get("ResizablePanes." + this.paneSet));
-    var offset   = this.firstPane.cumulativeOffset();
-
-    if (this.options.constraint == 'vertical')
-      this.resizeVertical(paneSize + offset[1]);
-    else
-      this.resizeHorizontal(paneSize + offset[0]);
-  },
-
-  _initializePaneDimensions: function()
-  {
-    if (this.options.constraint == 'vertical')
-    {
-      var topOffset = parseInt(this.dragHandle.getStyle('top')) + parseInt(this.dragHandle.getStyle('height'));
-      this.secondPane.setStyle('top: ' + topOffset  + 'px');
-    }
-    else
-    {
-      var leftOffset = parseInt(this.dragHandle.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'));
-      this.secondPane.setStyle('left: ' + leftOffset + 'px');
-    }
-  },
-
-  _setupObservers: function()
-  {
-    this.dragHandle.observe('mouseup', this._resetDragHandleClickOffset.bind(this));
-    this.dragHandle.observe('mousedown', this._determineDragHandleClickOffset.bind(this));
-  },
-
-  _determineDragHandleClickOffset: function(event)
-  {
-    if (this.options.constraint == 'vertical')
-    {
-      var offset = (this.firstPane.cumulativeOffset()[1] + this.firstPane.getHeight() + this.dragHandle.getHeight()) - event.clientY;
-      this.dragHandleClickOffset = this.dragHandle.getHeight() - offset;
-    }
-    else
-    {
-      var offset = (this.firstPane.cumulativeOffset()[0] + this.firstPane.getWidth() + this.dragHandle.getWidth()) - event.clientX;
-      this.dragHandleClickOffset = this.dragHandle.getWidth() - offset;
-    }
-  },
-
-  _resetDragHandleClickOffset: function(event)
-  {
-    this.dragHandleClickOffset = null;
-    this._persistState();
-  },
-
-
-  _insertDragHandle: function(constraint)
-  {
-    this.dragHandle = new Element("div").addClassName("dragHandle");
-    this.dragHandle.addClassName(constraint);
-    Element.insert(this.firstPane, { after: this.dragHandle });
   }
 
 });
