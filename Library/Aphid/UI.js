@@ -18,4 +18,5 @@ Aphid.UI = {};
 // Views ---------------------------------------------------------------------
 
 //= require "UI/LoadingIndicator"
+//= require "UI/SplitView"
 //= require "UI/ListView"
