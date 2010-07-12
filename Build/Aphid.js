@@ -327,6 +327,8 @@ Aphid.UI.View = Class.create(
 
   isLoading: false,
 
+  initializedFromTemplate: false,
+
 
   initialize: function(viewName, delegate)
   {
@@ -341,6 +343,8 @@ Aphid.UI.View = Class.create(
 
   initializeFromTemplate: function(element)
   {
+    $L.info("initializeFromTemplate", "Aphid.UI.View");
+    this.initializedFromTemplate = true;
     this.element = element;
   },
 
@@ -510,14 +514,27 @@ Aphid.UI.View = Class.create(
    * asynchronously. This method sets up the View instance by wiring any
    * outlets and actions found in the template and then calls the appropriate
    * delegate methods.
+   *
+   * TODO This method should probably just be viewDidFinishLoading so that subclasses can call it instead of making it a delegate call
+   *
   **/
   _viewDidFinishLoading: function(transport)
   {
     var template = Element.fromString(transport.responseText);
-    if (Object.isElement(template))
-      this.element = template;
+
+    if (this.initializedFromTemplate)
+    {
+      this.element.update(template);
+    }
+
     else
-      this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    {
+      if (Object.isElement(template))
+        this.element = template;
+      else
+        this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    }
+
     this._connectToOutlets();
     this._wireActionsToInstance();
     this.isLoaded  = true;

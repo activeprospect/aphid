@@ -868,6 +868,14 @@ Aphid.UI.View = Class.create(
   **/
   isLoading: false,
 
+  /**
+   * Aphid.UI.View#initializedFromTemplate -> Boolean
+   *
+   * If the View instance was initialized from a template (using outlets),
+   * this will be set to true.
+  **/
+  initializedFromTemplate: false,
+
   // Initializers ------------------------------------------------------------
 
   /**
@@ -890,6 +898,8 @@ Aphid.UI.View = Class.create(
   // TODO This is in flux...
   initializeFromTemplate: function(element)
   {
+    $L.info("initializeFromTemplate", "Aphid.UI.View");
+    this.initializedFromTemplate = true;
     this.element = element;
   },
 
@@ -1133,16 +1143,33 @@ Aphid.UI.View = Class.create(
    * asynchronously. This method sets up the View instance by wiring any
    * outlets and actions found in the template and then calls the appropriate
    * delegate methods.
+   *
+   * TODO This method should probably just be viewDidFinishLoading so that subclasses can call it instead of making it a delegate call
+   *
   **/
   _viewDidFinishLoading: function(transport)
   {
-    // TODO This method should probably just be viewDidFinishLoading so that
-    //      subclasses can call it instead of making it a delegate call
     var template = Element.fromString(transport.responseText);
-    if (Object.isElement(template))
-      this.element = template;
+
+    // If the view was initialized from a template, we need to insert the
+    // template into the placeholder element that initialized the view
+    // instance.
+    if (this.initializedFromTemplate)
+    {
+      // TODO We may need to ensure that we aren't doubling-up on the wrapper element with the same ID, etc...
+      this.element.update(template);
+    }
+
+    // Otherwise, set the template directly on the object and let its delegate
+    // deal with it.
     else
-      this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    {
+      if (Object.isElement(template))
+        this.element = template;
+      else
+        this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+    }
+
     this._connectToOutlets();
     this._wireActionsToInstance();
     this.isLoaded  = true;
