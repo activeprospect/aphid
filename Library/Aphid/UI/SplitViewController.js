@@ -70,25 +70,21 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   onStart: function(arg)
   {
     $L.info("onStart", "Aphid.UI.SplitViewController");
-    window.console.log(arg)
   },
 
   onDrag: function(arg)
   {
     $L.info("onDrag", "Aphid.UI.SplitViewController");
-    window.console.log(arg)
   },
 
   change: function(arg)
   {
     $L.info("change", "Aphid.UI.SplitViewController");
-    window.console.log(arg)
   },
 
   onEnd: function(arg)
   {
     $L.info("onEnd", "Aphid.UI.SplitViewController");
-    window.console.log(arg)
   },
 
 });
@@ -126,7 +122,6 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
     // Set up Drag Handle
     this._insertDragHandle(options.constraint);
     $super(this.dragHandle, options);
-    window.console.log('hi')
     this._setupObservers();
     this._initializePaneDimensions();
   },
