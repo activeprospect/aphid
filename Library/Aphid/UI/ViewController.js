@@ -14,12 +14,36 @@
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
+  /*
+   * Aphid.UI.ViewController#_modalViewOverlay -> Element | false
+   *
+   * The semi-translucent overlay element that is displayed behind modal views.
+  **/
+  // TODO This should be moved to Window (i.e. Window.presentOverlay or something)
   _modalViewOverlay: false,
+
+  /*
+   * Aphid.UI.ViewController#_modalViewContainer -> Element | false
+   *
+   * The container element that will contain the modal view controller's view.
+  **/
   _modalViewContainer: false,
+
+  /**
+   * Aphid.UI.ViewController#modalViewController -> ViewController | false
+   *
+   * The currently presented modal view controller whose parent is this view
+   * controller, or false if no view controller is currently modal.
+  **/
   modalViewController: false,
 
   // -------------------------------------------------------------------------
 
+  /**
+   * new Aphid.UI.ViewController(delegate)
+   *
+   * Initializes a new Modal View Controller with the specified delegate.
+  **/
   initialize: function($super, delegate)
   {
     $super(this.viewName, delegate);

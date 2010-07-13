@@ -675,8 +675,20 @@ Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wir
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
+  /*
+   * Aphid.UI.ViewController#_modalViewOverlay -> Element | false
+   *
+   * The semi-translucent overlay element that is displayed behind modal views.
+  **/
   _modalViewOverlay: false,
+
+  /*
+   * Aphid.UI.ViewController#_modalViewContainer -> Element | false
+   *
+   * The container element that will contain the modal view controller's view.
+  **/
   _modalViewContainer: false,
+
   modalViewController: false,
 
 
