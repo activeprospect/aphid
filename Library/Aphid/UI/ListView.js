@@ -25,6 +25,9 @@
  *  * `listViewSelectionDidChange(listView, selectedItem)` - Called when the
  *    current selection has changed.
  *
+ *  * `listViewDidOpenItem(listView, openedItem)` - Called when the use has
+ *    requested to open an item, usually by double-clicking on the item.
+ *
  *  * `listViewOrderDidChange(listView)` - Called when the sort order has
  *    changed, but not necessarily before the user has finished dragging the
  *    item to its final position.
@@ -159,6 +162,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.delegate.listViewSelectionDidChange(this, item);
   },
 
+  openItem: function(item)
+  {
+    // Call the listViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewDidOpenItem)
+      this.delegate.listViewDidOpenItem(this, item);
+  },
+
   /**
    * Aphid.UI.ListView#clearSelection() -> null
    *
@@ -236,7 +247,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (anchors.length > 0)
       anchors.invoke('observe', 'click', this._handleClickEvent.bind(this));
     else
+    {
       this.items.invoke('observe', 'click', this._handleClickEvent.bind(this));
+      this.items.invoke('observe', 'dblclick', this._handleDoubleClickEvent.bind(this));
+    }
   },
 
   _handleClickEvent: function(event)
@@ -244,6 +258,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     event.stop();
     var item = event.findElement('li');
     this.selectItem(item);
+  },
+
+  _handleDoubleClickEvent: function(event)
+  {
+    event.stop();
+    var item = event.findElement('li');
+    this.selectItem(item);
+    this.openItem(item);
   },
 
   // Callbacks ---------------------------------------------------------------

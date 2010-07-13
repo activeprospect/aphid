@@ -1318,6 +1318,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.delegate.listViewSelectionDidChange(this, item);
   },
 
+  openItem: function(item)
+  {
+    if (this.delegate && this.delegate.listViewDidOpenItem)
+      this.delegate.listViewDidOpenItem(this, item);
+  },
+
   clearSelection: function()
   {
     this.items.invoke('removeClassName', 'selected');
@@ -1384,7 +1390,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (anchors.length > 0)
       anchors.invoke('observe', 'click', this._handleClickEvent.bind(this));
     else
+    {
       this.items.invoke('observe', 'click', this._handleClickEvent.bind(this));
+      this.items.invoke('observe', 'dblclick', this._handleDoubleClickEvent.bind(this));
+    }
   },
 
   _handleClickEvent: function(event)
@@ -1392,6 +1401,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     event.stop();
     var item = event.findElement('li');
     this.selectItem(item);
+  },
+
+  _handleDoubleClickEvent: function(event)
+  {
+    event.stop();
+    var item = event.findElement('li');
+    this.selectItem(item);
+    this.openItem(item);
   },
 
 
