@@ -675,6 +675,9 @@ Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wir
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
+  _modalViewOverlay: false,
+  _modalViewContainer: false,
+  modalViewController: false,
 
 
   initialize: function($super, delegate)
@@ -683,7 +686,91 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   },
 
 
+  presentModalViewController: function(viewController)
+  {
+    $L.info("presentModalViewController", "Aphid.UI.ViewController");
+    this.presentModalViewControllerAnimated(viewController, false);
+  },
 
+  presentModalViewControllerAnimated: function(viewController, animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+
+    if (viewController.isLoading)
+      this._presentModalViewController.bind(this).delay(0.1, viewController, animated);
+
+    else
+      this._presentModalViewController(viewController, animated);
+  },
+
+  /*
+   * Aphid.UI.View#_presentModalViewController(viewController[, animated = false]) -> null
+   *
+   * - viewController (ViewController): the view controller that should be presented
+   * - animated (Boolean): true if the view controller should be presented with animation
+   *
+   * Presents the specified *viewController* as the modal view of the current
+   * view controller, presenting it optionally with an animated effect.
+  **/
+  _presentModalViewController: function(viewController, animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
+
+    if (!viewController.isLoaded)
+    {
+      this._presentModalViewController.bind(this).delay(0.1, viewController, animated);
+      return;
+    }
+
+    $L.info('Adding "' + viewController.viewName + '" as a subview to "' + (this.viewName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
+
+    if (!this._modalViewOverlay)
+    {
+      this._modalViewOverlay = new Element("div", { className: 'modalViewOverlay' });
+      this._modalViewOverlay.hide();
+      Element.insert(document.body, { top: this._modalViewOverlay });
+    }
+    animated ? this._modalViewOverlay.appear({ duration: 0.25 }) : this._modalViewOverlay.show();
+
+    if (!this._modalViewContainer)
+    {
+      this._modalViewContainer = new Element("div", { className: 'modalView' });
+      this._modalViewContainer.hide();
+      document.body.insert(this._modalViewContainer);
+    }
+    this._modalViewContainer.appear({ duration: 0.5 }).morph({ top: "10%", bottom: "10%" }, { duration: 0.25 })
+
+    viewController.element.hide();
+    viewController.superview = this;
+
+    this.modalViewController = viewController;
+    this.subviews.push(this.modalViewController);
+
+    if (this.modalViewController.viewWillAppear)
+      this.modalViewController.viewWillAppear();
+
+    this._modalViewContainer.insert(this.modalViewController.element);
+
+    animated ? this.modalViewController.element.appear({ duration: 0.25 }) : this.modalViewController.element.show();
+
+    if (this.modalViewController.viewDidAppear)
+      this.modalViewController.viewDidAppear();
+  },
+
+  dismissModalViewController: function()
+  {
+    this.dismissModalViewControllerAnimated(false);
+  },
+
+  dismissModalViewControllerAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    if (!this.modalViewController) return;
+
+    animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();
+    animated ? this._modalViewOverlay.fade({ duration: 0.25 }) : this._modalViewOverlay.hide();
+    this._modalViewContainer.update();
+  }
 
 });
 
