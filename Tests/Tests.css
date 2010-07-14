@@ -74,14 +74,21 @@ section.testGroup h1
 
 section.testGroup ul
 {
-  margin-left: 1em;
   margin-top: 0.5em;
-  line-height: 1.5em;
 }
 
 section.testGroup a
 {
+  padding-left: 1em;
+  line-height: 2em;
+  display: block;
   text-decoration: none;
+  color: #222;
+}
+
+section.testGroup a:focus
+{
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 section#descriptionSection
