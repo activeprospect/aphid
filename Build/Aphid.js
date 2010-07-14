@@ -105,6 +105,16 @@ Aphid.Support.Extensions.Object = {
 }
 
 Object.extend(Object, Aphid.Support.Extensions.Object);
+Aphid.Support.Extensions.Array = {
+
+  random: function()
+  {
+    return this[parseInt(Math.random() * this.length)];
+  }
+
+}
+
+Object.extend(Array.prototype, Aphid.Support.Extensions.Array);
 Aphid.Support.Extensions.String = {
 
   lowerCaseFirst: function()
@@ -125,8 +135,14 @@ Aphid.Support.Extensions.String = {
   }
 
 };
-
 Object.extend(String.prototype, Aphid.Support.Extensions.String);
+
+String.random = function(length)
+{
+  if (Object.isUndefined(length)) length = 10;
+  var chars = $R('a', 'z').toArray().concat($R('A', 'Z').toArray()).concat($R(0, 9).toArray());
+  return $R(1, length).inject('', function(m, i) { return m + chars.random() });
+}
 
 
 Aphid.Support.Cookie = {

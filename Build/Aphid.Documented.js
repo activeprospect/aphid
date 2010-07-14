@@ -276,6 +276,27 @@ Aphid.Support.Extensions.Object = {
 
 Object.extend(Object, Aphid.Support.Extensions.Object);
 /**
+ * Aphid.Support.Extensions.Array
+ *
+ * Extensions to the core JavaScript Array implementation.
+ *
+**/
+Aphid.Support.Extensions.Array = {
+
+  /**
+   * Aphid.Support.Extensions.Array#random() -> Array
+   *
+   * Returns the array with its contents rearranged in random order.
+  **/
+  random: function()
+  {
+    return this[parseInt(Math.random() * this.length)];
+  }
+
+}
+
+Object.extend(Array.prototype, Aphid.Support.Extensions.Array);
+/**
  * Aphid.Support.Extensions.String
  *
  * Extensions to the core JavaScript String implementation.
@@ -310,8 +331,20 @@ Aphid.Support.Extensions.String = {
   }
 
 };
-
 Object.extend(String.prototype, Aphid.Support.Extensions.String);
+
+/**
+ * Aphid.Support.Extensions.String.random([length = 10]) -> String
+ *
+ * Returns a random string of *length* consisting of upper and lower-case
+ * letters and numbers.
+**/
+String.random = function(length)
+{
+  if (Object.isUndefined(length)) length = 10;
+  var chars = $R('a', 'z').toArray().concat($R('A', 'Z').toArray()).concat($R(0, 9).toArray());
+  return $R(1, length).inject('', function(m, i) { return m + chars.random() });
+}
 /**
  * class Aphid.Support.Cookie
  *

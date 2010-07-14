@@ -33,5 +33,17 @@ Aphid.Support.Extensions.String = {
   }
 
 };
-
 Object.extend(String.prototype, Aphid.Support.Extensions.String);
+
+/**
+ * Aphid.Support.Extensions.String.random([length = 10]) -> String
+ *
+ * Returns a random string of *length* consisting of upper and lower-case
+ * letters and numbers.
+**/
+String.random = function(length)
+{
+  if (Object.isUndefined(length)) length = 10;
+  var chars = $R('a', 'z').toArray().concat($R('A', 'Z').toArray()).concat($R(0, 9).toArray());
+  return $R(1, length).inject('', function(m, i) { return m + chars.random() });
+}
