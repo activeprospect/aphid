@@ -63,6 +63,16 @@ rescue LoadError
   exit
 end
 
+begin
+  require "#{ROOT_PATH}/Vendor/script.aculo.us/src/javascripttest"
+rescue LoadError
+  puts "\nYou'll need script.aculo.us to build this project. Simply run:\n\n"
+  puts "  $ git submodule init"
+  puts "  $ git submodule update"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
 # Default Tasks --------------------------------------------------------------
 
 desc "Defaults to #{DEFAULT_TASKS.inspect}"
@@ -188,6 +198,19 @@ namespace "templates" do
     cp "Build/Aphid.css", "Templates/Stylesheets/Aphid.css"
     puts
   end
+end
+
+# Test Tasks -----------------------------------------------------------------
+
+desc "Runs all the JavaScript unit tests and collects the results"
+JavaScriptTestTask.new(:test) do |test|
+  test.mount("/Build")
+  test.mount("/Tests")
+  test.mount("/Vendor")
+
+  Dir["Tests/**/*Test.html"].each { |test_file| test.run("/#{test_file}") }
+
+  test.browser(:safari)
 end
 
 # Support Methods ------------------------------------------------------------

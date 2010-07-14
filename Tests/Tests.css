@@ -1,0 +1,170 @@
+
+body
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1em;
+  font-family: Lucida Grande;
+}
+
+body > header
+{
+  padding: 0.5em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+body > header h1
+{
+  font-size: 1.5em;
+}
+
+body.testCase
+{
+  
+}
+
+body.testCase > header
+{
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.testCase > header h1
+{
+  color: #555;
+  line-height: 2.2em;
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
+}
+
+body.testList
+{
+  background-color: #dee4ea;
+  border-right: 1px solid #b4b4b4;
+}
+
+body.testList > header
+{
+  background-color: rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset -1px -1px 0px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+
+body.testList > header p#version
+{
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-size: 0.9em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+section.testGroup
+{
+  margin-bottom: 2em;
+}
+
+section.testGroup h1
+{
+  text-transform: uppercase;
+  color: #748292;
+  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+section.testGroup ul
+{
+  margin-left: 1em;
+  margin-top: 0.5em;
+  line-height: 1.5em;
+}
+
+section.testGroup a
+{
+  text-decoration: none;
+}
+
+section#descriptionSection
+{
+  background-color: #fdffce;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-bottom: 1em;
+}
+
+section#descriptionSection p
+{
+  margin-bottom: 1em;
+}
+
+
+#logSection
+{
+  display: block;
+  height: 100px;
+}
+
+#logsummary
+{
+  font-weight: bold;
+  margin-bottom: 1em;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  display: none;
+}
+
+#logtable
+{
+  width: 100%;
+}
+
+#logtable thead th
+{
+  border-bottom: 0.1em solid #ccc;
+}
+
+#logtable th,
+#logtable td
+{
+  text-align: left;
+  padding: 1em;
+  vertical-align: middle;
+}
+
+#logtable th:first-of-type,
+#logtable td:first-of-type
+{
+  width: 15%;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+#logtable tbody tr:nth-of-type(even)
+{
+  background-color: #f3f4f5;
+}
+
+#logtable tr.passed td:first-of-type
+{
+  color: green;
+}
+
+#logtable tr.failed td:first-of-type,
+#logtable tr.error td:first-of-type
+{
+  color: red;
+}
+
+#logtable td:last-of-type
+{
+  line-height: 2em;
+}
+
+#logtable th:nth-of-type(2),
+#logtable td:nth-of-type(2)
+{
+  width: 35%;
+}
