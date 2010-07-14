@@ -18,7 +18,9 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        Tests the base Aphid application delegate.
+        Tests the base Aphid application delegate for expected behavior,
+        including setting up shared instances of the logger and loading
+        indicator.
       </p>
     </section>
 
@@ -29,9 +31,25 @@
     <!-- Tests -->
     <script>
       new Test.Unit.Runner({
-    
+
+        setup: function()
+        {
+          this.application = new Aphid.Core.Application();
+        },
+
         testShouldInitializeLogger: function() { with(this) {
-          assertNotNull(Aphid || null);
+          assert(this.application.logger);
+          assertInstanceOf(Aphid.Support.Logger, this.application.logger);
+        }},
+
+        testShouldAliasLoggerToGlobal: function() { with(this) {
+          assert($L);
+          assertInstanceOf(Aphid.Support.Logger, $L);
+        }},
+
+        testShouldInitializeLoadingIndicator: function() { with(this) {
+          assert(this.application.loadingIndicator);
+          assertInstanceOf(Aphid.UI.LoadingIndicator, this.application.loadingIndicator);
         }}
 
       }, { testLog: "logSection" });
