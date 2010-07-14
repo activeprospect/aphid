@@ -6,6 +6,7 @@ body
   right: 0;
   bottom: 0;
   left: 0;
+  overflow: auto;
   padding: 1em;
   font-family: Lucida Grande;
 }
