@@ -110,6 +110,11 @@ Aphid.Support.Extensions.Array = {
   random: function()
   {
     return this[parseInt(Math.random() * this.length)];
+  },
+
+  randomize: function()
+  {
+    for (var rnd, tmp, i = this.length; i; rnd = parseInt(Math.random() * i), tmp = this[--i], this[i] = this[rnd], this[rnd] = tmp);
   }
 
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Aphid.Support.Extensions.Array Tests</title>
+    <link rel="stylesheet" href="../../../../Build/Aphid.css" />
+    <link rel="stylesheet" href="../../../Tests.css" />
+    <script src="../../../../Build/Aphid.Combined.js"></script>
+    <script src="../../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Support.Extensions.Array Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Tests our custom extensions that we've made to the core JavaScript
+        Array implementation.
+      </p>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+      new Test.Unit.Runner({
+
+        testArrayRandomShouldReturnRandomElement: function() { with(this) {
+          var testArray = [ "A", "B", "C" ];
+          var random    = testArray.random();
+          assertNotEqual(testArray, random);
+          assert(testArray.include(random));
+        }},
+
+        testArrayRandomizeShouldReturnRandomizedContents: function() { with(this) {
+          var testArray  = $R("A", "Z").toArray();
+          var randomized = testArray.clone();
+          randomized.randomize();
+          assertNotEqual(testArray.toString(), randomized.toString());
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
