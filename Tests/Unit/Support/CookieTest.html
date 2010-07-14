@@ -15,10 +15,10 @@
       <h1>Aphid.Support.Cookie Tests</h1>
     </header>
 
-    <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Tests the setting and retrieving of cookies using the
+        Aphid.Support.Cookie class.
       </p>
     </section>
 
@@ -30,8 +30,40 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        setup: function()
+        {
+        },
+
+        testCookieAliasedWithGlobal: function() { with(this) {
+          assertNotNull($C);
+        }},
+
+        testShouldSetSessionCookie: function() { with(this) {
+          var cookieName   = String.random('20');
+          var cookieString = $C.set(cookieName, "foo");
+          var cookie       = $C.get(cookieName);
+          assertEqual(cookieName + "=foo", cookieString);
+          assert(cookie);
+          assertEqual("foo", cookie);
+        }},
+
+        testShouldSetCookieWithExpiry: function() { with(this) {
+          var cookieName   = String.random('20');
+          var cookieString = $C.set(cookieName, "foo", 30);
+          var cookie       = $C.get(cookieName);
+          var expires      = new Date();
+          expires.setTime(expires.getTime() + (86400000 * parseFloat(30)));
+          assertEqual(cookieName + "=foo; expires=" + expires.toGMTString(), cookieString);
+          assert(cookie);
+          assertEqual("foo", cookie);
+        }},
+
+        testShouldEraseCookie: function() { with(this) {
+          var cookieName = String.random('20');
+          $C.set(cookieName, "foo");
+          assert($C.get(cookieName));
+          assertEqual("foo", $C.erase(cookieName));
+          assert(!$C.get(cookieName));
         }}
 
       }, { testLog: "logSection" });

@@ -103,7 +103,6 @@ Aphid.Support.Cookie = {
     Cookie.set('_test', '1');
     return Cookie.erase('_test') != false;
   }
-  
 
 }
 

@@ -451,7 +451,6 @@ Aphid.Support.Cookie = {
     return Cookie.erase('_test') != false;
   }
 
-
 }
 
 $C = Aphid.Support.Cookie;
