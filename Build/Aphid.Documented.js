@@ -486,7 +486,7 @@ Aphid.Support.Logger.prototype = {
   **/
   initialize: function(level)
   {
-    this.level = Object.isUndefined(level) ? Aphid.Logger.INFO_LEVEL : level;
+    this.level = Object.isUndefined(level) ? Aphid.Support.Logger.INFO_LEVEL : level;
   },
 
   /**

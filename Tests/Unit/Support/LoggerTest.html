@@ -30,8 +30,109 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        logger: false,
+        lastMessage: false,
+        lastLevel: false,
+
+        setup: function()
+        {
+          this.logger      = new Aphid.Support.Logger(Aphid.Support.Logger.DEBUG_LEVEL);
+          this.lastMessage = false;
+          this.lastLevel   = false;
+          window.console   = {
+            debug: function(message)
+            {
+              this.lastMessage = message;
+              this.lastLevel = 'debug';
+            }.bind(this),
+            info: function(message)
+            {
+              this.lastMessage = message;
+              this.lastLevel = 'info';
+            }.bind(this),
+            warn: function(message)
+            {
+              this.lastMessage = message;
+              this.lastLevel = 'warn';
+            }.bind(this),
+            error: function(message)
+            {
+              this.lastMessage = message;
+              this.lastLevel = 'error';
+            }.bind(this)
+          };
+        },
+
+        testShouldDefaultToInfoLevel: function() { with(this) {
+          var logger = new Aphid.Support.Logger();
+          assertEqual(Aphid.Support.Logger.INFO_LEVEL, logger.level);
+        }},
+
+        testShouldSetLogLevelDuringInitialization: function() { with(this) {
+          var logger = new Aphid.Support.Logger(Aphid.Support.Logger.WARNING_LEVEL);
+          assertEqual(Aphid.Support.Logger.WARNING_LEVEL, logger.level);
+        }},
+
+        testShouldIgnoreMessagesBelowConfiguredLogLevel: function() { with(this) {
+          var logger = new Aphid.Support.Logger(Aphid.Support.Logger.WARNING_LEVEL);
+          logger.info("Should not be logged");
+          assertEqual(false, this.lastMessage);
+        }},
+
+        testShouldLogDebugMessages: function() { with(this) {
+          var message = "This is a message at the debug level";
+          this.logger.debug(message);
+          assertEqual(message, this.lastMessage);
+          assertEqual('debug', this.lastLevel);
+        }},
+
+        testShouldLogDebugMessagesWithPrefix: function() { with(this) {
+          var message = "This is a message at the debug level";
+          this.logger.debug(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('debug', this.lastLevel);
+        }},
+
+        testShouldLogInfoMessages: function() { with(this) {
+          var message = "This is a message at the info level";
+          this.logger.info(message);
+          assertEqual(message, this.lastMessage);
+          assertEqual('info', this.lastLevel);
+        }},
+
+        testShouldLogInfoMessagesWithPrefix: function() { with(this) {
+          var message = "This is a message at the info level";
+          this.logger.info(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('info', this.lastLevel);
+        }},
+
+        testShouldLogWarningMessages: function() { with(this) {
+          var message = "This is a message at the warn level";
+          this.logger.warn(message);
+          assertEqual(message, this.lastMessage);
+          assertEqual('warn', this.lastLevel);
+        }},
+
+        testShouldLogWarningMessagesWithPrefix: function() { with(this) {
+          var message = "This is a message at the warn level";
+          this.logger.warn(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('warn', this.lastLevel);
+        }},
+
+        testShouldLogErrorMessages: function() { with(this) {
+          var message = "This is a message at the error level";
+          this.logger.error(message);
+          assertEqual(message, this.lastMessage);
+          assertEqual('error', this.lastLevel);
+        }},
+
+        testShouldLogErrorMessagesWithPrefix: function() { with(this) {
+          var message = "This is a message at the error level";
+          this.logger.error(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('error', this.lastLevel);
         }}
 
       }, { testLog: "logSection" });
