@@ -66,7 +66,6 @@ Aphid.Core.Application.prototype = {
   _initializeLogger: function()
   {
     this.logger = new Aphid.Support.Logger(this.logLevel);
-    $L = this.logger;
     return this.logger;
   }
 

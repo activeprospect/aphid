@@ -193,17 +193,7 @@ Aphid.Support.Cookie = {
 }
 
 $C = Aphid.Support.Cookie;
-Aphid.Support.Logger = Class.create();
-
-Aphid.Support.Logger.DEBUG_LEVEL = 4;
-
-Aphid.Support.Logger.INFO_LEVEL = 3;
-
-Aphid.Support.Logger.WARNING_LEVEL = 2;
-
-Aphid.Support.Logger.ERROR_LEVEL = 1;
-
-Aphid.Support.Logger.prototype = {
+Aphid.Support.Logger = Class.create({
 
   level: false,
 
@@ -252,7 +242,17 @@ Aphid.Support.Logger.prototype = {
       window.console.error(message);
   }
 
-};
+});
+
+Aphid.Support.Logger.DEBUG_LEVEL = 4;
+
+Aphid.Support.Logger.INFO_LEVEL = 3;
+
+Aphid.Support.Logger.WARNING_LEVEL = 2;
+
+Aphid.Support.Logger.ERROR_LEVEL = 1;
+
+$L = new Aphid.Support.Logger();
 
 Aphid.Core = {};
 
@@ -297,7 +297,6 @@ Aphid.Core.Application.prototype = {
   _initializeLogger: function()
   {
     this.logger = new Aphid.Support.Logger(this.logLevel);
-    $L = this.logger;
     return this.logger;
   }
 

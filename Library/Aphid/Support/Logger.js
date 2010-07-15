@@ -11,40 +11,7 @@
  *     // => "[AssetLoader] Loading assets from server" to the console
  *
 **/
-Aphid.Support.Logger = Class.create();
-
-/**
- * Aphid.Support.Logger.DEBUG_LEVEL = 4;
- *
- * Displays all messages, including those that are simply for debugging
- * purposes.
-**/
-Aphid.Support.Logger.DEBUG_LEVEL = 4;
-
-/**
- * Aphid.Support.Logger.INFO_LEVEL = 3;
- * 
- * Displays messages of informational significance, as well as all warning
- * and error messages.
-**/
-Aphid.Support.Logger.INFO_LEVEL = 3;
-
-/**
- * Aphid.Support.Logger.WARNING_LEVEL = 2;
- * 
- * Displays warning messages that may or may not need attention, as well all
- * error messages.
-**/
-Aphid.Support.Logger.WARNING_LEVEL = 2;
-
-/**
- * Aphid.Support.Logger.ERROR_LEVEL = 1;
- * 
- * Displays only critical error messages that need attention.
-**/
-Aphid.Support.Logger.ERROR_LEVEL = 1;
-
-Aphid.Support.Logger.prototype = {
+Aphid.Support.Logger = Class.create({
 
   /**
    * Aphid.Support.Logger#level -> Number
@@ -149,4 +116,37 @@ Aphid.Support.Logger.prototype = {
       window.console.error(message);
   }
 
-};
+});
+
+/**
+ * Aphid.Support.Logger.DEBUG_LEVEL = 4;
+ *
+ * Displays all messages, including those that are simply for debugging
+ * purposes.
+**/
+Aphid.Support.Logger.DEBUG_LEVEL = 4;
+
+/**
+ * Aphid.Support.Logger.INFO_LEVEL = 3;
+ * 
+ * Displays messages of informational significance, as well as all warning
+ * and error messages.
+**/
+Aphid.Support.Logger.INFO_LEVEL = 3;
+
+/**
+ * Aphid.Support.Logger.WARNING_LEVEL = 2;
+ * 
+ * Displays warning messages that may or may not need attention, as well all
+ * error messages.
+**/
+Aphid.Support.Logger.WARNING_LEVEL = 2;
+
+/**
+ * Aphid.Support.Logger.ERROR_LEVEL = 1;
+ * 
+ * Displays only critical error messages that need attention.
+**/
+Aphid.Support.Logger.ERROR_LEVEL = 1;
+
+$L = new Aphid.Support.Logger();

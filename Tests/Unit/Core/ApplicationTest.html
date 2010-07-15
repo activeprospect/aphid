@@ -43,11 +43,6 @@
           assertInstanceOf(Aphid.Support.Logger, this.application.logger);
         }},
 
-        testShouldAliasLoggerToGlobal: function() { with(this) {
-          assert($L);
-          assertInstanceOf(Aphid.Support.Logger, $L);
-        }},
-
         testShouldInitializeLoadingIndicator: function() { with(this) {
           assert(this.application.loadingIndicator);
           assertInstanceOf(Aphid.UI.LoadingIndicator, this.application.loadingIndicator);

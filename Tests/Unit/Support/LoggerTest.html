@@ -57,6 +57,11 @@
           };
         },
 
+        testShouldInitializeGlobalLoggerInstance: function() { with(this) {
+          assert($L);
+          assertInstanceOf(Aphid.Support.Logger, $L);
+        }},
+
         testShouldDefaultToInfoLevel: function() { with(this) {
           var logger = new Aphid.Support.Logger();
           assertEqual(Aphid.Support.Logger.INFO_LEVEL, logger.level);
