@@ -19,9 +19,13 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Tests our custom extensions that we've made to the core JavaScript
+        Object implementation.
       </p>
     </section>
+
+    <!-- Test Elements -->
+    <span id="eventTest"></span>
 
     <!-- Log Section -->
     <section id="logSection">
@@ -31,8 +35,12 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        testObjectIsEventShouldIdentifyEvents: function() { with(this) {
+          var element = $('eventTest');
+          element.observe('click', function(event) {
+            assert(Object.isEvent(event));
+          });
+          Event.simulateMouse(element, 'click');
         }}
 
       }, { testLog: "logSection" });
