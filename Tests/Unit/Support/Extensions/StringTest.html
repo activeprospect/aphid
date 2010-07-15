@@ -37,6 +37,11 @@
           assertEqual("fooBar", testString.lowerCaseFirst());
         }},
 
+        testStringUpperCaseFirstShouldUpperCaseFirstLetter: function() { with(this) {
+          var testString = "fooBar";
+          assertEqual("FooBar", testString.upperCaseFirst());
+        }},
+
         testStringToIntShouldCastStringAsInteger: function() { with(this) {
           var testString = "123";
           assertEqual("number", typeof testString.toInt());

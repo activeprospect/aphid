@@ -127,6 +127,11 @@ Aphid.Support.Extensions.String = {
     return this.charAt(0).toLowerCase() + this.substring(1);
   },
 
+  upperCaseFirst: function()
+  {
+    return this.charAt(0).toUpperCase() + this.substring(1);
+  },
+
   toInt: function()
   {
     return parseInt(this);

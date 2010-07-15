@@ -8,10 +8,24 @@ Aphid.Support.Extensions.String = {
 
   /**
    * Aphid.Support.Extensions.String#lowerCaseFirst() -> String
+   *
+   * Converts the first character of a string to its lower-case form, without
+   * changing the case of the rest of the string.
   **/
   lowerCaseFirst: function()
   {
     return this.charAt(0).toLowerCase() + this.substring(1);
+  },
+
+  /**
+   * Aphid.Support.Extensions.String#upperCaseFirst() -> String
+   *
+   * Converts the first character of a string to its upper-case form, without
+   * changing the case of the rest of the string.
+  **/
+  upperCaseFirst: function()
+  {
+    return this.charAt(0).toUpperCase() + this.substring(1);
   },
 
   /**
