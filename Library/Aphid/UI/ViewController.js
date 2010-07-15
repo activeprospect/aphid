@@ -46,7 +46,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   **/
   initialize: function($super, delegate)
   {
-    $super(this.viewName, delegate);
+    $super(delegate);
   },
 
   // Modal View Controllers --------------------------------------------------

@@ -938,19 +938,15 @@ Aphid.UI.View = Class.create(
    *
    * Initializes a new View instance.
   **/
-  // TODO This is in flux...
-  initialize: function(viewName, delegate)
+  initialize: function(delegate)
   {
     this.subviews = $A();
     this.delegate = delegate;
-    if (viewName) this.viewName = viewName;
+
     if (this.viewName)
-    {
       this._loadViewFromTemplate();
-    }
   },
 
-  // TODO This is in flux...
   initializeFromTemplate: function(element)
   {
     $L.info("initializeFromTemplate", "Aphid.UI.View");
@@ -1420,7 +1416,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   **/
   initialize: function($super, delegate)
   {
-    $super(this.viewName, delegate);
+    $super(delegate);
   },
 
   // Modal View Controllers --------------------------------------------------
@@ -2353,9 +2349,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Initializes a new instance.
   **/
-  initialize: function($super)
+  initialize: function($super, delegate)
   {
-    $super();
+    $super(delegate);
     this.items = $A();
     this.sortableOptions = {
       handle: "handle",

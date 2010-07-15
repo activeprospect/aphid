@@ -181,19 +181,15 @@ Aphid.UI.View = Class.create(
    *
    * Initializes a new View instance.
   **/
-  // TODO This is in flux...
-  initialize: function(viewName, delegate)
+  initialize: function(delegate)
   {
     this.subviews = $A();
     this.delegate = delegate;
-    if (viewName) this.viewName = viewName;
+
     if (this.viewName)
-    {
       this._loadViewFromTemplate();
-    }
   },
 
-  // TODO This is in flux...
   initializeFromTemplate: function(element)
   {
     $L.info("initializeFromTemplate", "Aphid.UI.View");

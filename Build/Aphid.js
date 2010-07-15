@@ -354,15 +354,13 @@ Aphid.UI.View = Class.create(
   initializedFromTemplate: false,
 
 
-  initialize: function(viewName, delegate)
+  initialize: function(delegate)
   {
     this.subviews = $A();
     this.delegate = delegate;
-    if (viewName) this.viewName = viewName;
+
     if (this.viewName)
-    {
       this._loadViewFromTemplate();
-    }
   },
 
   initializeFromTemplate: function(element)
@@ -718,7 +716,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
   initialize: function($super, delegate)
   {
-    $super(this.viewName, delegate);
+    $super(delegate);
   },
 
 
@@ -1385,9 +1383,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   sortableOptions: false,
 
-  initialize: function($super)
+  initialize: function($super, delegate)
   {
-    $super();
+    $super(delegate);
     this.items = $A();
     this.sortableOptions = {
       handle: "handle",
