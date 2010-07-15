@@ -19,7 +19,8 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Tests our custom extensions that we've made to the core JavaScript
+        String implementation.
       </p>
     </section>
 
@@ -31,8 +32,39 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        testStringLowerCaseFirstShouldLowerCaseFirstLetter: function() { with(this) {
+          var testString = "FooBar";
+          assertEqual("fooBar", testString.lowerCaseFirst());
+        }},
+
+        testStringToIntShouldCastStringAsInteger: function() { with(this) {
+          var testString = "123";
+          assertEqual("number", typeof testString.toInt());
+        }},
+
+        testStringPluralizeShouldPluralizeSimpleSingularForms: function() { with(this) {
+          var testString = "Apple";
+          assertEqual("Apples", testString.pluralize());
+        }},
+
+        testStringPluralizeShouldNotPluralizeWhenCountIsOne: function() { with(this) {
+          var testString = "Apple";
+          assertEqual("Apple", testString.pluralize(1));
+        }},
+
+        testStringPluralizeShouldPluralizeSingularFormsWithCustomPluralForm: function() { with(this) {
+          var testString = "Cactus";
+          assertEqual("Cacti", testString.pluralize(2, "Cacti"));
+        }},
+
+        testStringRandomShouldGenerateRandomString: function() { with(this) {
+          var testString = String.random();
+          assertMatch(/^[a-zA-Z0-9]+$/, testString);
+        }},
+
+        testStringRandomShouldGenerateRandomStringWithLength: function() { with(this) {
+          var testString = String.random(128);
+          assertMatch(/^[a-zA-Z0-9]{128}$/, testString);
         }}
 
       }, { testLog: "logSection" });
