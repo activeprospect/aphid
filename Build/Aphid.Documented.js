@@ -256,7 +256,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 
 Element.addMethods(Aphid.Support.Extensions.Vendor.Prototype.Element.Methods);
 /**
- * Aphid.Support.Extensions.Object
+ * mixin Aphid.Support.Extensions.Object
  *
  * Extensions to the core JavaScript Object implementation.
 **/
@@ -270,6 +270,25 @@ Aphid.Support.Extensions.Object = {
   isEvent: function(object)
   {
     return Object.isArray(object.toString().match('Event'));
+  },
+
+  /**
+   * Aphid.Support.Extensions.Object.applyOptionsToInstance(instance, options) -> null
+   *
+   * - instance (Object): The instance that the options should be applied to
+   * - options (Hash): Instance property values that should be applied
+   *
+   * Iterates the options and sets any matching property values on the
+   * provided instance. Only pre-defined properties on the instance will be
+   * set with matching values from the options hash.
+  **/
+  applyOptionsToInstance: function(instance, options)
+  {
+    options = $H(options);
+    options.each(function(pair) {
+      if (Object.isUndefined(instance[pair.key])) return;
+      instance[pair.key] = pair.value;
+    });
   }
 
 }
@@ -1009,14 +1028,17 @@ Aphid.UI.View = Class.create(
   // Initializers ------------------------------------------------------------
 
   /**
-   * new Aphid.UI.View()
+   * new Aphid.UI.View([options])
+   *
+   * - options (Hash): Initial property values to be set on the View instance
    *
    * Initializes a new View instance.
   **/
-  initialize: function(delegate)
+  initialize: function(options)
   {
+    Object.applyOptionsToInstance(this, options);
+
     this.subviews = $A();
-    this.delegate = delegate;
 
     if (this.viewName)
       this._loadViewFromTemplate();
@@ -1339,15 +1361,16 @@ Aphid.UI.View = Class.create(
 
         // If a custom view class was not provided, default to Aphid.UI.View
         if (!viewClass)
-          viewClass = "Aphid.UI.View";
+          viewClassImplementation = eval("Aphid.UI.View");
+        else
+          viewClassImplementation = eval(viewClass);
 
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
           $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            instance = eval("new " + viewClass + "()");
-            instance.delegate = this;
+            instance = new viewClassImplementation({ delegate: this });
             instance.initializeFromTemplate(element);
             if (instance.awakeFromHTML) instance.awakeFromHTML();
           }
@@ -1485,13 +1508,15 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   // -------------------------------------------------------------------------
 
   /**
-   * new Aphid.UI.ViewController(delegate)
+   * new Aphid.UI.ViewController([options])
    *
-   * Initializes a new Modal View Controller with the specified delegate.
+   * - options (Hash): Initial property values to set on the View Controller instance
+   *
+   * Initializes a new View Controller.
   **/
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // Modal View Controllers --------------------------------------------------
@@ -1668,9 +1693,9 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
   // -------------------------------------------------------------------------
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // View Callbacks
@@ -1850,9 +1875,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   constraint: false, // "horizontal, vertical"
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // initializeFromTemplate: function($super, element)
@@ -2424,9 +2449,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Initializes a new instance.
   **/
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
     this.items = $A();
     this.sortableOptions = {
       handle: "handle",

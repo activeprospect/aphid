@@ -29,9 +29,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   constraint: false, // "horizontal, vertical"
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // initializeFromTemplate: function($super, element)

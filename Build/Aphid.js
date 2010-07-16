@@ -100,6 +100,15 @@ Aphid.Support.Extensions.Object = {
   isEvent: function(object)
   {
     return Object.isArray(object.toString().match('Event'));
+  },
+
+  applyOptionsToInstance: function(instance, options)
+  {
+    options = $H(options);
+    options.each(function(pair) {
+      if (Object.isUndefined(instance[pair.key])) return;
+      instance[pair.key] = pair.value;
+    });
   }
 
 }
@@ -390,10 +399,11 @@ Aphid.UI.View = Class.create(
   initializedFromTemplate: false,
 
 
-  initialize: function(delegate)
+  initialize: function(options)
   {
+    Object.applyOptionsToInstance(this, options);
+
     this.subviews = $A();
-    this.delegate = delegate;
 
     if (this.viewName)
       this._loadViewFromTemplate();
@@ -634,15 +644,16 @@ Aphid.UI.View = Class.create(
             viewClass = element.getAttribute('data-view-class');
 
         if (!viewClass)
-          viewClass = "Aphid.UI.View";
+          viewClassImplementation = eval("Aphid.UI.View");
+        else
+          viewClassImplementation = eval(viewClass);
 
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
           $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            instance = eval("new " + viewClass + "()");
-            instance.delegate = this;
+            instance = new viewClassImplementation({ delegate: this });
             instance.initializeFromTemplate(element);
             if (instance.awakeFromHTML) instance.awakeFromHTML();
           }
@@ -750,9 +761,9 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   modalViewController: false,
 
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
 
@@ -857,9 +868,9 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   currentTab: false,
 
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
 
@@ -992,9 +1003,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   constraint: false, // "horizontal, vertical"
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
 
@@ -1419,9 +1430,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   sortableOptions: false,
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
     this.items = $A();
     this.sortableOptions = {
       handle: "handle",

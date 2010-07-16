@@ -84,9 +84,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Initializes a new instance.
   **/
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
     this.items = $A();
     this.sortableOptions = {
       handle: "handle",

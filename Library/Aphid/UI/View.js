@@ -177,14 +177,17 @@ Aphid.UI.View = Class.create(
   // Initializers ------------------------------------------------------------
 
   /**
-   * new Aphid.UI.View()
+   * new Aphid.UI.View([options])
+   *
+   * - options (Hash): Initial property values to be set on the View instance
    *
    * Initializes a new View instance.
   **/
-  initialize: function(delegate)
+  initialize: function(options)
   {
+    Object.applyOptionsToInstance(this, options);
+
     this.subviews = $A();
-    this.delegate = delegate;
 
     if (this.viewName)
       this._loadViewFromTemplate();
@@ -507,15 +510,16 @@ Aphid.UI.View = Class.create(
 
         // If a custom view class was not provided, default to Aphid.UI.View
         if (!viewClass)
-          viewClass = "Aphid.UI.View";
+          viewClassImplementation = eval("Aphid.UI.View");
+        else
+          viewClassImplementation = eval(viewClass);
 
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
           $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            instance = eval("new " + viewClass + "()");
-            instance.delegate = this;
+            instance = new viewClassImplementation({ delegate: this });
             instance.initializeFromTemplate(element);
             if (instance.awakeFromHTML) instance.awakeFromHTML();
           }

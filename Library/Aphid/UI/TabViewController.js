@@ -38,9 +38,9 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
   // -------------------------------------------------------------------------
 
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // View Callbacks

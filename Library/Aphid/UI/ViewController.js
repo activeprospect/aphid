@@ -40,13 +40,15 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   // -------------------------------------------------------------------------
 
   /**
-   * new Aphid.UI.ViewController(delegate)
+   * new Aphid.UI.ViewController([options])
    *
-   * Initializes a new Modal View Controller with the specified delegate.
+   * - options (Hash): Initial property values to set on the View Controller instance
+   *
+   * Initializes a new View Controller.
   **/
-  initialize: function($super, delegate)
+  initialize: function($super, options)
   {
-    $super(delegate);
+    $super(options);
   },
 
   // Modal View Controllers --------------------------------------------------
