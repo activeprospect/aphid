@@ -649,25 +649,47 @@ Aphid.Core = {};
  * automatically gains a logging instance and other pre-flight setup required
  * to bootstrap a new Aphid-based application instance.
  *
- * **Usage Example**
+ * ### Usage Example
  *
- *     var FooApplication = Class.create(Aphid.Core.Application, {
+ *     var Application = Class.create(Aphid.Core.Application, {
  *       initialize: function($super)
  *       {
  *         $super();
- *         this.logger.info("Initializing the Foo Application...", "FooApplication");
+ *         this.logger.info("Initializing the Foo Application...", "Application");
  *       }
  *     });
+ *
+ * ### Default Initialization
+ *
+ * If you do not create your own subclass of Aphid.Core.Application, a default
+ * instance will be initialized for you.
+ *
 **/
-Aphid.Core.Application = Class.create();
 
-Aphid.Core.Application.prototype = {
+var Application;
 
-  // Application Logging
-  logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
+Aphid.Core.Application = Class.create({
+
+  /**
+   * Aphid.Core.Application#logger -> Aphid.Support.Logger | false
+   *
+   * A global, shared instance of [[Aphid.Support.Logger]].
+  **/
   logger: false,
 
-  // Loading Indicator
+  /**
+   * Aphid.Core.Application#logLevel -> Integer
+   *
+   * The default log level to be used by the global, shared instance of
+   * [[Aphid.Support.Logger]].
+  **/
+  logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
+
+  /**
+   * Aphid.Core.Application#loadingIndicator -> Aphid.Support.LoadingIndicator | false
+   *
+   * A global, shared instance of [[Aphid.Support.LoadingIndicator]].
+  **/
   loadingIndicator: false,
 
   /**
@@ -679,6 +701,18 @@ Aphid.Core.Application.prototype = {
   {
     this._initializeLogger();
     this._initializeLoadingIndicator();
+  },
+
+  /**
+   * Aphid.Core.Application#applicationDidFinishInitialization() -> null
+   *
+   * This callback is triggered after the Application instance has been
+   * initialized and can be overloaded in your subclass to perform any actions
+   * that need to be performed after initialization has completed.
+  **/
+  applicationDidFinishInitialization: function()
+  {
+
   },
 
   /*
@@ -710,7 +744,30 @@ Aphid.Core.Application.prototype = {
     return this.logger;
   }
 
-};
+});
+
+/*
+ * Aphid.Core.Application.bootstrap() -> null
+ *
+ * Initializes the application delegate (an instance of Application that
+ * subclasses [[Aphid.Core.Application]] or a default instance of
+ * [[Aphid.Core.Application]] if a custom subclass does not exist).
+ *
+ * This method should be called after the DOM has been loaded and should never
+ * be called directly by your application.
+**/
+Aphid.Core.Application.bootstrap = function()
+{
+  if (Object.isUndefined(Application))
+  {
+    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", "Aphid.Core.Application");
+    Application = Class.create(Aphid.Core.Application);
+  }
+  Application.sharedInstance = new Application();
+  if (!Object.isUndefined(Application.sharedInstance.applicationDidFinishInitialization))
+    Application.sharedInstance.applicationDidFinishInitialization();
+}
+document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 /**
  * Aphid.UI
  *

@@ -256,12 +256,14 @@ $L = new Aphid.Support.Logger();
 
 Aphid.Core = {};
 
-Aphid.Core.Application = Class.create();
 
-Aphid.Core.Application.prototype = {
+var Application;
+
+Aphid.Core.Application = Class.create({
+
+  logger: false,
 
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
-  logger: false,
 
   loadingIndicator: false,
 
@@ -269,6 +271,11 @@ Aphid.Core.Application.prototype = {
   {
     this._initializeLogger();
     this._initializeLoadingIndicator();
+  },
+
+  applicationDidFinishInitialization: function()
+  {
+
   },
 
   /*
@@ -300,7 +307,30 @@ Aphid.Core.Application.prototype = {
     return this.logger;
   }
 
-};
+});
+
+/*
+ * Aphid.Core.Application.bootstrap() -> null
+ *
+ * Initializes the application delegate (an instance of Application that
+ * subclasses [[Aphid.Core.Application]] or a default instance of
+ * [[Aphid.Core.Application]] if a custom subclass does not exist).
+ *
+ * This method should be called after the DOM has been loaded and should never
+ * be called directly by your application.
+**/
+Aphid.Core.Application.bootstrap = function()
+{
+  if (Object.isUndefined(Application))
+  {
+    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", "Aphid.Core.Application");
+    Application = Class.create(Aphid.Core.Application);
+  }
+  Application.sharedInstance = new Application();
+  if (!Object.isUndefined(Application.sharedInstance.applicationDidFinishInitialization))
+    Application.sharedInstance.applicationDidFinishInitialization();
+}
+document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
 Aphid.UI = {};
 
