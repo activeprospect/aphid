@@ -267,10 +267,16 @@ Aphid.Core.Application = Class.create({
 
   loadingIndicator: false,
 
+  mainWindow: false,
+
+  baseViewPath: false,
+
   initialize: function()
   {
     this._initializeLogger();
     this._initializeLoadingIndicator();
+    this.mainWindow = new Aphid.UI.Window();
+    this.baseViewPath = "Views";
   },
 
   applicationDidFinishInitialization: function()

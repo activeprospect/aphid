@@ -52,6 +52,22 @@ Aphid.Core.Application = Class.create({
   loadingIndicator: false,
 
   /**
+   * Aphid.Core.Application#mainWindow -> Aphid.UI.Window | false
+   *
+   * An instance of [[Aphid.UI.Window]] that represents the current document
+   * body.
+  **/
+  mainWindow: false,
+
+  /**
+   * Aphid.Core.Application#baseViewPath -> String | false
+   *
+   * The base view path (or URL) that view templates should be loaded from,
+   * by default.
+  **/
+  baseViewPath: false,
+
+  /**
    * new Aphid.Core.Application()
    *
    * Initializes the Logger.
@@ -60,6 +76,8 @@ Aphid.Core.Application = Class.create({
   {
     this._initializeLogger();
     this._initializeLoadingIndicator();
+    this.mainWindow = new Aphid.UI.Window();
+    this.baseViewPath = "Views";
   },
 
   /**
