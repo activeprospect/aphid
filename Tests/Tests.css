@@ -107,6 +107,10 @@ section#descriptionSection p
   margin-bottom: 1em;
 }
 
+#testElements
+{
+  display: none;
+}
 
 #logSection
 {

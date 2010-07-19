@@ -41,7 +41,7 @@
 
 Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
-  viewName: false,
+  displayName: false,
 
   /**
    * Aphid.UI.ListView#items -> Array
@@ -87,7 +87,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     $super(options);
+
     this.items = $A();
+
     this.sortableOptions = {
       handle: "handle",
       onChange: this._listViewOrderDidChange.bind(this),
@@ -95,24 +97,19 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     }
   },
 
-  initializeFromTemplate: function($super, element)
+  viewDidLoad: function($super)
   {
-    $super(element);
+    $super();
+
+    this.element.addClassName('ListView');
+
     if (this._validateContainer())
     {
       this.items = this.element.childElements();
       this._setupObservers();
       if (this.isSortable)
-        $L.info('sortable')
+        this._setupSorting();
     }
-  },
-
-  awakeFromHTML: function()
-  {
-    $L.info('Awoke from HTML', 'Aphid.UI.ListView');
-    if (this.isSortable)
-      this._setupSorting();
-    this.element.addClassName('ListView');
   },
 
   // Items -------------------------------------------------------------------
@@ -304,8 +301,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 // Method Name Mappings for Debugging ----------------------------------------
 
 Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initialize";
-Aphid.UI.ListView.prototype.initializeFromTemplate.displayName = "Aphid.UI.ListView.initializeFromTemplate";
-Aphid.UI.ListView.prototype.awakeFromHTML.displayName = "Aphid.UI.ListView.awakeFromHTML";
 Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
 Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";

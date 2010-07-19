@@ -19,8 +19,25 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Ensures that the Aphid.UI.View class can be initialized from static
+        HTML elements, by asynchronously loading templates and as a result of
+        outlets in the document or loaded templates.
       </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <section id="testElement">test-view-element</section>
+      <section id="testElementWithOutlet">
+        <section id="testElementWithOutletTestOutlet" data-outlet="testOutlet"></section>
+      </section>
+      <section id="testOutlet" data-outlet="testOutlet"></section>
+      <section id="testOutletWithOutlet" data-outlet="parentOutlet">
+        <section id="testOutletWithOutletChildOutlet" data-outlet="testOutlet"></section>
+      </section>
+      <section id="testElementWithOutletWithViewClass">
+        <section id="testOutletWithViewClass" data-outlet="testOutlet" data-view-class="AnotherTestView"></section>
+      </section>
     </section>
 
     <!-- Log Section -->
@@ -29,13 +46,136 @@
 
     <!-- Tests -->
     <script>
+
+      var TestView;
+      var AnotherTestView;
+
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        setup: function() { with(this) {
+          TestView = Class.create(Aphid.UI.View, {
+            testOutlet: false
+          });
+          AnotherTestView = Class.create(Aphid.UI.View, {});
+        }},
+
+        /*
+         * Ensures that instances of Aphid.UI.View can be initialized and have
+         * the expected default property values set after initialization.
+        **/
+        testShouldInitializeView: function() { with(this) {
+          var view = new Aphid.UI.View();
+          assertInstanceOf(Aphid.UI.View, view, "view should be an instance of Aphid.UI.View");
+          assertInstanceOf(Array, view.subviews, "subviews should be an instance of Array");
+          assert(!view.isLoaded, "isLoaded should be false");
+          assert(!view.isLoading, "isLoading should be false");
+        }},
+
+        /*
+         * Ensures that an instance of Aphid.UI.View can be initialized by
+         * passing an element to the constructor.
+        **/
+        testShouldInitializeViewFromElement: function() { with(this) {
+          var view = new Aphid.UI.View({
+            element: $('testElement')
+          });
+          assertEqual($('testElement'), view.element);
+          assert(view.isLoaded, "isLoaded should be true");
+          assert(!view.isLoading, "isLoading should be false");
+        }},
+
+        /*
+         * Ensures that an instance of Aphid.UI.View can be initialized by
+         * passing in the name of a template. The view must load this template
+         * asynchronously.
+        **/
+        testShouldInitializeViewFromTemplate: function() { with(this) {
+          var view = new Aphid.UI.View({
+            template: "TestTemplate"
+          });
+          assert(!view.isLoaded, "isLoaded should be false");
+          assert(view.isLoading, "isLoading should be true");
+          wait(1000, function() { with(this) {
+            assert(view.isLoaded, "isLoaded should be true");
+            assert(!view.isLoading, "isLoading should be false");
+            assert(view.element, "element should not be false");
+            assertEqual("testTemplate", view.element.identify());
+          }});
+        }},
+
+        /*
+         * Ensures that an instance of Aphid.UI.View can be initialized by
+         * passing in the element that defines an outlet.
+        **/
+        testShouldInitializeViewFromOutlet: function() { with(this) {
+          var view = new Aphid.UI.View({
+            outlet: $('testOutlet')
+          });
+          assert(view.isLoaded, "isLoaded should be true");
+          assert(!view.isLoading, "isLoading should be false");
+          assert(view.element, "element should not be false");
+          assertEqual($('testOutlet'), view.element);
+        }},
+
+        /*
+         * Ensures that outlets are initialized when they are found within
+         * a view that was initialized from an element.
+        **/
+        testShouldInitializeOutletFromElement: function() { with(this) {
+          var view = new TestView({
+            element: $("testElementWithOutlet")
+          });
+          assert(view.testOutlet, "testOutlet should not be false");
+          assertInstanceOf(Aphid.UI.View, view.testOutlet, "testOutlet should be an instance of Aphid.UI.View");
+          assertEqual("testElementWithOutletTestOutlet", view.testOutlet.element.identify());
+        }},
+
+        /*
+         * Ensures that outlets are initialized when they are found within
+         * a view that was initialized from a template that was loaded
+         * asynchronously.
+        **/
+        testShouldInitializeOutletFromTemplate: function() { with(this) {
+          var view = new TestView({
+            template: "TestTemplateWithOutlet"
+          });
+          wait(1000, function() { with(this) {
+            assert(view.testOutlet, "testOutlet should not be false");
+            assertInstanceOf(Aphid.UI.View, view.testOutlet, "testOutlet should be an instance of Aphid.UI.View");
+            assertEqual("testTemplateWithOutletTestOutlet", view.testOutlet.element.identify());
+          }});
+        }},
+
+        /*
+         * Ensures that outlets are initialized when they are found within
+         * a view that was initialized as an outlet of a parent view.
+        **/
+        testShouldInitializeOutletFromOutlet: function() { with(this) {
+          var view = new TestView({
+            outlet: $("testOutletWithOutlet")
+          });
+          assert(view.testOutlet, "testOutlet should not be false");
+          assertInstanceOf(Aphid.UI.View, view.testOutlet, "testOutlet should be an instance of Aphid.UI.View");
+          assertEqual("testOutletWithOutletChildOutlet", view.testOutlet.element.identify());
+        }},
+
+        /*
+         * Ensures that an outlet the defines the data-view-class attribute
+         * for a custom class is actually initialized with the expected class.
+        **/
+        testShouldInitializeOutletWithViewClass: function() { with(this) {
+          var view = new TestView({
+            element: $("testElementWithOutletWithViewClass")
+          });
+          assert(view.testOutlet, "testOutlet should not be false");
+          assertInstanceOf(AnotherTestView, view.testOutlet, "testOutlet should be an instance of AnotherTestView");
         }}
 
+        // TODO Add tests for actions
+        // 
+
       }, { testLog: "logSection" });
+
     </script>
 
   </body>

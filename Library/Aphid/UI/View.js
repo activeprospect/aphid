@@ -4,6 +4,9 @@
  * This class serves as a lightweight wrapper for a DOM element and as a
  * scaffold on which to build functionality on top of the wrapped HTML.
  *
+ * **TODO** Document the 3 ways that views can be initialized: from an element,
+ * a template or an outlet...
+ *
  * ### Implementing Custom Views
  *
  * In general, [[Aphid.UI.View]] should be subclassed and not initialized
@@ -12,7 +15,7 @@
  * a subclass of [[Aphid.UI.View]]:
  *
  *     var FooBarView = Class.create(Aphid.UI.View, {
- *       viewName: "FooBarView",
+ *       displayName: "FooBarView",
  *       fooLabel: false,
  *       contentView: false,
  *       viewDidFinishLoading: function()
@@ -21,7 +24,7 @@
  *       }
  *     });
  *
- * In this example, the `viewName` property specifies the name of the view
+ * In this example, the `displayName` property specifies the name of the view
  * itself. This will be used to load the template (see the *View Templates*
  * section below for more details). The `fooLabel` and `contentView`
  * properties are outlets that will be wired up to elements within the view
@@ -35,7 +38,7 @@
  * initialized. The view template itself should be located in the path
  * that is defined by the `baseViewPath` instance property on your Application
  * delegate (which defaults to the relative path of *Views*). The filename of
- * the template should match the value of the [[Aphid.UI.View#viewName]]
+ * the template should match the value of the [[Aphid.UI.View#displayName]]
  * property (i.e. *Views/FooBarView.html*).
  *
  *     <header>
@@ -47,7 +50,7 @@
  *
  * View templates that are not wrapped in a single containing element will
  * automatically be wrapped in a <section/> element with the DOM ID set to
- * the `viewName` instance property.
+ * the `displayName` instance property.
  *
  * #### Outlets
  *
@@ -96,7 +99,6 @@
  * is recommended that you set an outlet on the element and set up your own
  * event observers.
  *
- *
  * ### Delegates Methods
  *
  *  - `viewDidFinishLoading` — Called once the view template has been fully
@@ -116,24 +118,41 @@ Aphid.UI.View = Class.create(
   delegate: false,
 
   /**
-   * Aphid.UI.View#viewName -> String
+   * Aphid.UI.View#displayName -> String
    *
-   * The name of the view that the instance of this view will be referenced
-   * by and load asynchronously. The name of the view template that will be
-   * automatically (and asynchronously) loaded is derived from this name.
-   *
-   * For example, if your *viewName* is set to MainView, Aphid will attempt
-   * to load *Views/MainView.html*. The directory in which views are loaded
-   * from is managed by the Application delegate's baseViewPath property.
+   * A friendly displayName for the view. Defining this property can help
+   * track down issues as it will be used when logging errors and warnings or
+   * other informational messages.
   **/
-  viewName: false,
+  displayName: false,
+
+  /**
+   * Aphid.UI.View#template -> String
+   *
+   * The base filename of the view template that should be loaded for this
+   * view.
+   *
+   * For example, if *template* is set to "MainView", Aphid will attempt to
+   * load *Views/MainView.html*. The directory in which view templates are
+   * loaded from is managed by the Application delegate's baseViewPath
+   * property.
+  **/
+  template: false,
 
   /**
    * Aphid.UI.View#element -> Element
    *
-   * A reference to the DOM Element that belongs to the view's instance.
+   * The root HTML element that contains the view.
   **/
   element: false,
+
+  /**
+   * Aphid.UI.View#outlet -> Element
+   *
+   * The HTML element that defines an outlet that references the view that
+   * should be loaded.
+  **/
+  outlet: false,
 
   /**
    * Aphid.UI.View#subviews -> Array
@@ -172,7 +191,7 @@ Aphid.UI.View = Class.create(
    * If the View instance was initialized from a template (using outlets),
    * this will be set to true.
   **/
-  initializedFromTemplate: false,
+  initializedFromOutlet: false,
 
   // Initializers ------------------------------------------------------------
 
@@ -187,17 +206,47 @@ Aphid.UI.View = Class.create(
   {
     Object.applyOptionsToInstance(this, options);
 
-    this.subviews = $A();
+    // Default State
+    this.subviews  = $A();
+    this.isLoaded  = false;
+    this.isLoading = false;
 
-    if (this.viewName)
-      this._loadViewFromTemplate();
+    // Initialize from Outlet
+    if (this.outlet)
+      this._initializeFromOutlet();
+
+    // Initialize from Element
+    else if (this.element)
+      this._initializeFromElement();
+
+    // Initialize from Template
+    else if (this.template)
+      this._initializeFromTemplate();
+
   },
 
-  initializeFromTemplate: function(element)
+  _initializeFromElement: function()
   {
-    $L.info("initializeFromTemplate", "Aphid.UI.View");
-    this.initializedFromTemplate = true;
-    this.element = element;
+    $L.info("Initializing from Element", "Aphid.UI.View");
+    this._setupView();
+  },
+
+  _initializeFromTemplate: function()
+  {
+    $L.info("Initializing from Template", "Aphid.UI.View");
+    this._loadTemplate();
+  },
+
+  _initializeFromOutlet: function()
+  {
+    $L.info("Initializing from Outlet", "Aphid.UI.View");
+    if (this.template)
+      this._initializeFromTemplate();
+    else
+    {
+      this.element = this.outlet;
+      this._setupView();
+    }
   },
 
   // View Management ---------------------------------------------------------
@@ -318,7 +367,7 @@ Aphid.UI.View = Class.create(
       return;
     }
 
-    $L.info('Adding "' + view.viewName + '" as a subview to "' + (this.viewName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
+    $L.info('Adding "' + view.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
 
     // Setup the View
     view.element.hide();
@@ -406,24 +455,22 @@ Aphid.UI.View = Class.create(
   // View Loading ------------------------------------------------------------
 
   /*
-   * Aphid.UI.View#_loadViewFromTemplate() -> null
+   * Aphid.UI.View#_loadTemplate() -> null
    *
-   * Loads the View template (as derived from the *viewName* and
+   * Loads the View template (as derived from the *template* and
    * *Application.baseViewPath* properties) asynchronously.
   **/
-  _loadViewFromTemplate: function()
+  _loadTemplate: function()
   {
-    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.viewName + '.html',
+    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.template + '.html',
         options  = {
           asynchronous: true,
           method: 'get',
-          onComplete: this._viewDidFinishLoading.bind(this),
+          onComplete: this._templateDidFinishLoading.bind(this),
           onFailure: function(transport)
           {
             if (transport.status == 404)
-            {
-              $L.error("Missing Template HTML (" + this.viewName + ")", "Aphid.UI.View");
-            }
+              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", "Aphid.UI.View");
           }.bind(this)
         };
 
@@ -444,29 +491,47 @@ Aphid.UI.View = Class.create(
    * TODO This method should probably just be viewDidFinishLoading so that subclasses can call it instead of making it a delegate call
    *
   **/
-  _viewDidFinishLoading: function(transport)
+  _templateDidFinishLoading: function(transport)
   {
-    var template = Element.fromString(transport.responseText);
+    var loadedTemplate = Element.fromString(transport.responseText);
 
     // If the view was initialized from a template, we need to insert the
     // template into the placeholder element that initialized the view
     // instance.
-    if (this.initializedFromTemplate)
+    if (this.outlet)
     {
-      // TODO We may need to ensure that we aren't doubling-up on the wrapper element with the same ID, etc...
-      this.element.update(template);
+      this.element = this.outlet.update(loadedTemplate);
+      // // TODO We may need to ensure that we aren't doubling-up on the wrapper element with the same ID, etc...
+      // this.element.update(template);
     }
 
-    // Otherwise, set the template directly on the object and let its delegate
-    // deal with it.
+    // // Otherwise, set the template directly on the object and let its delegate
+    // // deal with it.
     else
     {
-      if (Object.isElement(template))
-        this.element = template;
+      if (Object.isElement(loadedTemplate))
+        this.element = loadedTemplate;
       else
-        this.element = new Element("section", { className: 'view', id: this.viewName.lowerCaseFirst() }).update(transport.responseText);
+        this.element = new Element("section", { className: "view" }).update(transport.responseText);
     }
 
+    // Process the template by connecting outlets and actions and calling any
+    // callbacks and delegate methods.
+    this._setupView();
+  },
+
+  // View Processing ---------------------------------------------------------
+
+  /*
+   * Aphid.UI.View#_setupView() -> null
+   *
+   * Processes the view template which has already been loaded remotely or was
+   * present in the page when initialized with an element. This will connect
+   * all outlets and actions to the view instance and call the appropriate
+   * callbacks.
+  **/
+  _setupView: function()
+  {
     this._connectToOutlets();
     this._wireActionsToInstance();
     this.isLoaded  = true;
@@ -500,7 +565,7 @@ Aphid.UI.View = Class.create(
   _connectToOutlets: function()
   {
     var outletElements = this.element.select('*[data-outlet]');
-    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
 
     outletElements.each(
       function(element)
@@ -519,9 +584,10 @@ Aphid.UI.View = Class.create(
           var instance;
           $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            instance = new viewClassImplementation({ delegate: this });
-            instance.initializeFromTemplate(element);
-            if (instance.awakeFromHTML) instance.awakeFromHTML();
+            instance = new viewClassImplementation({
+              outlet: element,
+              delegate: this
+            });
           }
           catch (error)
           {
@@ -562,7 +628,7 @@ Aphid.UI.View = Class.create(
   _wireActionsToInstance: function()
   {
     var actionElements = this.element.select('*[data-action]');
-    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.viewName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
 
     actionElements.each(
       function(element)
@@ -592,7 +658,6 @@ Aphid.UI.View = Class.create(
 
   viewDidLoad: function()
   {
-    
   }
 
 });
@@ -608,7 +673,7 @@ Aphid.UI.View.prototype._addSubview.displayName = "Aphid.UI.View._addSubview";
 Aphid.UI.View.prototype.removeFromSuperview.displayName = "Aphid.UI.View.removeFromSuperview";
 Aphid.UI.View.prototype.removeFromSuperviewAnimated.displayName = "Aphid.UI.View.removeFromSuperviewAnimated";
 Aphid.UI.View.prototype._removeFromSuperview.displayName = "Aphid.UI.View._removeFromSuperview";
-Aphid.UI.View.prototype._viewDidFinishLoading.displayName = "Aphid.UI.View._viewDidFinishLoading";
-Aphid.UI.View.prototype._loadViewFromTemplate.displayName = "Aphid.UI.View._loadViewFromTemplate";
+Aphid.UI.View.prototype._loadTemplate.displayName = "Aphid.UI.View._loadTemplate";
+Aphid.UI.View.prototype._templateDidFinishLoading.displayName = "Aphid.UI.View._templateDidFinishLoading";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
 Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";

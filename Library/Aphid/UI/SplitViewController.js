@@ -34,35 +34,37 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     $super(options);
   },
 
-  // initializeFromTemplate: function($super, element)
-  // {
-  //   $super(element);
-  //   $L.error("Split views cannot be initialized from a template...", "Aphid.UI.SplitViewController");
-  // },
-
   viewDidLoad: function($super)
   {
+    $super();
+
     $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
     this.element.addClassName('SplitViewController');
+  },
 
-    // if (this.element.childElements().length != 2)
-    //   $L.error('Instances of Split View must have only 2 children', 'Aphid.UI.SplitViewController');
+  viewDidFinishLoading: function(view)
+  {
+    if (view == this.firstView)
+    {
+      var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
+          maxHeight = parseInt(this.firstView.element.getStyle('max-height'));
+    }
 
-    var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
-        maxHeight = parseInt(this.firstView.element.getStyle('max-height'));
-
-    this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
-      this.firstView.element,
-      this.secondView.element,
-      {
-        constraint: 'vertical',
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        onStart: this.onStart.bind(this),
-        onDrag: this.onDrag.bind(this),
-        change: this.change.bind(this),
-        onEnd: this.onEnd.bind(this)
-      });
+    if (this.firstView.isLoaded && this.secondView.isLoaded)
+    {
+      this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
+        this.firstView.element,
+        this.secondView.element,
+        {
+          constraint: 'vertical',
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+          onStart: this.onStart.bind(this),
+          onDrag: this.onDrag.bind(this),
+          change: this.change.bind(this),
+          onEnd: this.onEnd.bind(this)
+        });
+    }
   },
 
   // Pane Callbacks ----------------------------------------------------------

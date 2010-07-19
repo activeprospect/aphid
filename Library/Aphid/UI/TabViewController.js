@@ -23,7 +23,7 @@
 
 Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
-  viewName: false,
+  displayName: false,
   persistSelectedTab: false,
   defaultTab: false,
 
@@ -56,7 +56,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     // Select Persisted Tab...
     if (this.persistSelectedTab)
     {
-      var selectedTab = $C.get(this.viewName + '.selectedTab');
+      var selectedTab = $C.get(this.displayName + '.selectedTab');
       if (selectedTab)
       {
         $L.info('Restoring previously selected tab "' + selectedTab + '"');
@@ -107,7 +107,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     if (this.persistSelectedTab)
     {
       var tabName = tab.getAttribute('data-tab');
-      $C.set(this.viewName + '.selectedTab', tabName);
+      $C.set(this.displayName + '.selectedTab', tabName);
     }
 
     if (this.didSelectTab)

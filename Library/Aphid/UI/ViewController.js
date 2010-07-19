@@ -112,7 +112,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
       return;
     }
 
-    $L.info('Adding "' + viewController.viewName + '" as a subview to "' + (this.viewName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
+    $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
 
     // Display the Modal View Overlay
     if (!this._modalViewOverlay)
