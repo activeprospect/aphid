@@ -86,15 +86,13 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   initialize: function($super, options)
   {
-    $super(options);
-
     this.items = $A();
-
     this.sortableOptions = {
       handle: "handle",
       onChange: this._listViewOrderDidChange.bind(this),
       onUpdate: this._listViewOrderDidUpdate.bind(this)
     }
+    $super(options);
   },
 
   viewDidLoad: function($super)
@@ -104,12 +102,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.element.addClassName('ListView');
 
     if (this._validateContainer())
-    {
-      this.items = this.element.childElements();
-      this._setupObservers();
-      if (this.isSortable)
-        this._setupSorting();
-    }
+      this.setItems(this.element.childElements());
   },
 
   // Items -------------------------------------------------------------------
@@ -126,6 +119,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     this.items = this.element.update().insert(newItems).select('>li');
     this._setupObservers();
+    if (this.isSortable) this._setupSorting();
   },
 
   // Selection ---------------------------------------------------------------
@@ -143,7 +137,15 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (!this._listViewShouldSelectItem(item))
       return;
 
-    $L.info('Selecting item ' + this.items.indexOf(item) + ' in list...', 'Aphid.UI.ListView');
+    var itemIndex = this.items.indexOf(item);
+    if (itemIndex == -1)
+    {
+      $L.error("What?")
+      window.console.log(this.items)
+      window.console.log(this)
+    }
+
+    $L.info('Selecting item ' + itemIndex + ' in list...', 'Aphid.UI.ListView');
 
     // Don't allow the currently selected item to be reselected.
     if (this.selectedItem && this.selectedItem == item)
