@@ -1665,7 +1665,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
       this._modalViewContainer.hide();
       document.body.insert(this._modalViewContainer);
     }
-    this._modalViewContainer.appear({ duration: 0.5 }).morph({ top: "10%", bottom: "10%" }, { duration: 0.25 })
+    animated ? this._modalViewContainer.appear({ duration: 0.5 }).morph({ top: "10%", bottom: "10%" }, { duration: 0.25 }) : this._modalViewContainer.show();
 
     // Setup the View
     viewController.element.hide();
