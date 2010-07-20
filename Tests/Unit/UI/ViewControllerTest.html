@@ -19,8 +19,17 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Ensures that the Aphid.UI.ViewController class can be initialized and
+        that presentation and dismissal of modal view controllers is possible.
       </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElementsx">
+      <section id="testView"></section>
+      <section id="testModalView"></section>
+      <section id="testViewAnimated"></section>
+      <section id="testModalViewAnimated"></section>
     </section>
 
     <!-- Log Section -->
@@ -29,10 +38,69 @@
 
     <!-- Tests -->
     <script>
+
+      var TestViewController;
+      var TestModalViewController;
+
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        setup: function() { with(this) {
+          TestViewController = Class.create(Aphid.UI.ViewController, {});
+          TestModalViewController = Class.create(Aphid.UI.ViewController, {});
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ViewController can be
+         * initialized.
+        **/
+        testShouldInitializeViewController: function() { with(this) {
+          var viewController = new TestViewController();
+          assertInstanceOf(Aphid.UI.ViewController, viewController, "view should be an instance of Aphid.UI.ViewController");
+        }},
+
+        /*
+         * Ensures that modal view controllers can be presented and dismissed.
+        **/
+        testShouldPresentAndDismissModalViewController: function() { with(this) {
+          var viewController      = new TestViewController({ element: $('testView') });
+          var modalViewController = new TestModalViewController({ element: $('testModalView') });
+          // Present
+          viewController.presentModalViewController(modalViewController);
+          assert(viewController._modalViewOverlay, "_modalViewOverlay should not be false");
+          assert(viewController._modalViewOverlay.visible(), "_modalViewOverlay should be visible");
+          assert(viewController._modalViewContainer, "_modalViewContainer should not be false");
+          assert(viewController._modalViewContainer.visible(), "_modalViewContainer should be visible");
+          assertEqual(modalViewController, viewController.modalViewController, "modalViewController should equal the presented view controller instance");
+          // Dismiss
+          viewController.dismissModalViewController();
+          assert(!viewController._modalViewOverlay.visible(), "_modalViewOverlay should not be visible");
+          assert(!viewController._modalViewContainer.visible(), "_modalViewContainer should not be visible");
+          assert(!viewController.modalViewController, "modalViewController should be false");
+        }},
+
+        /*
+         * Ensures that modal view controllers can be presented and dismissed
+         * with animation.
+        **/
+        testShouldPresentAndDismissModalViewControllerAnimated: function() { with(this) {
+          var viewController      = new TestViewController({ element: $('testViewAnimated') });
+          var modalViewController = new TestModalViewController({ element: $('testModalViewAnimated') });
+          // Present
+          viewController.presentModalViewControllerAnimated(modalViewController);
+          assert(viewController._modalViewOverlay, "_modalViewOverlay should not be false");
+          assert(viewController._modalViewContainer, "_modalViewContainer should not be false");
+          assertEqual(modalViewController, viewController.modalViewController, "modalViewController should equal the presented view controller instance");
+          wait(1000, function() { with(this) {
+            assert(viewController._modalViewOverlay.visible(), "_modalViewOverlay should be visible");
+            assert(viewController._modalViewContainer.visible(), "_modalViewContainer should be visible");
+            // Dismiss
+            viewController.dismissModalViewControllerAnimated();
+            wait(1000, function() { with(this) {
+              assert(!viewController._modalViewOverlay.visible(), "_modalViewOverlay should not be visible");
+              assert(!viewController._modalViewContainer.visible(), "_modalViewContainer should not be visible");
+              assert(!viewController.modalViewController, "modalViewController should be false");
+            }});
+          }});
         }}
 
       }, { testLog: "logSection" });
