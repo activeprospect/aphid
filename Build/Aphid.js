@@ -891,9 +891,12 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     if (Object.isUndefined(animated)) animated = true;
     if (!this.modalViewController) return;
 
-    animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();
     animated ? this._modalViewOverlay.fade({ duration: 0.25 }) : this._modalViewOverlay.hide();
-    this._modalViewContainer.update();
+
+    animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();
+    animated ? this._modalViewContainer.update.delay(0.25) : this._modalViewContainer.update();
+
+    this.modalViewController = false;
   }
 
 });
