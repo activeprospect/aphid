@@ -17,9 +17,11 @@ JavaScripts for use within ActiveProspect's web-based projects.
       that use Aphid. This includes language and library extensions, a logger,
       browser compatibility shims and other useful common code.
     * **UI** - The UI namespace includes all of our custom components classes.
-  * **Templates** - Common templates, such as error documents (i.e. 404
-    messaging) that can be pulled into a project with little or no
-    modifications.
+    * **Templates** - Common templates, such as error documents (i.e. 404
+      messaging) that can be pulled into a project with little or no
+      modifications.
+  * **Tests** - Unit and functional tests for the Aphid library, to be run
+    with unittest.js from script.aculo.us.
   * **Vendor** - Imported 3rd-party libraries and projects, such as Prototype
     and script.aculo.us.
 
@@ -45,4 +47,3 @@ must first build Aphid and update the demo with the built product (simply
 running `rake` will do both of these things) or you may launch it by running
 `rake demo` from the Aphid source folder, which takes care of both building,
 updating and launching the demo in your default web browser.
-
