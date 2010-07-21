@@ -2603,10 +2603,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * in the script.aculo.us library. Defaults:
    *
    *     {
-   *       asdf: "foo"
+   *       handle: "handle",
+   *       onChange: this._listViewOrderDidChange.bind(this),
+   *       onUpdate: this._listViewOrderDidUpdate.bind(this)
    *     }
   **/
   sortableOptions: false,
+
+  // Initialization ----------------------------------------------------------
 
   /**
    * new Aphid.UI.ListView()
