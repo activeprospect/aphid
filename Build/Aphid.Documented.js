@@ -2538,11 +2538,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   viewDidLoad: function($super)
   {
     $super();
-
-    this.element.addClassName('ListView');
-
     if (this._validateContainer())
+    {
+      this.element.addClassName('ListView');
       this.setItems(this.element.childElements());
+    }
   },
 
   // Items -------------------------------------------------------------------
