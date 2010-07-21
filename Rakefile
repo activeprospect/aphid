@@ -144,7 +144,7 @@ task "docs:build" => [ :build, "docs:clean" ] do
     :short_name => 'Aphid',
     :home_url => 'http://aphid.activeprospect.com/',
     :doc_url => 'http://aphid.activeprospect.com/api',
-    :version => "1.0.0-alpha",
+    :version => "0.9.0",
     :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
   })
 end
