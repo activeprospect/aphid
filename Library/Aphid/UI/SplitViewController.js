@@ -7,15 +7,6 @@
  * Minimum and maximum widths as described in the min-width and max-width
  * properties of the left pane will be enforced.
  *
- * ### TODO
- * 
- *  * Allow min-width/max-width to be enforced on the right pane
- *  * Allow this to work with vertical panes as well
- *  * Automatically detect vertical or horizontal if possible
- *  * Automatically setup the drag handle if/when possible
- *  * Fix issue where the drag handle isn't moved centered (set background of dragHandle to red to illustrate)
- *  * Implement dblclick support (both with a callback and default behavior minimizing the left pane)
- *
 **/
 
 Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {

@@ -20,6 +20,16 @@
  * Add persistence to the SplitViewController so that the last dimensions are
    always used when the view is reloaded.
 
+ * Allow min-width/max-width to be enforced on the right pane.
+
+ * Automatically detect vertical or horizontal if possible.
+
+ * Fix issue where the drag handle isn't moved centered (set background of
+   dragHandle to red to illustrate).
+
+ * Implement double-click support (both with a callback and default behavior
+   minimizing the left pane).
+
 ## Aphid.UI.TabViewController
 
  * Add support for switching between content sets. The current implementation
