@@ -19,8 +19,28 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Ensures that the Aphid.UI.ListView class can be initialized and
+        functions as intended.
       </p>
+      <p>
+        <strong>TODO:</strong> Add tests for container requirements (must be
+        an unordered list) and for sorting.
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <ul id="testListView">
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+      </ul>
+      <ul id="testListViewWithReplacedItems">
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+      </ul>
+      <section id="invalidListViewContainer"></section>
     </section>
 
     <!-- Log Section -->
@@ -29,10 +49,127 @@
 
     <!-- Tests -->
     <script>
+
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        /*
+         * Ensures that new instances of Aphid.UI.ListView can be initialized.
+        **/
+        testShouldInitializeListView: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListView') });
+          assertInstanceOf(Aphid.UI.ListView, listView, "listView should be an instance of Aphid.UI.ListView");
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ListView add the ListView
+         * CSS class to the initialized element.
+        **/
+        testShouldAddClassNameToElement: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListView') });
+          assert(listView.element.hasClassName("ListView"));
+        }},
+
+        /*
+         * Ensures that existing items in the list view are processed during
+         * initialization.
+        **/
+        testShouldInitializeWithListItems: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListView') });
+          assert(listView.items.length == 3);
+        }},
+
+        /*
+         * Ensures that event observers are setup on each item during
+         * initialization.
+        **/
+        testShouldSetupObserversOnListItems: function() { with(this) {
+          var lastSelectedItem, lastOpenedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; },
+            listViewDidOpenItem: function(listView, item) { lastOpenedItem = item }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.items.each(function(item) {
+            Event.simulateMouse(item, 'click');
+            assertEqual(item, lastSelectedItem);
+            assertEqual(item, listView.selectedItem);
+            Event.simulateMouse(item, 'dblclick');
+            assertEqual(item, lastOpenedItem);
+          });
+        }},
+
+        /*
+         * Ensures that list items can be set after initialization.
+        **/
+        testShouldSetListItems: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListViewWithReplacedItems') });
+          var newItems = [
+            new Element("li").update("Four"),
+            new Element("li").update("Five"),
+            new Element("li").update("Six")
+          ];
+          listView.setItems(newItems);
+          assertEqual(newItems[0], listView.items[0]);
+          assertEqual(newItems[1], listView.items[1]);
+          assertEqual(newItems[2], listView.items[2]);
+          assert(listView.items.length == 3);
+        }},
+
+        /*
+         * Ensures that list items can be selected programmatically.
+        **/
+        testShouldSelectItem: function() { with(this) {
+          var lastSelectedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          assertEqual(listView.items[1], lastSelectedItem);
+          assertEqual(listView.items[1], listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that list items can be opened programmatically.
+        **/
+        testShouldOpenItem: function() { with(this) {
+          var lastOpenedItem;
+          var listViewDelegate = {
+            listViewDidOpenItem: function(listView, item) { lastOpenedItem = item }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.openItem(listView.items[1]);
+          assertEqual(listView.items[1], lastOpenedItem);
+        }},
+
+        /*
+         * Ensures that the list selection state can be cleared.
+        **/
+        testShouldClearSelection: function() { with(this) {
+          var lastSelectedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          assertEqual(listView.items[1], lastSelectedItem);
+          assertEqual(listView.items[1], listView.selectedItem);
+          listView.clearSelection();
+          assert(!listView.items[1].hasClassName("selected"));
+          assert(!listView.selectedItem);
+          assert(!lastSelectedItem);
         }}
 
       }, { testLog: "logSection" });
