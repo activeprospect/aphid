@@ -903,15 +903,22 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
 Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
-  displayName: false,
+  displayName: "TabViewController",
+
   persistSelectedTab: false,
-  defaultTab: false,
 
   tabs: false,
 
-  contentView: false,
+  defaultTab: false,
 
-  currentTab: false,
+  selectedTab: false,
+
+  /*
+   * Aphid.UI.TabViewController#contentView -> Element | false
+   *
+   * TODO ...
+  **/
+  contentView: false,
 
 
   initialize: function($super, options)
@@ -919,10 +926,11 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     $super(options);
   },
 
-
   viewDidLoad: function($super)
   {
     $super();
+
+    this.element.addClassName("TabViewController");
 
     var tabElements = this.element.select('li');
     this.tabs = tabElements
@@ -948,12 +956,10 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   {
     if (!Object.isElement(tab))
     {
-      if (Object.isEvent(tab))
-        tab = tab.element();
-      else if (Object.isString(tab))
+      if (Object.isString(tab))
       {
         var tabName = tab;
-        tab = this._findTab(tabName);
+        tab = this._findTabByName(tabName);
         if (Object.isUndefined(tab))
         {
           $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template');
@@ -968,16 +974,9 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     this.tabs.invoke('removeClassName', 'current');
     tab.addClassName('current');
 
-    this.currentTab = tab;
+    this.selectedTab = tab;
 
-    if (this.persistSelectedTab)
-    {
-      var tabName = tab.getAttribute('data-tab');
-      $C.set(this.displayName + '.selectedTab', tabName);
-    }
-
-    if (this.didSelectTab)
-      this.didSelectTab(tab);
+    this._didSelectTab(tab);
   },
 
   selectDefaultTab: function()
@@ -988,7 +987,36 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
       this.selectTab(this.tabs.first());
   },
 
-  _findTab: function(tabName)
+
+  /*
+   * Aphid.UI.TabViewController#_setupObservers() -> null
+   *
+   * Iterates across each tab item in the tab view, adding event observers for
+   * handling the events that we're interested in.
+  **/
+  _setupObservers: function()
+  {
+    this.tabs.invoke('observe', 'click', this._handleClickEvent.bind(this));
+  },
+
+  _handleClickEvent: function(event)
+  {
+    event.stop();
+    var tab = event.findElement('li');
+    this.selectTab(tab);
+  },
+
+
+  /*
+   * Aphid.UI.TabViewController#_findTabByName(tabName) -> Element | false
+   *
+   * - tabName (String): the name of the tab, as specified in the tab items
+   *   data-tab attribute.
+   *
+   * Iterates the `tabs` property and returns the first tab element that
+   * matches the data-tab attribute with the provided *tabName*.
+  **/
+  _findTabByName: function(tabName)
   {
     return this.tabs.find(
       function(tab)
@@ -1000,45 +1028,52 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   },
 
 
-  _setupObservers: function()
-  {
-    var observeTab = function(tab)
-    {
-      tab.observe('click', this.selectTab.bind(this));
-    }
-    this.tabs.each(observeTab.bind(this));
-  },
-
-
-  _didSelectTab: function(event)
-  {
-    var tab     = event.element();
-    var tabName = tab.getAttribute('data-tab');
-
-    if (!this._shouldSelectTab(tab)) return;
-
-    this.currentTab = tab;
-
-    this.tabs.invoke('removeClassName', 'current');
-    tab.addClassName('current');
-
-
-    if (this.didSelectTab)
-      this.didSelectTab(tab);
-  },
-
-
+  /*
+   * Aphid.UI.TabViewController#_shouldSelectTab(tab) -> Boolean
+   *
+   * Checks for basic conditions that should prevent tab selection from
+   * occurring, such as the tab already being selected. It also evaluates the
+   * `shouldSelectTab` callback and the `tabViewShouldSelectTab` delegate
+   * method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the tab should be
+   * selected.
+  **/
   _shouldSelectTab: function(tab)
   {
     var shouldSelect = true;
-    if (tab == this.currentTab) shouldSelect = false;
-    if (this.shouldSelectTab) shouldSelect = this.shouldSelectTab(tab);
+    if (tab == this.selectedTab)
+      shouldSelect = false;
+    if (this.shouldSelectTab)
+      shouldSelect = this.shouldSelectTab(tab);
+    if (this.delegate && this.delegate.tabViewShouldSelectTab)
+      shouldSelect = this.delegate.tabViewShouldSelectTab(this, tab);
     return shouldSelect;
   },
 
+  /*
+   * Aphid.UI.TabViewController#_didSelectTab(tab) -> null
+   *
+   * Performs any internal actions after a tab has been selected before
+   * calling the `didSelectTab` callback and the `tabViewSelectionDidChange`
+   * delegate method.
+  **/
+  _didSelectTab: function(tab)
+  {
+    if (this.persistSelectedTab)
+    {
+      var tabName = tab.getAttribute('data-tab');
+      $C.set(this.displayName + '.selectedTab', tabName);
+    }
+
+    if (this.didSelectTab)
+      this.didSelectTab(tab);
+
+    if (this.delegate && this.delegate.tabViewSelectionDidChange)
+      this.delegate.tabViewSelectionDidChange(this, tab);
+  }
 
 });
-
 
 Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
@@ -1484,6 +1519,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   isSortable: false,
 
   sortableOptions: false,
+
 
   initialize: function($super, options)
   {

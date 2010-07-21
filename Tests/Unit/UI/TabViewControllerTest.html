@@ -23,6 +23,15 @@
       </p>
     </section>
 
+    <!-- Test Elements -->
+    <section id="testElements">
+      <ul id="testTabView">
+        <li data-tab="one">Tab One</li>
+        <li data-tab="two">Tab Two</li>
+        <li data-tab="three">Tab Three</li>
+      </ul>
+    </section>
+
     <!-- Log Section -->
     <section id="logSection">
     </section>
@@ -31,8 +40,151 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
+        testShouldInitializeTabViewController: function() { with(this) {
+          var tabViewController = new Aphid.UI.TabViewController({ element: $('testTabView') });
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.TabViewController add the
+         * TabViewController CSS class to the initialized element.
+        **/
+        testShouldAddClassNameToElement: function() { with(this) {
+          var tabViewController = new Aphid.UI.TabViewController({ element: $('testTabView') });
+          assert(tabViewController.element.hasClassName("TabViewController"));
+        }},
+
+        /*
+         * Ensures that tabs in the tab view list are processed during
+         * initialization.
+        **/
+        testShouldInitializeWithTabItems: function() { with(this) {
+          var tabViewController = new Aphid.UI.TabViewController({ element: $('testTabView') });
+          assert(tabViewController.tabs.length == 3);
+        }},
+
+        /*
+         * Ensures that event observers are setup on each tab during
+         * initialization.
+        **/
+        testShouldSetupObserversOnTabItems: function() { with(this) {
+          var lastSelectedTab;
+          var tabViewDelegate = {
+            tabViewSelectionDidChange: function(tabView, tab) { lastSelectedTab = tab; },
+          };
+          var tabViewController = new Aphid.UI.TabViewController({
+            element: $('testTabView'),
+            delegate: tabViewDelegate
+          });
+          tabViewController.tabs.each(function(tab) {
+            Event.simulateMouse(tab, 'click');
+            assertEqual(tab, lastSelectedTab);
+            assertEqual(tab, tabViewController.selectedTab);
+          });
+        }},
+
+        /*
+         * Ensures that tabs can be selected programmatically.
+        **/
+        testShouldSelectTab: function() { with(this) {
+          var lastSelectedTab;
+          var tabViewDelegate = {
+            tabViewSelectionDidChange: function(tabView, tab) { lastSelectedTab = tab; },
+          };
+          var tabViewController = new Aphid.UI.TabViewController({
+            element: $('testTabView'),
+            delegate: tabViewDelegate
+          });
+          tabViewController.selectTab(tabViewController.tabs[1]);
+          assertEqual(tabViewController.tabs[1], lastSelectedTab);
+          assertEqual(tabViewController.tabs[1], tabViewController.selectedTab);
+        }},
+
+        /*
+         * Ensures that tabs can be selected, by name, programmatically.
+        **/
+        testShouldSelectTabByName: function() { with(this) {
+          var lastSelectedTab;
+          var tabViewDelegate = {
+            tabViewSelectionDidChange: function(tabView, tab) { lastSelectedTab = tab; },
+          };
+          var tabViewController = new Aphid.UI.TabViewController({
+            element: $('testTabView'),
+            delegate: tabViewDelegate
+          });
+          tabViewController.selectTab("two");
+          assertEqual(tabViewController.tabs[1], lastSelectedTab);
+          assertEqual(tabViewController.tabs[1], tabViewController.selectedTab);
+        }},
+
+        /*
+         * Ensures that the TabViewController honors a false return value from
+         * the `shouldSelectTab` callback method that is implemented by a
+         * subclass.
+        **/
+        testShouldNotSelectTabWhenShouldSelectTabCallbackReturnsFalse: function() { with(this) {
+          var TestTabViewController = Class.create(Aphid.UI.TabViewController, {
+            shouldSelectTab: function(tab) {
+              return (tab == this.tabs[1]) ? false : true;
+            }
+          });
+          var tabViewController = new TestTabViewController({ element: $('testTabView') });
+          tabViewController.selectTab(tabViewController.tabs[1]);
+          assertEqual(tabViewController.tabs[0], tabViewController.selectedTab);
+        }},
+
+        /*
+         * Ensures that the TabViewController honors a false return value from
+         * the `tabViewShouldSelectTab` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldNotSelectTabWhenTabViewShouldSelectTabDelegateMethodReturnsFalse: function() { with(this) {
+          var tabViewDelegate = {
+            tabViewShouldSelectTab: function(tabView, tab) {
+              return (tabView.tabs[1] == tab) ? false : true;
+            }
+          };
+          var tabViewController = new Aphid.UI.TabViewController({
+            element: $('testTabView'),
+            delegate: tabViewDelegate
+          });
+          tabViewController.selectTab(tabViewController.tabs[1]);
+          assertEqual(tabViewController.tabs[0], tabViewController.selectedTab);
+        }},
+
+        /*
+         * Ensures that the TabViewController calls the `didSelectTab`
+         * callback method when implemented by a subclass.
+        **/
+        testShouldCallDidSelectTabCallback: function() { with(this) {
+          var lastSelectedTab;
+          var TestTabViewController = Class.create(Aphid.UI.TabViewController, {
+            didSelectTab: function(tab) {
+              lastSelectedTab = tab;
+            }
+          });
+          var tabViewController = new TestTabViewController({ element: $('testTabView') });
+          tabViewController.selectTab(tabViewController.tabs[1]);
+          assertEqual(tabViewController.tabs[1], lastSelectedTab);
+        }},
+
+        /*
+         * Ensures that the TabViewController calls the
+         * `tabViewSelectionDidChange` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldCallTabViewSelectionDidChangeDelegateMethod: function() { with(this) {
+          var lastSelectedTab;
+          var tabViewDelegate = {
+            tabViewSelectionDidChange: function(tabView, tab) {
+              lastSelectedTab = tab;
+            }
+          };
+          var tabViewController = new Aphid.UI.TabViewController({
+            element: $('testTabView'),
+            delegate: tabViewDelegate
+          });
+          tabViewController.selectTab(tabViewController.tabs[1]);
+          assertEqual(tabViewController.tabs[1], lastSelectedTab);
         }}
 
       }, { testLog: "logSection" });
