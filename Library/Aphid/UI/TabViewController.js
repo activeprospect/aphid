@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.TabViewController
+ * class Aphid.UI.TabViewController < Aphid.UI.ViewController
  *
  * Tab View Controller
  *

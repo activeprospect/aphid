@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.ListView
+ * class Aphid.UI.ListView < Aphid.UI.View
  *
  * Manages an HTML unordered list by providing support for selection of the
  * items contained within the list.

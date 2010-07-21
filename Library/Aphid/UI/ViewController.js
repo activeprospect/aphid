@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.ViewController
+ * class Aphid.UI.ViewController < Aphid.UI.View
  *
  * You should use view controllers for major views that are responsible for
  * many subviews (including view controller subviews). Situations where a

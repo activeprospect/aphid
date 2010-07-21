@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.SplitViewController
+ * class Aphid.UI.SplitViewController < Aphid.UI.ViewController
  *
  * This class (which extends Draggable from Scriptaculous) handles the
  * resizing of two horizontally adjacent panes.

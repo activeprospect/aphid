@@ -1534,7 +1534,7 @@ Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wir
 // Controllers ---------------------------------------------------------------
 
 /**
- * class Aphid.UI.ViewController
+ * class Aphid.UI.ViewController < Aphid.UI.View
  *
  * You should use view controllers for major views that are responsible for
  * many subviews (including view controller subviews). Situations where a
@@ -1727,7 +1727,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
 });
 /**
- * class Aphid.UI.TabViewController
+ * class Aphid.UI.TabViewController < Aphid.UI.ViewController
  *
  * Tab View Controller
  *
@@ -1918,7 +1918,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 //
 // });
 /**
- * class Aphid.UI.SplitViewController
+ * class Aphid.UI.SplitViewController < Aphid.UI.ViewController
  *
  * This class (which extends Draggable from Scriptaculous) handles the
  * resizing of two horizontally adjacent panes.
@@ -2439,7 +2439,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
 });
 /**
- * class Aphid.UI.ListView
+ * class Aphid.UI.ListView < Aphid.UI.View
  *
  * Manages an HTML unordered list by providing support for selection of the
  * items contained within the list.
