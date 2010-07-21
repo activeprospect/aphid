@@ -1,5 +1,23 @@
 # Aphid To-Do List
 
+## Documentation
+
+ * Add overview documentation on how to start a new project with Aphid that
+   covers both initialization scenarios: fully dynamic and asynchronous and
+   from a static document.
+
+ * Copy all of the inline TODOs to TODO.markdown.
+
+## Aphid
+
+ * Add an `aphid` command-line tool for starting new Aphid projects or for
+   applying Aphid to a Rails or other type of project.
+
+ * Add a rake task for creating gem packages of Aphid (that would include the
+   `aphid` command for easy project setup).
+
+ * Add a rake task for creating release packages of Aphid.
+
 ## Aphid.UI.View
 
  * Add support for initializing views from outlets with custom templates
