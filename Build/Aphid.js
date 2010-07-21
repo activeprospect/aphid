@@ -1550,6 +1550,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     this.items.invoke('removeClassName', 'selected');
     this.selectedItem = false;
+
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, this.selectedItem); // false
   },
 
 

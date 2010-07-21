@@ -163,8 +163,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   openItem: function(item)
   {
-    // Call the listViewSelectionDidChange method on the delegate, if the
-    // delegate has defined it.
+    // Call the listViewDidOpenItem method on the delegate, if the delegate
+    // has defined it.
     if (this.delegate && this.delegate.listViewDidOpenItem)
       this.delegate.listViewDidOpenItem(this, item);
   },
@@ -179,6 +179,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     this.items.invoke('removeClassName', 'selected');
     this.selectedItem = false;
+
+    // Call the listViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, this.selectedItem); // false
   },
 
   // Sorting -----------------------------------------------------------------
