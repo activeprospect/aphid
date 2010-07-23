@@ -8,7 +8,13 @@
 
  * Copy all of the inline TODOs to TODO.markdown.
 
-## Aphid
+## Compatibility
+
+ * Ensure compatibility with Internet Explorer 7+.
+
+ * Ensure compatibility with Firefox 3+.
+
+## Tools
 
  * Add an `aphid` command-line tool for starting new Aphid projects or for
    applying Aphid to a Rails or other type of project.
@@ -18,18 +24,20 @@
 
  * Add a rake task for creating release packages of Aphid.
 
-## Aphid.UI.View
+## Library
+
+### Aphid.UI.View
 
  * Add support for initializing views from outlets with custom templates
    defined as the data-template attribute on the outlet element.
 
-## Aphid.UI.LoadingIndicator
+### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
 
  * Add tests.
 
-## Aphid.UI.SplitViewController
+### Aphid.UI.SplitViewController
 
  * Clean up and document `Aphid.UI.SplitViewController` and move more of the
    logic from the `Draggable` subclass (`Aphid.UI.SplitViewController.Draggable`)
@@ -48,7 +56,7 @@
  * Implement double-click support (both with a callback and default behavior
    minimizing the left pane).
 
-## Aphid.UI.TabViewController
+### Aphid.UI.TabViewController
 
  * Add support for switching between content sets. The current implementation
    only registers for events and manages the delegate calls to make the
