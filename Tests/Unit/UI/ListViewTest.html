@@ -170,6 +170,77 @@
           assert(!listView.items[1].hasClassName("selected"));
           assert(!listView.selectedItem);
           assert(!lastSelectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView honors a false return value from the
+         * `shouldSelectItem` callback method that is implemented by a
+         * subclass.
+        **/
+        testShouldNotSelectItemWhenShouldSelectItemCallbackReturnsFalse: function() { with(this) {
+          var TestListView = Class.create(Aphid.UI.ListView, {
+            shouldSelectItem: function(item) {
+              return (item == this.items[1]) ? false : true;
+            }
+          });
+          var listView = new TestListView({ element: $('testListView') });
+          listView.selectItem(listView.items[1]);
+          assert(!listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView honors a false return value from the
+         * `listViewShouldSelectItem` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldNotSelectItemWhenListViewShouldSelectItemDelegateMethodReturnsFalse: function() { with(this) {
+          var listViewDelegate = {
+            listViewShouldSelectItem: function(listView, item) {
+              return (listView.items[1] == item) ? false : true;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          assert(!listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView calls the `didSelectItem` callback
+         * method when implemented by a subclass.
+        **/
+        testShouldCallDidSelectItemCallback: function() { with(this) {
+          var lastSelectedItem;
+          var TestListView = Class.create(Aphid.UI.ListView, {
+            didSelectItem: function(item) {
+              lastSelectedItem = item;
+            }
+          });
+          var listView = new TestListView({ element: $('testListView') });
+          listView.selectItem(listView.items[1]);
+          assertEqual(listView.items[1], lastSelectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView calls the
+         * `listViewSelectionDidChange` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldCallTabViewSelectionDidChangeDelegateMethod: function() { with(this) {
+          var lastSelectedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) {
+              lastSelectedItem = item;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          assertEqual(listView.items[1], lastSelectedItem);
         }}
 
       }, { testLog: "logSection" });

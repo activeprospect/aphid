@@ -1553,7 +1553,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   selectItem: function(item)
   {
-    if (!this._listViewShouldSelectItem(item))
+    if (!this._shouldSelectItem(item))
       return;
 
     var itemIndex = this.items.indexOf(item);
@@ -1572,8 +1572,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.clearSelection();
     this.selectedItem = item.addClassName('selected');
 
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, item);
+    this._didSelectItem(item);
   },
 
   openItem: function(item)
@@ -1673,15 +1672,43 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
 
-  _listViewShouldSelectItem: function(item)
+  /*
+   * Aphid.UI.ListView#_shouldSelectItem(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent item selection from
+   * occurring, such as the item already being selected. It also evaluates the
+   * `shouldSelectItem` callback and the `listViewShouldSelectItem` delegate
+   * method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the tab should be
+   * selected.
+  **/
+  _shouldSelectItem: function(item)
   {
-    $L.info('_listViewShouldSelectItem', 'Aphid.UI.ListView');
     var shouldSelect = true;
     if (item == this.selectedItem)
       shouldSelect = false;
+    if (this.shouldSelectItem)
+      shouldSelect = this.shouldSelectItem(item);
     if (this.delegate && this.delegate.listViewShouldSelectItem)
-      shouldSelect = this.delegate.listViewShouldSelectItem(item);
+      shouldSelect = this.delegate.listViewShouldSelectItem(this, item);
     return shouldSelect;
+  },
+
+  /*
+   * Aphid.UI.ListView#_didSelectItem(item) -> null
+   *
+   * Performs any internal actions after an item has been selected before
+   * calling the `didSelectItem` callback and the `listViewSelectionDidChange`
+   * delegate method.
+  **/
+  _didSelectItem: function(item)
+  {
+    if (this.didSelectItem)
+      this.didSelectItem(item);
+
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, item);
   },
 
 

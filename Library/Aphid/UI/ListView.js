@@ -37,6 +37,16 @@
  *
  * #### Subclassing Notes
  *
+ * If you wish to subclass [[Aphid.UI.ListView]] instead of wrapping an
+ * instance and implementing the delegate pattern, you may also override the
+ * following methods:
+ *
+ *  * `shouldSelectItem(item)` - Called just before the item selection process
+ *    begins. Returning false will prevent the item from being selected.
+ *
+ *  * `didSelectItem(item)` - Called when the current item selection has
+ *    changed.
+ *
 **/
 
 Aphid.UI.ListView = Class.create(Aphid.UI.View, {
@@ -138,7 +148,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     // Check with the listViewShouldSelectItem delegate to be sure that we are
     // in a state that will allow for its selection...
-    if (!this._listViewShouldSelectItem(item))
+    if (!this._shouldSelectItem(item))
       return;
 
     var itemIndex = this.items.indexOf(item);
@@ -159,10 +169,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.clearSelection();
     this.selectedItem = item.addClassName('selected');
 
-    // Call the listViewSelectionDidChange method on the delegate, if the
-    // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, item);
+    this._didSelectItem(item);
   },
 
   openItem: function(item)
@@ -278,15 +285,46 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   // Callbacks ---------------------------------------------------------------
 
-  _listViewShouldSelectItem: function(item)
+  /*
+   * Aphid.UI.ListView#_shouldSelectItem(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent item selection from
+   * occurring, such as the item already being selected. It also evaluates the
+   * `shouldSelectItem` callback and the `listViewShouldSelectItem` delegate
+   * method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the tab should be
+   * selected.
+  **/
+  _shouldSelectItem: function(item)
   {
-    $L.info('_listViewShouldSelectItem', 'Aphid.UI.ListView');
     var shouldSelect = true;
     if (item == this.selectedItem)
       shouldSelect = false;
+    if (this.shouldSelectItem)
+      shouldSelect = this.shouldSelectItem(item);
     if (this.delegate && this.delegate.listViewShouldSelectItem)
-      shouldSelect = this.delegate.listViewShouldSelectItem(item);
+      shouldSelect = this.delegate.listViewShouldSelectItem(this, item);
     return shouldSelect;
+  },
+
+  /*
+   * Aphid.UI.ListView#_didSelectItem(item) -> null
+   *
+   * Performs any internal actions after an item has been selected before
+   * calling the `didSelectItem` callback and the `listViewSelectionDidChange`
+   * delegate method.
+  **/
+  _didSelectItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didSelectItem)
+      this.didSelectItem(item);
+
+    // Call the listViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, item);
   },
 
   // -------------------------------------------------------------------------
