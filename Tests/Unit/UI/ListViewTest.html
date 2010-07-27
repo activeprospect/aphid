@@ -136,19 +136,53 @@
         }},
 
         /*
-         * Ensures that list items can be opened programmatically.
+         * Ensures that multiple list items can be selected when the
+         * multipleSelectionEnabled property is set to true.
         **/
-        testShouldOpenItem: function() { with(this) {
-          var lastOpenedItem;
+        testShouldSelectMultipleItems: function() { with(this) {
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            multipleSelectionEnabled: true
+          });
+          listView.selectItem(listView.items[1]);
+          listView.selectItem(listView.items[2]);
+          assert(listView.selectedItems.include(listView.items[1]));
+          assert(listView.selectedItems.include(listView.items[2]));
+          assertEqual(2, listView.selectedItems.length);
+        }},
+
+        /*
+         * Ensures that the selectedItem property is always set to false when
+         * multiple selection is enabled. When multiple selection is enabled,
+         * the selectedItems property should be used.
+        **/
+        testShouldNotSetSelectedItemPropertyWhenMultipleSelectionIsEnabled: function() { with(this) {
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            multipleSelectionEnabled: true
+          });
+          listView.selectItem(listView.items[1]);
+          assert(!listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that list items can be deselected programmatically.
+        **/
+        testShouldDeselectItem: function() { with(this) {
+          var lastSelectedItem;
           var listViewDelegate = {
-            listViewDidOpenItem: function(listView, item) { lastOpenedItem = item }
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
           };
           var listView = new Aphid.UI.ListView({
             element: $('testListView'),
             delegate: listViewDelegate
           });
-          listView.openItem(listView.items[1]);
-          assertEqual(listView.items[1], lastOpenedItem);
+          listView.selectItem(listView.items[1]);
+          assertEqual(listView.items[1], lastSelectedItem);
+          assertEqual(listView.items[1], listView.selectedItem);
+          listView.deselectItem(listView.items[1]);
+          assert(!lastSelectedItem.hasClassName('selected'), "lastSelectedItem should not have the 'selected' CSS class name");
+          assertEqual(false, listView.selectedItem, "selectedItem should be false");
         }},
 
         /*
@@ -169,7 +203,44 @@
           listView.clearSelection();
           assert(!listView.items[1].hasClassName("selected"));
           assert(!listView.selectedItem);
+          assert(!listView.selectedItems);
           assert(!lastSelectedItem);
+        }},
+
+        /*
+         * Ensures that the list selection state can be cleared when multiple
+         * selection is enabled.
+        **/
+        testShouldClearMultipleSelections: function() { with(this) {
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            multipleSelectionEnabled: true
+          });
+          listView.selectItem(listView.items[1]);
+          listView.selectItem(listView.items[2]);
+          assertEqual(2, listView.selectedItems.length);
+          listView.clearSelection();
+          assertEqual(0, listView.selectedItems.length);
+          assertMatch($A(), listView.selectedItems);
+          assert(!listView.selectedItem);
+          assert(!listView.items[1].hasClassName("selected"));
+          assert(!listView.items[2].hasClassName("selected"));
+        }},
+
+        /*
+         * Ensures that list items can be opened programmatically.
+        **/
+        testShouldOpenItem: function() { with(this) {
+          var lastOpenedItem;
+          var listViewDelegate = {
+            listViewDidOpenItem: function(listView, item) { lastOpenedItem = item }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.openItem(listView.items[1]);
+          assertEqual(listView.items[1], lastOpenedItem);
         }},
 
         /*
@@ -208,6 +279,85 @@
         }},
 
         /*
+         * Ensures that the ListView honors a false return value from the
+         * `shouldDeselectItem` callback method that is implemented by a
+         * subclass.
+        **/
+        testShouldNotDeselectItemWhenShouldDeselectItemCallbackReturnsFalse: function() { with(this) {
+          var TestListView = Class.create(Aphid.UI.ListView, {
+            shouldDeselectItem: function(item) {
+              return false;
+            }
+          });
+          var listView = new TestListView({ element: $('testListView') });
+          listView.selectItem(listView.items[1]);
+          listView.deselectItem(listView.items[1]);
+          assertEqual(listView.items[1], listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView honors a false return value from the
+         * `listViewShouldDeselectItem` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldNotDeselectItemWhenListViewShouldDeselectItemDelegateMethodReturnsFalse: function() { with(this) {
+          var listViewDelegate = {
+            listViewShouldDeselectItem: function(listView, item) {
+              return false;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          listView.deselectItem(listView.items[1]);
+          assertEqual(listView.items[1], listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView honors a false return value from the
+         * `shouldDeselectItem` callback method that is implemented by a
+         * subclass.
+        **/
+        testShouldNotOpenItemWhenShouldOpenItemCallbackReturnsFalse: function() { with(this) {
+          var lastOpenedItem = false;
+          var TestListView = Class.create(Aphid.UI.ListView, {
+            shouldOpenItem: function(item) {
+              return false;
+            },
+            didOpenItem: function(item)
+            {
+              lastOpenedItem = item;
+            }
+          });
+          var listView = new TestListView({ element: $('testListView') });
+          listView.openItem(listView.items[1]);
+          assert(!lastOpenedItem);
+          assert(!listView.selectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView honors a false return value from the
+         * `listViewShouldDeselectItem` delegate method when implemented by a
+         * delegate.
+        **/
+        testShouldNotDeselectItemWhenListViewShouldDeselectItemDelegateMethodReturnsFalse: function() { with(this) {
+          var listViewDelegate = {
+            listViewShouldDeselectItem: function(listView, item) {
+              return false;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[1]);
+          listView.deselectItem(listView.items[1]);
+          assertEqual(listView.items[1], listView.selectedItem);
+        }},
+
+        /*
          * Ensures that the ListView calls the `didSelectItem` callback
          * method when implemented by a subclass.
         **/
@@ -224,11 +374,10 @@
         }},
 
         /*
-         * Ensures that the ListView calls the
-         * `listViewSelectionDidChange` delegate method when implemented by a
-         * delegate.
+         * Ensures that the ListView calls the `listViewSelectionDidChange`
+         * delegate method when implemented by a delegate.
         **/
-        testShouldCallTabViewSelectionDidChangeDelegateMethod: function() { with(this) {
+        testShouldCallListViewSelectionDidChangeDelegateMethod: function() { with(this) {
           var lastSelectedItem;
           var listViewDelegate = {
             listViewSelectionDidChange: function(listView, item) {
@@ -241,6 +390,41 @@
           });
           listView.selectItem(listView.items[1]);
           assertEqual(listView.items[1], lastSelectedItem);
+        }},
+
+        /*
+         * Ensures that the ListView calls the `didOpenItem` callback
+         * method when implemented by a subclass.
+        **/
+        testShouldCallDidOpenItemCallback: function() { with(this) {
+          var lastOpenedItem;
+          var TestListView = Class.create(Aphid.UI.ListView, {
+            didOpenItem: function(item) {
+              lastOpenedItem = item;
+            }
+          });
+          var listView = new TestListView({ element: $('testListView') });
+          listView.openItem(listView.items[1]);
+          assertEqual(listView.items[1], lastOpenedItem);
+        }},
+
+        /*
+         * Ensures that the ListView calls the `listViewDidOpenItem` delegate
+         * method when implemented by a delegate.
+        **/
+        testShouldCallListViewDidOpenItemDelegateMethod: function() { with(this) {
+          var lastOpenedItem;
+          var listViewDelegate = {
+            listViewDidOpenItem: function(listView, item) {
+              lastOpenedItem = item;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.openItem(listView.items[1]);
+          assertEqual(listView.items[1], lastOpenedItem);
         }}
 
       }, { testLog: "logSection" });
