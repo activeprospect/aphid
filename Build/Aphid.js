@@ -348,6 +348,149 @@ Aphid.Core.Application.bootstrap = function()
 }
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
+/* TODO Finish this
+ * ### Delegate Methods
+ *
+ * While it's not typical to have a delegate for your model, in cases where
+ * asynchronous loading or other operations are taking place it can be useful
+ * to be notified when various state changes occur.
+ *
+ *  * `modelDidFinishLoading(model)` - This method is called when the model
+ *    has finished loading and is fully initialized after an asynchronous
+ *    load operation.
+ *
+**/
+
+Aphid.Model = Class.create({
+
+  delegate: false,
+
+  attributes: [],
+
+  proxies: {},
+
+  isLoaded: false,
+
+
+  initialize: function(values)
+  {
+    if (Object.isUndefined(values) || !values) return;
+
+    if ((values + "").match(/^[A-Za-z0-9]+$/))
+    {
+      $L.info('Loading Remotely with Identifier: ' + values);
+      this.loadRemotelyWithIdentifier(values);
+    }
+
+    else if (Object.isString(values))
+    {
+      string = values.trim();
+      if (string.charAt(0) == '<')
+      {
+        $L.info('Initializing from an HTML String...');
+        this.initializeWithElement(Element.fromString(string));
+      }
+      else
+      {
+        $L.info('Initializing from a JSON String...');
+        this.initializeWithObject(string.evalJSON());
+      }
+    }
+
+    else if (Object.isElement(values))
+    {
+      $L.info('Initializing from an HTML Element...');
+      this.initializeWithElement(values);
+    }
+
+    else
+    {
+      $L.info('Initializing from a Hash or Object...');
+      this.initializeWithObject(values);
+    }
+
+    this._instantiateProxies();
+  },
+
+  initializeWithObject: function(object)
+  {
+    this.attributes.each(
+      function(attribute)
+      {
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + object[attribute] + '"');
+        this[attribute] = object[attribute];
+      }.bind(this)
+    )
+  },
+
+  initializeWithElement: function(element)
+  {
+    this.attributes.each(
+      function(attribute)
+      {
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + element.getAttribute('data-' + attribute) + '"');
+        this[attribute] = element.getAttribute('data-' + attribute);
+      }.bind(this)
+    )
+  },
+
+
+  loadRemotelyWithIdentifier: function(identifier)
+  {
+    var url = this.baseURL + identifier;
+    var options = {
+      method: 'get',
+      contentType: 'application/json',
+      onSuccess: function(transport)
+      {
+        this.initializeWithObject(transport.responseJSON);
+        this.isLoaded = true;
+      }.bind(this)
+    };
+    new Ajax.Request(url, options);
+  },
+
+
+  /*
+   * Aphid.Model#_instantiateProxies() -> null
+   *
+   * Instantiates any configured proxies on the model instance.
+  **/
+  _instantiateProxies: function()
+  {
+    $H(this.proxies).each(this._instantiateProxy, this);
+  },
+
+  /*
+   * Aphid.Model#_instantiateProxy(proxy) -> null
+   *
+   * - proxy (Hash): a key/value pair containing the attribute (as the key)
+   *   and the class to be instantiated (as the value).
+   *
+   * Instantiates a proxy.
+  **/
+  _instantiateProxy: function(proxy)
+  {
+    var attribute = proxy[0],
+        klass     = proxy[1];
+    this[attribute] = new klass(this[attribute]);
+  },
+
+
+  toTemplateReplacements: function()
+  {
+    var attributes = {};
+    this.attributes.each(
+      function(attribute)
+      {
+        attributes[attribute] = this[attribute];
+      }.bind(this)
+    );
+    return attributes;
+  }
+
+});
+
 Aphid.UI = {};
 
 

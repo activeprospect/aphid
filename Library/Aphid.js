@@ -34,4 +34,5 @@ var Aphid = {
 
 //= require <Aphid/Support>
 //= require <Aphid/Core>
+//= require <Aphid/Model>
 //= require <Aphid/UI>

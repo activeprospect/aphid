@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.Model Tests</title>
+    <link rel="stylesheet" href="../../Build/Aphid.css" />
+    <link rel="stylesheet" href="../Tests.css" />
+    <script src="../../Build/Aphid.Combined.js"></script>
+    <script src="../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Model Tests</h1>
+    </header>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <div id="testContactElement" data-name="John Doe" data-email="jdoe@example.com"></div>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestContact = Class.create(Aphid.Model, {
+        attributes: [ "name", "email" ]
+      });
+
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+        },
+
+        testShouldInitializeModel: function() { with(this) {
+          var testContact = new TestContact();
+          assertInstanceOf(Aphid.Model, testContact);
+        }},
+
+        testShouldInitializeModelFromHash: function() { with(this) {
+          var hash = { name: "John Doe", email: "jdoe@example.com" };
+          var testContact = new TestContact(hash);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
+        }},
+
+        testShouldInitializeModelFromJSON: function() { with(this) {
+          var jsonString = '{"name":"John Doe","email":"jdoe@example.com"}';
+          var testContact = new TestContact(jsonString);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
+        }},
+
+        testShouldInitializeModelFromElement: function() { with(this) {
+          var testContact = new TestContact($('testContactElement'));
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
+        }},
+
+        testShouldInitializeModelFromHTMLString: function() { with(this) {
+          var htmlString = '<div id="testContactElement" data-name="John Doe" data-email="jdoe@example.com"></div>';
+          var testContact = new TestContact(htmlString);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
