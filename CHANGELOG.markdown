@@ -3,6 +3,8 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added a new abstract class for models, Aphid.Model.
+
  * Added multiple selection support to Aphid.UI.ListView. This includes the following changes:
 
    * Added multipleSelectionEnabled property with a default value of false.
