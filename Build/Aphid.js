@@ -348,22 +348,19 @@ Aphid.Core.Application.bootstrap = function()
 }
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
-/* TODO Finish this
- * ### Delegate Methods
- *
- * While it's not typical to have a delegate for your model, in cases where
- * asynchronous loading or other operations are taking place it can be useful
- * to be notified when various state changes occur.
- *
- *  * `modelDidFinishLoading(model)` - This method is called when the model
- *    has finished loading and is fully initialized after an asynchronous
- *    load operation.
- *
-**/
-
 Aphid.Model = Class.create({
 
   delegate: false,
+
+  baseURL: false,
+
+  identifier: false,
+
+  element: false,
+
+  object: false,
+
+  json: false,
 
   attributes: [],
 
@@ -372,82 +369,105 @@ Aphid.Model = Class.create({
   isLoaded: false,
 
 
-  initialize: function(values)
+  initialize: function(options)
   {
-    if (Object.isUndefined(values) || !values) return;
+    Object.applyOptionsToInstance(this, options);
 
-    if ((values + "").match(/^[A-Za-z0-9]+$/))
-    {
-      $L.info('Loading Remotely with Identifier: ' + values);
-      this.loadRemotelyWithIdentifier(values);
-    }
-
-    else if (Object.isString(values))
-    {
-      string = values.trim();
-      if (string.charAt(0) == '<')
-      {
-        $L.info('Initializing from an HTML String...');
-        this.initializeWithElement(Element.fromString(string));
-      }
-      else
-      {
-        $L.info('Initializing from a JSON String...');
-        this.initializeWithObject(string.evalJSON());
-      }
-    }
-
-    else if (Object.isElement(values))
-    {
-      $L.info('Initializing from an HTML Element...');
-      this.initializeWithElement(values);
-    }
-
+    if (this.identifier)
+      this._initializeFromIdentifier();
+    else if (this.element)
+      this._initializeFromElement();
+    else if (this.object)
+      this._initializeFromObject();
+    else if (this.json)
+      this._initializeFromJSON();
     else
-    {
-      $L.info('Initializing from a Hash or Object...');
-      this.initializeWithObject(values);
-    }
+      return;
 
     this._instantiateProxies();
   },
 
-  initializeWithObject: function(object)
+  /*
+   * Aphid.Model#_initializeFromIdentifier() -> null
+   *
+   * Initializes the instance by attempting to load the record from a remote
+   * datasource using the identifier provided as an option during
+   * initialization.
+   *
+   * Implement the delegate methods `modelDidFinishLoading` to be notified
+   * when the model has been completely initialized.
+   *
+   * TODO Implement error handling
+  **/
+  _initializeFromIdentifier: function()
   {
-    this.attributes.each(
-      function(attribute)
-      {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + object[attribute] + '"');
-        this[attribute] = object[attribute];
-      }.bind(this)
-    )
-  },
-
-  initializeWithElement: function(element)
-  {
-    this.attributes.each(
-      function(attribute)
-      {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + element.getAttribute('data-' + attribute) + '"');
-        this[attribute] = element.getAttribute('data-' + attribute);
-      }.bind(this)
-    )
-  },
-
-
-  loadRemotelyWithIdentifier: function(identifier)
-  {
-    var url = this.baseURL + identifier;
+    $L.info("Initializing from Record Identifier...", "Aphid.Model");
+    var url = this.baseURL + this.identifier;
     var options = {
       method: 'get',
       contentType: 'application/json',
       onSuccess: function(transport)
       {
-        this.initializeWithObject(transport.responseJSON);
+        this.object = transport.responseJSON;
+        this._initializeFromObject();
         this.isLoaded = true;
+        if (this.delegate && this.delegate.modelDidFinishLoading)
+          this.delegate.modelDidFinishLoading(this);
       }.bind(this)
     };
     new Ajax.Request(url, options);
+  },
+
+  /*
+   * Aphid.Model#_initializeFromElement() -> null
+   *
+   * Initializes the instance from the HTML Element provided as an option
+   * during initialization.
+  **/
+  _initializeFromElement: function()
+  {
+    $L.info("Initializing from Element...", "Aphid.Model");
+    if (Object.isString(this.element))
+      this.element = Element.fromString(this.element);
+    this.attributes.each(
+      function(attribute)
+      {
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getAttribute('data-' + attribute) + '"');
+        this[attribute] = this.element.getAttribute('data-' + attribute);
+      }.bind(this)
+    )
+  },
+
+  /*
+   * Aphid.Model#_initializeFromObject() -> null
+   *
+   * Initializes the instance from a JavaScript object by applying any of the
+   * attributes for this model that are found in the object to the instance.
+  **/
+  _initializeFromObject: function()
+  {
+    $L.info("Initializing from Object...", "Aphid.Model");
+    this.attributes.each(
+      function(attribute)
+      {
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
+        this[attribute] = this.object[attribute];
+      }.bind(this)
+    )
+  },
+
+  /*
+   * Aphid.Model#_initializeFromJSON() -> null
+   *
+   * Initializes the instance from the JSON string provided as an option
+   * during initialization by first evaluating the string and then passing it
+   * on to [[Aphid.Model#_initializeFromObject()]].
+  **/
+  _initializeFromJSON: function()
+  {
+    $L.info("Initializing from JSON...", "Aphid.Model");
+    this.object = this.json.evalJSON();
+    this._initializeFromObject();
   },
 
 

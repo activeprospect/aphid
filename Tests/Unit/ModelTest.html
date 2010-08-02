@@ -32,6 +32,11 @@
         attributes: [ "name", "email" ]
       });
 
+      var TestRemoteContact = Class.create(Aphid.Model, {
+        attributes: [ "name", "email" ],
+        baseURL: "../Fixtures/"
+      });
+
       new Test.Unit.Runner({
 
         setup: function()
@@ -43,32 +48,64 @@
           assertInstanceOf(Aphid.Model, testContact);
         }},
 
-        testShouldInitializeModelFromHash: function() { with(this) {
-          var hash = { name: "John Doe", email: "jdoe@example.com" };
-          var testContact = new TestContact(hash);
+        testShouldInitializeModelFromIdentifier: function() { with(this) {
+          var testContact = new TestRemoteContact({
+            identifier: 'testModel.json'
+          });
+          wait(1000, function() {
+            assert(testContact.isLoaded);
+            assertEqual("John Doe", testContact.name);
+            assertEqual("jdoe@example.com", testContact.email);
+          });
+        }},
+
+        testShouldInitializeModelFromObject: function() { with(this) {
+          var object = { name: "John Doe", email: "jdoe@example.com" };
+          var testContact = new TestContact({ object: object });
           assertEqual("John Doe", testContact.name);
           assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromJSON: function() { with(this) {
           var jsonString = '{"name":"John Doe","email":"jdoe@example.com"}';
-          var testContact = new TestContact(jsonString);
+          var testContact = new TestContact({ json: jsonString });
           assertEqual("John Doe", testContact.name);
           assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromElement: function() { with(this) {
-          var testContact = new TestContact($('testContactElement'));
+          var testContact = new TestContact({ element: $('testContactElement') });
           assertEqual("John Doe", testContact.name);
           assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromHTMLString: function() { with(this) {
           var htmlString = '<div id="testContactElement" data-name="John Doe" data-email="jdoe@example.com"></div>';
-          var testContact = new TestContact(htmlString);
+          var testContact = new TestContact({ element: htmlString });
           assertEqual("John Doe", testContact.name);
           assertEqual("jdoe@example.com", testContact.email);
-        }}
+        }},
+
+        /*
+         * Ensures that the Model calls the `modelDidFinishLoading` delegate
+         * method when initialized by an identifier which triggers an
+         * asynchronous load.
+        **/
+        testShouldCallModelDidFinishLoadingDelegateMethod: function() { with(this) {
+          var lastLoadedModel = false;
+          var modelDelegate = {
+            modelDidFinishLoading: function(model) {
+              lastLoadedModel = model;
+            }
+          };
+          var testRemoteContact = new TestRemoteContact({
+            identifier: 'testModel.json',
+            delegate: modelDelegate
+          });
+          wait(1000, function() {
+            assertEqual(testRemoteContact, lastLoadedModel);
+          });
+        }}        
 
       }, { testLog: "logSection" });
     </script>
