@@ -267,10 +267,6 @@ Aphid.Model = Class.create({
       this._initializeFromObject();
     else if (this.json)
       this._initializeFromJSON();
-    else
-      return;
-
-    this._instantiateProxies();
   },
 
   /*
@@ -321,7 +317,8 @@ Aphid.Model = Class.create({
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getAttribute('data-' + attribute) + '"');
         this[attribute] = this.element.getAttribute('data-' + attribute);
       }.bind(this)
-    )
+    );
+    this._instantiateProxies();
   },
 
   /*
@@ -339,7 +336,8 @@ Aphid.Model = Class.create({
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
         this[attribute] = this.object[attribute];
       }.bind(this)
-    )
+    );
+    this._instantiateProxies();
   },
 
   /*
@@ -374,13 +372,21 @@ Aphid.Model = Class.create({
    * - proxy (Hash): a key/value pair containing the attribute (as the key)
    *   and the class to be instantiated (as the value).
    *
-   * Instantiates a proxy.
+   * Instantiates a new instance of the configured class for the given
+   * proxy (attribute). If the attribute's value is an array, each element of
+   * the array will be instantiated as the configured proxy class.
   **/
   _instantiateProxy: function(proxy)
   {
     var attribute = proxy[0],
         klass     = proxy[1];
-    this[attribute] = new klass(this[attribute]);
+    if (Object.isArray(this[attribute]))
+      this[attribute] = this[attribute].collect(function(tuple) {
+        var instance = new klass({ object: tuple })
+        return instance;
+      });
+    else
+      this[attribute] = new klass({ object: this[attribute] });
   },
 
   // -------------------------------------------------------------------------

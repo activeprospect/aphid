@@ -33,8 +33,28 @@
       });
 
       var TestRemoteContact = Class.create(Aphid.Model, {
-        attributes: [ "name", "email" ],
-        baseURL: "../Fixtures/"
+        baseURL: "../Fixtures/",
+        attributes: [ "name", "email" ]
+      });
+
+      var TestAddress = Class.create(Aphid.Model, {
+        attributes: [ "street", "city", "state", "zip" ]
+      });
+
+      var TestPhoneNumber = Class.create(Aphid.Model, {
+        attributes: [ "type", "number" ]
+      });
+
+      var TestContactWithAddressProxy = Class.create(Aphid.Model, {
+        baseURL: "../Fixtures/",
+        attributes: [ "name", "email", "address" ],
+        proxies: { address: TestAddress }
+      });
+
+      var TestContactWithPhoneNumbersProxy = Class.create(Aphid.Model, {
+        baseURL: "../Fixtures/",
+        attributes: [ "name", "email", "phoneNumbers" ],
+        proxies: { phoneNumbers: TestPhoneNumber }
       });
 
       new Test.Unit.Runner({
@@ -84,6 +104,43 @@
           var testContact = new TestContact({ element: htmlString });
           assertEqual("John Doe", testContact.name);
           assertEqual("jdoe@example.com", testContact.email);
+        }},
+
+        testShouldInstatiateProxies: function() { with(this) {
+          var object = {
+            name: "John Doe",
+            email: "jdoe@example.com",
+            address: {
+              street: "123 Easy Street",
+              city: "Anytown",
+              state: "Anystate",
+              zip: 12345
+            }
+          };
+          var testContact = new TestContactWithAddressProxy({ object: object });
+          assertInstanceOf(TestAddress, testContact.address);
+          assertEqual("123 Easy Street", testContact.address.street);
+          assertEqual("Anytown", testContact.address.city);
+          assertEqual("Anystate", testContact.address.state);
+          assertEqual(12345, testContact.address.zip);
+        }},
+
+        testShouldInstatiateProxiesForArrays: function() { with(this) {
+          var object = {
+            name: "John Doe",
+            email: "jdoe@example.com",
+            phoneNumbers: [
+              { type: "mobile", number: "(123) 555-1212" },
+              { type: "work", number: "(123) 555-1213" },
+              { type: "fax", number: "(123) 555-1214" }
+            ]
+          };
+          var testContact = new TestContactWithPhoneNumbersProxy({ object: object });
+          assert(Object.isArray, testContact.phoneNumbers);
+          testContact.phoneNumbers.each(function(phoneNumber) {
+            assertInstanceOf(TestPhoneNumber, phoneNumber);
+          });
+          assertEqual(3, testContact.phoneNumbers.length);
         }},
 
         /*

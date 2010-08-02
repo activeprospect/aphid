@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for proxies on attributes that contain an array of objects
+   that should be instantiated with the configured proxy class.
+
  * Added a new abstract class for models, Aphid.Model.
 
  * Added multiple selection support to Aphid.UI.ListView. This includes the following changes:
