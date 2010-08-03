@@ -3,6 +3,7 @@ footer.toolbar
 {
   background-color: #f3f4f5;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#e3e4e5));
+  background-image: -moz-linear-gradient(top, #f3f4f5, #e3e4e5);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -19,6 +20,8 @@ footer.toolbar ul.actions
   line-height: inherit;
   border-right: 0.1em solid #fff;
   border-right-color: rgba(255, 255, 255, 0.8);
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 footer.toolbar ul.actions li
@@ -41,9 +44,11 @@ footer.toolbar ul.actions li
 footer.toolbar ul.actions li:hover
 {
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+  background-image: -moz-linear-gradient(top, #fff, #eee);
 }
 
 footer.toolbar ul.actions li:active
 {
   background-image: -webkit-gradient(linear, left top, left bottom, from(#e3e4e5), to(#f3f4f5));
+  background-image: -moz-linear-gradient(top, #e3e4e5, #f3f4f5);
 }
