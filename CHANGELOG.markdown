@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for placeholder items in ListViews. ListViews that are
+   initialized with a list item that has the CSS class of "placeholder" will
+   be ignored by the ListView, as if the list contained no items.
+
  * Added support for URL templates in Aphid.Model class definitions so that
    the record identifier can be placed anywhere in the URL, not just at the
    end.

@@ -40,6 +40,9 @@
         <li>Two</li>
         <li>Three</li>
       </ul>
+      <ul id="testListViewWithPlaceholderItem">
+        <li class="placeholder">Placeholder</li>
+      </ul>
       <section id="invalidListViewContainer"></section>
     </section>
 
@@ -76,6 +79,15 @@
         testShouldInitializeWithListItems: function() { with(this) {
           var listView = new Aphid.UI.ListView({ element: $('testListView') });
           assert(listView.items.length == 3);
+        }},
+
+        /*
+         * Ensures that existing items in the list view are processed during
+         * initialization.
+        **/
+        testShouldIgnorePlaceholderItemsOnInitialization: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListViewWithPlaceholderItem') });
+          assert(listView.items.length == 0);
         }},
 
         /*

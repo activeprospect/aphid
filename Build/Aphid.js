@@ -1727,9 +1727,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   setItems: function(newItems)
   {
-    this.items = this.element.update().insert(newItems).select('>li');
-    this._setupObservers();
-    if (this.sortingEnabled) this._setupSorting();
+    this.items = this.element.update().insert(newItems).select('>li:not(.placeholder)');
+    if (this.items.length > 0)
+    {
+      this._setupObservers();
+      if (this.sortingEnabled) this._setupSorting();
+    }
   },
 
 
