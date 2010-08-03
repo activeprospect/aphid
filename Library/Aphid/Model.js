@@ -9,12 +9,12 @@
  *
  * To create a custom model, you will need to subclass [[Aphid.Model]] and
  * define at least two properties: [[Aphid.Model#attributes]] and
- * [[Aphid.Model#baseURL]].
+ * [[Aphid.Model#url]].
  *
  * #### Example
  *
  *     var Contact = Class.create(Aphid.Model, {
- *       baseURL: "http://example.com/contacts?id=",
+ *       url: "http://example.com/contacts?id=#{identifier}",
  *       attributes: [ "name", "email" ]
  *     });
  *
@@ -22,11 +22,20 @@
  * attributes of the model as an instance of a specific class. See
  * [[Aphid.Model#proxies]] for more information on their usage.
  *
+ * ### URL Formats
+ *
+ * The [[Aphid.Model#url]] attribute supports string interpolation so that you
+ * may customize where in the URL the record identifier is injected. Your URL
+ * must include `#{identifier}` at the point that you wish to add the record
+ * identifier:
+ *
+ *     url: "http://example.com/contacts/#{identifier}?option=foo"
+ *
  * ### Loading & Initializing Models from Web Service by Identifier
  *
  * Typically, you will want to initialize your model by loading its attributes
  * from a remote web service by a unique identifier. To do this, you must
- * first define the [[Aphid.Model#baseURL]] property on the model definition.
+ * first define the [[Aphid.Model#url]] property on the model definition.
  * Then you may simply pass in an identifier key to the initializer with the
  * id of the record to be loaded.
  *
@@ -137,12 +146,18 @@ Aphid.Model = Class.create({
   delegate: false,
 
   /**
-   * Aphid.Model#baseURL -> Object
+   * Aphid.Model#url -> Object
    *
-   * The URL to be used as a base when loading model objects by a record
-   * identifier (i.e. `http://example.com/contacts?id=`).
+   * The URL template to be used when loading model objects remotely by a
+   * record identifier. This string must include `#{identifier}` at the point
+   * where the identifier should be placed.
+   *
+   * #### Example
+   *
+   *     "http://example.com/contacts/#{identifier}?option=foo"
+   *
   **/
-  baseURL: false,
+  url: false,
 
   /**
    * Aphid.Model#identifier -> String | Integer
@@ -279,12 +294,19 @@ Aphid.Model = Class.create({
    * Implement the delegate methods `modelDidFinishLoading` to be notified
    * when the model has been completely initialized.
    *
-   * TODO Implement error handling
+   * TODO Implement error handling for when the request fails
   **/
   _initializeFromIdentifier: function()
   {
     $L.info("Initializing from Record Identifier...", "Aphid.Model");
-    var url = this.baseURL + this.identifier;
+
+    // Assemble URL
+    var urlTemplate = new Template(this.url);
+    var url = urlTemplate.evaluate({ identifier: this.identifier });
+
+    // TODO Error handling for when the string did not have any variables
+
+    // Request Options
     var options = {
       method: 'get',
       contentType: 'application/json',
@@ -297,6 +319,8 @@ Aphid.Model = Class.create({
           this.delegate.modelDidFinishLoading(this);
       }.bind(this)
     };
+
+    // Make Request
     new Ajax.Request(url, options);
   },
 

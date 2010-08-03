@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for URL templates in Aphid.Model class definitions so that
+   the record identifier can be placed anywhere in the URL, not just at the
+   end.
+
  * Added support for proxies on attributes that contain an array of objects
    that should be instantiated with the configured proxy class.
 

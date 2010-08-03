@@ -33,7 +33,7 @@
       });
 
       var TestRemoteContact = Class.create(Aphid.Model, {
-        baseURL: "../Fixtures/",
+        url: "../Fixtures/#{identifier}",
         attributes: [ "name", "email" ]
       });
 
@@ -46,13 +46,13 @@
       });
 
       var TestContactWithAddressProxy = Class.create(Aphid.Model, {
-        baseURL: "../Fixtures/",
+        url: "../Fixtures/#{identifier}",
         attributes: [ "name", "email", "address" ],
         proxies: { address: TestAddress }
       });
 
       var TestContactWithPhoneNumbersProxy = Class.create(Aphid.Model, {
-        baseURL: "../Fixtures/",
+        url: "../Fixtures/#{identifier}",
         attributes: [ "name", "email", "phoneNumbers" ],
         proxies: { phoneNumbers: TestPhoneNumber }
       });

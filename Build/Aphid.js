@@ -352,7 +352,7 @@ Aphid.Model = Class.create({
 
   delegate: false,
 
-  baseURL: false,
+  url: false,
 
   identifier: false,
 
@@ -393,12 +393,16 @@ Aphid.Model = Class.create({
    * Implement the delegate methods `modelDidFinishLoading` to be notified
    * when the model has been completely initialized.
    *
-   * TODO Implement error handling
+   * TODO Implement error handling for when the request fails
   **/
   _initializeFromIdentifier: function()
   {
     $L.info("Initializing from Record Identifier...", "Aphid.Model");
-    var url = this.baseURL + this.identifier;
+
+    var urlTemplate = new Template(this.url);
+    var url = urlTemplate.evaluate({ identifier: this.identifier });
+
+
     var options = {
       method: 'get',
       contentType: 'application/json',
@@ -411,6 +415,7 @@ Aphid.Model = Class.create({
           this.delegate.modelDidFinishLoading(this);
       }.bind(this)
     };
+
     new Ajax.Request(url, options);
   },
 
