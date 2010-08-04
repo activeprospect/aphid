@@ -26,6 +26,13 @@
 
 ## Library
 
+### Aphid.Support.Logger
+
+ * Make the Logger accept an object as the optional second parameter and
+   implement a protocol that Aphid classes should respond to identify(), which
+   will return an identification string for the message that was logged (i.e.
+   "[Aphid.UI.SplitViewController - MySplitViewController] _Log Message_").
+
 ### Aphid.UI.View
 
  * Add support for initializing views from outlets with custom templates
