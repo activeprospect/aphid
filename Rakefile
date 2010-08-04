@@ -140,11 +140,11 @@ task "docs:build" => [ :build, "docs:clean" ] do
     },
     :pretty_urls => false,
     :bust_cache => true,
-    :name => 'Aphid JavaScript Framework',
+    :name => 'Aphid Framework',
     :short_name => 'Aphid',
     :home_url => 'http://aphid.activeprospect.com/',
     :doc_url => 'http://aphid.activeprospect.com/api',
-    :version => "0.9.0",
+    :version => "0.9.1-PRE",
     :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
   })
 end
