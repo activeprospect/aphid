@@ -236,7 +236,9 @@ Object.extend(Element, Aphid.Support.Extensions.Vendor.Prototype.Element);
 Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getBorderHeight -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getBorderHeight(element) -> Integer
+     *
+     * - element (Element): The element to get the border height from
      *
      * Returns the cumulative height of the Element's top and bottom borders.
     **/
@@ -249,7 +251,9 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getBorderWidth -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getBorderWidth(element) -> Integer
+     *
+     * - element (Element): The element to get the border width from
      *
      * Returns the cumulative width of the Element's left and right borders.
     **/
@@ -262,7 +266,9 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getInnerHeight -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getInnerHeight(element) -> Integer
+     *
+     * - element (Element): The element to get the inner height from
      *
      * Returns the height of the Element without padding or borders.
     **/
@@ -278,7 +284,9 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getInnerWidth -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getInnerWidth(element) -> Integer
+     *
+     * - element (Element): The element to get the inner width from
      *
      * Returns the width of the Element without padding or borders.
     **/
@@ -294,7 +302,9 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getOuterHeight -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getOuterHeight(element) -> Integer
+     *
+     * - element (Element): The element to get the outer height from
      *
      * Returns the height of the Element, including any margins.
     **/
@@ -308,7 +318,9 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getOuterWidth -> Integer
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getOuterWidth(element) -> Integer
+     *
+     * - element (Element): The element to get the outer width from
      *
      * Returns the width of the Element, including any margins.
     **/
@@ -322,7 +334,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#insert -> Element
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#insert() -> Element
      *
      * Adds support for inserting an Array of Elements
     **/
