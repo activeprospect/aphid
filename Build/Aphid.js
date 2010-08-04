@@ -80,17 +80,72 @@ Object.extend(Element, Aphid.Support.Extensions.Vendor.Prototype.Element);
 
 Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 
-  insert: Element.insert.wrap(
-    function(insert, element, insertation)
+    getBorderHeight: function(element)
     {
-      if (!Object.isArray(insertation))
-        return insert(element, insertation);
-
       element = $(element);
-      insertation.each(insert.curry(element));
-      return element;
-    }
-  )
+      var height = parseInt(element.getStyle('border-top-width'));
+      height += parseInt(element.getStyle('border-bottom-width'));
+      return height;
+    },
+
+    getBorderWidth: function(element)
+    {
+      element = $(element);
+      var width = parseInt(element.getStyle('border-left-width'));
+      width += parseInt(element.getStyle('border-right-width'));
+      return width;
+    },
+
+    getInnerHeight: function(element)
+    {
+      element = $(element);
+      var height = element.getHeight();
+      height -= parseInt(element.getStyle('padding-top'));
+      height -= parseInt(element.getStyle('padding-bottom'));
+      height -= parseInt(element.getStyle('border-top-width'));
+      height -= parseInt(element.getStyle('border-bottom-width'));
+      return height;
+    },
+
+    getInnerWidth: function(element)
+    {
+      element = $(element);
+      var width = element.getWidth();
+      width -= parseInt(element.getStyle('padding-left'));
+      width -= parseInt(element.getStyle('padding-right'));
+      width -= parseInt(element.getStyle('border-left-width'));
+      width -= parseInt(element.getStyle('border-right-width'));
+      return width;
+    },
+
+    getOuterHeight: function(element)
+    {
+      element = $(element);
+      var height = element.getHeight();
+      height += parseInt(element.getStyle('margin-top'));
+      height += parseInt(element.getStyle('margin-bottom'));
+      return height;
+    },
+
+    getOuterWidth: function(element)
+    {
+      element = $(element);
+      var width = element.getWidth();
+      width += parseInt(element.getStyle('margin-left'));
+      width += parseInt(element.getStyle('margin-right'));
+      return width;
+    },
+
+    insert: Element.insert.wrap(
+      function(insert, element, insertation)
+      {
+        if (!Object.isArray(insertation))
+          return insert(element, insertation);
+        element = $(element);
+        insertation.each(insert.curry(element));
+        return element;
+      }
+    )
 
 };
 
