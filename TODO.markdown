@@ -48,13 +48,21 @@
 
  * Allow min-width/max-width to be enforced on the right pane.
 
- * Automatically detect vertical or horizontal if possible.
+ * Automatically detect vertical or horizontal constraint based on the
+   absolute position characteristics (i.e. if both have top: 0 we can assume
+   its a vertical split, or if both have left: 0 we can assume its horizontal).
+
+ * Automatically position and size the drag handle based on the following
+   formulas:
+
+   * Vertical Split Views: (secondView.left - (firstView.left + firstView.width + (firstView.borderWidth * 2)))
+   * Horizontal Split Views: (secondView.top - (firstView.top + firstView.height + (firstView.borderWidth * 2)))
 
  * Fix issue where the drag handle isn't moved centered (set background of
    dragHandle to red to illustrate).
 
  * Implement double-click support (both with a callback and default behavior
-   minimizing the left pane).
+   minimizing the first pane).
 
 ### Aphid.UI.TabViewController
 

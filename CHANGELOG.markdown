@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Allow Aphid.UI.SplitViewController to be initialized and used with a
+   horizontal constraint.
+
  * Added support for placeholder items in ListViews. ListViews that are
    initialized with a list item that has the CSS class of "placeholder" will
    be ignored by the ListView, as if the list contained no items.

@@ -15,10 +15,13 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   firstView: false,
   secondView: false,
 
-  // Draggable Instance
+  // SplitView Configuration
+  constraint: false, // "horizontal, vertical"
+
+  // Instance Properties
   draggableInstance: false,
 
-  constraint: false, // "horizontal, vertical"
+  // Initialization ----------------------------------------------------------
 
   initialize: function($super, options)
   {
@@ -28,7 +31,6 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   viewDidLoad: function($super)
   {
     $super();
-
     $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
     this.element.addClassName('SplitViewController');
   },
@@ -38,7 +40,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     if (view == this.firstView)
     {
       var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
-          maxHeight = parseInt(this.firstView.element.getStyle('max-height'));
+          maxHeight = parseInt(this.firstView.element.getStyle('max-height')),
+          minWidth  = parseInt(this.firstView.element.getStyle('min-width')),
+          maxWidth  = parseInt(this.firstView.element.getStyle('max-width'));
     }
 
     if (this.firstView.isLoaded && this.secondView.isLoaded)
@@ -47,9 +51,11 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
         this.firstView.element,
         this.secondView.element,
         {
-          constraint: 'vertical',
+          constraint: this.constraint,
           minHeight: minHeight,
           maxHeight: maxHeight,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
           onStart: this.onStart.bind(this),
           onDrag: this.onDrag.bind(this),
           change: this.change.bind(this),
@@ -62,22 +68,22 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   onStart: function(arg)
   {
-    $L.info("onStart", "Aphid.UI.SplitViewController");
+    $L.debug("onStart", "Aphid.UI.SplitViewController");
   },
 
   onDrag: function(arg)
   {
-    $L.info("onDrag", "Aphid.UI.SplitViewController");
+    $L.debug("onDrag", "Aphid.UI.SplitViewController");
   },
 
   change: function(arg)
   {
-    $L.info("change", "Aphid.UI.SplitViewController");
+    $L.debug("change", "Aphid.UI.SplitViewController");
   },
 
   onEnd: function(arg)
   {
-    $L.info("onEnd", "Aphid.UI.SplitViewController");
+    $L.debug("onEnd", "Aphid.UI.SplitViewController");
   },
 
 });
@@ -177,8 +183,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
   resizeHorizontal: function(x)
   {
     this.firstPane.setStyle({ width: x - this.firstPane.cumulativeOffset()[0] + 'px' });
-    this.secondPane.setStyle({ left: x + this.dragHandle.getWidth() + 'px' });
-    this.dragHandle.setStyle({ left: x + 'px' });
+    this.secondPane.setStyle({ left: (x - this.firstPane.cumulativeOffset()[0] + this.dragHandle.getWidth()) + 'px' });
+    this.dragHandle.setStyle({ left: (x - this.firstPane.cumulativeOffset()[0]) + 'px' });
   },
 
   resizeVertical: function(y)
