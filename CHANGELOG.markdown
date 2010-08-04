@@ -3,6 +3,16 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added getData and setData to Element for making the accessing and setting
+   of HTML5 data attributes easier.
+
+ * Added getMinimumWidth(), getMinimumHeight(), getMaximumWidth(),
+   getMaximumHeight(), getBorderHeight(), getBorderWidth(), getInnerHeight(),
+   getInnerWidth(), getOuterHeight() and getOuterWidth() to Element.
+
+ * Fixed an issue where Aphid.UI.SplitViewController wasn't taking border
+   widths/heights into account when resizing.
+
  * Allow Aphid.UI.SplitViewController to be initialized and used with a
    horizontal constraint.
 
