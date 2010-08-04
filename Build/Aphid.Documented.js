@@ -3508,7 +3508,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     event.stop();
     var item = event.findElement('li');
-    if (item.hasClassName('selected'))
+    if (this.multipleSelectionEnabled && item.hasClassName('selected'))
       this.deselectItem(item);
     else
       this.selectItem(item);

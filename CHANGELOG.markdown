@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed an issue on Aphid.UI.ListView that was causing deselections to happen
+   even when multipleSelectionEnabled was false.
+
  * Added getData and setData to Element for making the accessing and setting
    of HTML5 data attributes easier.
 
