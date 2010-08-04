@@ -133,8 +133,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
     if (this.options.constraint == 'vertical')
     {
-      minHeight = parseInt(this.firstPane.getStyle('min-height'));
-      maxHeight = parseInt(this.firstPane.getStyle('max-height'));
+      minHeight = this.firstPane.getMinimumHeight();
+      maxHeight = this.firstPane.getMaximumHeight();
 
       if (event.clientY - this.dragHandleClickOffset <= minHeight + offset[1])
       {
@@ -157,8 +157,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
     }
     else
     {
-      minWidth = parseInt(this.firstPane.getStyle('min-width'));
-      maxWidth = parseInt(this.firstPane.getStyle('max-width'));
+      minWidth = this.firstPane.getMinimumWidth();
+      maxWidth = this.firstPane.getMaximumWidth();
 
       if (event.clientX - this.dragHandleClickOffset <= minWidth + offset[0])
       {

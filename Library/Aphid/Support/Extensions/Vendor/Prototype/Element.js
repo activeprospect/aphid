@@ -101,6 +101,68 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getMaximumHeight(element) -> Integer | false
+     *
+     * - element (Element): The element to get the maximum height from
+     *
+     * Returns the maximum height of an Element, as defined by the max-height
+     * CSS property. Returns false if a maximum height was not specified.
+    **/
+    getMaximumHeight: function(element)
+    {
+      element = $(element);
+      var maxHeight = parseInt(element.getStyle('max-height'));
+      if (isNaN(maxHeight)) return false;
+      return maxHeight;
+    },
+
+    /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getMaximumWidth(element) -> Integer | false
+     *
+     * - element (Element): The element to get the maximum width from
+     *
+     * Returns the maximum width of an Element, as defined by the max-width
+     * CSS property. Returns false if a maximum width was not specified.
+    **/
+    getMaximumWidth: function(element)
+    {
+      element = $(element);
+      var maxWidth = parseInt(element.getStyle('max-width'));
+      if (isNaN(maxWidth)) return false;
+      return maxWidth;
+    },
+
+    /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getMinimumHeight(element) -> Integer | false
+     *
+     * - element (Element): The element to get the minimum height from
+     *
+     * Returns the minimum height of an Element, as defined by the max-width
+     * CSS property. Returns false if a minimum height was not specified.
+    **/
+    getMinimumHeight: function(element)
+    {
+      element = $(element);
+      var minHeight = parseInt(element.getStyle('min-height'));
+      return minHeight;
+    },
+
+    /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getMinimumWidth(element) -> Integer | false
+     *
+     * - element (Element): The element to get the minimum width from
+     *
+     * Returns the minimum width of an Element, as defined by the max-width
+     * CSS property. Returns false if a minimum width was not specified.
+    **/
+    getMinimumWidth: function(element)
+    {
+      element = $(element);
+      var minWidth = parseInt(element.getStyle('min-width'));
+      return minWidth;
+    },
+
+    /**
      * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getOuterHeight(element) -> Integer
      *
      * - element (Element): The element to get the outer height from

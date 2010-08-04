@@ -118,6 +118,36 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
       return width;
     },
 
+    getMaximumHeight: function(element)
+    {
+      element = $(element);
+      var maxHeight = parseInt(element.getStyle('max-height'));
+      if (isNaN(maxHeight)) return false;
+      return maxHeight;
+    },
+
+    getMaximumWidth: function(element)
+    {
+      element = $(element);
+      var maxWidth = parseInt(element.getStyle('max-width'));
+      if (isNaN(maxWidth)) return false;
+      return maxWidth;
+    },
+
+    getMinimumHeight: function(element)
+    {
+      element = $(element);
+      var minHeight = parseInt(element.getStyle('min-height'));
+      return minHeight;
+    },
+
+    getMinimumWidth: function(element)
+    {
+      element = $(element);
+      var minWidth = parseInt(element.getStyle('min-width'));
+      return minWidth;
+    },
+
     getOuterHeight: function(element)
     {
       element = $(element);
@@ -1420,8 +1450,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
     if (this.options.constraint == 'vertical')
     {
-      minHeight = parseInt(this.firstPane.getStyle('min-height'));
-      maxHeight = parseInt(this.firstPane.getStyle('max-height'));
+      minHeight = this.firstPane.getMinimumHeight();
+      maxHeight = this.firstPane.getMaximumHeight();
 
       if (event.clientY - this.dragHandleClickOffset <= minHeight + offset[1])
       {
@@ -1443,8 +1473,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
     }
     else
     {
-      minWidth = parseInt(this.firstPane.getStyle('min-width'));
-      maxWidth = parseInt(this.firstPane.getStyle('max-width'));
+      minWidth = this.firstPane.getMinimumWidth();
+      maxWidth = this.firstPane.getMaximumWidth();
 
       if (event.clientX - this.dragHandleClickOffset <= minWidth + offset[0])
       {
