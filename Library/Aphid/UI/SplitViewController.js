@@ -182,16 +182,22 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   resizeHorizontal: function(x)
   {
-    this.firstPane.setStyle({ width: x - this.firstPane.cumulativeOffset()[0] + 'px' });
-    this.secondPane.setStyle({ left: (x - this.firstPane.cumulativeOffset()[0] + this.dragHandle.getWidth()) + 'px' });
-    this.dragHandle.setStyle({ left: (x - this.firstPane.cumulativeOffset()[0]) + 'px' });
+    var cumulativeOffset = this.firstPane.cumulativeOffset()[0],
+        borderWidth      = this.firstPane.getBorderWidth(),
+        dragHandleWidth  = this.dragHandle.getWidth();
+    this.firstPane.setStyle({ width: x - cumulativeOffset + 'px' });
+    this.secondPane.setStyle({ left: (x - cumulativeOffset + borderWidth + dragHandleWidth) + 'px' });
+    this.dragHandle.setStyle({ left: (x - cumulativeOffset + borderWidth) + 'px' });
   },
 
   resizeVertical: function(y)
   {
-    this.firstPane.setStyle({ height: y - this.firstPane.cumulativeOffset()[1] + 'px' });
-    this.secondPane.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1] + this.dragHandle.getHeight()) + 'px' });
-    this.dragHandle.setStyle({ top: (y - this.firstPane.cumulativeOffset()[1]) + 'px' });
+    var cumulativeOffset = this.firstPane.cumulativeOffset()[1],
+        borderHeight     = this.firstPane.getBorderHeight(),
+        dragHandleHeight = this.dragHandle.getHeight();
+    this.firstPane.setStyle({ height: y - cumulativeOffset + 'px' });
+    this.secondPane.setStyle({ top: (y - cumulativeOffset + borderHeight + dragHandleHeight) + 'px' });
+    this.dragHandle.setStyle({ top: (y - cumulativeOffset + borderHeight) + 'px' });
   },
 
   // State Management --------------------------------------------------------
