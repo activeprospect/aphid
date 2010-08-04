@@ -175,7 +175,19 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
         insertation.each(insert.curry(element));
         return element;
       }
-    )
+    ),
+
+    getData: function(element, attribute)
+    {
+      var value = element.getAttribute("data-" + attribute);
+      if (!value) return false;
+      return value;
+    },
+
+    setData: function(element, attribute, value)
+    {
+      element.setAttribute("data-" + attribute, value);
+    }
 
 };
 

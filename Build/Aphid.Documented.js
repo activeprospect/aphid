@@ -409,7 +409,37 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
         insertation.each(insert.curry(element));
         return element;
       }
-    )
+    ),
+
+    /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#getData(element, attribute) -> String | false
+     *
+     * - element (Element): The element to retrieve the data value from
+     * - attribute (String): The name of the data attribute to retrieve
+     *
+     * Convenience method for retrieving the value of an HTML5 data attribute
+     * on an Element.
+    **/
+    getData: function(element, attribute)
+    {
+      var value = element.getAttribute("data-" + attribute);
+      if (!value) return false;
+      return value;
+    },
+
+    /**
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#setData(element, attribute, value) -> null
+     *
+     * - element (Element): The element to set the data attribute on
+     * - attribute (String): The name of the data attribute to set (without the "data-" prefix)
+     * - value (String): The value to set on the data attribute
+     *
+     * Convenience method for setting an HTML5 data attribute on an Element.
+    **/
+    setData: function(element, attribute, value)
+    {
+      element.setAttribute("data-" + attribute, value);
+    }
 
 };
 
