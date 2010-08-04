@@ -3,6 +3,8 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added default styles for items in a toolbar with the "status" CSS class.
+
  * Added default styling for placeholder items in Aphid.UI.ListView instances.
 
  * Fixed an issue on Aphid.UI.ListView that was causing deselections to happen
