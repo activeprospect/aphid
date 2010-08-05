@@ -3332,6 +3332,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     {
       this.element.addClassName('ListView');
       this.setItems(this.element.childElements());
+      this.element.observe('click', this.clearSelection.bind(this));
     }
   },
 

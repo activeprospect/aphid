@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for clearing the selection when you click in the empty space
+   of an Aphid.UI.ListView instance.
+
  * Fixed an issue where selecting items in a ListView would call the
    listViewSelectionDidChange delegate method twice.
 
