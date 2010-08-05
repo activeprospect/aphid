@@ -1831,7 +1831,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       handle: "handle",
       onChange: this._listViewOrderDidChange.bind(this),
       onUpdate: this._listViewOrderDidUpdate.bind(this)
-    }
+    };
     $super(options);
     if (this.multipleSelectionEnabled)
       this.selectedItems = $A();
@@ -1902,7 +1902,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
     if (!this.multipleSelectionEnabled)
     {
-      this.clearSelection();
+      this._clearSelection();
       this.selectedItem = item.addClassName('selected');
     }
     else
@@ -1930,15 +1930,20 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   clearSelection: function()
   {
+    this._clearSelection();
+
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, false);
+  },
+
+  _clearSelection: function()
+  {
     this.items.invoke('removeClassName', 'selected');
     this.selectedItem = false;
     if (this.multipleSelectionEnabled)
       this.selectedItems = $A();
     else
       this.selectedItems = false;
-
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, false);
   },
 
   openItem: function(item)

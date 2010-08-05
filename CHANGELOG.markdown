@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed an issue where selecting items in a ListView would call the
+   listViewSelectionDidChange delegate method twice.
+
  * Added Aphid.UI.ListView#addItem(item) for adding items to a list view and
    fixed some issues with registering event observers and managing list
    sorting.

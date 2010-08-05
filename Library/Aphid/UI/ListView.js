@@ -142,7 +142,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       handle: "handle",
       onChange: this._listViewOrderDidChange.bind(this),
       onUpdate: this._listViewOrderDidUpdate.bind(this)
-    }
+    };
     $super(options);
     if (this.multipleSelectionEnabled)
       this.selectedItems = $A();
@@ -239,7 +239,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // multiple selection is enabled.
     if (!this.multipleSelectionEnabled)
     {
-      this.clearSelection();
+      this._clearSelection();
       this.selectedItem = item.addClassName('selected');
     }
     else
@@ -280,17 +280,22 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   clearSelection: function()
   {
+    this._clearSelection();
+
+    // Call the listViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this, false);
+  },
+
+  _clearSelection: function()
+  {
     this.items.invoke('removeClassName', 'selected');
     this.selectedItem = false;
     if (this.multipleSelectionEnabled)
       this.selectedItems = $A();
     else
       this.selectedItems = false;
-
-    // Call the listViewSelectionDidChange method on the delegate, if the
-    // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, false);
   },
 
   /**
