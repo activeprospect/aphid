@@ -79,6 +79,12 @@
           });
         }},
 
+        testShouldInitializeEmptyModel: function() { with(this) {
+          var testContact = new TestContact();
+          assert(!Object.isUndefined(testContact.name));
+          assert(!Object.isUndefined(testContact.email));
+        }},
+
         testShouldInitializeModelFromObject: function() { with(this) {
           var object = { name: "John Doe", email: "jdoe@example.com" };
           var testContact = new TestContact({ object: object });

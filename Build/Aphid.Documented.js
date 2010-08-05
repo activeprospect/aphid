@@ -1280,6 +1280,8 @@ Aphid.Model = Class.create({
       this._initializeFromObject();
     else if (this.json)
       this._initializeFromJSON();
+    else
+      this._initializeEmptyObject();
   },
 
   /*
@@ -1374,6 +1376,22 @@ Aphid.Model = Class.create({
     $L.info("Initializing from JSON...", "Aphid.Model");
     this.object = this.json.evalJSON();
     this._initializeFromObject();
+  },
+
+  /*
+   * Aphid.Model#_initializeEmptyObject() -> null
+   *
+   * Initializes an empty instance with each attribute set to null.
+  **/
+  _initializeEmptyObject: function()
+  {
+    $L.info("Initializing empty object...", "Aphid.Model");
+    this.attributes.each(
+      function(attribute)
+      {
+        this[attribute] = null;
+      }.bind(this)
+    );
   },
 
   // Proxies -----------------------------------------------------------------

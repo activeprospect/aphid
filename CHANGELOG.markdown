@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed model initialization so that it sets the configured attributes to
+   null on the object when the model is not initialized with initial data so
+   that calls to attributes do not result in "undefined".
+
  * Added default styles for items in a toolbar with the "status" CSS class.
 
  * Added default styling for placeholder items in Aphid.UI.ListView instances.
