@@ -48,6 +48,10 @@
    their views and initializing from HTML should initialize ListViewItem
    instances for each item in the list.
 
+ * When clearing the selection, a callback should be called for subclasses so
+   that they can act on the selection change just like the delegate is called
+   now.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
