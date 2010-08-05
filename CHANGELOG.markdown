@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added Aphid.UI.ListView#addItem(item) for adding items to a list view and
+   fixed some issues with registering event observers and managing list
+   sorting.
+
  * Fixed an issue where the previous selection would not have been cleared
    when setting new items on Aphid.UI.ListView.
 

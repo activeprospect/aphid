@@ -3352,9 +3352,48 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.items = this.element.update().insert(newItems).select('>li:not(.placeholder)');
     if (this.items.length > 0)
     {
-      this._setupObservers();
+      this._initializeItems();
       if (this.sortingEnabled) this._setupSorting();
     }
+  },
+
+  /**
+   * Aphid.UI.ListView#addItem(item) -> null
+   *
+   * - item (Element): The item to be added to the list
+   *
+   * Adds the specified item to the end of the list view.
+  **/
+  addItem: function(item)
+  {
+    this.element.insert(item);
+    this.items.push(item);
+    this._initializeItem(item);
+    if (this.sortingEnabled)
+      this._setupSorting();
+  },
+
+  /*
+   * Aphid.UI.ListView#_initializeItems() -> null
+   *
+   * Calls [[Aphid.UI.ListView#_initializeItem]] for each item.
+  **/
+  _initializeItems: function()
+  {
+    this.items.each(this._initializeItem, this);
+  },
+
+  /*
+   * Aphid.UI.ListView#_initializeItem(item) -> null
+   *
+   * - item (Element): the item to be initialized
+   *
+   * Initializes the item by adding observers and sort handles, if enabled.
+  **/
+  _initializeItem: function(item)
+  {
+    item.observe('click', this._handleClickEvent.bind(this));
+    item.observe('dblclick', this._handleDoubleClickEvent.bind(this));
   },
 
   // Selection ---------------------------------------------------------------
@@ -3370,9 +3409,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // Ensure that we can select the item...
     if (!this._shouldSelectItem(item))
       return;
-
-    var itemIndex = this.items.indexOf(item);
-    $L.info('Selecting item ' + itemIndex + ' in list...', 'Aphid.UI.ListView');
 
     // Clear the previous selection and set the newly selected item, unless
     // multiple selection is enabled.
@@ -3455,32 +3491,30 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _setupSorting: function()
   {
-    this.element.addClassName('sortable');
+    if (this.element.hasClassName('sortable'))
+      Sortable.destroy(this.element);
+    else
+      this.element.addClassName('sortable');
     this._addDragHandlesToItems();
     this._addOrderedIdentitiesToItems();
     Sortable.create(this.element, this.sortableOptions);
   },
 
-  // TODO This is a hack to make the onUpdate callback trigger after the list order was updated
   _addOrderedIdentitiesToItems: function()
   {
-    this.items.each(this._addOrderedIdentityToItem.bind(this));
-  },
-
-  _addOrderedIdentityToItem: function(item)
-  {
-    $L.info(item.identify())
+    this.items.invoke('identify');
   },
 
   _addDragHandlesToItems: function()
   {
-    this.items.each(this._addDragHandlesToItem.bind(this));
+    this.items.each(this._addDragHandleToItem, this);
   },
 
-  _addDragHandlesToItem: function(item)
+  _addDragHandleToItem: function(item)
   {
-    var foo = new Element('div').addClassName('handle');
-    item.insert(foo)
+    if (item.down('div.handle')) return;
+    var dragHandle = new Element('div').addClassName('handle');
+    item.insert(dragHandle);
   },
 
   // Call the listViewSelectionDidChange method on the delegate, if the
@@ -3500,24 +3534,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   // Event Handling ----------------------------------------------------------
-
-  /*
-   * Aphid.UI.ListView#_setupObservers() -> null
-   *
-   * Iterates across each item in the list adding event observers for handling
-   * click events and wiring them up to callbacks.
-  **/
-  _setupObservers: function()
-  {
-    var anchors = this.element.select('> li > a');
-    if (anchors.length > 0)
-      anchors.invoke('observe', 'click', this._handleClickEvent.bind(this));
-    else
-    {
-      this.items.invoke('observe', 'click', this._handleClickEvent.bind(this));
-      this.items.invoke('observe', 'dblclick', this._handleDoubleClickEvent.bind(this));
-    }
-  },
 
   /*
    * Aphid.UI.ListView#_handleClickEvent() -> null
@@ -3697,10 +3713,13 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
 Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initialize";
 Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
+Aphid.UI.ListView.prototype.addItem.displayName = "Aphid.UI.ListView.addItem";
 Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
 Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.deselectItem";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
+Aphid.UI.ListView.prototype._initializeItems.displayName = "Aphid.UI.ListView._initializeItems";
+Aphid.UI.ListView.prototype._initializeItem.displayName = "Aphid.UI.ListView._initializeItem";
 Aphid.UI.ListView.prototype._setupSorting.displayName = "Aphid.UI.ListView._setupSorting";
 Aphid.UI.ListView.prototype._addOrderedIdentitiesToItems.displayName = "Aphid.UI.ListView._addOrderedIdentitiesToItems";
 Aphid.UI.ListView.prototype._addOrderedIdentityToItem.displayName = "Aphid.UI.ListView._addOrderedIdentityToItem";
@@ -3708,7 +3727,6 @@ Aphid.UI.ListView.prototype._addDragHandlesToItems.displayName = "Aphid.UI.ListV
 Aphid.UI.ListView.prototype._addDragHandlesToItem.displayName = "Aphid.UI.ListView._addDragHandlesToItem";
 Aphid.UI.ListView.prototype._listViewOrderDidChange.displayName = "Aphid.UI.ListView._listViewOrderDidChange";
 Aphid.UI.ListView.prototype._listViewOrderDidUpdate.displayName = "Aphid.UI.ListView._listViewOrderDidUpdate";
-Aphid.UI.ListView.prototype._setupObservers.displayName = "Aphid.UI.ListView._setupObservers";
 Aphid.UI.ListView.prototype._handleClickEvent.displayName = "Aphid.UI.ListView._handleClickEvent";
 Aphid.UI.ListView.prototype._handleDoubleClickEvent.displayName = "Aphid.UI.ListView.prototype._handleDoubleClickEvent"
 Aphid.UI.ListView.prototype._shouldSelectItem.displayName = "Aphid.UI.ListView._shouldSelectItem";
