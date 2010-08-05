@@ -43,6 +43,11 @@
  * Add support for deselecting the current selection when the empty space of a
    list view was clicked (and multiple selection is not enabled).
 
+ * Add ListViewItem (a subclass of Aphid.UI.View) that will manage each item
+   in a ListView. ListViews should only accept instances of ListViewItem as
+   their views and initializing from HTML should initialize ListViewItem
+   instances for each item in the list.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
@@ -50,6 +55,10 @@
  * Add tests.
 
 ### Aphid.UI.SplitViewController
+
+ * Give SplitViewController its own 2 views: firstView, secondView. Instead of
+   assigning these views, we should say splitView.firstView.addSubview or
+   splitView.firstView.setView.
 
  * Clean up and document `Aphid.UI.SplitViewController` and move more of the
    logic from the `Draggable` subclass (`Aphid.UI.SplitViewController.Draggable`)
