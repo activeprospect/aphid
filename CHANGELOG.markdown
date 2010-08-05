@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed an issue where the previous selection would not have been cleared
+   when setting new items on Aphid.UI.ListView.
+
  * Fixed model initialization so that it sets the configured attributes to
    null on the object when the model is not initialized with initial data so
    that calls to attributes do not result in "undefined".

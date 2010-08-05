@@ -3347,6 +3347,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   setItems: function(newItems)
   {
+    if (this.items && this.items.length > 0)
+      this.clearSelection();
     this.items = this.element.update().insert(newItems).select('>li:not(.placeholder)');
     if (this.items.length > 0)
     {
