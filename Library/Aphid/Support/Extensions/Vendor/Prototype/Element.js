@@ -227,17 +227,19 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     },
 
     /**
-     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#setData(element, attribute, value) -> null
+     * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#setData(element, attribute, value) -> Element
      *
      * - element (Element): The element to set the data attribute on
      * - attribute (String): The name of the data attribute to set (without the "data-" prefix)
      * - value (String): The value to set on the data attribute
      *
      * Convenience method for setting an HTML5 data attribute on an Element.
+     * This method returns the element so that you may chain calls.
     **/
     setData: function(element, attribute, value)
     {
       element.setAttribute("data-" + attribute, value);
+      return element;
     }
 
 };

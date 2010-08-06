@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Element#setData() now returns the element so that you can use it with
+   method chaining.
+
  * Added support for clearing the selection when you click in the empty space
    of an Aphid.UI.ListView instance.
 

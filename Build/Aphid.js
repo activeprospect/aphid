@@ -187,6 +187,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
     setData: function(element, attribute, value)
     {
       element.setAttribute("data-" + attribute, value);
+      return element;
     }
 
 };
