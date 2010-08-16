@@ -977,7 +977,10 @@ Aphid.UI.View = Class.create(
             viewClass = element.getAttribute('data-view-class');
 
         if (!viewClass)
+        {
           viewClassImplementation = eval("Aphid.UI.View");
+          viewClass = "Aphid.UI.View";
+        }
         else
           viewClassImplementation = eval(viewClass);
 

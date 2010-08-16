@@ -575,7 +575,10 @@ Aphid.UI.View = Class.create(
 
         // If a custom view class was not provided, default to Aphid.UI.View
         if (!viewClass)
+        {
           viewClassImplementation = eval("Aphid.UI.View");
+          viewClass = "Aphid.UI.View";
+        }
         else
           viewClassImplementation = eval(viewClass);
 
