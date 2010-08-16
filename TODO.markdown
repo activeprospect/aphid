@@ -51,6 +51,11 @@
    that they can act on the selection change just like the delegate is called
    now.
 
+ * Add tests and documentation for Aphid.UI.ListViewItem.
+
+ * Update Aphid.UI.ListView tests for the changes that brought in the
+   Aphid.UI.ListViewItem requirements.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
