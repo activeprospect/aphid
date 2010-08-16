@@ -14,6 +14,10 @@
 
  * Ensure compatibility with Firefox 3+.
 
+ * Add support for placeholders on block elements to IE and also automatically
+   strip out whitespace on elements with the data-placeholder attribute so that
+   the CSS rule will be applied on supporting browsers.
+
 ## Tools
 
  * Add an `aphid` command-line tool for starting new Aphid projects or for

@@ -1848,7 +1848,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _initializeStaticListViewItems: function()
   {
-    var items = this.element.select('>li:not(.placeholder)').collect(
+    var items = this.element.select('>li').collect(
       function(element)
       {
         return new Aphid.UI.ListViewItem({ element: element });
