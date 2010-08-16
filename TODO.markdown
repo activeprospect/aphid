@@ -38,7 +38,10 @@
  * Add support for initializing views from outlets with custom templates
    defined as the data-template attribute on the outlet element.
 
+ * Formalize event handling support by automatically observing views when the
+   view subclass defines event handling methods (i.e. MyView#onClick()).
 
+### Aphid.UI.ListView
 
  * When clearing the selection, a callback should be called for subclasses so
    that they can act on the selection change just like the delegate is called
