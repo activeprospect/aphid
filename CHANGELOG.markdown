@@ -3,6 +3,12 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Aphid.UI.ListView now requires all list items to be instances of
+   Aphid.UI.ListViewItem (a new subclass of Aphid.UI.View) so that the
+   standard view hierarchy is observed. Any static list items that are present
+   in the list when initializing from an element or template will
+   automatically be initialized as instances of Aphid.UI.ListViewItem.
+
  * Element#setData() now returns the element so that you can use it with
    method chaining.
 

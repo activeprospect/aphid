@@ -43,10 +43,6 @@
  * Add support for deselecting the current selection when the empty space of a
    list view was clicked (and multiple selection is not enabled).
 
- * Add ListViewItem (a subclass of Aphid.UI.View) that will manage each item
-   in a ListView. ListViews should only accept instances of ListViewItem as
-   their views and initializing from HTML should initialize ListViewItem
-   instances for each item in the list.
 
  * When clearing the selection, a callback should be called for subclasses so
    that they can act on the selection change just like the delegate is called

@@ -20,3 +20,4 @@ Aphid.UI = {};
 
 //= require "UI/LoadingIndicator"
 //= require "UI/ListView"
+//= require "UI/ListViewItem"

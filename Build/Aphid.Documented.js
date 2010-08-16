@@ -3330,36 +3330,59 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.selectedItems = false;
   },
 
+  /*
+   * Aphid.UI.ListView#_initializeStaticListViewItems() -> null
+  **/
+  _initializeStaticListViewItems: function()
+  {
+    var items = this.element.select('>li:not(.placeholder)').collect(
+      function(element)
+      {
+        return new Aphid.UI.ListViewItem({ element: element });
+      });
+    this.setItems(items);
+  },
+
   viewDidLoad: function($super)
   {
     $super();
     if (this._validateContainer())
     {
       this.element.addClassName('ListView');
-      this.setItems(this.element.childElements());
       this.element.observe('click', this.clearSelection.bind(this));
+      this._initializeStaticListViewItems();
     }
   },
 
   // Items -------------------------------------------------------------------
 
   /**
-   * Aphid.UI.ListView#setItems(newItems) -> null
+   * Aphid.UI.ListView#setItems(items) -> null
    *
-   *  - newItems (Array): An array of list item Elements to set on the list
+   *  - items (Array): Array of [[Aphid.UI.ListViewItem]] instances
    *
-   * Sets the items in the list view to the specified items. Previous items
-   * will be removed.
+   * Sets the specified items as the items on the ListView, removing any
+   * existing items in the process.
   **/
-  setItems: function(newItems)
+  setItems: function(items)
   {
-    if (this.items && this.items.length > 0)
-      this.clearSelection();
-    this.items = this.element.update().insert(newItems).select('>li:not(.placeholder)');
+    // Ensure that we are only passed instances of Aphid.UI.ListViewItem...
+    if (!items.all(this._validateItem))
+    {
+      $L.error("All items must be instances of Aphid.UI.ListViewItem!", "Aphid.UI.ListView");
+      return;
+    }
+
+    // Clear Selection & Container
+    this.clearSelection();
+    this.element.update();
+
+    this.items = items.each(this.addSubview, this);
     if (this.items.length > 0)
     {
       this._initializeItems();
-      if (this.sortingEnabled) this._setupSorting();
+      if (this.sortingEnabled)
+        this._setupSorting();
     }
   },
 
@@ -3372,7 +3395,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   addItem: function(item)
   {
-    this.element.insert(item);
+    this.addSubview(item);
     this.items.push(item);
     this._initializeItem(item);
     if (this.sortingEnabled)
@@ -3398,8 +3421,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _initializeItem: function(item)
   {
-    item.observe('click', this._handleClickEvent.bind(this));
-    item.observe('dblclick', this._handleDoubleClickEvent.bind(this));
+    item.element.observe('click', this._handleClickEvent.bindAsEventListener(this, item));
+    item.element.observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
   },
 
   // Selection ---------------------------------------------------------------
@@ -3421,11 +3444,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (!this.multipleSelectionEnabled)
     {
       this._clearSelection();
-      this.selectedItem = item.addClassName('selected');
+      this.selectedItem = item.select();
     }
     else
     {
-      this.selectedItems.push(item.addClassName('selected'));
+      this.selectedItems.push(item.select());
     }
 
     this._didSelectItem(item);
@@ -3443,7 +3466,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (!this._shouldDeselectItem(item))
       return;
 
-    item.removeClassName('selected');
+    item.deselect();
 
     if (this.multipleSelectionEnabled)
       this.selectedItems = this.selectedItems.without(item);
@@ -3471,8 +3494,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   _clearSelection: function()
   {
-    this.items.invoke('removeClassName', 'selected');
-    this.selectedItem = false;
+    if (this.items)
+      this.items.invoke('deselect');
+    if (this.selectedItem)
+      this.selectedItem = false;
     if (this.multipleSelectionEnabled)
       this.selectedItems = $A();
     else
@@ -3513,7 +3538,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   _addOrderedIdentitiesToItems: function()
   {
-    this.items.invoke('identify');
+    this.items.each(function(item) { item.element.identify() });
   },
 
   _addDragHandlesToItems: function()
@@ -3523,12 +3548,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   _addDragHandleToItem: function(item)
   {
-    if (item.down('div.handle')) return;
+    if (item.element.down('div.handle')) return;
     var dragHandle = new Element('div').addClassName('handle');
-    item.insert(dragHandle);
+    item.element.insert(dragHandle);
   },
 
-  // Call the listViewSelectionDidChange method on the delegate, if the
+  // Call the listViewOrderDidChange method on the delegate, if the
   // delegate has defined it.
   _listViewOrderDidChange: function()
   {
@@ -3551,11 +3576,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Handles "click" events that are triggered by the observer on each item.
   **/
-  _handleClickEvent: function(event)
+  _handleClickEvent: function(event, item)
   {
     event.stop();
-    var item = event.findElement('li');
-    if (this.multipleSelectionEnabled && item.hasClassName('selected'))
+    if (this.multipleSelectionEnabled && item.isSelected)
       this.deselectItem(item);
     else
       this.selectItem(item);
@@ -3566,10 +3590,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Handles "dblclick" events that are triggered by the observer on each item.
   **/
-  _handleDoubleClickEvent: function(event)
+  _handleDoubleClickEvent: function(event, item)
   {
     event.stop();
-    var item = event.findElement('li');
     this.selectItem(item);
     this.openItem(item);
   },
@@ -3716,6 +3739,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return false;
     }
     return true;
+  },
+
+  _validateItem: function(item)
+  {
+    return (item instanceof Aphid.UI.ListViewItem);
   }
 
 });
@@ -3746,3 +3774,74 @@ Aphid.UI.ListView.prototype._didDeselectItem.displayName = "Aphid.UI.ListView._d
 Aphid.UI.ListView.prototype._shouldOpenItem.displayName = "Aphid.UI.ListView._shouldOpenItem";
 Aphid.UI.ListView.prototype._didOpenItem.displayName = "Aphid.UI.ListView._didOpenItem";
 Aphid.UI.ListView.prototype._validateContainer.displayName = "Aphid.UI.ListView._validateContainer";
+Aphid.UI.ListView.prototype._validateItem.displayName = "Aphid.UI.ListView._validateItem";
+/**
+ * class Aphid.UI.ListViewItem < Aphid.UI.View
+ *
+**/
+
+Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
+
+  displayName: "ListViewItem",
+
+  /**
+   * Aphid.UI.ListViewItem#isSelected -> Boolean
+  **/
+  isSelected: false,
+
+  /**
+   * Aphid.UI.ListViewItem#listView -> Aphid.UI.ListView
+   *
+   * The ListView instance that this item belongs to.
+  **/
+  listView: false,
+
+  // Initialization ----------------------------------------------------------
+
+  /**
+   * new Aphid.UI.ListViewItem([options])
+   *
+   * - options (Hash): Initial property values to be set on the View instance
+   *
+   * Initializes a new View instance.
+  **/
+  initialize: function($super, options)
+  {
+    $super(options);
+    if (!this.element)
+    {
+      $L.info("Initializing default element...", this.displayName)
+      this.element = new Element('li');
+      this.isLoaded = true;
+    }
+  },
+
+  viewDidLoad: function($super)
+  {
+    $super();
+  },
+
+  // -------------------------------------------------------------------------
+
+  select: function()
+  {
+    $L.debug("Selected...", "Aphid.UI.ListViewItem");
+    this.element.addClassName('selected');
+    this.isSelected = true;
+    return this;
+  },
+
+  deselect: function()
+  {
+    $L.debug("Deselected...", "Aphid.UI.ListViewItem");
+    this.element.removeClassName('selected');
+    this.isSelected = false;
+    return this;
+  }
+
+});
+
+// Method Name Mappings for Debugging ----------------------------------------
+
+Aphid.UI.ListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";
+Aphid.UI.ListViewItem.prototype.deselect.displayName = "Aphid.UI.ListViewItem.deselect";
