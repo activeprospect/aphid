@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added listViewShouldClearSelection (delegate method) and
+   shouldClearSelection (callback) to Aphid.UI.ListView.
+
  * Aphid.UI.ListView now requires all list items to be instances of
    Aphid.UI.ListViewItem (a new subclass of Aphid.UI.View) so that the
    standard view hierarchy is observed. Any static list items that are present

@@ -38,10 +38,6 @@
  * Add support for initializing views from outlets with custom templates
    defined as the data-template attribute on the outlet element.
 
-### Aphid.UI.ListView
-
- * Add support for deselecting the current selection when the empty space of a
-   list view was clicked (and multiple selection is not enabled).
 
 
  * When clearing the selection, a callback should be called for subclasses so

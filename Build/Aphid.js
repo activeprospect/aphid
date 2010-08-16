@@ -1956,6 +1956,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   clearSelection: function()
   {
+    if (!this._shouldClearSelection())
+      return;
+
     this._clearSelection();
 
     if (this.delegate && this.delegate.listViewSelectionDidChange)
@@ -2137,6 +2140,31 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.ListView#_shouldClearSelection(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent the selection from being
+   * cleared, such as when no items are currently selected. It also evaluates
+   * the `shouldClearSelection` callback and the `listViewShouldClearSelection`
+   * delegate method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the list selection should
+   * be cleared.
+  **/
+  _shouldClearSelection: function()
+  {
+    var shouldClearSelection = true;
+    if (this.multipleSelectionEnabled && this.selectedItems.length == 0)
+      shouldClearSelection = false;
+    else if (!this.multipleSelectionEnabled && !this.selectedItem)
+      shouldClearSelection = false;
+    if (this.shouldClearSelection)
+      shouldClearSelection = this.shouldClearSelection();
+    if (this.delegate && this.delegate.listViewShouldClearSelection)
+      shouldClearSelection = this.delegate.listViewShouldClearSelection(this);
+    return shouldClearSelection;
+  },
+
+  /*
    * Aphid.UI.ListView#_shouldOpenItem(item) -> Boolean
    *
    * Checks with the subclass and delegate to see if the item should be
@@ -2217,6 +2245,7 @@ Aphid.UI.ListView.prototype._shouldSelectItem.displayName = "Aphid.UI.ListView._
 Aphid.UI.ListView.prototype._didSelectItem.displayName = "Aphid.UI.ListView._didSelectItem";
 Aphid.UI.ListView.prototype._shouldDeselectItem.displayName = "Aphid.UI.ListView._shouldDeselectItem";
 Aphid.UI.ListView.prototype._didDeselectItem.displayName = "Aphid.UI.ListView._didDeselectItem";
+Aphid.UI.ListView.prototype._shouldClearSelection.displayName = "Aphid.UI.ListView._shouldClearSelection"
 Aphid.UI.ListView.prototype._shouldOpenItem.displayName = "Aphid.UI.ListView._shouldOpenItem";
 Aphid.UI.ListView.prototype._didOpenItem.displayName = "Aphid.UI.ListView._didOpenItem";
 Aphid.UI.ListView.prototype._validateContainer.displayName = "Aphid.UI.ListView._validateContainer";
