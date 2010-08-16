@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for removing list view items with
+   Aphid.UI.ListView#removeItem(item).
+
  * Added support for displaying placeholder messages on block elements that
    specify the custom data-placeholder attribute.
 

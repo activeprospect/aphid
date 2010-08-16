@@ -230,6 +230,18 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this._setupSorting();
   },
 
+  removeItem: function(item)
+  {
+    if (!this.items.include(item))
+    {
+      $L.error("Attempted to remove item that is not a part of the list", this.displayName);
+      return;
+    }
+    this.deselectItem(item);
+    item.removeFromSuperview();
+    this.items = this.items.without(item);
+  },
+
   /*
    * Aphid.UI.ListView#_initializeItems() -> null
    *
