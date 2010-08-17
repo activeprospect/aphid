@@ -43,14 +43,21 @@
 
 ### Aphid.UI.View
 
- * Add support for initializing views from outlets with custom templates
-   defined as the data-template attribute on the outlet element.
-
  * Formalize event handling support by automatically observing views when the
    view subclass defines event handling methods (i.e. MyView#onClick()).
 
+ * Add support for initializing views from outlets with custom templates
+   defined as the data-template attribute on the outlet element.
+
+ * Add support for specifying the delegate and dataSource properties for views
+   that are initialized by outlet with data-* attributes that will evaluate to
+   properties on the view that owns the outlet.
+
  * Add support for programatically declaring a View's markup/element.
 
+### Aphid.UI.ViewController
+
+ * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
 
 ### Aphid.UI.ListView
 
@@ -93,9 +100,6 @@
 
    * Vertical Split Views: (secondView.left - (firstView.left + firstView.width + (firstView.borderWidth * 2)))
    * Horizontal Split Views: (secondView.top - (firstView.top + firstView.height + (firstView.borderWidth * 2)))
-
- * Fix issue where the drag handle isn't moved centered (set background of
-   dragHandle to red to illustrate).
 
  * Implement double-click support (both with a callback and default behavior
    minimizing the first pane).
