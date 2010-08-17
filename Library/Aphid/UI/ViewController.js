@@ -15,14 +15,6 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
   /*
-   * Aphid.UI.ViewController#_modalViewOverlay -> Element | false
-   *
-   * The semi-translucent overlay element that is displayed behind modal views.
-  **/
-  // TODO This should be moved to Window (i.e. Window.presentOverlay or something)
-  _modalViewOverlay: false,
-
-  /*
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false
    *
    * The container element that will contain the modal view controller's view.
@@ -114,14 +106,9 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
 
-    // Display the Modal View Overlay
-    if (!this._modalViewOverlay)
-    {
-      this._modalViewOverlay = new Element("div", { className: 'modalViewOverlay' });
-      this._modalViewOverlay.hide();
-      Element.insert(document.body, { top: this._modalViewOverlay });
-    }
-    animated ? this._modalViewOverlay.appear({ duration: 0.25 }) : this._modalViewOverlay.show();
+    // Display the Overlay
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.displayOverlayAnimated(animated);
 
     // Display the Modal View Container
     if (!this._modalViewContainer)
@@ -180,7 +167,8 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     if (!this.modalViewController) return;
 
     // Hide the Overlay
-    animated ? this._modalViewOverlay.fade({ duration: 0.25 }) : this._modalViewOverlay.hide();
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
     animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();

@@ -7,8 +7,8 @@
 
 Aphid.UI = {};
 
-//= require "UI/Window"
 //= require "UI/View"
+//= require "UI/Window"
 
 // Controllers ---------------------------------------------------------------
 

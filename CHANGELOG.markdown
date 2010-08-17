@@ -3,6 +3,14 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Made Aphid.UI.Window a subclass of Aphid.UI.View so that it functions as
+   part of the full view stack as the root view.
+
+ * Moved overlay display responsibilities to Aphid.UI.Window, which can now be
+   managed by using the Aphid.UI.Window#displayOverlay(),
+   Aphid.UI.Window#displayOverlayAnimated(), Aphid.UI.Window#dismissOverlay()
+   and Aphid.UI.Window#dismissOverlayAnimated() methods.
+
  * Added support for removing list view items with
    Aphid.UI.ListView#removeItem(item).
 

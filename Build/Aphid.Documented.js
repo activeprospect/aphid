@@ -1461,41 +1461,6 @@ Aphid.Model = Class.create({
 
 Aphid.UI = {};
 
-//
-// Window Object
-//
-// The Aphid.UI.Window class is essentially a wrapper for managing the current
-// application/document <body>.
-//
-
-Aphid.UI.Window = Class.create(
-  {
-
-    container: false,
-    subviews: false,
-
-    initialize: function()
-    {
-      $L.info('Initializing...', 'Aphid.UI.Window');
-      this.container = $(document.body);
-      this.subviews = $A();
-    },
-
-    addSubview: function(subview)
-    {
-      if (Object.isUndefined(subview) || Object.isUndefined(subview.element))
-      {
-        $L.error("A valid subclass of View was not provided. You must pass an Object to addSubview that returns the DOM structure of the view as the 'element' property of the object.", 'Aphid.UI.Window');
-        return;
-      }
-
-      $L.info('Adding subview to window…', 'Aphid.UI.Window');
-      this.subviews.push(subview);
-      this.container.insert(subview.element);
-    }
-
-  }
-);
 /**
  * class Aphid.UI.View
  *
@@ -1865,7 +1830,7 @@ Aphid.UI.View = Class.create(
       return;
     }
 
-    $L.info('Adding "' + view.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
+    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
 
     // Setup the View
     view.element.hide();
@@ -2178,6 +2143,101 @@ Aphid.UI.View.prototype._loadTemplate.displayName = "Aphid.UI.View._loadTemplate
 Aphid.UI.View.prototype._templateDidFinishLoading.displayName = "Aphid.UI.View._templateDidFinishLoading";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
 Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";
+/**
+ * class Aphid.UI.Window < Aphid.UI.View
+ *
+ * The root view class for the application. All views in the application are
+ * at some point in the view heirarchy children of this view.
+ *
+ * This element property for the Window is the document's BODY element.
+**/
+Aphid.UI.Window = Class.create(Aphid.UI.View, {
+
+  displayName: "Aphid.UI.Window",
+
+  /*
+   * Aphid.UI.Window#_overlayElement -> Element | false
+   *
+   * The semi-translucent overlay element that is displayed behind modal
+   * views, alert and message dialogs.
+  **/
+  _overlayElement: false,
+
+  /**
+   * new Aphid.UI.Window([options])
+   *
+   * - options (Hash): Initial property values to be set on the Window instance
+   *
+   * Initializes a new Window instance.
+  **/
+  initialize: function($super, options)
+  {
+    options = $H(options);
+    options.set("element", document.body);
+    options.set("outlet", false);
+    options.set("template", false);
+
+    $super(options);
+  },
+
+  /**
+   * Aphid.UI.Window#displayOverlay() -> null
+   *
+   * Displays a semi-translucent overlay over the entire window. The style,
+   * including the `z-index` that the overlay appears at, are defined by the
+   * CSS "overlay" class in the `Window.less` file.
+  **/
+  displayOverlay: function()
+  {
+    this.displayOverlayAnimated(false);
+  },
+
+  /**
+   * Aphid.UI.Window#displayOverlayAnimated([animated = true]) -> null
+   *
+   * Displays a semi-translucent overlay over the entire window, optionally
+   * presenting it with an animated effect. The style, including the `z-index`
+   * that the overlay appears at, are defined by the CSS "overlay" class in
+   * the `Window.less` file.
+  **/
+  displayOverlayAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    // Display the Overlay
+    if (!this._overlayElement)
+    {
+      this._overlayElement = new Element("div", { className: 'overlay' });
+      this._overlayElement.hide();
+      Element.insert(document.body, { top: this._overlayElement });
+    }
+    animated ? this._overlayElement.appear({ duration: 0.25 }) : this._overlayElement.show();
+  },
+
+  /** related to: Aphid.UI.Window#dismissOverlayAnimated
+   * Aphid.UI.Window#dismissOverlay() -> null
+   *
+   * Dismisses the overlay that was displayed from a call to
+   * [[Aphid.UI.Window#displayOverlay]] or [[Aphid.UI.Window#displayOverlayAnimated]].
+  **/
+  dismissOverlay: function()
+  {
+    this.dismissOverlayAnimated(false);
+  },
+
+  /** related to: Aphid.UI.Window#dismissOverlay
+   * Aphid.UI.Window#dismissOverlayAnimated([animated = true]) -> null
+   *
+   * Dismisses the overlay that was displayed from a call to
+   * [[Aphid.UI.Window#displayOverlay]] or [[Aphid.UI.Window#displayOverlayAnimated]],
+   * optionally with an animated effect.
+  **/
+  dismissOverlayAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    animated ? this._overlayElement.fade({ duration: 0.25 }) : this._overlayElement.hide();
+  }
+
+});
 
 // Controllers ---------------------------------------------------------------
 
@@ -2196,14 +2256,6 @@ Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wir
 **/
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
-
-  /*
-   * Aphid.UI.ViewController#_modalViewOverlay -> Element | false
-   *
-   * The semi-translucent overlay element that is displayed behind modal views.
-  **/
-  // TODO This should be moved to Window (i.e. Window.presentOverlay or something)
-  _modalViewOverlay: false,
 
   /*
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false
@@ -2297,14 +2349,9 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
 
-    // Display the Modal View Overlay
-    if (!this._modalViewOverlay)
-    {
-      this._modalViewOverlay = new Element("div", { className: 'modalViewOverlay' });
-      this._modalViewOverlay.hide();
-      Element.insert(document.body, { top: this._modalViewOverlay });
-    }
-    animated ? this._modalViewOverlay.appear({ duration: 0.25 }) : this._modalViewOverlay.show();
+    // Display the Overlay
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.displayOverlayAnimated(animated);
 
     // Display the Modal View Container
     if (!this._modalViewContainer)
@@ -2363,7 +2410,8 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     if (!this.modalViewController) return;
 
     // Hide the Overlay
-    animated ? this._modalViewOverlay.fade({ duration: 0.25 }) : this._modalViewOverlay.hide();
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
     animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();

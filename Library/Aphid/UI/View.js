@@ -367,7 +367,7 @@ Aphid.UI.View = Class.create(
       return;
     }
 
-    $L.info('Adding "' + view.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
+    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
 
     // Setup the View
     view.element.hide();

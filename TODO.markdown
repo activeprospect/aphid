@@ -37,6 +37,10 @@
    will return an identification string for the message that was logged (i.e.
    "[Aphid.UI.SplitViewController - MySplitViewController] _Log Message_").
 
+### Aphid.UI.Window
+
+ * Add documentation and tests for Aphid.UI.Window.
+
 ### Aphid.UI.View
 
  * Add support for initializing views from outlets with custom templates
