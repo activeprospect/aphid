@@ -319,6 +319,14 @@ Aphid.Model = Class.create({
         this.isLoaded = true;
         if (this.delegate && this.delegate.modelDidFinishLoading)
           this.delegate.modelDidFinishLoading(this);
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        var alertView = new Aphid.UI.AlertView();
+        alertView.title = "Error Loading Resource";
+        alertView.message = "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
+        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.showAnimated();
       }.bind(this)
     };
 

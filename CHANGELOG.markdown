@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added Aphid.UI.AlertView for displaying modal alert messages (errors,
+   notices, etc).
+
  * Made Aphid.UI.Window a subclass of Aphid.UI.View so that it functions as
    part of the full view stack as the root view.
 

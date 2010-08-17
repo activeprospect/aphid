@@ -1,0 +1,79 @@
+
+.AlertView
+{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 140px;
+  width: 400px;
+  margin-top: -70px;
+  margin-left: -200px;
+  background-color: white;
+  z-index: 1001;
+  -webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 0.5em;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
+}
+
+.AlertView header h1
+{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+               "Helvetica Neue", sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 24px;
+  color: #333;
+  text-shadow: 0 1px 1px solid #fff;
+}
+
+.AlertView p.message
+{
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.AlertView p.status
+{
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 0.9em;
+  color: #666;
+  margin: 0;
+  text-shadow: 0 1px 1px #fff;
+}
+
+.AlertView input[type=button]
+{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  text-align: center;
+  border: 1px solid #888;
+  -webkit-border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  border-radius: 0.3em;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
+  font-weight: bold;
+  padding: 0.4em 0.8em;
+  color: #333;
+  text-shadow: 0 1px 1px #fff;
+}
+
+.AlertView input[type=button]:hover
+{
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+  color: #222;
+}
+
+.AlertView input[type=button]:active
+{
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+  color: #222;
+}

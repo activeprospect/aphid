@@ -513,6 +513,14 @@ Aphid.Model = Class.create({
         this.isLoaded = true;
         if (this.delegate && this.delegate.modelDidFinishLoading)
           this.delegate.modelDidFinishLoading(this);
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        var alertView = new Aphid.UI.AlertView();
+        alertView.title = "Error Loading Resource";
+        alertView.message = "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
+        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.showAnimated();
       }.bind(this)
     };
 
@@ -1821,10 +1829,124 @@ Aphid.UI.LoadingIndicator = Class.create({
   }
 
 });
+Aphid.UI.AlertView = Class.create(Aphid.UI.View,
+{
+
+  title: false,
+
+  /*
+   * Aphid.UI.AlertView#_titleElement -> Element | false
+   *
+   * A reference to the element that will display the title string in the
+   * alert dialog markup.
+  **/
+  _titleElement: false,
+
+  message: false,
+
+  /*
+   * Aphid.UI.AlertView#_messageElement -> Element | false
+   *
+   * A reference to the element that will display the message string in the
+   * alert dialog markup.
+  **/
+  _messageElement: false,
+
+  status: false,
+
+  /*
+   * Aphid.UI.AlertView#_statusElement -> Element | false
+   *
+   * A reference to the element that will display the status message string in
+   * the alert dialog markup.
+  **/
+  _statusElement: false,
+
+
+  initialize: function($super, options)
+  {
+    options = $H(options);
+    options.set("element", this._element());
+    $super(options);
+  },
+
+  /*
+   * Aphid.UI.AlertView#_element() -> Element
+   *
+   * Creates the element for the AlertView programmatically.
+  **/
+  _element: function()
+  {
+
+    var element = new Element("section");
+    element.addClassName("AlertView");
+
+    var headerElement = new Element("header");
+    this._titleElement = new Element("h1");
+    headerElement.insert(this._titleElement);
+    element.insert(headerElement);
+
+    this._messageElement = new Element("p").addClassName("message");
+    element.insert(this._messageElement);
+
+    this._statusElement = new Element("p").addClassName("status");
+    element.insert(this._statusElement);
+
+    var closeButton = new Element("input", { type: "button", value: "Dismiss" });
+    closeButton.observe("click", this.dismissAnimated.bind(this));
+    element.insert(closeButton);
+
+    return element;
+  },
+
+  show: function()
+  {
+    this.showAnimated(false);
+  },
+
+  showAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+
+    if (Aphid.UI.AlertView.currentAlertView) return;
+
+    this._titleElement.update(this.title);
+    this._messageElement.update(this.message);
+    this._statusElement.update(this.status);
+
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.displayOverlayAnimated(animated);
+    mainWindow.addSubview(this);
+  },
+
+  dismiss: function()
+  {
+    this.dismissAnimated(false);
+  },
+
+  dismissAnimated: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+
+    var mainWindow = Application.sharedInstance.mainWindow;
+    mainWindow.dismissOverlayAnimated(animated);
+
+    this.removeFromSuperviewAnimated();
+
+    this.title = false;
+    this.message = false;
+    this.status = false;
+  }
+
+});
+
+Aphid.UI.AlertView.currentAlertView = false;
 
 Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
-  displayName: false,
+  displayName: "Aphid.UI.ListView",
+
+  dataSource: false,
 
   items: false,
 

@@ -19,5 +19,6 @@ Aphid.UI = {};
 // Views ---------------------------------------------------------------------
 
 //= require "UI/LoadingIndicator"
+//= require "UI/AlertView"
 //= require "UI/ListView"
 //= require "UI/ListViewItem"
