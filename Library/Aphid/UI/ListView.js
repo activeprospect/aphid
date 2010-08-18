@@ -17,6 +17,14 @@
  *       <li>Trash</li>
  *     </ul>
  *
+ * #### Data Source Methods
+ *
+ *  * `listViewItemCount(listView)` - Should return the number of items
+ *    contained within the list view.
+ *
+ *  * `listViewItemForIndex(listView, index)` - Should return the item to be
+ *    displayed at the given index.
+ *
  * #### Delegate Methods
  *
  *  * `listViewShouldSelectItem(listView, item)` - Called just before the item
@@ -80,7 +88,15 @@
 
 Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
-  displayName: false,
+  displayName: "Aphid.UI.ListView",
+
+  /**
+   * Aphid.UI.ListView#dataSource -> Object | false
+   *
+   * If a data source is provided for the list view instance, it will be
+   * asked for data.
+  **/
+  dataSource: false,
 
   /**
    * Aphid.UI.ListView#items -> Array
@@ -156,6 +172,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.selectedItems = $A();
     else
       this.selectedItems = false;
+    if (this.dataSource)
+      this.reloadData();
   },
 
   /*
@@ -263,6 +281,57 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     item.element.observe('click', this._handleClickEvent.bindAsEventListener(this, item));
     item.element.observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
+  },
+
+  // Data Source -------------------------------------------------------------
+
+  /**
+   * Aphid.UI.ListView#reloadData() -> null
+   *
+   * Reloads the items in the list view by asking the data source for each of
+   * the list view items in the list.
+  **/
+  reloadData: function()
+  {
+    var items     = $A();
+    var itemCount = this._listViewItemCount();
+    for (var i = 0; i < itemCount; i++)
+      items.push(this._listViewItemForIndex(i));
+    this.setItems(items);
+  },
+
+  /*
+   * Aphid.UI.ListView#_listViewItemCount() -> null
+   *
+   * Proxy method that returns the list view item count as defined by the
+   * dataSource. If the object set as the dataSource has not implemented the
+   * `listViewItemCount` method, an error will be raised.
+  **/
+  _listViewItemCount: function()
+  {
+    var listViewItemCount = 0;
+    if (this.dataSource && this.dataSource.listViewItemCount)
+      listViewItemCount = this.dataSource.listViewItemCount(this);
+    else
+      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this.displayName);
+    return listViewItemCount;
+  },
+
+  /*
+   * Aphid.UI.ListView#_listViewItemForIndex(index) -> null
+   *
+   * Proxy method that returns the list view item for the specified index as
+   * returned by the dataSource. If the object set as the dataSource has not
+   * implemented the `listViewItemForIndex` method, an error will be raised.
+  **/
+  _listViewItemForIndex: function(index)
+  {
+    var listViewItemForIndex;
+    if (this.dataSource && this.dataSource.listViewItemForIndex)
+      listViewItemForIndex = this.dataSource.listViewItemForIndex(this, index);
+    else
+      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this.displayName);
+    return listViewItemForIndex;
   },
 
   // Selection ---------------------------------------------------------------

@@ -3,6 +3,8 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for Data Sources to Aphid.UI.ListView.
+
  * Added Aphid.UI.AlertView for displaying modal alert messages (errors,
    notices, etc).
 

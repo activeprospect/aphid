@@ -75,6 +75,11 @@
  * a vanilla [[Aphid.UI.View]] instance and assigned to your view's matching
  * instance property.
  *
+ * #### Delegates & Data Sources on Outlets
+ *
+ * By default, delegates and data sources (if applicable) will be
+ * automatically assigned to the view that owns the outlet.
+ *
  * #### Actions
  *
  * Similar to outlets, actions allow you to easily map element events to
@@ -589,7 +594,8 @@ Aphid.UI.View = Class.create(
           try {
             instance = new viewClassImplementation({
               outlet: element,
-              delegate: this
+              delegate: this,
+              dataSource: this
             });
           }
           catch (error)

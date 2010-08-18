@@ -40,6 +40,8 @@
         <li>Two</li>
         <li>Three</li>
       </ul>
+      <ul id="emptyListView">
+      </ul>
       <section id="invalidListViewContainer"></section>
     </section>
 
@@ -425,6 +427,49 @@
           });
           listView.openItem(listView.items[1]);
           assertEqual(listView.items[1], lastOpenedItem);
+        }},
+
+        /*
+         * Ensures that the ListView instance attempts to load data from its
+         * data source when initialized with a dataSource property.
+        **/
+        testShouldLoadDataFromDataSourceUponInitialization: function() { with(this) {
+          var listViewItemCountCalled = false;
+          var listViewDataSource = {
+            listViewItemCount: function(listView) {
+              listViewItemCountCalled = true;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('emptyListView'),
+            dataSource: listViewDataSource
+          });
+          assert(listViewItemCountCalled);
+        }},
+
+        /*
+         * Ensures that the ListView can load its items from a data source.
+        **/
+        testShouldLoadDataFromDataSource: function() { with(this) {
+          var listViewItemForIndexCallCount = 0;
+          var listViewDataSource = {
+            items: [ "One", "Two", "Three" ],
+            listViewItemCount: function(listView) {
+              return this.items.length;
+            },
+            listViewItemForIndex: function(listView, index) {
+              listViewItemForIndexCallCount++;
+              var listViewItem = new Aphid.UI.ListViewItem();
+              listViewItem.element.update(this.items[index]);
+              return listViewItem;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('emptyListView'),
+            dataSource: listViewDataSource
+          });
+          assertEqual(listViewDataSource.items.length, listView.items.length);
+          assertEqual(3, listViewItemForIndexCallCount);
         }}
 
       }, { testLog: "logSection" });

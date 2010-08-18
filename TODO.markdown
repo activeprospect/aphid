@@ -70,6 +70,10 @@
  * Update Aphid.UI.ListView tests for the changes that brought in the
    Aphid.UI.ListViewItem requirements.
 
+ * Figure out a good pattern for reusing list view items when reloading data
+   instead of recreating each list view item each time that reload data is
+   called.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
