@@ -160,6 +160,32 @@
         }},
 
         /*
+         * Ensure that views that are initialized from an outlet have their
+         * superview property set to the view that owns the outlet.
+        **/
+        testShouldSetSuperviewOnOutlet: function() { with(this) {
+          var view = new TestView({
+            outlet: $("testElementWithOutlet")
+          });
+          assert(view.testOutlet.superview, "testOutlet.superview should not be false");
+          assertInstanceOf(Aphid.UI.View, view.testOutlet.superview, "testOutlet.superview should be an instance of Aphid.UI.View");
+          assertEqual("testElementWithOutlet", view.testOutlet.superview.element.identify());
+        }},
+
+        /*
+         * Ensure that views that are initialized from an outlet are added to
+         * the subviews property of the view that owns the outlet.
+        **/
+        testShouldAddOutletToSuperviewsSubviews: function() { with(this) {
+          var view = new TestView({
+            outlet: $("testElementWithOutlet")
+          });
+          window.console.log(view.subviews)
+          assertEqual(1, view.subviews.length, "testOutlet.subviews.length should be 1");
+          assert(view.subviews.include(view.testOutlet));
+        }},
+
+        /*
          * Ensures that an outlet the defines the data-view-class attribute
          * for a custom class is actually initialized with the expected class.
         **/
@@ -169,7 +195,7 @@
           });
           assert(view.testOutlet, "testOutlet should not be false");
           assertInstanceOf(AnotherTestView, view.testOutlet, "testOutlet should be an instance of AnotherTestView");
-        }}
+        }},
 
         // TODO Add tests for actions
         // 

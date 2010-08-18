@@ -2066,7 +2066,8 @@ Aphid.UI.View = Class.create(
             instance = new viewClassImplementation({
               outlet: element,
               delegate: this,
-              dataSource: this
+              dataSource: this,
+              superview: this
             });
           }
           catch (error)
