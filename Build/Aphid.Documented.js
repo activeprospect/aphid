@@ -3376,9 +3376,9 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
     if (Aphid.UI.AlertView.currentAlertView) return;
 
     // Update View
-    this._titleElement.update(this.title);
-    this._messageElement.update(this.message);
-    this._statusElement.update(this.status);
+    this._titleElement.update(this.title || "");
+    this._messageElement.update(this.message || "");
+    this._statusElement.update(this.status || "");
 
     var mainWindow = Application.sharedInstance.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
