@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed an issue with initializing outlets on elements that do not have child
+   elements (such as an INPUT element).
+
  * Added support for Data Sources to Aphid.UI.ListView.
 
  * Added Aphid.UI.AlertView for displaying modal alert messages (errors,

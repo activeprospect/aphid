@@ -569,6 +569,8 @@ Aphid.UI.View = Class.create(
   **/
   _connectToOutlets: function()
   {
+    if (this.element.childElements().length == 0) return;
+
     var outletElements = this.element.select('*[data-outlet]');
     $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
 
@@ -637,6 +639,8 @@ Aphid.UI.View = Class.create(
   **/
   _wireActionsToInstance: function()
   {
+    if (this.element.childElements().length == 0) return;
+
     var actionElements = this.element.select('*[data-action]');
     $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
 
