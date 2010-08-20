@@ -31,7 +31,7 @@ Aphid.Support.Extensions.Object = {
     options.each(function(pair) {
       // if (Object.isFunction(pair.value)) return;
       if (Object.isUndefined(instance[pair.key])) return;
-      $L.info("Setting " + pair.key + " = " + pair.value);
+      $L.debug("Setting " + pair.key + " = " + pair.value, "Object#applyOptionsToInstance");
       instance[pair.key] = pair.value;
     });
   }

@@ -205,7 +205,7 @@ Aphid.Support.Extensions.Object = {
     options = $H(options);
     options.each(function(pair) {
       if (Object.isUndefined(instance[pair.key])) return;
-      $L.info("Setting " + pair.key + " = " + pair.value);
+      $L.debug("Setting " + pair.key + " = " + pair.value, "Object#applyOptionsToInstance");
       instance[pair.key] = pair.value;
     });
   }
@@ -1503,7 +1503,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   updateDrag: function($super, event, pointer)
   {
-    $L.info("updateDrag", "Aphid.UI.SplitViewController.Draggable")
+    $L.debug("updateDrag", "Aphid.UI.SplitViewController.Draggable")
     var minWidth, maxWidth, minHeight, maxHeight;
     var offset = this.firstPane.cumulativeOffset();
 
