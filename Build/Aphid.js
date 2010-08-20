@@ -80,115 +80,115 @@ Object.extend(Element, Aphid.Support.Extensions.Vendor.Prototype.Element);
 
 Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
 
-    getBorderHeight: function(element)
+  getBorderHeight: function(element)
+  {
+    element = $(element);
+    var height = parseInt(element.getStyle('border-top-width'));
+    height += parseInt(element.getStyle('border-bottom-width'));
+    return height;
+  },
+
+  getBorderWidth: function(element)
+  {
+    element = $(element);
+    var width = parseInt(element.getStyle('border-left-width'));
+    width += parseInt(element.getStyle('border-right-width'));
+    return width;
+  },
+
+  getInnerHeight: function(element)
+  {
+    element = $(element);
+    var height = element.getHeight();
+    height -= parseInt(element.getStyle('padding-top'));
+    height -= parseInt(element.getStyle('padding-bottom'));
+    height -= parseInt(element.getStyle('border-top-width'));
+    height -= parseInt(element.getStyle('border-bottom-width'));
+    return height;
+  },
+
+  getInnerWidth: function(element)
+  {
+    element = $(element);
+    var width = element.getWidth();
+    width -= parseInt(element.getStyle('padding-left'));
+    width -= parseInt(element.getStyle('padding-right'));
+    width -= parseInt(element.getStyle('border-left-width'));
+    width -= parseInt(element.getStyle('border-right-width'));
+    return width;
+  },
+
+  getMaximumHeight: function(element)
+  {
+    element = $(element);
+    var maxHeight = parseInt(element.getStyle('max-height'));
+    if (isNaN(maxHeight)) return false;
+    return maxHeight;
+  },
+
+  getMaximumWidth: function(element)
+  {
+    element = $(element);
+    var maxWidth = parseInt(element.getStyle('max-width'));
+    if (isNaN(maxWidth)) return false;
+    return maxWidth;
+  },
+
+  getMinimumHeight: function(element)
+  {
+    element = $(element);
+    var minHeight = parseInt(element.getStyle('min-height'));
+    return minHeight;
+  },
+
+  getMinimumWidth: function(element)
+  {
+    element = $(element);
+    var minWidth = parseInt(element.getStyle('min-width'));
+    return minWidth;
+  },
+
+  getOuterHeight: function(element)
+  {
+    element = $(element);
+    var height = element.getHeight();
+    height += parseInt(element.getStyle('margin-top'));
+    height += parseInt(element.getStyle('margin-bottom'));
+    return height;
+  },
+
+  getOuterWidth: function(element)
+  {
+    element = $(element);
+    var width = element.getWidth();
+    width += parseInt(element.getStyle('margin-left'));
+    width += parseInt(element.getStyle('margin-right'));
+    return width;
+  },
+
+  insert: Element.insert.wrap(
+    function(insert, element, insertation)
     {
+      if (!Object.isArray(insertation))
+        return insert(element, insertation);
       element = $(element);
-      var height = parseInt(element.getStyle('border-top-width'));
-      height += parseInt(element.getStyle('border-bottom-width'));
-      return height;
-    },
-
-    getBorderWidth: function(element)
-    {
-      element = $(element);
-      var width = parseInt(element.getStyle('border-left-width'));
-      width += parseInt(element.getStyle('border-right-width'));
-      return width;
-    },
-
-    getInnerHeight: function(element)
-    {
-      element = $(element);
-      var height = element.getHeight();
-      height -= parseInt(element.getStyle('padding-top'));
-      height -= parseInt(element.getStyle('padding-bottom'));
-      height -= parseInt(element.getStyle('border-top-width'));
-      height -= parseInt(element.getStyle('border-bottom-width'));
-      return height;
-    },
-
-    getInnerWidth: function(element)
-    {
-      element = $(element);
-      var width = element.getWidth();
-      width -= parseInt(element.getStyle('padding-left'));
-      width -= parseInt(element.getStyle('padding-right'));
-      width -= parseInt(element.getStyle('border-left-width'));
-      width -= parseInt(element.getStyle('border-right-width'));
-      return width;
-    },
-
-    getMaximumHeight: function(element)
-    {
-      element = $(element);
-      var maxHeight = parseInt(element.getStyle('max-height'));
-      if (isNaN(maxHeight)) return false;
-      return maxHeight;
-    },
-
-    getMaximumWidth: function(element)
-    {
-      element = $(element);
-      var maxWidth = parseInt(element.getStyle('max-width'));
-      if (isNaN(maxWidth)) return false;
-      return maxWidth;
-    },
-
-    getMinimumHeight: function(element)
-    {
-      element = $(element);
-      var minHeight = parseInt(element.getStyle('min-height'));
-      return minHeight;
-    },
-
-    getMinimumWidth: function(element)
-    {
-      element = $(element);
-      var minWidth = parseInt(element.getStyle('min-width'));
-      return minWidth;
-    },
-
-    getOuterHeight: function(element)
-    {
-      element = $(element);
-      var height = element.getHeight();
-      height += parseInt(element.getStyle('margin-top'));
-      height += parseInt(element.getStyle('margin-bottom'));
-      return height;
-    },
-
-    getOuterWidth: function(element)
-    {
-      element = $(element);
-      var width = element.getWidth();
-      width += parseInt(element.getStyle('margin-left'));
-      width += parseInt(element.getStyle('margin-right'));
-      return width;
-    },
-
-    insert: Element.insert.wrap(
-      function(insert, element, insertation)
-      {
-        if (!Object.isArray(insertation))
-          return insert(element, insertation);
-        element = $(element);
-        insertation.each(insert.curry(element));
-        return element;
-      }
-    ),
-
-    getData: function(element, attribute)
-    {
-      var value = element.getAttribute("data-" + attribute);
-      if (!value) return false;
-      return value;
-    },
-
-    setData: function(element, attribute, value)
-    {
-      element.setAttribute("data-" + attribute, value);
+      insertation.each(insert.curry(element));
       return element;
     }
+  ),
+
+  getData: function(element, attribute)
+  {
+    var value = element.getAttribute("data-" + attribute);
+    if (!value) return false;
+    return value;
+  },
+
+  setData: function(element, attribute, value)
+  {
+    element.setAttribute("data-" + attribute, value);
+    return element;
+  }
 
 };
 
@@ -229,6 +229,11 @@ Aphid.Support.Extensions.Array = {
 
 Object.extend(Array.prototype, Aphid.Support.Extensions.Array);
 Aphid.Support.Extensions.String = {
+
+  attributize: function()
+  {
+    return this.underscore().dasherize();
+  },
 
   lowerCaseFirst: function()
   {

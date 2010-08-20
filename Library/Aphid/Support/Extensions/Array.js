@@ -1,5 +1,5 @@
 /**
- * Aphid.Support.Extensions.Array
+ * mixin Aphid.Support.Extensions.Array
  *
  * Extensions to the core JavaScript Array implementation.
  *

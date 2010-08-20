@@ -1,10 +1,30 @@
 /**
- * Aphid.Support.Extensions.String
+ * mixin Aphid.Support.Extensions.String
  *
  * Extensions to the core JavaScript String implementation.
  *
 **/
 Aphid.Support.Extensions.String = {
+
+  /**
+   * Aphid.Support.Extensions.String#attributize() -> String
+   *
+   * Converts a String from a camelized format to a dasherized format suitable
+   * for use as part of an HTML attribute name.
+   *
+   * Calling this method is equivalent to calling Prototype's `underscore` and
+   * `dasherize` methods on the String.
+   *
+   * #### Example
+   *
+   *     "multipleSelectionEnabled".attributize();
+   *     // => "multiple-selection-enabled"
+   *
+  **/
+  attributize: function()
+  {
+    return this.underscore().dasherize();
+  },
 
   /**
    * Aphid.Support.Extensions.String#lowerCaseFirst() -> String

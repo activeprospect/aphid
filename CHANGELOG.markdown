@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added String#attributize, a method that takes a camelized string (i.e.
+   multipleSelectionEnabled) and returns the string in a format suitable for
+   use with an HTML5 data-* attribute (i.e. "multiple-selection-enabled").
+
  * Fixed an issue with initializing outlets on elements that do not have child
    elements (such as an INPUT element).
 
