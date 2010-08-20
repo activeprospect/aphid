@@ -30,6 +30,17 @@
 
 ## Library
 
+### General
+
+ * Formally define and implement the concepts of class options (i.e.
+   ListView#options = { isSortable: ... } instead of ListView#isSortable),
+   public (ListView#items) and private (ListView#_itemElements) properties.
+
+ * Add get/set methods on Object for getting and setting properties (i.e.
+   ListView.get("items")) so that we can optionally intercept and/or perform
+   actions when properties are requested (or set). This may require us to
+   assign public properties to the class _properties property.
+
 ### Aphid.Support.Logger
 
  * Make the Logger accept an object as the optional second parameter and

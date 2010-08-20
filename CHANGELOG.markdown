@@ -3,6 +3,11 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support to Aphid.UI.View for initializing views with options
+   specified as HTML5 data-* attributes (i.e. <section data-outlet="someView"
+   data-view-class="SomeView" data-is-enabled="true">...</section> will set
+   the isEnabled property on the SomeView instance).
+
  * Added String#attributize, a method that takes a camelized string (i.e.
    multipleSelectionEnabled) and returns the string in a format suitable for
    use with an HTML5 data-* attribute (i.e. "multiple-selection-enabled").

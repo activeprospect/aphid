@@ -975,12 +975,30 @@ Aphid.UI.View = Class.create(
           var instance;
           $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
           try {
-            instance = new viewClassImplementation({
+
+            var options = $H();
+            $H(viewClassImplementation.prototype).keys().each(
+              function(property)
+              {
+                if (property.startsWith('_'))
+                  return;
+                if (Object.isFunction(viewClassImplementation.prototype[property]))
+                  return;
+                var value;
+                if ((value = element.readAttribute("data-" + property.attributize())) != null)
+                {
+                  if (value == "true") value = true;
+                  if (value == "false") value = false;
+                  options.set(property, value);
+                }
+              }
+            );
+            instance = new viewClassImplementation(options.merge({
               outlet: element,
               delegate: this,
               dataSource: this,
               superview: this
-            });
+            }));
           }
           catch (error)
           {

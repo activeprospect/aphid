@@ -38,6 +38,9 @@
       <section id="testElementWithOutletWithViewClass">
         <section id="testOutletWithViewClass" data-outlet="testOutlet" data-view-class="AnotherTestView"></section>
       </section>
+      <section id="testElementWithOutletWithCustomProperties">
+        <section id="testOutletWithCustomProperties" data-outlet="testOutlet" data-view-class="TestViewWithProperties" data-custom-property="foo" data-true-property="true" data-false-property="false"></section>
+      </section>
     </section>
 
     <!-- Log Section -->
@@ -49,6 +52,7 @@
 
       var TestView;
       var AnotherTestView;
+      var TestViewWithProperties;
 
       new Test.Unit.Runner({
 
@@ -57,6 +61,11 @@
             testOutlet: false
           });
           AnotherTestView = Class.create(Aphid.UI.View, {});
+          TestViewWithProperties = Class.create(Aphid.UI.View, {
+            customProperty: false,
+            trueProperty: false,
+            falseProperty: false
+          });
         }},
 
         /*
@@ -180,7 +189,7 @@
           var view = new TestView({
             outlet: $("testElementWithOutlet")
           });
-          assertEqual(1, view.subviews.length, "testOutlet.subviews.length should be 1");
+          assertEqual(1, view.subviews.length, "view.subviews.length should be 1");
           assert(view.subviews.include(view.testOutlet));
         }},
 
@@ -196,8 +205,30 @@
           assertInstanceOf(AnotherTestView, view.testOutlet, "testOutlet should be an instance of AnotherTestView");
         }},
 
+        /*
+         * Ensure that views that are initialized from an outlet be
+         * initialized with options specified as HTML5 data-* attributes.
+        **/
+        testShouldSetCustomPropertiesFromOutlet: function() { with(this) {
+          var view = new TestView({
+            element: $("testElementWithOutletWithCustomProperties")
+          });
+          assertEqual("foo", view.testOutlet.customProperty);
+        }},
+
+        /*
+         * Ensure that views that are initialized from an outlet with boolean
+         * HTML5 data-* attributes are properly cast to boolean values.
+        **/
+        testShouldCastCustomBooleanPropertiesFromOutlet: function() { with(this) {
+          var view = new TestView({
+            element: $("testElementWithOutletWithCustomProperties")
+          });
+          assertEqual(true, view.testOutlet.trueProperty);
+          assertEqual(false, view.testOutlet.falseProperty);
+        }}
+
         // TODO Add tests for actions
-        // 
 
       }, { testLog: "logSection" });
 
