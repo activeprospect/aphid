@@ -104,7 +104,10 @@
  * Add persistence to the SplitViewController so that the last dimensions are
    always used when the view is reloaded.
 
- * Allow min-width/max-width to be enforced on the right pane.
+ * Allow min-width/max-width to be enforced on the second view. When resizing
+   and the max-width or max-height of the first view has not been met but the
+   min-width or min-width of the second view has been met, resizing should be
+   stopped.
 
  * Automatically detect vertical or horizontal constraint based on the
    absolute position characteristics (i.e. if both have top: 0 we can assume
