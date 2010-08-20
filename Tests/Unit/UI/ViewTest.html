@@ -180,7 +180,6 @@
           var view = new TestView({
             outlet: $("testElementWithOutlet")
           });
-          window.console.log(view.subviews)
           assertEqual(1, view.subviews.length, "testOutlet.subviews.length should be 1");
           assert(view.subviews.include(view.testOutlet));
         }},
