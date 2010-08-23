@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Improved Aphid.UI.ListView item selection so that the selected item is
+   always made visible in cases where it may be outside the current visible
+   scroll position of the list view.
+
  * Added support to Aphid.UI.View for initializing views with options
    specified as HTML5 data-* attributes (i.e. <section data-outlet="someView"
    data-view-class="SomeView" data-is-enabled="true">...</section> will set

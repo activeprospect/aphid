@@ -109,7 +109,8 @@ section#descriptionSection p
 
 #testElements
 {
-  display: none;
+  visibility: hidden;
+  position: absolute;
 }
 
 #logSection

@@ -2150,11 +2150,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     {
       this._clearSelection();
       this.selectedItem = item.select();
+      this.scrollToSelectedItem();
     }
     else
-    {
       this.selectedItems.push(item.select());
-    }
 
     this._didSelectItem(item);
   },
@@ -2203,6 +2202,38 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
 
     this._didOpenItem(item);
+  },
+
+  scrollToSelectedItem: function()
+  {
+    if (this.element.scrollHeight < this.element.getHeight())
+      return;
+
+    var selectedItemTop     = this.selectedItem.element.cumulativeOffset().top - this.element.cumulativeOffset().top;
+    var selectedItemBottom  = selectedItemTop + this.selectedItem.element.getHeight();
+    var currentScrollTop    = this.element.scrollTop;
+    var currentScrollBottom = this.element.scrollTop + this.element.getHeight();
+    var itemTopMargin       = parseInt(this.selectedItem.element.getStyle("margin-top"));
+    var itemBottomMargin    = parseInt(this.selectedItem.element.getStyle("margin-bottom"));
+    var scrollTo            = selectedItemTop - itemTopMargin;
+    var shouldScroll        = false;
+
+    if (selectedItemTop < currentScrollTop)
+      shouldScroll = true;
+
+    if (selectedItemTop >= currentScrollBottom)
+      shouldScroll = true;
+
+    else if (selectedItemBottom > currentScrollBottom)
+    {
+      shouldScroll = true;
+      scrollTo = currentScrollTop + (selectedItemBottom - currentScrollBottom) + itemBottomMargin;
+    }
+
+    if (shouldScroll)
+      this.element.scrollTop = scrollTo;
+
+    return shouldScroll;
   },
 
 

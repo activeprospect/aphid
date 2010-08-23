@@ -42,6 +42,11 @@
       </ul>
       <ul id="emptyListView">
       </ul>
+      <ul id="testListViewWithOverflow" style="overflow: auto; position: absolute; height: 100px">
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+      </ul>
       <section id="invalidListViewContainer"></section>
     </section>
 
@@ -151,6 +156,17 @@
           assert(listView.selectedItems.include(listView.items[1]));
           assert(listView.selectedItems.include(listView.items[2]));
           assertEqual(2, listView.selectedItems.length);
+        }},
+
+        /*
+         * Ensures that the selected list view item is visible in a container
+         * whose overflow is set to auto for scrolling.
+        **/
+        testShouldScrollToSelectedItem: function() { with(this) {
+          var listView = new Aphid.UI.ListView({ element: $('testListViewWithOverflow') });
+          assertEqual(0, listView.element.scrollTop);
+          listView.selectItem(listView.items.last());
+          assert(listView.element.scrollTop > 0);
         }},
 
         /*

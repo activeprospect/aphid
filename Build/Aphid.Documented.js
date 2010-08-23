@@ -3829,11 +3829,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     {
       this._clearSelection();
       this.selectedItem = item.select();
+      this.scrollToSelectedItem();
     }
     else
-    {
       this.selectedItems.push(item.select());
-    }
 
     this._didSelectItem(item);
   },
@@ -3905,6 +3904,48 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
 
     this._didOpenItem(item);
+  },
+
+  /**
+   * Aphid.UI.ListView#scrollToSelectedItem() -> Boolean
+   *
+   * Scrolls the list view to fully expose the selected item if it is not
+   * fully visible within the list view. Returns true or false depending on
+   * whether the scroll was performed.
+  **/
+  scrollToSelectedItem: function()
+  {
+    if (this.element.scrollHeight < this.element.getHeight())
+      return;
+
+    var selectedItemTop     = this.selectedItem.element.cumulativeOffset().top - this.element.cumulativeOffset().top;
+    var selectedItemBottom  = selectedItemTop + this.selectedItem.element.getHeight();
+    var currentScrollTop    = this.element.scrollTop;
+    var currentScrollBottom = this.element.scrollTop + this.element.getHeight();
+    var itemTopMargin       = parseInt(this.selectedItem.element.getStyle("margin-top"));
+    var itemBottomMargin    = parseInt(this.selectedItem.element.getStyle("margin-bottom"));
+    var scrollTo            = selectedItemTop - itemTopMargin;
+    var shouldScroll        = false;
+
+    // selectedItem is above current scroll position
+    if (selectedItemTop < currentScrollTop)
+      shouldScroll = true;
+
+    // selectedItem is below current, viewable scroll position
+    if (selectedItemTop >= currentScrollBottom)
+      shouldScroll = true;
+
+    // selectedItem is partially visible below the current, viewable scroll position
+    else if (selectedItemBottom > currentScrollBottom)
+    {
+      shouldScroll = true;
+      scrollTo = currentScrollTop + (selectedItemBottom - currentScrollBottom) + itemBottomMargin;
+    }
+
+    if (shouldScroll)
+      this.element.scrollTop = scrollTo;
+
+    return shouldScroll;
   },
 
   // Sorting -----------------------------------------------------------------
