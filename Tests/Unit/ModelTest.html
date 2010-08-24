@@ -32,9 +32,13 @@
         attributes: [ "name", "email" ]
       });
 
+      var afterLoadCalled = false;
       var TestRemoteContact = Class.create(Aphid.Model, {
         url: "../Fixtures/#{identifier}",
-        attributes: [ "name", "email" ]
+        attributes: [ "name", "email" ],
+        afterLoad: function() {
+          afterLoadCalled = true;
+        }
       });
 
       var TestAddress = Class.create(Aphid.Model, {
@@ -61,6 +65,7 @@
 
         setup: function()
         {
+          afterLoadCalled = false;
         },
 
         testShouldInitializeModel: function() { with(this) {
@@ -183,9 +188,24 @@
          * method when initialized by an identifier which triggers an
          * asynchronous load.
         **/
+        testShouldCallAfterLoadCallback: function() { with(this) {
+          var testRemoteContact = new TestRemoteContact({
+            identifier: 'testModel.json'
+          });
+          wait(1000, function() {
+            assert(afterLoadCalled);
+          });
+        }},
+
+        /*
+         * Ensures that the Model calls the `afterLoad` delegate
+         * method when initialized by an identifier which triggers an
+         * asynchronous load.
+        **/
         testShouldCallAfterSaveCallback: function() { with(this) {
           assert(false, "Test not implemented...");
         }},
+
 
       }, { testLog: "logSection" });
     </script>

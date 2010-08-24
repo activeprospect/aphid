@@ -539,8 +539,7 @@ Aphid.Model = Class.create({
         this.object = transport.responseJSON;
         this._initializeFromObject();
         this.isLoaded = true;
-        if (this.delegate && this.delegate.modelDidFinishLoading)
-          this.delegate.modelDidFinishLoading(this);
+        this._afterLoad();
       }.bind(this),
       onFailure: function(transport)
       {
@@ -718,6 +717,14 @@ Aphid.Model = Class.create({
     new Ajax.Request(url, options);
   },
 
+
+  _afterLoad: function()
+  {
+    if (this.afterLoad)
+      this.afterLoad();
+    if (this.delegate && this.delegate.modelDidFinishLoading)
+      this.delegate.modelDidFinishLoading(this);
+  },
 
   _afterSave: function()
   {

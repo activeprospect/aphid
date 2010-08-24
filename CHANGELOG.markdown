@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for calling Aphid.Model#afterLoad() callback when implemented
+   by a subclass.
+
  * Added Aphid.Model#save() for serializing and updating a record on a remote
    web service.
 
