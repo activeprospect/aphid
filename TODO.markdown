@@ -41,6 +41,14 @@
    actions when properties are requested (or set). This may require us to
    assign public properties to the class _properties property.
 
+### Aphid.Model
+
+ * Add support for pluggable backends (i.e. Node.js, Rails, etc) since each
+   service may need to serialize and save differently.
+
+ * Add more callbacks and delegates to the workflow (i.e. beforeSave,
+   beforeLoad, afterInitiaze, beforeInitialize, etc).
+
 ### Aphid.Support.Logger
 
  * Make the Logger accept an object as the optional second parameter and

@@ -168,7 +168,24 @@
           wait(1000, function() {
             assertEqual(testRemoteContact, lastLoadedModel);
           });
-        }}        
+        }},
+
+        /*
+         * Ensures that the Model calls the `modelDidSave` delegate method
+         * after a successful save operation.
+        **/
+        testShouldCallModelDidSaveDelegateMethod: function() { with(this) {
+          assert(false, "Test not implemented...");
+        }},
+
+        /*
+         * Ensures that the Model calls the `afterLoad` delegate
+         * method when initialized by an identifier which triggers an
+         * asynchronous load.
+        **/
+        testShouldCallAfterSaveCallback: function() { with(this) {
+          assert(false, "Test not implemented...");
+        }},
 
       }, { testLog: "logSection" });
     </script>

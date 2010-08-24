@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added Aphid.Model#save() for serializing and updating a record on a remote
+   web service.
+
  * Added Aphid.Model#serialize() for serializing a model instance's attributes
    to a Hash that is suitable for initializing another instance or converting
    to JSON for transport to a web service.

@@ -688,6 +688,46 @@ Aphid.Model = Class.create({
     return attributes;
   },
 
+  save: function()
+  {
+    $L.info("Saving...", this.displayName);
+
+    var urlTemplate = new Template(this.url);
+    var url = urlTemplate.evaluate({ identifier: this.key });
+
+
+    var options = {
+      method: 'POST',
+      requestHeaders: { "X-HTTP-Method-Override": "PUT" },
+      contentType: 'application/json',
+      postBody: Object.toJSON(this.serialize()),
+      onSuccess: function(transport)
+      {
+        this._afterSave();
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        var alertView = new Aphid.UI.AlertView();
+        alertView.title = "Error Saving Resource";
+        alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>";
+        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.showAnimated();
+      }.bind(this)
+    };
+
+    new Ajax.Request(url, options);
+  },
+
+
+  _afterSave: function()
+  {
+    if (this.afterSave)
+      this.afterSave();
+    if (this.delegate && this.delegate.modelDidSave)
+      this.delegate.modelDidSave(this);
+  },
+
+
   toTemplateReplacements: function()
   {
     var attributes = {};

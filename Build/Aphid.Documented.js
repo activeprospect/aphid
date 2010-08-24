@@ -1181,6 +1181,10 @@ document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
  *     var contact = new Contact({ element: $('contact_123') });
  *     contact.name; // John Doe
  *
+ * ### Callback Methods
+ *
+ *  * `afterSave()` - Called immediately after a successful save operation.
+ *
  * ### Delegate Methods
  *
  * While it's not typical to have a delegate for your model, in cases where
@@ -1189,6 +1193,9 @@ document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
  *
  *  * `modelDidFinishLoading(model)` - Called when the model has finished
  *    loading and is fully initialized after an asynchronous load operation.
+ *
+ *  * `modelDidSave(model)` - Called when the model has successfully saved
+ *    any changes to the remote web service.
  *
 **/
 
@@ -1535,6 +1542,54 @@ Aphid.Model = Class.create({
     }, this);
 
     return attributes;
+  },
+
+  /**
+   * Aphid.Model#save() -> null
+  **/
+  save: function()
+  {
+    $L.info("Saving...", this.displayName);
+
+    // Assemble URL
+    var urlTemplate = new Template(this.url);
+    // TODO Make the identifier field configurable
+    var url = urlTemplate.evaluate({ identifier: this.key });
+
+    // TODO Error handling for when the string did not have any variables
+
+    // Request Options
+    var options = {
+      method: 'POST',
+      requestHeaders: { "X-HTTP-Method-Override": "PUT" },
+      contentType: 'application/json',
+      postBody: Object.toJSON(this.serialize()),
+      onSuccess: function(transport)
+      {
+        this._afterSave();
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        var alertView = new Aphid.UI.AlertView();
+        alertView.title = "Error Saving Resource";
+        alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>";
+        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.showAnimated();
+      }.bind(this)
+    };
+
+    // Make Request
+    new Ajax.Request(url, options);
+  },
+
+  // Callbacks ---------------------------------------------------------------
+
+  _afterSave: function()
+  {
+    if (this.afterSave)
+      this.afterSave();
+    if (this.delegate && this.delegate.modelDidSave)
+      this.delegate.modelDidSave(this);
   },
 
   // -------------------------------------------------------------------------
