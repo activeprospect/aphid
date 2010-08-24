@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added Aphid.Model#serialize() for serializing a model instance's attributes
+   to a Hash that is suitable for initializing another instance or converting
+   to JSON for transport to a web service.
+
  * Brought in ExplorerCanvas as a dependency for supporting HTML5 canvas in
    Internet Explorer and other bug fixes preventing Aphid from initializing.
 

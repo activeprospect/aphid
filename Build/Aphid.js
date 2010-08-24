@@ -660,6 +660,34 @@ Aphid.Model = Class.create({
   },
 
 
+  serialize: function()
+  {
+    var attributes = {};
+
+    this.attributes.each(function(attribute)
+    {
+      if (Object.isUndefined(this[attribute]) || this[attribute] == null)
+        attributes[attribute] = "";
+
+      else if (Object.isArray(this[attribute]))
+      {
+        attributes[attribute] = this[attribute].collect(
+          function(tuple) {
+            return Object.isUndefined(tuple.serialize) ? tuple : tuple.serialize()
+          }
+        );
+      }
+
+      else if (this[attribute].serialize)
+        attributes[attribute] = this[attribute].serialize();
+
+      else
+        attributes[attribute] = this[attribute];
+    }, this);
+
+    return attributes;
+  },
+
   toTemplateReplacements: function()
   {
     var attributes = {};

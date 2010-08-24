@@ -1498,7 +1498,49 @@ Aphid.Model = Class.create({
   // -------------------------------------------------------------------------
 
   /**
-   * Aphid.Model#toTemplateReplacements -> Hash
+   * Aphid.Model#serialize() -> Hash
+   *
+   * Returns a Hash containing the keys and values that make up the instance
+   * attributes for the model. This Hash is suitable for initializing another
+   * instance of the model or to convert to JSON for transport to a remote
+   * web service.
+  **/
+  serialize: function()
+  {
+    var attributes = {};
+
+    this.attributes.each(function(attribute)
+    {
+      // Undefined Properties
+      if (Object.isUndefined(this[attribute]) || this[attribute] == null)
+        attributes[attribute] = "";
+
+      // Arrays (Values, Model Relationships, etc)
+      else if (Object.isArray(this[attribute]))
+      {
+        attributes[attribute] = this[attribute].collect(
+          function(tuple) {
+            return Object.isUndefined(tuple.serialize) ? tuple : tuple.serialize()
+          }
+        );
+      }
+
+      // Model Relationships
+      else if (this[attribute].serialize)
+        attributes[attribute] = this[attribute].serialize();
+
+      // Simple Value
+      else
+        attributes[attribute] = this[attribute];
+    }, this);
+
+    return attributes;
+  },
+
+  // -------------------------------------------------------------------------
+
+  /**
+   * Aphid.Model#toTemplateReplacements() -> Hash
    *
    * Returns a Hash suitable for use with Prototype's Template and string
    * interpolation functionality.
