@@ -72,7 +72,10 @@
    that are initialized by outlet with data-* attributes that will evaluate to
    properties on the view that owns the outlet.
 
- * Add support for programatically declaring a View's markup/element.
+ * Add support for programmatically declaring a View's markup/element.
+
+ * Add Aphid.UI.View#enable() and Aphid.UI.View#disable() for enabling or
+   disabling the view by standard conventions.
 
 ### Aphid.UI.ViewController
 
