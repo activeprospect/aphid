@@ -218,7 +218,7 @@ end
 def sprocketize(output, options = {})
   sprockets_options = {
     :root         => ROOT_PATH,
-    :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src" ],
+    :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src", "Vendor/excanvas" ],
     :source_files => "Library/**/*.js"
   }.merge(options)
   puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."

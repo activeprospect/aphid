@@ -5,6 +5,8 @@
  * such as Internet Explorer.
 **/
 
+//= require <excanvas.compiled>
+
 Aphid.Support.Compatibility.HTML5 = {
 
   /**
@@ -31,12 +33,12 @@ Aphid.Support.Compatibility.HTML5 = {
   **/
   createElements: function()
   {
-    this.Elements.each(this._createHTML5Element);
+    this.Elements.each(this._createElement);
   },
 
   _createElement: function(elementName)
   {
-    document.createElement(element);
+    document.createElement(elementName);
   }
 
 }
@@ -45,4 +47,4 @@ Aphid.Support.Compatibility.HTML5 = {
 // Explorer will not apply any styles to tags it does not recognize.
 //
 if (Prototype.Browser.IE)
-  Aphid.Support.Compatibility.HTML5.createHTML5Elements();
+  Aphid.Support.Compatibility.HTML5.createElements();

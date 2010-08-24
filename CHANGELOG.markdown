@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Brought in ExplorerCanvas as a dependency for supporting HTML5 canvas in
+   Internet Explorer and other bug fixes preventing Aphid from initializing.
+
  * Improved Aphid.UI.ListView item selection so that the selected item is
    always made visible in cases where it may be outside the current visible
    scroll position of the list view.
