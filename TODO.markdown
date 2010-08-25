@@ -77,6 +77,9 @@
  * Add Aphid.UI.View#enable() and Aphid.UI.View#disable() for enabling or
    disabling the view by standard conventions.
 
+ * Add support for caching views that are loaded from a template on a class
+   level for reuse without re-requesting the template from the server.
+
 ### Aphid.UI.ViewController
 
  * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
