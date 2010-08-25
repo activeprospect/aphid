@@ -100,10 +100,10 @@
             delegate: listViewDelegate
           });
           listView.items.each(function(item) {
-            Event.simulateMouse(item, 'click');
+            Event.simulateMouse(item.element, 'click');
             assertEqual(item, lastSelectedItem);
             assertEqual(item, listView.selectedItem);
-            Event.simulateMouse(item, 'dblclick');
+            Event.simulateMouse(item.element, 'dblclick');
             assertEqual(item, lastOpenedItem);
           });
         }},
@@ -114,9 +114,9 @@
         testShouldSetListItems: function() { with(this) {
           var listView = new Aphid.UI.ListView({ element: $('testListViewWithReplacedItems') });
           var newItems = [
-            new Element("li").update("Four"),
-            new Element("li").update("Five"),
-            new Element("li").update("Six")
+            new Aphid.UI.ListViewItem({ element: new Element("li").update("Four") }),
+            new Aphid.UI.ListViewItem({ element: new Element("li").update("Five") }),
+            new Aphid.UI.ListViewItem({ element: new Element("li").update("Six") })
           ];
           listView.setItems(newItems);
           assertEqual(newItems[0], listView.items[0]);
@@ -199,7 +199,8 @@
           assertEqual(listView.items[1], lastSelectedItem);
           assertEqual(listView.items[1], listView.selectedItem);
           listView.deselectItem(listView.items[1]);
-          assert(!lastSelectedItem.hasClassName('selected'), "lastSelectedItem should not have the 'selected' CSS class name");
+          assert(!lastSelectedItem.element.hasClassName('selected'), "lastSelectedItem#element should not have the 'selected' CSS class name");
+          assert(!lastSelectedItem.isSelected, "lastSelectedItem#isSelected should be false");
           assertEqual(false, listView.selectedItem, "selectedItem should be false");
         }},
 
@@ -219,7 +220,8 @@
           assertEqual(listView.items[1], lastSelectedItem);
           assertEqual(listView.items[1], listView.selectedItem);
           listView.clearSelection();
-          assert(!listView.items[1].hasClassName("selected"));
+          assert(!listView.items[1].element.hasClassName("selected"));
+          assert(!listView.items[1].isSelected);
           assert(!listView.selectedItem);
           assert(!listView.selectedItems);
           assert(!lastSelectedItem);
@@ -241,8 +243,10 @@
           assertEqual(0, listView.selectedItems.length);
           assertMatch($A(), listView.selectedItems);
           assert(!listView.selectedItem);
-          assert(!listView.items[1].hasClassName("selected"));
-          assert(!listView.items[2].hasClassName("selected"));
+          assert(!listView.items[1].element.hasClassName("selected"));
+          assert(!listView.items[2].element.hasClassName("selected"));
+          assert(!listView.items[1].isSelected);
+          assert(!listView.items[2].isSelected);
         }},
 
         /*

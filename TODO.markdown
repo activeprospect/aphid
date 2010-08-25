@@ -87,11 +87,6 @@
    that they can act on the selection change just like the delegate is called
    now.
 
- * Add tests and documentation for Aphid.UI.ListViewItem.
-
- * Update Aphid.UI.ListView tests for the changes that brought in the
-   Aphid.UI.ListViewItem requirements.
-
  * Figure out a good pattern for reusing list view items when reloading data
    instead of recreating each list view item each time that reload data is
    called.
