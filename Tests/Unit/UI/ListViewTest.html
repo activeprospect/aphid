@@ -486,6 +486,53 @@
           });
           assertEqual(listViewDataSource.items.length, listView.items.length);
           assertEqual(3, listViewItemForIndexCallCount);
+        }},
+
+        /*
+         * Ensures that the list view items have their listView property set
+         * when loaded from a data source.
+        **/
+        testShouldSetListViewPropertyOnListViewItemsLoadedFromDataSource: function() { with(this) {
+          var listViewDataSource = {
+            listViewItemCount: function(listView) {
+              return 1;
+            },
+            listViewItemForIndex: function(listView, index) {
+              return new Aphid.UI.ListViewItem();
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('emptyListView'),
+            dataSource: listViewDataSource
+          });
+          assertEqual(listView, listView.items.first().listView);
+        }},
+
+        /*
+         * Ensures that the list view items have their listView property set
+         * when the items are set by calling [[Aphid.UI.ListView#setItems()]].
+        **/
+        testShouldSetListViewPropertyOnListViewItemsSetWithSetItemsMethod: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({
+            element: element
+          });
+          listView.setItems([ new Aphid.UI.ListViewItem() ]);
+          assertEqual(listView, listView.items.first().listView);
+        }},
+
+        /*
+         * Ensures that the list view items have their listView property set
+         * when the item is added by calling [[Aphid.UI.ListView#addItem()]].
+        **/
+        testShouldSetListViewPropertyOnListViewItemAddedWithAddItemMethod: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({
+            element: element
+          });
+          listView.addItem(new Aphid.UI.ListViewItem());
+          assertEqual(listView, listView.items.first().listView);
+          window.console.log(listView)
         }}
 
       }, { testLog: "logSection" });

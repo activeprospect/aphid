@@ -3840,9 +3840,13 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.clearSelection();
     this.element.update();
 
-    this.items = items.each(this.addSubview, this);
+    // Set the items property
+    this.items = items;
+
     if (this.items.length > 0)
     {
+      items.each(function(item) { item.listView = this }, this);
+      items.each(this.addSubview, this);
       this._initializeItems();
       if (this.sortingEnabled)
         this._setupSorting();
@@ -3856,8 +3860,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Adds the specified item to the end of the list view.
   **/
+  // TODO addItem and setItem should not be duplicating logic...
   addItem: function(item)
   {
+    item.listView = this;
     this.addSubview(item);
     this.items.push(item);
     this._initializeItem(item);
@@ -3943,12 +3949,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _listViewItemForIndex: function(index)
   {
-    var listViewItemForIndex;
+    var listViewItem;
     if (this.dataSource && this.dataSource.listViewItemForIndex)
-      listViewItemForIndex = this.dataSource.listViewItemForIndex(this, index);
+      listViewItem = this.dataSource.listViewItemForIndex(this, index);
     else
       $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this.displayName);
-    return listViewItemForIndex;
+    return listViewItem;
   },
 
   // Selection ---------------------------------------------------------------

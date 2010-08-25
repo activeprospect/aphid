@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Adding list view items to Aphid.UI.ListView instances now always have their
+   listView property set to the owning list view.
+
  * Added support for calling Aphid.Model#afterLoad() callback when implemented
    by a subclass.
 
