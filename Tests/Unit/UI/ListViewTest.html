@@ -494,29 +494,9 @@
 
         /*
          * Ensures that the list view items have their listView property set
-         * when loaded from a data source.
-        **/
-        testShouldSetListViewPropertyOnListViewItemsLoadedFromDataSource: function() { with(this) {
-          var listViewDataSource = {
-            listViewItemCount: function(listView) {
-              return 1;
-            },
-            listViewItemForIndex: function(listView, index) {
-              return new Aphid.UI.ListViewItem();
-            }
-          };
-          var listView = new Aphid.UI.ListView({
-            element: $('emptyListView'),
-            dataSource: listViewDataSource
-          });
-          assertEqual(listView, listView.items.first().listView);
-        }},
-
-        /*
-         * Ensures that the list view items have their listView property set
          * when the items are set by calling [[Aphid.UI.ListView#setItems()]].
         **/
-        testShouldSetListViewPropertyOnListViewItemsSetWithSetItemsMethod: function() { with(this) {
+        testShouldSetListViewPropertyWhenSettingItems: function() { with(this) {
           var element = $('emptyListView').update();
           var listView = new Aphid.UI.ListView({
             element: element
@@ -529,14 +509,89 @@
          * Ensures that the list view items have their listView property set
          * when the item is added by calling [[Aphid.UI.ListView#addItem()]].
         **/
-        testShouldSetListViewPropertyOnListViewItemAddedWithAddItemMethod: function() { with(this) {
+        testShouldSetListViewPropertyWhenAddingItems: function() { with(this) {
           var element = $('emptyListView').update();
           var listView = new Aphid.UI.ListView({
             element: element
           });
           listView.addItem(new Aphid.UI.ListViewItem());
           assertEqual(listView, listView.items.first().listView);
-          window.console.log(listView)
+        }},
+
+        /*
+         * Ensures that when setting list view items by calling the
+         * Aphid.UI.ListView#setItems method, the selected state on any of the
+         * items will be honored by the list view. When more than one item
+         * has a selected state, the last item passed in with the selected
+         * state will be the single selected item in a standard list view
+         * (that is, a list view with multiple selection disabled, which is
+         * the default).
+        **/
+        testShouldHonorSelectionStateWhenSettingItems: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({ element: element });
+          var listViewItems = [ new Aphid.UI.ListViewItem(), new Aphid.UI.ListViewItem() ];
+          listViewItems.invoke("select");
+          listView.setItems(listViewItems);
+          assert(!listView.items.first().isSelected, "first item should not be selected");
+          assert(listView.items.last().isSelected, "last item should be selected");
+          assertEqual(listViewItems.last(), listView.selectedItem, "last item should equal the selectedItem");
+        }},
+
+        /*
+         * Ensures that when adding a list view item by calling the
+         * Aphid.UI.ListView#addItem method, the selected state on the added
+         * item is honered by the list view.
+        **/
+        testShouldHonorSelectionStateWhenAddingItems: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({ element: element });
+          var listViewItem = new Aphid.UI.ListViewItem();
+          listViewItem.select();
+          listView.addItem(listViewItem);
+          assert(listView.items.first().isSelected, "listViewItem should be selected");
+          assertEqual(listViewItem, listView.selectedItem, "listViewItem should equal the selectedItem");
+        }},
+
+        /*
+         * Ensures that when setting list view items by calling the
+         * Aphid.UI.ListView#setItems method, the selected state on any of the
+         * items will be honored by the list view.
+        **/
+        testShouldHonorSelectionStateWhenSettingItemsWithMultipleSelectionEnabled: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({ element: element, multipleSelectionEnabled: true });
+          var listViewItems = [ new Aphid.UI.ListViewItem(), new Aphid.UI.ListViewItem() ];
+          listViewItems.invoke("select");
+          listView.setItems(listViewItems);
+          assertEqual(listViewItems.length, listView.selectedItems.length);
+          listViewItems.each(function(item) {
+            assert(item.isSelected, "item should be selected");
+            assert(listView.selectedItems.include(item), "listView#selectedItems should include item");
+          });
+        }},
+
+        /*
+         * Ensures that when setting list view items by calling the
+         * Aphid.UI.ListView#setItems method, the selected state on any of the
+         * items will be honored by the list view.
+        **/
+        testShouldHonorSelectionStateWhenAddingItemsWithMultipleSelectionEnabled: function() { with(this) {
+          var element = $('emptyListView').update();
+          var listView = new Aphid.UI.ListView({ element: element, multipleSelectionEnabled: true });
+          var listViewItems = [ new Aphid.UI.ListViewItem(), new Aphid.UI.ListViewItem() ];
+          var listViewItem = new Aphid.UI.ListViewItem();
+          listViewItems.invoke("select");
+          listViewItem.select();
+          listView.setItems(listViewItems);
+          listView.addItem(listViewItem);
+          assertEqual(listViewItems.length + 1, listView.selectedItems.length);
+          listViewItems.each(function(item) {
+            assert(item.isSelected, "item should be selected");
+            assert(listView.selectedItems.include(item), "listView#selectedItems should include item");
+          });
+          assert(listViewItem.isSelected, "listViewItem should be selected");
+          assert(listView.selectedItems.include(listViewItem), "listView#selectedItems should include listViewItem");
         }}
 
       }, { testLog: "logSection" });

@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Setting or adding items to an instance of Aphid.UI.ListView now honors the
+   selection state on the items properly.
+
  * Adding list view items to Aphid.UI.ListView instances now always have their
    listView property set to the owning list view.
 

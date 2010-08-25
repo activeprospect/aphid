@@ -3836,25 +3836,23 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
     }
 
-    // Clear Selection & Container
+    // Reset Selection, Element and Items
     this.clearSelection();
     this.element.update();
+    this.items = $A();
 
-    // Set the items property
-    this.items = items;
+    // Add each item to the list
+    items.each(this._addItem, this);
 
-    if (this.items.length > 0)
-    {
-      items.each(function(item) { item.listView = this }, this);
-      items.each(this.addSubview, this);
-      this._initializeItems();
-      if (this.sortingEnabled)
-        this._setupSorting();
-    }
+    // Setup sorting
+    if (this.items.length > 0 && this.sortingEnabled)
+      this._setupSorting();
+
+    return items;
   },
 
   /**
-   * Aphid.UI.ListView#addItem(item) -> null
+   * Aphid.UI.ListView#addItem(item) -> Aphid.UI.ListViewItem
    *
    * - item (Element): The item to be added to the list
    *
@@ -3863,12 +3861,48 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   // TODO addItem and setItem should not be duplicating logic...
   addItem: function(item)
   {
-    item.listView = this;
-    this.addSubview(item);
-    this.items.push(item);
-    this._initializeItem(item);
+    this._addItem(item);
     if (this.sortingEnabled)
       this._setupSorting();
+    return item;
+  },
+
+  /*
+   * Aphid.UI.ListView#addItem(item) -> Aphid.UI.ListViewItem
+   *
+   * - item (Element): The item to be added to the list
+   *
+   * Internal implementation for adding an item to the list view that bypasses
+   * any delegate or callback methods.
+  **/
+  _addItem: function(item)
+  {
+
+    // Add Item to items Property
+    this.items.push(item);
+
+    // Select Item
+    if (item.isSelected)
+      if (!this.multipleSelectionEnabled)
+      {
+        if (this.selectedItem) this._deselectItem(this.selectedItem);
+        this.selectedItem = item;
+      }
+      else
+        this.selectedItems.push(item);
+
+    // Set listView on Item
+    item.listView = this;
+
+    // Add Item View to Subviews
+    this.addSubview(item);
+
+    // Observe Item
+    // TODO Change the nomenclature on this to _observeItem
+    this._initializeItem(item);
+
+    return item;
+
   },
 
   removeItem: function(item)
@@ -3993,18 +4027,25 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   deselectItem: function(item)
   {
-    // Ensure that we can deselect the item...
     if (!this._shouldDeselectItem(item))
       return;
+    this._deselectItem(item);
+    this._didDeselectItem(item);
+  },
 
+  /*
+   * Aphid.UI.ListView#_deselectItem(listItem) -> null
+   *
+   * Internal implementation for deselecting the specified list item without
+   * calling any of the delegate or callback methods.
+  **/
+  _deselectItem: function(item)
+  {
     item.deselect();
-
     if (this.multipleSelectionEnabled)
       this.selectedItems = this.selectedItems.without(item);
     else
       this.selectedItem = false;
-
-    this._didDeselectItem(item);
   },
 
   /**
@@ -4155,6 +4196,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _handleClickEvent: function(event, item)
   {
     event.stop();
+
     if (this.multipleSelectionEnabled && item.isSelected)
       this.deselectItem(item);
     else
