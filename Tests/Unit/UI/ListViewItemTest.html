@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.ListViewItem Tests</title>
+    <link rel="stylesheet" href="../../../Build/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.ListViewItem Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Ensures that the Aphid.UI.ListViewItem class can be initialized and
+        functions as intended.
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      new Test.Unit.Runner({
+
+        /*
+         * Ensures that new instances of Aphid.UI.ListViewItem can be
+         * initialized.
+        **/
+        testShouldInitializeListViewItem: function() { with(this) {
+          var listViewItem = new Aphid.UI.ListViewItem();
+          assertInstanceOf(Aphid.UI.ListViewItem, listViewItem, "listViewItem should be an instance of Aphid.UI.ListViewItem");
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ListViewItem add the
+         * ListViewItem CSS class to the initialized element.
+        **/
+        testShouldAddClassNameToElement: function() { with(this) {
+          var listViewItem = new Aphid.UI.ListViewItem();
+          assert(listViewItem.element.hasClassName("ListViewItem"));
+        }},
+
+        /*
+         * Ensures that Aphid.UI.ListViewItem instances can be selected
+         * programmatically.
+        **/
+        testShouldSelectItem: function() { with(this) {
+          var listViewItem = new Aphid.UI.ListViewItem();
+          var returnValue = listViewItem.select();
+          assert(listViewItem.isSelected, "isSelected should be true");
+          assertEqual(listViewItem, returnValue, "select() should return ListViewItem instance");
+        }},
+
+        /*
+        * Ensures that Aphid.UI.ListViewItem instances can be deselected
+        * programmatically.
+        **/
+        testShouldDeselectItem: function() { with(this) {
+          var listViewItem = new Aphid.UI.ListViewItem();
+          var returnValue = listViewItem.deselect();
+          assert(!listViewItem.isSelected, "isSelected should be false");
+          assertEqual(listViewItem, returnValue, "deselect() should return ListViewItem instance");
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

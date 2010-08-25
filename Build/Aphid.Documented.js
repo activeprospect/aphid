@@ -4374,6 +4374,8 @@ Aphid.UI.ListView.prototype._validateItem.displayName = "Aphid.UI.ListView._vali
 /**
  * class Aphid.UI.ListViewItem < Aphid.UI.View
  *
+ * List view items belonging to instances of [[Aphid.UI.ListView]] are
+ * required to be instances of this class, [[Aphid.UI.ListViewItem]].
 **/
 
 Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
@@ -4382,13 +4384,15 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
   /**
    * Aphid.UI.ListViewItem#isSelected -> Boolean
+   *
+   * Denotes the selected state of the list view item.
   **/
   isSelected: false,
 
   /**
    * Aphid.UI.ListViewItem#listView -> Aphid.UI.ListView
    *
-   * The ListView instance that this item belongs to.
+   * The [[Aphid.UI.ListView]] instance that this item belongs to.
   **/
   listView: false,
 
@@ -4406,30 +4410,44 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
     $super(options);
     if (!this.element)
     {
-      $L.info("Initializing default element...", this.displayName)
-      this.element = new Element('li');
+      $L.debug("Initializing default element...", this.displayName)
+      this.element = new Element('li').addClassName("ListViewItem");
       this.isLoaded = true;
     }
   },
 
   viewDidLoad: function($super)
   {
-    $super();
+    this.element.addClassName("ListViewItem");
   },
 
   // -------------------------------------------------------------------------
 
+  /**
+   * Aphid.UI.ListViewItem#select() -> Aphid.UI.ListViewItem
+   *
+   * Selects the list view item by adding the `selected` CSS class to the
+   * element and setting [[Aphid.UI.ListViewItem#isSelected]] to `true`. This
+   * method returns the list view item instance.
+  **/
   select: function()
   {
-    $L.debug("Selected...", "Aphid.UI.ListViewItem");
+    $L.debug("Selected...", this.displayName);
     this.element.addClassName('selected');
     this.isSelected = true;
     return this;
   },
 
+  /**
+   * Aphid.UI.ListViewItem#deselect() -> Aphid.UI.ListViewItem
+   *
+   * Deselects the list view item by removing the `selected` CSS class from
+   * the element and setting [[Aphid.UI.ListViewItem#isSelected]] to `false`.
+   * This method returns the list view item instance.
+  **/
   deselect: function()
   {
-    $L.debug("Deselected...", "Aphid.UI.ListViewItem");
+    $L.debug("Deselected...", this.displayName);
     this.element.removeClassName('selected');
     this.isSelected = false;
     return this;

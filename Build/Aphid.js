@@ -2614,21 +2614,21 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
     $super(options);
     if (!this.element)
     {
-      $L.info("Initializing default element...", this.displayName)
-      this.element = new Element('li');
+      $L.debug("Initializing default element...", this.displayName)
+      this.element = new Element('li').addClassName("ListViewItem");
       this.isLoaded = true;
     }
   },
 
   viewDidLoad: function($super)
   {
-    $super();
+    this.element.addClassName("ListViewItem");
   },
 
 
   select: function()
   {
-    $L.debug("Selected...", "Aphid.UI.ListViewItem");
+    $L.debug("Selected...", this.displayName);
     this.element.addClassName('selected');
     this.isSelected = true;
     return this;
@@ -2636,7 +2636,7 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
   deselect: function()
   {
-    $L.debug("Deselected...", "Aphid.UI.ListViewItem");
+    $L.debug("Deselected...", this.displayName);
     this.element.removeClassName('selected');
     this.isSelected = false;
     return this;
