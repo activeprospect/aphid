@@ -32,7 +32,9 @@ ul.segmented li a
 ul.segmented li label
 {
   display: block;
+  background-color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+  background-image: -moz-linear-gradient(top, #fff, #ddd);
   border: 0.1em solid #cdcdcd;
   padding: 0 1em;
   font-size: 0.9em;
@@ -61,5 +63,7 @@ ul.segmented li input[type=radio]:checked + label,
 ul.segmented li.current label
 {
   color: #222;
+  background-color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+  background-image: -moz-linear-gradient(top, #ddd, #fff);
 }

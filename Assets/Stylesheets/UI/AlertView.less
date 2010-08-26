@@ -1,4 +1,6 @@
 
+@import "../Configuration";
+
 .AlertView
 {
   position: fixed;
@@ -8,11 +10,14 @@
   width: 400px;
   margin-top: -70px;
   margin-left: -200px;
-  background-color: white;
-  z-index: 1001;
+  z-index: @overlay-z-index + 1;
   -webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
   -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  border-radius: 0.5em;
+  background-color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
+  background-image: -moz-linear-gradient(top, #f3f4f5, #ccc);
 }
 
 .AlertView header h1
@@ -59,7 +64,9 @@
   -webkit-border-radius: 0.3em;
   -moz-border-radius: 0.3em;
   border-radius: 0.3em;
+  background-color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
+  background-image: -moz-linear-gradient(top, #f3f4f5, #ccc);
   font-weight: bold;
   padding: 0.4em 0.8em;
   color: #333;
@@ -68,12 +75,16 @@
 
 .AlertView input[type=button]:hover
 {
+  background-color: #f3f4f5;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+  background-image: -moz-linear-gradient(top, #fff, #ddd);
   color: #222;
 }
 
 .AlertView input[type=button]:active
 {
+  background-color: #ddd;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+  background-image: -moz-linear-gradient(top, #ddd, #fff);
   color: #222;
 }
