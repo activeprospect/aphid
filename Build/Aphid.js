@@ -775,6 +775,8 @@ Aphid.UI.View = Class.create(
 
   initializedFromOutlet: false,
 
+  asynchronousLoadingEnabled: false,
+
 
   initialize: function(options)
   {
@@ -960,7 +962,7 @@ Aphid.UI.View = Class.create(
   {
     var viewPath = Application.sharedInstance.baseViewPath + '/' + this.template + '.html',
         options  = {
-          asynchronous: true,
+          asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
           onComplete: this._templateDidFinishLoading.bind(this),
           onFailure: function(transport)

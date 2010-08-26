@@ -198,6 +198,14 @@ Aphid.UI.View = Class.create(
   **/
   initializedFromOutlet: false,
 
+  /**
+   * Aphid.UI.View#asynchronousLoadingEnabled -> Boolean
+   *
+   * If the true, view templates will be loaded asynchronously from the
+   * server.
+  **/
+  asynchronousLoadingEnabled: false,
+
   // Initializers ------------------------------------------------------------
 
   /**
@@ -469,7 +477,7 @@ Aphid.UI.View = Class.create(
   {
     var viewPath = Application.sharedInstance.baseViewPath + '/' + this.template + '.html',
         options  = {
-          asynchronous: true,
+          asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
           onComplete: this._templateDidFinishLoading.bind(this),
           onFailure: function(transport)

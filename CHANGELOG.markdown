@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for configuring asynchronous view loading and disabled it,
+   by default, until we have more time to test it with Internet Explorer.
+
  * Setting or adding items to an instance of Aphid.UI.ListView now honors the
    selection state on the items properly.
 
