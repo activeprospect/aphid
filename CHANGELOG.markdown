@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for updating elements with HTML5 tags in Internet Explorer
+   versions less than 9.
+
  * Added support for configuring asynchronous view loading and disabled it,
    by default, until we have more time to test it with Internet Explorer.
 

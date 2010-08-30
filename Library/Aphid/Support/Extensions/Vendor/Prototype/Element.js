@@ -22,7 +22,13 @@ Aphid.Support.Extensions.Vendor.Prototype.Element = {
   **/
   fromString: function(string)
   {
-    return new Element('div').update(string.trim()).firstChild;
+    string = string.trim();
+    var element;
+    if (Prototype.BrowserFeatures.HTML5StructuralElements())
+      element = new Element('div').update(string);
+    else
+      element = new Element('div').updateSafe(string);
+    return element;
   }
 
 };
@@ -239,6 +245,33 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   setData: function(element, attribute, value)
   {
     element.setAttribute("data-" + attribute, value);
+    return element;
+  },
+
+  /**
+   * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#updateSafe(element, content) -> Element
+   *
+   * Wraps Prototype's update() method with support for adding HTML5 elements
+   * in Internet Explorer. Based on innerShiv by Joe Bartlett (See
+   * http://jdbartlett.github.com/innershiv for more details).
+  **/
+  updateSafe: function(element, string)
+  {
+    var container = document.createElement("div");
+    var fragment  = document.createDocumentFragment();
+		/*@cc_on container.style.display = 'none'; @*/
+
+    var content = container.cloneNode(true);
+    /*@cc_on document.body.appendChild(content); @*/
+    content.innerHTML = string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    /*@cc_on document.body.removeChild(content); @*/
+
+    var f = fragment.cloneNode(true),
+        i = content.childNodes.length;
+    while (i--) f.appendChild(content.firstChild);
+
+    element.update(f.firstChild);
+
     return element;
   }
 
