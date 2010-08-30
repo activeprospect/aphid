@@ -1626,7 +1626,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   onEnd: function(arg)
   {
     $L.debug("onEnd", "Aphid.UI.SplitViewController");
-  },
+  }
 
 });
 
