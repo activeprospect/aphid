@@ -150,7 +150,7 @@ Aphid.Support.Compatibility.String = {}
  * Adds the *trim()*, *trimLeft()* and *trimRight()* methods to the String
  * class for legacy browsers that do not define these methods.
 **/
-Aphid.Support.Compatibility.String.Trim = {
+Aphid.Support.Compatibility.String.TrimSupport = {
 
   /**
    * Aphid.Support.Compatibility.String.Trim#trim() -> String

@@ -59,7 +59,7 @@ if (Prototype.Browser.IE)
 
 Aphid.Support.Compatibility.String = {}
 
-Aphid.Support.Compatibility.String.Trim = {
+Aphid.Support.Compatibility.String.TrimSupport = {
 
   trim: function()
   {
