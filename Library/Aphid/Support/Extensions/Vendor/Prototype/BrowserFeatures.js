@@ -1,7 +1,10 @@
+/**
+ * mixin Aphid.Support.Extensions.Vendor.Prototype.BrowserFeatures
+**/
 Aphid.Support.Extensions.Vendor.Prototype.BrowserFeatures = {
 
   /**
-   * Prototype.BrowserFeatures.HTML5StructuralElements -> Boolean
+   * Aphid.Support.Extensions.Vendor.Prototype.BrowserFeatures.HTML5StructuralElements -> Boolean
   **/
   HTML5StructuralElements: function() {
     var element = document.createElement("div");
