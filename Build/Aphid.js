@@ -1019,7 +1019,7 @@ Aphid.UI.View = Class.create(
   },
 
   /*
-   * Aphid.UI.View#_viewDidFinishLoading(transport) -> null
+   * Aphid.UI.View#_templateDidFinishLoading(transport) -> null
    *
    * Callback method that is called once the view has finished loading
    * asynchronously. This method sets up the View instance by wiring any
@@ -1065,8 +1065,9 @@ Aphid.UI.View = Class.create(
     this.isLoaded  = true;
     this.isLoading = false;
     this.viewDidLoad();
-    if (this.delegate && this.delegate.viewDidFinishLoading)
-      this.delegate.viewDidFinishLoading(this);
+    if (this.asynchronousLoadingEnabled)
+      if (this.delegate && this.delegate.viewDidLoadAsynchronously)
+        this.delegate.viewDidLoadAsynchronously(this);
   },
 
 
@@ -1204,6 +1205,11 @@ Aphid.UI.View = Class.create(
 
 
   viewDidLoad: function()
+  {
+  },
+
+
+  viewDidLoadAsynchronously: function(view)
   {
   }
 

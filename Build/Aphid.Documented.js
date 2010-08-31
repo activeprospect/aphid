@@ -1703,7 +1703,7 @@ Aphid.UI = {};
  *       displayName: "FooBarView",
  *       fooLabel: false,
  *       contentView: false,
- *       viewDidFinishLoading: function()
+ *       viewDidLoad: function()
  *       {
  *         this.fooLabel.element.update('Bar!');
  *       }
@@ -1713,9 +1713,10 @@ Aphid.UI = {};
  * itself. This will be used to load the template (see the *View Templates*
  * section below for more details). The `fooLabel` and `contentView`
  * properties are outlets that will be wired up to elements within the view
- * template. Finally, the `viewDidFinishLoading` callback is called once the
- * view has loaded and in this example we are setting new content on our
- * `fooLabel` outlet.
+ * template. Finally, the [[Aphid.UI.View#viewDidLoad]] method is called
+ * once the view has loaded and in this example we are implementing this
+ * method in our subclass so that we can set the new label on our `fooLabel`
+ * outlet.
  *
  * ### View Templates
  *
@@ -1789,11 +1790,22 @@ Aphid.UI = {};
  * is recommended that you set an outlet on the element and set up your own
  * event observers.
  *
- * ### Delegates Methods
+ * ### Callback Methods
  *
- *  - `viewDidFinishLoading` — Called once the view template has been fully
- *    loaded and initialized. This should only ever be called once for a
- *    given view instance upon its first initialization.
+ * The following methods may be implemented by your custom subclass of
+ * [[Aphid.UI.View]]:
+ *
+ *  - [[Aphid.UI.View#viewDidLoad]]
+ *    Called once the view has been loaded and initialized.
+ *
+ * ### Delegate Methods
+ *
+ * The following methods may be implemented by your class that serves as the
+ * delegate for an instance of [[Aphid.UI.View]]:
+ *
+ *  - [[Aphid.UI.View#viewDidLoadAsynchronously]]
+ *    Called once the view template has finished loading and the view is in a
+ *    fully initialized state.
  *
 **/
 
@@ -2179,7 +2191,7 @@ Aphid.UI.View = Class.create(
   },
 
   /*
-   * Aphid.UI.View#_viewDidFinishLoading(transport) -> null
+   * Aphid.UI.View#_templateDidFinishLoading(transport) -> null
    *
    * Callback method that is called once the view has finished loading
    * asynchronously. This method sets up the View instance by wiring any
@@ -2235,8 +2247,9 @@ Aphid.UI.View = Class.create(
     this.isLoaded  = true;
     this.isLoading = false;
     this.viewDidLoad();
-    if (this.delegate && this.delegate.viewDidFinishLoading)
-      this.delegate.viewDidFinishLoading(this);
+    if (this.asynchronousLoadingEnabled)
+      if (this.delegate && this.delegate.viewDidLoadAsynchronously)
+        this.delegate.viewDidLoadAsynchronously(this);
   },
 
   // View Outlets ------------------------------------------------------------
@@ -2382,10 +2395,59 @@ Aphid.UI.View = Class.create(
     );
   },
 
-  // Callbacks ---------------------------------------------------------------
+  // Callback Methods (Abstract) ---------------------------------------------
 
+  /**
+   * Aphid.UI.View#viewDidLoad() -> null
+   *
+   * **Abstract Method** — A *callback method* that is called once the view
+   * has finished loading and all of its outlets and actions have been wired
+   * to the View instance.
+   *
+   * You should override this method in your View subclasses if you need to
+   * perform any additional setup once the view has been loaded and
+   * initialized (i.e. setting the initial view state).
+   *
+   * ### Example
+   *
+   *     var FooBarView = Class.create(Aphid.UI.View, {
+   *       displayName: "FooBarView",
+   *       fooLabel: false,
+   *       contentView: false,
+   *       viewDidLoad: function()
+   *       {
+   *         this.fooLabel.element.update('Bar!');
+   *       }
+   *     });
+   *
+   * ### Asynchronous Loading Caveat
+   *
+   * When asynchronous loading is enabled, the `viewDidLoad` method *may* be
+   * called before the view's subviews, such as those that have been
+   * initialized from outlets, have been completely loaded and initialized. If
+   * you need to know when all subviews have been completely loaded, you
+   * should implement the [[Aphid.UI.View#viewDidLoadAsynchronously]] delegate method
+   * in your view.
+   *
+  **/
   viewDidLoad: function()
   {
+    // Abstract Method Definition
+  },
+
+  // Delegate Methods --------------------------------------------------------
+
+  /**
+   * Aphid.UI.View#viewDidLoadAsynchronously([view]) -> null
+   *
+   * - view ([[Aphid.UI.View]]): the view instance that was loaded
+   *
+   * **Delegate Method**
+  **/
+  // TODO This should be defined as a mixin (i.e. Aphid.UI.View.DelegateMethods)
+  viewDidLoadAsynchronously: function(view)
+  {
+    // Delegate Method Definition
   }
 
 });

@@ -41,6 +41,8 @@
    actions when properties are requested (or set). This may require us to
    assign public properties to the class _properties property.
 
+ * Formally define mixins for delegate protocols (i.e. Aphid.UI.View.DelegateMethods).
+
 ### Aphid.Model
 
  * Add support for pluggable backends (i.e. Node.js, Rails, etc) since each

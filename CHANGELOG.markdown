@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Renamed the `viewDidFinishLoading` delegate method, called by Aphid.UI.View
+   when asynchronously loaded views are initialized, to `viewDidLoadAsynchronously`.
+
  * Added support for updating elements with HTML5 tags in Internet Explorer
    versions less than 9.
 
