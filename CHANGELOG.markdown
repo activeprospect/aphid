@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Fixed issues with Aphid.UI.SplitViewController that prevented split views
+   from being initialized when asynchronous loading is not enabled.
+
  * Renamed the `viewDidFinishLoading` delegate method, called by Aphid.UI.View
    when asynchronously loaded views are initialized, to `viewDidLoadAsynchronously`.
 

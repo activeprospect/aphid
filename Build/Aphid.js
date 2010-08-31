@@ -1577,40 +1577,49 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     $super(options);
   },
 
+  _initializeDraggableInstance: function()
+  {
+    var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
+        maxHeight = parseInt(this.firstView.element.getStyle('max-height')),
+        minWidth  = parseInt(this.firstView.element.getStyle('min-width')),
+        maxWidth  = parseInt(this.firstView.element.getStyle('max-width'));
+
+    this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
+      this.firstView.element,
+      this.secondView.element,
+      {
+        constraint: this.constraint,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        onStart: this.onStart.bind(this),
+        onDrag: this.onDrag.bind(this),
+        change: this.change.bind(this),
+        onEnd: this.onEnd.bind(this)
+      });
+  },
+
+
   viewDidLoad: function($super)
   {
     $super();
     $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
     this.element.addClassName('SplitViewController');
+    if (!this.asynchronousLoadingEnabled)
+      this._initializeDraggableInstance();
   },
 
-  viewDidFinishLoading: function(view)
-  {
-    if (view == this.firstView)
-    {
-      var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
-          maxHeight = parseInt(this.firstView.element.getStyle('max-height')),
-          minWidth  = parseInt(this.firstView.element.getStyle('min-width')),
-          maxWidth  = parseInt(this.firstView.element.getStyle('max-width'));
-    }
 
-    if (this.firstView.isLoaded && this.secondView.isLoaded)
+  viewDidLoadAsynchronously: function(view)
+  {
+    if (!this.firstView && !this.secondView)
     {
-      this.draggableInstance = new Aphid.UI.SplitViewController.Draggable(
-        this.firstView.element,
-        this.secondView.element,
-        {
-          constraint: this.constraint,
-          minHeight: minHeight,
-          maxHeight: maxHeight,
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          onStart: this.onStart.bind(this),
-          onDrag: this.onDrag.bind(this),
-          change: this.change.bind(this),
-          onEnd: this.onEnd.bind(this)
-        });
+      $L.error("firstView and secondView have not been defined", "Aphid.UI.SplitViewController");
+      return;
     }
+    if (this.firstView.isLoaded && this.secondView.isLoaded)
+      this._initializeDraggableInstance();
   },
 
 
