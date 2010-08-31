@@ -82,6 +82,9 @@
  * Add support for caching views that are loaded from a template on a class
    level for reuse without re-requesting the template from the server.
 
+ * Improve testing for asynchronous and non-asynchronous loading, including
+   proper callback and delegate testing.
+
 ### Aphid.UI.ViewController
 
  * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
