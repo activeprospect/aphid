@@ -106,14 +106,14 @@ Object.extend(Prototype.BrowserFeatures, Aphid.Support.Extensions.Vendor.Prototy
 
 Aphid.Support.Extensions.Vendor.Prototype.Element = {
 
-  fromString: function(string)
+  fromString: function(htmlString)
   {
-    string = string.trim();
+    htmlString = htmlString.trim();
     var element;
     if (Prototype.BrowserFeatures.HTML5StructuralElements())
-      element = new Element('div').update(string);
+      element = new Element('div').update(htmlString).firstChild;
     else
-      element = new Element('div').updateSafe(string);
+      element = new Element('div').updateSafe(htmlString).firstChild;
     return element;
   }
 

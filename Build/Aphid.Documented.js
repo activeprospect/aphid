@@ -274,14 +274,16 @@ Aphid.Support.Extensions.Vendor.Prototype.Element = {
    *     // => Element
    *
   **/
-  fromString: function(string)
+  // TODO This needs to possibly return an array
+  // TODO Look into using document fragments for this
+  fromString: function(htmlString)
   {
-    string = string.trim();
+    htmlString = htmlString.trim();
     var element;
     if (Prototype.BrowserFeatures.HTML5StructuralElements())
-      element = new Element('div').update(string);
+      element = new Element('div').update(htmlString).firstChild;
     else
-      element = new Element('div').updateSafe(string);
+      element = new Element('div').updateSafe(htmlString).firstChild;
     return element;
   }
 
