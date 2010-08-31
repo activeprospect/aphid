@@ -1579,6 +1579,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _initializeDraggableInstance: function()
   {
+    if (Prototype.Browser.IE)
+      return; // Resizing is not supported by Internet Explorer, yet...
+
     var minHeight = parseInt(this.firstView.element.getStyle('min-height')),
         maxHeight = parseInt(this.firstView.element.getStyle('max-height')),
         minWidth  = parseInt(this.firstView.element.getStyle('min-width')),

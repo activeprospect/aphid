@@ -136,6 +136,8 @@
  * Implement double-click support (both with a callback and default behavior
    minimizing the first pane).
 
+ * Add resizing support to Internet Explorer 7 thru 9.
+
 ### Aphid.UI.TabViewController
 
  * Add support for switching between content sets. The current implementation
