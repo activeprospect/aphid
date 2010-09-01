@@ -20,14 +20,15 @@ Aphid.Support.Extensions.Date = {
    * string not matching the following will simply be passed through:
    *
    *     %a  // The abbreviated weekday name (Sun, Mon, Tue, ...)
-   *     %A  // The  full  weekday  name (Sunday, Monday, Tuesday, ...)
+   *     %A  // The full weekday  name (Sunday, Monday, Tuesday, ...)
    *     %b  // The abbreviated month name (Jan, Feb, Mar, ...)
-   *     %B  // The  full  month  name (January, February, March, ...)
+   *     %B  // The full month  name (January, February, March, ...)
    *     %d  // Day of the month (1..31)
    *     %dd // Padded day of the month (01..31)
-   *     %H  // Hour of the day, 24-hour clock (0..23)
-   *     %HH // Padded hour of the day, 24-hour clock (00..23)
-   *     %I  // Padded hour of the day, 12-hour clock (01..12)
+   *     %H  // Hour of the day, 24-hour clock (1..12)
+   *     %HH // Padded hour of the day, 24-hour clock (01..12)
+   *     %I  // Hour of the day, 24-hour clock (0..23)
+   *     %II // Padded hour of the day, 24-hour clock (00..23)
    *     %m  // Month of the year (1..12)
    *     %mm // Padded month of the year (01..12)
    *     %M  // Minute of the hour (0..59)
@@ -63,7 +64,8 @@ Aphid.Support.Extensions.Date = {
           dd: this.getDate().toPaddedString(2),
           H:  this.getHours() % 12 || 12,
           HH: (this.getHours() % 12 || 12).toPaddedString(2),
-          I:  this.getHours().toPaddedString(2),
+          I:  this.getHours(),
+          II: this.getHours().toPaddedString(2),
           m:  this.getMonth() + 1,
           mm: (this.getMonth() + 1).toPaddedString(2),
           M:  this.getMinutes(),
