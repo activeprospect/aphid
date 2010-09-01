@@ -813,6 +813,8 @@ Aphid.UI.View = Class.create(
 
   isLoading: false,
 
+  isEnabled: true,
+
   initializedFromOutlet: false,
 
   asynchronousLoadingEnabled: false,
@@ -1062,12 +1064,36 @@ Aphid.UI.View = Class.create(
   {
     this._connectToOutlets();
     this._wireActionsToInstance();
+
     this.isLoaded  = true;
     this.isLoading = false;
+
+    if (this.element.hasClassName("disabled"))
+      this.disable();
+    else if (this.isEnabled)
+      this.enable();
+    else
+      this.disable();
+
     this.viewDidLoad();
     if (this.asynchronousLoadingEnabled)
       if (this.delegate && this.delegate.viewDidLoadAsynchronously)
         this.delegate.viewDidLoadAsynchronously(this);
+  },
+
+
+  enable: function()
+  {
+    this.isEnabled = true;
+    if (!this.isLoaded) return;
+    this.element.removeClassName("disabled");
+  },
+
+  disable: function()
+  {
+    this.isEnabled = false;
+    if (!this.isLoaded) return;
+    this.element.addClassName("disabled");
   },
 
 

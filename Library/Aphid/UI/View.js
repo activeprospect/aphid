@@ -203,6 +203,15 @@ Aphid.UI.View = Class.create(
   isLoading: false,
 
   /**
+   * Aphid.UI.View#isEnabled -> Boolean
+   *
+   * Denotes whether or not the view is considered to be enabled. Subviews
+   * and controls may query this property to check whether or not they should
+   * act on any events or actions.
+  **/
+  isEnabled: true,
+
+  /**
    * Aphid.UI.View#initializedFromTemplate -> Boolean
    *
    * If the View instance was initialized from a template (using outlets),
@@ -557,14 +566,56 @@ Aphid.UI.View = Class.create(
   **/
   _setupView: function()
   {
+    // Wire Outlets & Actions
     this._connectToOutlets();
     this._wireActionsToInstance();
+
+    // Set Loaded State
     this.isLoaded  = true;
     this.isLoading = false;
+
+    // Determine Enabled State
+    if (this.element.hasClassName("disabled"))
+      this.disable();
+    else if (this.isEnabled)
+      this.enable();
+    else
+      this.disable();
+
+    // Notify Callbacks & Delegates
     this.viewDidLoad();
     if (this.asynchronousLoadingEnabled)
       if (this.delegate && this.delegate.viewDidLoadAsynchronously)
         this.delegate.viewDidLoadAsynchronously(this);
+  },
+
+  // View "Enabled" State ----------------------------------------------------
+
+  /**
+   * Aphid.UI.View#enable() -> null
+   *
+   * Sets the view to a enabled state by setting [[Aphid.UI.View#isEnabled]]
+   * to `true` and removing the `disabled` CSS class from [[Aphid.UI.View#elament]],
+   * if present.
+  **/
+  enable: function()
+  {
+    this.isEnabled = true;
+    if (!this.isLoaded) return;
+    this.element.removeClassName("disabled");
+  },
+
+  /**
+   * Aphid.UI.View#disable() -> null
+   *
+   * Sets the view to a disabled state by setting [[Aphid.UI.View#isEnabled]]
+   * to `false` and adding the `disabled` CSS class to [[Aphid.UI.View#elament]].
+  **/
+  disable: function()
+  {
+    this.isEnabled = false;
+    if (!this.isLoaded) return;
+    this.element.addClassName("disabled");
   },
 
   // View Outlets ------------------------------------------------------------

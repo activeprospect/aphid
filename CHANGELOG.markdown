@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added "enabled" state management to Aphid.UI.View through the isEnabled
+   property and the enable() and disable() methods.
+
  * Fixed issues with Aphid.UI.SplitViewController that prevented split views
    from being initialized when asynchronous loading is not enabled.
 

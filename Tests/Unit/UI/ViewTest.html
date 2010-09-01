@@ -41,6 +41,8 @@
       <section id="testElementWithOutletWithCustomProperties">
         <section id="testOutletWithCustomProperties" data-outlet="testOutlet" data-view-class="TestViewWithProperties" data-custom-property="foo" data-true-property="true" data-false-property="false"></section>
       </section>
+      <section id="testElementWithDisabledClassName" class="disabled">
+      </section>
     </section>
 
     <!-- Log Section -->
@@ -226,6 +228,51 @@
           });
           assertEqual(true, view.testOutlet.trueProperty);
           assertEqual(false, view.testOutlet.falseProperty);
+        }},
+
+        testShouldViewShouldInitializeEnabledByDefault: function() { with(this) {
+          var view = new TestView({
+            element: $("testElement")
+          });
+          assert(view.isEnabled, "view#isEnabled should be true");
+          assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
+        }},
+
+        testShouldViewShouldInitializeDisabled: function() { with(this) {
+          var view = new TestView({
+            element: $("testElement"),
+            isEnabled: false
+          });
+          assert(!view.isEnabled, "view#isEnabled should be false");
+          assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
+        }},
+
+        testShouldViewShouldInitializeWithDisabledCSSClass: function() { with(this) {
+          var view = new TestView({
+            element: $("testElementWithDisabledClassName")
+          });
+          assert(!view.isEnabled, "view#isEnabled should be false");
+          assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
+        }},
+
+        testShouldEnableView: function() { with(this) {
+          var view = new TestView({
+            element: $("testElement"),
+            isEnabled: false
+          });
+          view.enable();
+          assert(view.isEnabled, "view#isEnabled should be true");
+          assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
+        }},
+
+        testShouldDisableView: function() { with(this) {
+          var view = new TestView({
+            element: $("testElement"),
+            isEnabled: true
+          });
+          view.disable();
+          assert(!view.isEnabled, "view#isEnabled should be false");
+          assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }}
 
         // TODO Add tests for actions
