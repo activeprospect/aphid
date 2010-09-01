@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added a custom String#toDate extension to be used for converting dates
+   formatted as strings to instances of Date.
+
  * Added a custom Date#strftime extension to be used for formatting dates with
    format strings.
 

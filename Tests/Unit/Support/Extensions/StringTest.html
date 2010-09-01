@@ -47,6 +47,12 @@
           assertEqual("number", typeof testString.toInt());
         }},
 
+        testStringToDateShouldCastStringAsDate: function() { with(this) {
+          var testString = "Tue Aug 24 2010 15:59:11 GMT-0500 (CDT)";
+          var date       = testString.toDate();
+          assertInstanceOf(Date, date);
+        }},
+
         testStringPluralizeShouldPluralizeSimpleSingularForms: function() { with(this) {
           var testString = "Apple";
           assertEqual("Apples", testString.pluralize());

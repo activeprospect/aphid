@@ -355,6 +355,11 @@ Aphid.Support.Extensions.String = {
     return parseInt(this);
   },
 
+  toDate: function()
+  {
+    return new Date(this);
+  },
+
   pluralize: function(count, plural)
   {
     if (Object.isUndefined(plural))

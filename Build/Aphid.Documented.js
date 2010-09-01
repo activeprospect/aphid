@@ -761,6 +761,16 @@ Aphid.Support.Extensions.String = {
   },
 
   /**
+   * Aphid.Support.Extensions.Date#toString() -> Date
+   *
+   * Returns the current String as an instance of Date.
+  **/
+  toDate: function()
+  {
+    return new Date(this);
+  },
+
+  /**
    * Aphid.Support.Extensions.String#pluralize(count[, plural]) -> String
   **/
   pluralize: function(count, plural)
