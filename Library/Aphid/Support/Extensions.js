@@ -10,4 +10,5 @@ Aphid.Support.Extensions = {};
 //= require <Aphid/Support/Extensions/Vendor.js>
 //= require <Aphid/Support/Extensions/Object.js>
 //= require <Aphid/Support/Extensions/Array.js>
+//= require <Aphid/Support/Extensions/Date.js>
 //= require <Aphid/Support/Extensions/String.js>

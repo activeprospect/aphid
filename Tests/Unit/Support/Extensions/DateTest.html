@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.Support.Extensions.Date Tests</title>
+    <link rel="stylesheet" href="../../../../Build/Aphid.css" />
+    <link rel="stylesheet" href="../../../Tests.css" />
+    <script src="../../../../Build/Aphid.Combined.js"></script>
+    <script src="../../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Support.Extensions.Date Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Tests custom extensions that we've made to the core JavaScript Date
+        implementation.
+      </p>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+      new Test.Unit.Runner({
+
+        testShouldFormatDateWithFormatStrings: function() { with(this) {
+          var testDate = new Date("September 1, 2010 4:20 PM");
+          assertEqual("Wed", testDate.strftime("%a"), "%a should interpolate to 'Wed'");
+          assertEqual("Wednesday", testDate.strftime("%A"), "%A should interpolate to 'Wednesday'");
+          assertEqual("Sep", testDate.strftime("%b"), "%b should interpolate to 'Sep'");
+          assertEqual("September", testDate.strftime("%B"), "%B should interpolate to 'September'");
+          assertEqual("1", testDate.strftime("%d"), "%d should interpolate to '1'");
+          assertEqual("01", testDate.strftime("%dd"), "%dd should interpolate to '01'");
+          assertEqual("4", testDate.strftime("%H"), "%H should interpolate to '4'");
+          assertEqual("04", testDate.strftime("%HH"), "%HH should interpolate to '04'");
+          assertEqual("16", testDate.strftime("%I"), "%I should interpolate to '16'");
+          assertEqual("9", testDate.strftime("%m"), "%m should interpolate to '9'");
+          assertEqual("09", testDate.strftime("%mm"), "%mm should interpolate to '09'");
+          assertEqual("20", testDate.strftime("%M"), "%M should interpolate to '20'");
+          assertEqual("20", testDate.strftime("%MM"), "%MM should interpolate to '20'");
+          assertEqual("pm", testDate.strftime("%p"), "%p should interpolate to 'pm'");
+          assertEqual("PM", testDate.strftime("%P"), "%P should interpolate to 'PM'");
+          assertEqual("0", testDate.strftime("%S"), "%S should interpolate to '0'");
+          assertEqual("00", testDate.strftime("%SS"), "%SS should interpolate to '00'");
+          assertEqual("3", testDate.strftime("%w"), "%w should interpolate to '3'");
+          assertEqual("10", testDate.strftime("%y"), "%y should interpolate to '10'");
+          assertEqual("2010", testDate.strftime("%Y"), "%Y should interpolate to '2010'");
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

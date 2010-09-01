@@ -291,6 +291,48 @@ Aphid.Support.Extensions.Array = {
 }
 
 Object.extend(Array.prototype, Aphid.Support.Extensions.Array);
+Aphid.Support.Extensions.Date = {
+
+  strftime: function(format)
+  {
+    var syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
+        components = {
+          a:  Date.dayNames[this.getDay()].substring(0, 3),
+          A:  Date.dayNames[this.getDay()],
+          b:  Date.monthNames[this.getMonth()].substring(0, 3),
+          B:  Date.monthNames[this.getMonth()],
+          d:  this.getDate(),
+          dd: this.getDate().toPaddedString(2),
+          H:  this.getHours() % 12 || 12,
+          HH: (this.getHours() % 12 || 12).toPaddedString(2),
+          I:  this.getHours().toPaddedString(2),
+          m:  this.getMonth() + 1,
+          mm: (this.getMonth() + 1).toPaddedString(2),
+          M:  this.getMinutes(),
+          MM: this.getMinutes().toPaddedString(2),
+          p:  this.getHours() >= 12 ? 'pm' : 'am',
+          P:  this.getHours() >= 12 ? 'PM' : 'AM',
+          S:  this.getSeconds(),
+          SS: this.getSeconds().toPaddedString(2),
+          w:  this.getDay(),
+          y:  this.getFullYear().toString().substring(2, 4),
+          Y:  this.getFullYear()
+        };
+    return format.interpolate(components, syntax);
+  }
+
+}
+
+Object.extend(Date.prototype, Aphid.Support.Extensions.Date);
+
+Date.monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+];
+
+Date.dayNames = [
+  'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+];
 Aphid.Support.Extensions.String = {
 
   attributize: function()
