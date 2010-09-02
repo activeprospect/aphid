@@ -48,6 +48,7 @@
           assertEqual("09", testDate.strftime("%mm"), "%mm should interpolate to '09'");
           assertEqual("20", testDate.strftime("%M"), "%M should interpolate to '20'");
           assertEqual("20", testDate.strftime("%MM"), "%MM should interpolate to '20'");
+          assertEqual("st", testDate.strftime("%o"), "%o should interpolate to 'st'");
           assertEqual("pm", testDate.strftime("%p"), "%p should interpolate to 'pm'");
           assertEqual("PM", testDate.strftime("%P"), "%P should interpolate to 'PM'");
           assertEqual("0", testDate.strftime("%S"), "%S should interpolate to '0'");

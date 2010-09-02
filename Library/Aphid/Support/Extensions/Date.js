@@ -33,6 +33,7 @@ Aphid.Support.Extensions.Date = {
    *     %mm // Padded month of the year (01..12)
    *     %M  // Minute of the hour (0..59)
    *     %MM // Padded minute of the hour (00..59)
+   *     %o  // English ordinal suffix for the day of the month (st, nd, rd or th)
    *     %p  // Meridian indicator (am or pm)
    *     %P  // Meridian indicator (AM or PM)
    *     %S  // Second of the minute (0..60)
@@ -54,7 +55,9 @@ Aphid.Support.Extensions.Date = {
   **/
   strftime: function(format)
   {
-    var syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
+    var formatted,
+        ordinals   = $H({ 1: "st", 2: "nd", 3: "rd", 4: "th", 5: "th", 6: "th", 7: "th", 8: "th", 9: "th" }),
+        syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
         components = {
           a:  Date.dayNames[this.getDay()].substring(0, 3),
           A:  Date.dayNames[this.getDay()],
@@ -70,6 +73,7 @@ Aphid.Support.Extensions.Date = {
           mm: (this.getMonth() + 1).toPaddedString(2),
           M:  this.getMinutes(),
           MM: this.getMinutes().toPaddedString(2),
+          o:  "%o", // Pass Through
           p:  this.getHours() >= 12 ? 'pm' : 'am',
           P:  this.getHours() >= 12 ? 'PM' : 'AM',
           S:  this.getSeconds(),
@@ -78,7 +82,10 @@ Aphid.Support.Extensions.Date = {
           y:  this.getFullYear().toString().substring(2, 4),
           Y:  this.getFullYear()
         };
-    return format.interpolate(components, syntax);
+    formatted = format.interpolate(components, syntax);
+    if (formatted.indexOf("%o") >= 0)
+      formatted = formatted.replace("%o", this.getDate() > 10 ? ordinals.get(this.getDate().toString().substring(1)) : ordinals.get(this.getDate()));
+    return formatted;
   }
 
 }
