@@ -666,6 +666,7 @@ Aphid.Model = Class.create({
       {
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
         this[attribute] = this.element.getData(attribute);
+        this["_" + attribute] = this.element.getData(attribute);
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
@@ -690,6 +691,7 @@ Aphid.Model = Class.create({
       {
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
         this[attribute] = this.object[attribute];
+        this["_" + attribute] = this.object[attribute];
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
@@ -726,8 +728,33 @@ Aphid.Model = Class.create({
       function(attribute)
       {
         this[attribute] = null;
+        this["_" + attribute] = null;
       }.bind(this)
     );
+  },
+
+
+  isDirty: function()
+  {
+    var isDirty = false;
+
+    this.attributes.each(function(attribute)
+    {
+      if (this.proxies && $H(this.proxies).keys().include(attribute))
+      {
+        if (Object.isArray(this[attribute]))
+        {
+          this[attribute].each(function(proxyAttribute) {
+            if (!proxyAttribute.identifier && proxyAttribute.isDirty())
+              isDirty = true;
+          }, this);
+        }
+      }
+      else if (this[attribute] != this["_" + attribute])
+        isDirty = true;
+    }, this);
+
+    return isDirty;
   },
 
 

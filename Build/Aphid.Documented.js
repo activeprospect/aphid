@@ -1596,6 +1596,7 @@ Aphid.Model = Class.create({
       {
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
         this[attribute] = this.element.getData(attribute);
+        this["_" + attribute] = this.element.getData(attribute);
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
@@ -1620,6 +1621,7 @@ Aphid.Model = Class.create({
       {
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
         this[attribute] = this.object[attribute];
+        this["_" + attribute] = this.object[attribute];
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
@@ -1656,8 +1658,46 @@ Aphid.Model = Class.create({
       function(attribute)
       {
         this[attribute] = null;
+        this["_" + attribute] = null;
       }.bind(this)
     );
+  },
+
+  // Dirty State Tracking ----------------------------------------------------
+
+  /**
+   * Aphid.Model#isDirty() -> Boolean
+   *
+   * Iterates the attributes of the model instance and checks for any changes
+   * from the initialized state, returning true if any of the attribute values
+   * have changed.
+   *
+   * This method also looks at all proxied objects that *do not* have an
+   * identifier, that is to say, proxies that are instantiated from a parent
+   * object that do not have their own identifier and cannot be loaded or
+   * saved on their own.
+  **/
+  isDirty: function()
+  {
+    var isDirty = false;
+
+    this.attributes.each(function(attribute)
+    {
+      if (this.proxies && $H(this.proxies).keys().include(attribute))
+      {
+        if (Object.isArray(this[attribute]))
+        {
+          this[attribute].each(function(proxyAttribute) {
+            if (!proxyAttribute.identifier && proxyAttribute.isDirty())
+              isDirty = true;
+          }, this);
+        }
+      }
+      else if (this[attribute] != this["_" + attribute])
+        isDirty = true;
+    }, this);
+
+    return isDirty;
   },
 
   // Proxies -----------------------------------------------------------------

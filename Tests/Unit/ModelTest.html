@@ -286,6 +286,24 @@
         testShouldSetIdentifierUponInitializationWithElement: function() { with(this) {
           var testRemoteContact = new TestRemoteContact({ element: $('testContactElement') });
           assertEqual(testIdentifier, testRemoteContact.identifier);
+        }},
+
+        testShouldDetectDirtyModels: function() { with(this) {
+          var testContact = new TestContact({ object: { name: "John Doe", email: "jdoe@example.com" }});
+          assert(!testContact.isDirty());
+          testContact.name = "Jane Doe";
+          assert(testContact.isDirty());
+        }},
+
+        testShouldDetectDirtyModelsWithProxies: function() { with(this) {
+          var testContact = new TestContactWithPhoneNumbersProxy({ object: {
+            name: "John Doe",
+            email: "jdoe@example.com",
+            phoneNumbers: [ { type: "mobile", number: "(123) 555-1212" } ]
+          }});
+          assert(!testContact.isDirty());
+          testContact.phoneNumbers.first().type = "main";
+          assert(testContact.isDirty());
         }}
 
       }, { testLog: "logSection" });
