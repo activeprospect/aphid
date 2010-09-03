@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support for reloading models after they have been loaded and
+   Aphid.Model will now automatically reload the model after it has been
+   saved.
+
  * Added Aphid.Model#identifierAttribute for specifying the name of the
    attribute that should be considered the identifier for the model to be used
    when loading, reloading and saving.

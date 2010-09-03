@@ -42,6 +42,9 @@
         attributes: [ "key", "name", "email" ],
         afterLoad: function() {
           afterLoadCalled = true;
+        },
+        afterReload: function() {
+          afterReloadCalled = true;
         }
       });
 
@@ -159,6 +162,27 @@
         }},
 
         /*
+         * Ensures that the model can be reloaded and that the attribute
+         * values are properly set from the reload request.
+         **/
+        testShouldReloadModel: function() { with(this) {
+          var object = { key: "6cad0ac09e9c602a6477db4247bdeed1", name: "Jane Doe", email: "jane.doe@example.com" };
+          var testRemoteContact = new TestRemoteContact({ object: object });
+          testRemoteContact.reload();
+          // Attributes should match those in the fixture, not the values
+          // defined in the "object" hash above.
+          assertEqual("John Doe", testRemoteContact.name);
+          assertEqual("jdoe@example.com", testRemoteContact.email);
+        }},
+
+        /*
+         * Ensures that the model can be saved.
+         **/
+        testShouldSaveModel: function() { with(this) {
+          assert(false, "Test not implemented...");
+        }},
+
+        /*
          * Ensures that the Model calls the `modelDidFinishLoading` delegate
          * method when initialized by an identifier which triggers an
          * asynchronous load.
@@ -180,17 +204,37 @@
         }},
 
         /*
-         * Ensures that the Model calls the `modelDidSave` delegate method
-         * after a successful save operation.
+         * Ensures that the Model calls the `modelDidFinishReloading` delegate
+         * method after a successful reload operation.
         **/
-        testShouldCallModelDidSaveDelegateMethod: function() { with(this) {
+        testShouldCallModelDidFinishReloadingDelegateMethod: function() { with(this) {
+          var lastReloadedModel = false;
+          var modelDelegate = {
+            modelDidFinishReloading: function(model) {
+              lastReloadedModel = model;
+            }
+          };
+          var testRemoteContact = new TestRemoteContact({
+            identifier: testIdentifier,
+            delegate: modelDelegate
+          });
+          testRemoteContact.reload();
+          wait(1000, function() {
+            assertEqual(testRemoteContact, lastReloadedModel);
+          });
+        }},
+
+        /*
+         * Ensures that the Model calls the `modelDidFinishSaving` delegate
+         * method after a successful save operation.
+        **/
+        testShouldCallModelDidFinishSavingDelegateMethod: function() { with(this) {
           assert(false, "Test not implemented...");
         }},
 
         /*
-         * Ensures that the Model calls the `afterLoad` delegate
-         * method when initialized by an identifier which triggers an
-         * asynchronous load.
+         * Ensures that the Model calls the `afterLoad` delegate method when
+         * initialized by an identifier which triggers an asynchronous load.
         **/
         testShouldCallAfterLoadCallback: function() { with(this) {
           var testRemoteContact = new TestRemoteContact({
@@ -198,6 +242,19 @@
           });
           wait(1000, function() {
             assert(afterLoadCalled);
+          });
+        }},
+
+        /*
+         * Ensures that the Model calls the `afterReload` delegate method when
+         * initialized by an identifier which triggers an asynchronous load.
+        **/
+        testShouldCallAfterReloadCallback: function() { with(this) {
+          var testRemoteContact = new TestRemoteContact({
+            identifier: testIdentifier
+          });
+          wait(1000, function() {
+            assert(afterReloadCalled);
           });
         }},
 

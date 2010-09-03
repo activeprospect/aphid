@@ -1352,6 +1352,8 @@ document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
  *
  *  * `afterLoad()` - Called immediately after a successful load operation.
  *
+ *  * `afterReload()` - Called immediately after a successful reload operation.
+ *
  *  * `afterSave()` - Called immediately after a successful save operation.
  *
  * ### Delegate Methods
@@ -1363,8 +1365,11 @@ document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
  *  * `modelDidFinishLoading(model)` - Called when the model has finished
  *    loading and is fully initialized after an asynchronous load operation.
  *
- *  * `modelDidSave(model)` - Called when the model has successfully saved
- *    any changes to the remote web service.
+ *  * `modelDidFinishReloading(model)` - Called when the model has finished
+ *    reloading.
+ *
+ *  * `modelDidFinishSaving(model)` - Called when the model has successfully
+ *    saved any changes to the remote web service.
  *
 **/
 
@@ -1754,6 +1759,7 @@ Aphid.Model = Class.create({
       postBody: Object.toJSON(this.serialize()),
       onSuccess: function(transport)
       {
+        this.reload();
         this._afterSave();
       }.bind(this),
       onFailure: function(transport)
@@ -1770,22 +1776,65 @@ Aphid.Model = Class.create({
     new Ajax.Request(url, options);
   },
 
+  reload: function()
+  {
+    $L.info("Reloading " + this.displayName + " with identifier " + this.identifier);
+
+    // TODO Make the loading logic common between initialization and reloading
+
+    // Assemble URL
+    var urlTemplate = new Template(this.url);
+    var url = urlTemplate.evaluate({ identifier: this.identifier });
+
+    // Request Options
+    var options = {
+      method: 'get',
+      asynchronous: false,
+      contentType: 'application/json',
+      onSuccess: function(transport)
+      {
+        this.object = transport.responseJSON;
+        this._initializeFromObject();
+        this._afterReload();
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        var alertView = new Aphid.UI.AlertView();
+        alertView.title = "Error Reloading Resource";
+        alertView.message = "Failed to reload an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
+        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.showAnimated();
+      }.bind(this)
+    };
+
+    // Make Request
+    new Ajax.Request(url, options);
+  },
+
   // Callbacks ---------------------------------------------------------------
 
   _afterLoad: function()
   {
     if (this.afterLoad)
-      this.afterLoad();
+      this.afterLoad(this);
     if (this.delegate && this.delegate.modelDidFinishLoading)
       this.delegate.modelDidFinishLoading(this);
+  },
+
+  _afterReload: function()
+  {
+    if (this.afterReload)
+      this.afterReload(this);
+    if (this.delegate && this.delegate.modelDidFinishReloading)
+      this.delegate.modelDidFinishReloading(this);
   },
 
   _afterSave: function()
   {
     if (this.afterSave)
-      this.afterSave();
-    if (this.delegate && this.delegate.modelDidSave)
-      this.delegate.modelDidSave(this);
+      this.afterSave(this);
+    if (this.delegate && this.delegate.modelDidFinishSaving)
+      this.delegate.modelDidFinishSaving(this);
   },
 
   // -------------------------------------------------------------------------
