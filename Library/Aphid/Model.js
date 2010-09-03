@@ -169,13 +169,23 @@ Aphid.Model = Class.create({
   url: false,
 
   /**
-   * Aphid.Model#identifier -> String | Integer
+   * Aphid.Model#identifier -> String | Integer | false
    *
    * The unique identifier that represents the record for this model instance.
    * If an identifier is specified during initialization, it will be retrieved
    * from the remote server that has been configured for this model class.
   **/
   identifier: false,
+
+  /**
+   * Aphid.Model#identifierAttribute -> String | false
+   *
+   * Defines the name of the attribute that serves as the identifier for the
+   * model instance. If specified, [[Aphid.Model#identifier]] will
+   * automatically be set to the value of the defined attribute when the model
+   * is initialized.
+  **/
+  identifierAttribute: false,
 
   /**
    * Aphid.Model#element -> Element | false
@@ -356,10 +366,15 @@ Aphid.Model = Class.create({
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getAttribute('data-' + attribute) + '"');
-        this[attribute] = this.element.getAttribute('data-' + attribute);
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
+        this[attribute] = this.element.getData(attribute);
       }.bind(this)
     );
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    {
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      this.identifier = this[this.identifierAttribute];
+    }
     this._instantiateProxies();
   },
 
@@ -379,6 +394,11 @@ Aphid.Model = Class.create({
         this[attribute] = this.object[attribute];
       }.bind(this)
     );
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    {
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      this.identifier = this[this.identifierAttribute];
+    }
     this._instantiateProxies();
   },
 

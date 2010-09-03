@@ -576,6 +576,8 @@ Aphid.Model = Class.create({
 
   identifier: false,
 
+  identifierAttribute: false,
+
   element: false,
 
   object: false,
@@ -662,10 +664,15 @@ Aphid.Model = Class.create({
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getAttribute('data-' + attribute) + '"');
-        this[attribute] = this.element.getAttribute('data-' + attribute);
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
+        this[attribute] = this.element.getData(attribute);
       }.bind(this)
     );
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    {
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      this.identifier = this[this.identifierAttribute];
+    }
     this._instantiateProxies();
   },
 
@@ -685,6 +692,11 @@ Aphid.Model = Class.create({
         this[attribute] = this.object[attribute];
       }.bind(this)
     );
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    {
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      this.identifier = this[this.identifierAttribute];
+    }
     this._instantiateProxies();
   },
 

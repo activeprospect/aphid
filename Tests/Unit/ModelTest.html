@@ -18,7 +18,7 @@
 
     <!-- Test Elements -->
     <section id="testElements">
-      <div id="testContactElement" data-name="John Doe" data-email="jdoe@example.com"></div>
+      <div id="testContactElement" data-key="6cad0ac09e9c602a6477db4247bdeed1" data-name="John Doe" data-email="jdoe@example.com"></div>
     </section>
 
     <!-- Log Section -->
@@ -28,14 +28,18 @@
     <!-- Tests -->
     <script>
 
+      var testIdentifier = "6cad0ac09e9c602a6477db4247bdeed1";
+
       var TestContact = Class.create(Aphid.Model, {
         attributes: [ "name", "email" ]
       });
 
       var afterLoadCalled = false;
+      var afterReloadCalled = false;
       var TestRemoteContact = Class.create(Aphid.Model, {
-        url: "../Fixtures/#{identifier}",
-        attributes: [ "name", "email" ],
+        url: "../Fixtures/#{identifier}.json",
+        identifierAttribute: "key",
+        attributes: [ "key", "name", "email" ],
         afterLoad: function() {
           afterLoadCalled = true;
         }
@@ -75,7 +79,7 @@
 
         testShouldInitializeModelFromIdentifier: function() { with(this) {
           var testContact = new TestRemoteContact({
-            identifier: 'testModel.json'
+            identifier: testIdentifier
           });
           wait(1000, function() {
             assert(testContact.isLoaded);
@@ -167,7 +171,7 @@
             }
           };
           var testRemoteContact = new TestRemoteContact({
-            identifier: 'testModel.json',
+            identifier: testIdentifier,
             delegate: modelDelegate
           });
           wait(1000, function() {
@@ -190,7 +194,7 @@
         **/
         testShouldCallAfterLoadCallback: function() { with(this) {
           var testRemoteContact = new TestRemoteContact({
-            identifier: 'testModel.json'
+            identifier: testIdentifier
           });
           wait(1000, function() {
             assert(afterLoadCalled);
@@ -206,6 +210,26 @@
           assert(false, "Test not implemented...");
         }},
 
+        /*
+         * Ensures that the Model has its identifier property set to the value
+         * of the attribute defined on the identifierAttribute property when
+         * initializing a new model instance from an object.
+        **/
+        testShouldSetIdentifierUponInitializationWithObject: function() { with(this) {
+          var object = { key: "6cad0ac09e9c602a6477db4247bdeed1", name: "John Doe", email: "jdoe@example.com" };
+          var testRemoteContact = new TestRemoteContact({ object: object });
+          assertEqual(object["key"], testRemoteContact.identifier);
+        }},
+
+        /*
+         * Ensures that the Model has its identifier property set to the value
+         * of the attribute defined on the identifierAttribute property when
+         * initializing a new model instance from an element.
+        **/
+        testShouldSetIdentifierUponInitializationWithElement: function() { with(this) {
+          var testRemoteContact = new TestRemoteContact({ element: $('testContactElement') });
+          assertEqual(testIdentifier, testRemoteContact.identifier);
+        }}
 
       }, { testLog: "logSection" });
     </script>
