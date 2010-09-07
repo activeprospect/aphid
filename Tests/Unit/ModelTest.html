@@ -312,6 +312,23 @@
           assert(!testContact.isDirty());
           testContact.phoneNumbers.first().type = "main";
           assert(testContact.isDirty());
+        }},
+
+        /*
+         * Ensures that dirty models have their dirty state reset to false
+         * when reloaded.
+        **/
+        testShouldResetDirtyStateAfterReload: function() { with(this) {
+          var testRemoteContact = new TestRemoteContact({ identifier: "6cad0ac09e9c602a6477db4247bdeed1" });
+          wait(1000, function() {
+            assert(!testRemoteContact.isDirty());
+            testRemoteContact.name = "Jane Doe";
+            assert(testRemoteContact.isDirty());
+            testRemoteContact.reload();
+            wait(1000, function() {
+              assert(!testRemoteContact.isDirty());
+            });
+          });
         }}
 
       }, { testLog: "logSection" });
