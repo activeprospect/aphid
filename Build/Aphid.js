@@ -835,7 +835,8 @@ Aphid.Model = Class.create({
       postBody: Object.toJSON(this.serialize()),
       onSuccess: function(transport)
       {
-        this.reload();
+        this.object = transport.responseJSON;
+        this._initializeFromObject();
         this._afterSave();
       }.bind(this),
       onFailure: function(transport)
