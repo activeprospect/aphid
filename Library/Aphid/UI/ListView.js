@@ -121,6 +121,24 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   selectedItems: false,
 
+  /** related to: Aphid.UI.ListView#selectedItemIndexes
+   * Aphid.UI.ListView#selectedItemIndex -> Number | false
+   *
+   * The index of the currently selected item (as found in
+   * [[Aphid.UI.ListView#items]] or false if no item is currently selected or
+   * the list has multiple selection enabled.
+  **/
+  selectedItemIndex: false,
+
+  /** related to: Aphid.UI.ListView#selectedItemIndex
+   * Aphid.UI.ListView#selectedItemIndexes -> Array | false
+   *
+   * An array containing the indexes of all currently selected items (as found
+   * in [[Aphid.UI.ListView#items]]) or false if the list has multiple
+   * selection disabled.
+  **/
+  selectedItemIndexes: false,
+
   /**
    * Aphid.UI.ListView#multipleSelectionEnabled -> Boolean
    *
@@ -169,9 +187,15 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     };
     $super(options);
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = $A();
+      this.selectedItemIndexes = $A();
+    }
     else
+    {
       this.selectedItems = false;
+      this.selectedItemIndex = false;
+    }
     if (this.dataSource)
       this.reloadData();
   },
@@ -266,13 +290,20 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
     // Select Item
     if (item.isSelected)
+    {
+      var itemIndex = this.items.indexOf(item);
       if (!this.multipleSelectionEnabled)
       {
         if (this.selectedItem) this._deselectItem(this.selectedItem);
         this.selectedItem = item;
+        this.selectedItemIndex = itemIndex;
       }
       else
+      {
         this.selectedItems.push(item);
+        this.selectedItemIndexes.push(itemIndex);
+      }
+    }
 
     // Set listView on Item
     item.listView = this;
@@ -377,16 +408,21 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   // Selection ---------------------------------------------------------------
 
   /**
-   * Aphid.UI.ListView#selectItem(listItem) -> null
+   * Aphid.UI.ListView#selectItem(item) -> Boolean
    *
-   * Selects the specified list item. The list item must be an Element
-   * reference to the item to be selected.
+   * - item ([[Aphid.UI.ListViewItem]]): the list view item to select
+   *
+   * Selects the specified list item. Returns true if the item was selected or
+   * false if no action was performed.
   **/
   selectItem: function(item)
   {
     // Ensure that we can select the item...
     if (!this._shouldSelectItem(item))
-      return;
+      return false;
+
+    // Get the index of the selected item
+    var index = this.items.indexOf(item);
 
     // Clear the previous selection and set the newly selected item, unless
     // multiple selection is enabled.
@@ -394,26 +430,65 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     {
       this._clearSelection();
       this.selectedItem = item.select();
+      this.selectedItemIndex = index;
       this.scrollToSelectedItem();
     }
     else
+    {
       this.selectedItems.push(item.select());
+      this.selectedItemIndexes.push(index);
+    }
 
     this._didSelectItem(item);
+
+    return true;
   },
 
   /**
-   * Aphid.UI.ListView#deselectItem(listItem) -> null
+   * Aphid.UI.ListView#selectItemAtIndex(index) -> Boolean
    *
-   * Deselects the specified list item, if it is currently selected. The list
-   * item must be an Element reference to the item to be deselected.
+   * - index (Number): the index of the list view item to select
+   *
+   * Selects the list item at the specified index. Returns true if the item
+   * was selected or false if no action was performed.
+  **/
+  selectItemAtIndex: function(index)
+  {
+    var item = this.items[index];
+    return this.selectItem(item);
+  },
+
+  /**
+   * Aphid.UI.ListView#deselectItem(item) -> Boolean
+   *
+   * - item ([[Aphid.UI.ListViewItem]]): the list view item to deselect
+   *
+   * Deselects the specified list view item, if it is currently selected.
+   * Returns true if the item was deselected or false if no action was
+   * performed.
   **/
   deselectItem: function(item)
   {
     if (!this._shouldDeselectItem(item))
-      return;
+      return false;
     this._deselectItem(item);
     this._didDeselectItem(item);
+    return true;
+  },
+
+  /**
+   * Aphid.UI.ListView#deselectItemAtIndex(index) -> Boolean
+   *
+   * - index (Number): the index of the list view item to deselect
+   *
+   * Deselects the list view item at the specified index, if it is currently
+   * selected. Returns true if the item was deselected or false if no action
+   * was performed.
+  **/
+  deselectItemAtIndex: function(index)
+  {
+    var item = this.items[index];
+    return this.deselectItem(item);
   },
 
   /*
@@ -424,11 +499,23 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _deselectItem: function(item)
   {
+    // Get the index of the item
+    var index = this.items.indexOf(item);
+
+    // Deselect the item
     item.deselect();
+
+    // Clear the selection state
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = this.selectedItems.without(item);
+      this.selectedItemIndexes = this.selectedItemIndexes.without(index);
+    }
     else
+    {
       this.selectedItem = false;
+      this.selectedItemIndex = false;
+    }
   },
 
   /**
@@ -455,15 +542,26 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.items)
       this.items.invoke('deselect');
     if (this.selectedItem)
+    {
       this.selectedItem = false;
+      this.selectedItemIndex = false;
+    }
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = $A();
+      this.selectedItemIndexes = $A();
+    }
     else
+    {
       this.selectedItems = false;
+      this.selectedItemIndexes = false;
+    }
   },
 
   /**
-   * Aphid.UI.ListView#openItem(listItem) -> null
+   * Aphid.UI.ListView#openItem(item) -> null
+   *
+   * - item ([[Aphid.UI.ListViewItem]]): the list view item to be opened
    *
    * Instructs the delegate or subclass that the specified item should be
    * opened or otherwise acted upon. This functionality is implemented by the
@@ -476,6 +574,21 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
 
     this._didOpenItem(item);
+  },
+
+  /**
+   * Aphid.UI.ListView#openItemAtIndex(index) -> null
+   *
+   * - index (Number): the index of the list view item to be opened
+   *
+   * Instructs the delegate or subclass that the specified item should be
+   * opened or otherwise acted upon. This functionality is implemented by the
+   * subclass or delegate and has no behavior by default.
+  **/
+  openItemAtIndex: function(index)
+  {
+    var item = this.items[itemIndex];
+    return this.openItem(item);
   },
 
   /**
@@ -780,7 +893,9 @@ Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initiali
 Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
 Aphid.UI.ListView.prototype.addItem.displayName = "Aphid.UI.ListView.addItem";
 Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
+Aphid.UI.ListView.prototype.selectItemAtIndex.displayName = "Aphid.UI.ListView.selectItemAtIndex";
 Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.deselectItem";
+Aphid.UI.ListView.prototype.deselectItemAtIndex.displayName = "Aphid.UI.ListView.deselectItemAtIndex";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype._initializeItems.displayName = "Aphid.UI.ListView._initializeItems";

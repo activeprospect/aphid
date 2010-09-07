@@ -129,6 +129,7 @@
          * Ensures that list items can be selected programmatically.
         **/
         testShouldSelectItem: function() { with(this) {
+          var itemIndex = 1;
           var lastSelectedItem;
           var listViewDelegate = {
             listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
@@ -137,9 +138,29 @@
             element: $('testListView'),
             delegate: listViewDelegate
           });
-          listView.selectItem(listView.items[1]);
-          assertEqual(listView.items[1], lastSelectedItem);
-          assertEqual(listView.items[1], listView.selectedItem);
+          listView.selectItem(listView.items[itemIndex]);
+          assertEqual(listView.items[itemIndex], lastSelectedItem);
+          assertEqual(listView.items[itemIndex], listView.selectedItem);
+          assertEqual(itemIndex, listView.selectedItemIndex);
+        }},
+
+        /*
+         * Ensures that list items can be selected by index programmatically.
+        **/
+        testShouldSelectItemAtIndex: function() { with(this) {
+          var itemIndex = 1;
+          var lastSelectedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItemAtIndex(itemIndex);
+          assertEqual(listView.items[itemIndex], lastSelectedItem);
+          assertEqual(listView.items[itemIndex], listView.selectedItem);
+          assertEqual(itemIndex, listView.selectedItemIndex);
         }},
 
         /*
@@ -147,15 +168,20 @@
          * multipleSelectionEnabled property is set to true.
         **/
         testShouldSelectMultipleItems: function() { with(this) {
+          var itemIndexes = $A([1, 2]);
           var listView = new Aphid.UI.ListView({
             element: $('testListView'),
             multipleSelectionEnabled: true
           });
-          listView.selectItem(listView.items[1]);
-          listView.selectItem(listView.items[2]);
-          assert(listView.selectedItems.include(listView.items[1]));
-          assert(listView.selectedItems.include(listView.items[2]));
-          assertEqual(2, listView.selectedItems.length);
+          itemIndexes.each(function(itemIndex) {
+            listView.selectItem(listView.items[itemIndex]);
+          });
+          itemIndexes.each(function(itemIndex) {
+            assert(listView.selectedItems.include(listView.items[itemIndex]));
+            assert(listView.selectedItemIndexes.include(itemIndex));
+          })
+          assertEqual(itemIndexes.length, listView.selectedItems.length);
+          assertEqual(itemIndexes.length, listView.selectedItemIndexes.length);
         }},
 
         /*
@@ -199,6 +225,28 @@
           assertEqual(listView.items[1], lastSelectedItem);
           assertEqual(listView.items[1], listView.selectedItem);
           listView.deselectItem(listView.items[1]);
+          assert(!lastSelectedItem.element.hasClassName('selected'), "lastSelectedItem#element should not have the 'selected' CSS class name");
+          assert(!lastSelectedItem.isSelected, "lastSelectedItem#isSelected should be false");
+          assertEqual(false, listView.selectedItem, "selectedItem should be false");
+        }},
+
+        /*
+         * Ensures that list items can be deselected by index programmatically.
+        **/
+        testShouldDeselectItemAtIndex: function() { with(this) {
+          var itemIndex = 1;
+          var lastSelectedItem;
+          var listViewDelegate = {
+            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('testListView'),
+            delegate: listViewDelegate
+          });
+          listView.selectItem(listView.items[itemIndex]);
+          assertEqual(listView.items[itemIndex], lastSelectedItem);
+          assertEqual(listView.items[itemIndex], listView.selectedItem);
+          listView.deselectItemAtIndex(itemIndex);
           assert(!lastSelectedItem.element.hasClassName('selected'), "lastSelectedItem#element should not have the 'selected' CSS class name");
           assert(!lastSelectedItem.isSelected, "lastSelectedItem#isSelected should be false");
           assertEqual(false, listView.selectedItem, "selectedItem should be false");

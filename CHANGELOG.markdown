@@ -3,6 +3,11 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added support to Aphid.UI.ListView for tracking and selecting list view
+   items by their index in Aphid.UI.ListView#items by referencing the
+   selectedItemIndex and selectedItemIndexes properties and calling the
+   selectItemAtIndex(), deselectItemAtIndex() and openItemAtIndex() methods.
+
  * Added dirty state tracking support to Aphid.Model through the new isDirty()
    method. Models who have had attribute values change will return true when
    isDirty() is called.

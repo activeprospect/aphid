@@ -2301,6 +2301,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   selectedItems: false,
 
+  selectedItemIndex: false,
+
+  selectedItemIndexes: false,
+
   multipleSelectionEnabled: false,
 
   sortingEnabled: false,
@@ -2318,9 +2322,15 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     };
     $super(options);
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = $A();
+      this.selectedItemIndexes = $A();
+    }
     else
+    {
       this.selectedItems = false;
+      this.selectedItemIndex = false;
+    }
     if (this.dataSource)
       this.reloadData();
   },
@@ -2392,13 +2402,20 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.items.push(item);
 
     if (item.isSelected)
+    {
+      var itemIndex = this.items.indexOf(item);
       if (!this.multipleSelectionEnabled)
       {
         if (this.selectedItem) this._deselectItem(this.selectedItem);
         this.selectedItem = item;
+        this.selectedItemIndex = itemIndex;
       }
       else
+      {
         this.selectedItems.push(item);
+        this.selectedItemIndexes.push(itemIndex);
+      }
+    }
 
     item.listView = this;
 
@@ -2493,26 +2510,47 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   selectItem: function(item)
   {
     if (!this._shouldSelectItem(item))
-      return;
+      return false;
+
+    var index = this.items.indexOf(item);
 
     if (!this.multipleSelectionEnabled)
     {
       this._clearSelection();
       this.selectedItem = item.select();
+      this.selectedItemIndex = index;
       this.scrollToSelectedItem();
     }
     else
+    {
       this.selectedItems.push(item.select());
+      this.selectedItemIndexes.push(index);
+    }
 
     this._didSelectItem(item);
+
+    return true;
+  },
+
+  selectItemAtIndex: function(index)
+  {
+    var item = this.items[index];
+    return this.selectItem(item);
   },
 
   deselectItem: function(item)
   {
     if (!this._shouldDeselectItem(item))
-      return;
+      return false;
     this._deselectItem(item);
     this._didDeselectItem(item);
+    return true;
+  },
+
+  deselectItemAtIndex: function(index)
+  {
+    var item = this.items[index];
+    return this.deselectItem(item);
   },
 
   /*
@@ -2523,11 +2561,20 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   _deselectItem: function(item)
   {
+    var index = this.items.indexOf(item);
+
     item.deselect();
+
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = this.selectedItems.without(item);
+      this.selectedItemIndexes = this.selectedItemIndexes.without(index);
+    }
     else
+    {
       this.selectedItem = false;
+      this.selectedItemIndex = false;
+    }
   },
 
   clearSelection: function()
@@ -2546,11 +2593,20 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.items)
       this.items.invoke('deselect');
     if (this.selectedItem)
+    {
       this.selectedItem = false;
+      this.selectedItemIndex = false;
+    }
     if (this.multipleSelectionEnabled)
+    {
       this.selectedItems = $A();
+      this.selectedItemIndexes = $A();
+    }
     else
+    {
       this.selectedItems = false;
+      this.selectedItemIndexes = false;
+    }
   },
 
   openItem: function(item)
@@ -2559,6 +2615,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
 
     this._didOpenItem(item);
+  },
+
+  openItemAtIndex: function(index)
+  {
+    var item = this.items[itemIndex];
+    return this.openItem(item);
   },
 
   scrollToSelectedItem: function()
@@ -2837,7 +2899,9 @@ Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initiali
 Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
 Aphid.UI.ListView.prototype.addItem.displayName = "Aphid.UI.ListView.addItem";
 Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
+Aphid.UI.ListView.prototype.selectItemAtIndex.displayName = "Aphid.UI.ListView.selectItemAtIndex";
 Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.deselectItem";
+Aphid.UI.ListView.prototype.deselectItemAtIndex.displayName = "Aphid.UI.ListView.deselectItemAtIndex";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype._initializeItems.displayName = "Aphid.UI.ListView._initializeItems";
