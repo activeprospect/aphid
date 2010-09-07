@@ -1448,7 +1448,7 @@ Aphid.Model = Class.create({
    * or HTML element (using data-* attributes), these attribute names will be
    * referenced to set values from the initialization data.
   **/
-  attributes: [],
+  attributes: $A(),
 
   /**
    * Aphid.Model#proxies -> Hash
@@ -1499,7 +1499,7 @@ Aphid.Model = Class.create({
    *     //  Anytown, TX 12345"
    *
   **/
-  proxies: {},
+  proxies: $H(),
 
   /**
    * Aphid.Model#isLoaded -> Boolean

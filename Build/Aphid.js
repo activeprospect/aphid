@@ -584,9 +584,9 @@ Aphid.Model = Class.create({
 
   json: false,
 
-  attributes: [],
+  attributes: $A(),
 
-  proxies: {},
+  proxies: $H(),
 
   isLoaded: false,
 
