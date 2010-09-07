@@ -288,6 +288,10 @@
           assertEqual(testIdentifier, testRemoteContact.identifier);
         }},
 
+        /*
+         * Ensures that models whose attribute values have changed report
+         * true when isDirty() is called.
+        **/
         testShouldDetectDirtyModels: function() { with(this) {
           var testContact = new TestContact({ object: { name: "John Doe", email: "jdoe@example.com" }});
           assert(!testContact.isDirty());
@@ -295,6 +299,10 @@
           assert(testContact.isDirty());
         }},
 
+        /*
+         * Ensures that models whose proxied attribute values have changed
+         * report true when isDirty() is called.
+        **/
         testShouldDetectDirtyModelsWithProxies: function() { with(this) {
           var testContact = new TestContactWithPhoneNumbersProxy({ object: {
             name: "John Doe",

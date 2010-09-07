@@ -3,6 +3,10 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added dirty state tracking support to Aphid.Model through the new isDirty()
+   method. Models who have had attribute values change will return true when
+   isDirty() is called.
+
  * Added support for reloading models after they have been loaded and
    Aphid.Model will now automatically reload the model after it has been
    saved.

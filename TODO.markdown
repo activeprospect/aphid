@@ -51,6 +51,9 @@
  * Add more callbacks and delegates to the workflow (i.e. beforeSave,
    beforeLoad, afterInitiaze, beforeInitialize, etc).
 
+ * Add proper relationship support and clarify the meaning of a proxy versus
+   a relationship.
+
 ### Aphid.Support.Logger
 
  * Make the Logger accept an object as the optional second parameter and
