@@ -44,7 +44,22 @@
           var randomized = testArray.clone();
           randomized.randomize();
           assertNotEqual(testArray.toString(), randomized.toString());
-        }}
+        }},
+
+        testArrayRemoveShouldRemoveItemFromArray: function() { with(this) {
+          var testArray   = [ "A", "B", "C" ];
+          var removedItem = testArray.remove("B");
+          assertEqual(2, testArray.length);
+          assertEqual("B", removedItem);
+          assert(!testArray.include("B"));
+        }},
+
+        testArrayRemoveShouldReturnFalseForInvalidItems: function() { with(this) {
+          var testArray   = [ "A", "B", "C" ];
+          var returnValue = testArray.remove("D");
+          assertEqual(3, testArray.length);
+          assert(!returnValue);
+        }},
 
       }, { testLog: "logSection" });
     </script>

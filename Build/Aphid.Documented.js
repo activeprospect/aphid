@@ -604,6 +604,24 @@ Aphid.Support.Extensions.Array = {
   randomize: function()
   {
     for (var rnd, tmp, i = this.length; i; rnd = parseInt(Math.random() * i), tmp = this[--i], this[i] = this[rnd], this[rnd] = tmp);
+  },
+
+  /**
+   * Aphid.Support.Extensions.Array#remove(item) -> Object | false
+   *
+   * - item (Object): the item to be removed from the array.
+   *
+   * Removes an item from the array without cloning the array. If the item was
+   * not found in the array, false will be returned. This is essentially a
+   * wrapper for Array#splice.
+  **/
+  remove: function(item)
+  {
+    var itemIndex = this.indexOf(item);
+    if (itemIndex == -1)
+      return false;
+    else
+      return this.splice(itemIndex, 1);
   }
 
 }
@@ -2385,7 +2403,7 @@ Aphid.UI.View = Class.create(
       this.element = this.element.remove()
 
     // Remove from superview's subviews
-    this.superview.subviews = this.superview.subviews.without(this);
+    this.superview.subviews.remove(this);
 
     // Remove reference to superview
     this.superview = false;
@@ -4357,7 +4375,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     }
     this.deselectItem(item);
     item.removeFromSuperview();
-    this.items = this.items.without(item);
+    this.items.remove(item);
   },
 
   /*

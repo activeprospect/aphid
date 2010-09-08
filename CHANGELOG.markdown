@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Added Array#remove(item) for removing the specified item from the array
+   without creating a copy of the array.
+
  * Added support to Aphid.UI.ListView for tracking and selecting list view
    items by their index in Aphid.UI.ListView#items by referencing the
    selectedItemIndex and selectedItemIndexes properties and calling the

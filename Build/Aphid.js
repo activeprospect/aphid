@@ -286,6 +286,15 @@ Aphid.Support.Extensions.Array = {
   randomize: function()
   {
     for (var rnd, tmp, i = this.length; i; rnd = parseInt(Math.random() * i), tmp = this[--i], this[i] = this[rnd], this[rnd] = tmp);
+  },
+
+  remove: function(item)
+  {
+    var itemIndex = this.indexOf(item);
+    if (itemIndex == -1)
+      return false;
+    else
+      return this.splice(itemIndex, 1);
   }
 
 }
@@ -1119,7 +1128,7 @@ Aphid.UI.View = Class.create(
     if (this.element.parentNode != null)
       this.element = this.element.remove()
 
-    this.superview.subviews = this.superview.subviews.without(this);
+    this.superview.subviews.remove(this);
 
     this.superview = false;
 
@@ -2436,7 +2445,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     }
     this.deselectItem(item);
     item.removeFromSuperview();
-    this.items = this.items.without(item);
+    this.items.remove(item);
   },
 
   /*

@@ -328,7 +328,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     }
     this.deselectItem(item);
     item.removeFromSuperview();
-    this.items = this.items.without(item);
+    this.items.remove(item);
   },
 
   /*

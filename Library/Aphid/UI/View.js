@@ -475,7 +475,7 @@ Aphid.UI.View = Class.create(
       this.element = this.element.remove()
 
     // Remove from superview's subviews
-    this.superview.subviews = this.superview.subviews.without(this);
+    this.superview.subviews.remove(this);
 
     // Remove reference to superview
     this.superview = false;
