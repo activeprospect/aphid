@@ -398,7 +398,7 @@ Aphid.Model = Class.create({
       {
         $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
         this[attribute] = this.object[attribute];
-        this["_" + attribute] = this.object[attribute];
+        this["_" + attribute] = Object.isUndefined(this.object[attribute].clone) ? this.object[attribute] : this.object[attribute].clone();
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
