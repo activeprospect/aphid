@@ -754,16 +754,29 @@ Aphid.Model = Class.create({
         if (Object.isArray(this[attribute]))
         {
           if (this[attribute].length != this["_" + attribute].length)
+          {
             isDirty = true;
+          }
           else
+          {
             this[attribute].each(function(proxyAttribute) {
               if (!proxyAttribute.identifier && proxyAttribute.isDirty())
+              {
                 isDirty = true;
+              }
             }, this);
+          }
         }
       }
+      else if (Object.isArray(this[attribute]))
+      {
+        if (this[attribute].length != this["_" + attribute].length)
+          isDirty = true;
+      }
       else if (this[attribute] != this["_" + attribute])
+      {
         isDirty = true;
+      }
     }, this);
 
     return isDirty;
