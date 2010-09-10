@@ -599,6 +599,8 @@ Aphid.Model = Class.create({
 
   isLoaded: false,
 
+  errors: false,
+
 
   initialize: function(options)
   {
@@ -849,6 +851,22 @@ Aphid.Model = Class.create({
   {
     $L.info("Saving...", this.displayName);
 
+    this.errors = false;
+    if (!this.validate())
+    {
+      var errorMessage = new Element("p").update("Errors are present that are preventing your changes from being saved: ");
+      var errorList = new Element("ul");
+      errorList.insert(this.errors.invoke("toElement"));
+      errorMessage.insert(errorList);
+
+      var alertView = new Aphid.UI.AlertView();
+      alertView.title = "Unable to Save";
+      alertView.message = errorMessage;
+      alertView.status = this.displayName;
+      alertView.showAnimated();
+      return false;
+    }
+
     var urlTemplate = new Template(this.url);
     var url = urlTemplate.evaluate({ identifier: this.key });
 
@@ -909,6 +927,41 @@ Aphid.Model = Class.create({
   },
 
 
+  validate: function()
+  {
+    this.errors = $A();
+
+    $H(this.proxies).keys().each(
+      function(proxyAttribute)
+      {
+        if (Object.isArray(this[proxyAttribute]))
+          this[proxyAttribute].each(
+            function(instance)
+            {
+              instance.validate();
+              this.errors.push(instance.errors);
+            }.bind(this)
+          );
+        else
+        {
+          this[proxyAttribute].validate();
+          this.errors.push(this[proxyAttribute].errors);
+        }
+      }.bind(this)
+    );
+
+    this.errors = this.errors.flatten();
+
+    return (this.errors.length == 0);
+  },
+
+  addError: function(message, field)
+  {
+    if (!this.errors) this.errors = $A();
+    this.errors.push(new Aphid.Model.Error(message, field));
+  },
+
+
   _afterLoad: function()
   {
     if (this.afterLoad)
@@ -944,6 +997,32 @@ Aphid.Model = Class.create({
       }.bind(this)
     );
     return attributes;
+  }
+
+});
+
+
+Aphid.Model.Error = Class.create({
+
+  field: false,
+  message: false,
+
+  initialize: function(message, field)
+  {
+    this.field = field;
+    this.message = message;
+  },
+
+  toString: function()
+  {
+    return this.message;
+  },
+
+  toElement: function()
+  {
+    var element = new Element("li");
+    element.update(this.message);
+    return element;
   }
 
 });

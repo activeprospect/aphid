@@ -1528,6 +1528,14 @@ Aphid.Model = Class.create({
   **/
   isLoaded: false,
 
+  /**
+   * Aphid.Model#errors -> Array | false
+   *
+   * An array that is populated with any error messages after failing a call
+   * to [[Aphid.Model#validate]], or false if there are no validation errors.
+  **/
+  errors: false,
+
   // -------------------------------------------------------------------------
 
   /**
@@ -1818,6 +1826,23 @@ Aphid.Model = Class.create({
   {
     $L.info("Saving...", this.displayName);
 
+    // Validate
+    this.errors = false;
+    if (!this.validate())
+    {
+      var errorMessage = new Element("p").update("Errors are present that are preventing your changes from being saved: ");
+      var errorList = new Element("ul");
+      errorList.insert(this.errors.invoke("toElement"));
+      errorMessage.insert(errorList);
+
+      var alertView = new Aphid.UI.AlertView();
+      alertView.title = "Unable to Save";
+      alertView.message = errorMessage;
+      alertView.status = this.displayName;
+      alertView.showAnimated();
+      return false;
+    }
+
     // Assemble URL
     var urlTemplate = new Template(this.url);
     // TODO Make the identifier field configurable
@@ -1886,6 +1911,43 @@ Aphid.Model = Class.create({
     new Ajax.Request(url, options);
   },
 
+  // Validation --------------------------------------------------------------
+
+  validate: function()
+  {
+    this.errors = $A();
+
+    $H(this.proxies).keys().each(
+      function(proxyAttribute)
+      {
+        if (Object.isArray(this[proxyAttribute]))
+          this[proxyAttribute].each(
+            function(instance)
+            {
+              instance.validate();
+              this.errors.push(instance.errors);
+            }.bind(this)
+          );
+        else
+        {
+          this[proxyAttribute].validate();
+          this.errors.push(this[proxyAttribute].errors);
+        }
+      }.bind(this)
+    );
+
+    // Combine Errors
+    this.errors = this.errors.flatten();
+
+    return (this.errors.length == 0);
+  },
+
+  addError: function(message, field)
+  {
+    if (!this.errors) this.errors = $A();
+    this.errors.push(new Aphid.Model.Error(message, field));
+  },
+
   // Callbacks ---------------------------------------------------------------
 
   _afterLoad: function()
@@ -1930,6 +1992,35 @@ Aphid.Model = Class.create({
       }.bind(this)
     );
     return attributes;
+  }
+
+});
+
+/**
+ * class Aphid.Model.Error
+**/
+
+Aphid.Model.Error = Class.create({
+
+  field: false,
+  message: false,
+
+  initialize: function(message, field)
+  {
+    this.field = field;
+    this.message = message;
+  },
+
+  toString: function()
+  {
+    return this.message;
+  },
+
+  toElement: function()
+  {
+    var element = new Element("li");
+    element.update(this.message);
+    return element;
   }
 
 });

@@ -3,6 +3,12 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Initial support for validations on Aphid.Model. Models that implement
+   the validate() method will have this method called before saving can take
+   place. If any errors have been added to the instance using the addError()
+   method, the save will not be performed and an error message will be
+   displayed.
+
  * Added Array#remove(item) for removing the specified item from the array
    without creating a copy of the array.
 
