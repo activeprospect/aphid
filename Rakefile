@@ -5,6 +5,9 @@ require 'rake/packagetask'
 ROOT_PATH = File.expand_path(File.dirname(__FILE__))
 DEFAULT_TASKS = [ :clean, :build, "docs:build", "demo:update", "templates:update" ]
 
+$WATCHING  = false
+$FAILED    = false
+
 # Check Vendor Dependencies --------------------------------------------------
 
 begin
@@ -73,6 +76,13 @@ rescue LoadError
   exit
 end
 
+begin
+  require "ruby-growl"
+  $GROWL = Growl.new("localhost", "Aphid", ["Build Succeeded", "Build Failed"])
+rescue LoadError
+  # Do nothing...
+end
+
 # Default Tasks --------------------------------------------------------------
 
 desc "Defaults to #{DEFAULT_TASKS.inspect}"
@@ -100,12 +110,31 @@ task :watch do
     puts "\nand you should be all set!\n\n"
     exit
   end
+  unless $GROWL
+    header "Growl Support Notice"
+    puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
+    puts "  $ gem install ruby-growl"
+    puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+  end
+  $WATCHING = true
   header "Waiting for Change(s)"
   watched_files = Dir["Library/**/*.js"] + Dir["Assets/Stylesheets/**/*.less"]
   FileWatcher.new(watched_files).watch do |filename|
     puts filename + " was changed. Rebuilding project...\n"
     DEFAULT_TASKS.each { |task| Rake::Task[task].reenable }
-    DEFAULT_TASKS.each { |task| Rake::Task[task].invoke }
+    DEFAULT_TASKS.each do |task|
+      if $FAILED
+        puts
+        header "Build Failed!"
+        break
+      end
+      Rake::Task[task].invoke
+    end
+    if $GROWL and $WATCHING and not $FAILED
+      $GROWL.notify "Build Succeeded", "Aphid Build Succeeded",
+        "Automated build of Aphid has completed successfully."
+    end
+    $FAILED = false
     header "Waiting for Change(s)"
   end
 end
@@ -115,10 +144,10 @@ end
 desc "Build the project"
 task :build do
   header "Building Aphid"
-  sprocketize(File.join("Build", "Aphid.js"), { :source_files => "Library/Aphid.js" })
-  sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => "Library/Aphid.Combined.js" })
-  sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => "Library/Aphid.Documented.js", :strip_comments => false })
-  lessify(File.join("Assets", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
+  sprocketize(File.join("Build", "Aphid.js"), { :source_files => "Library/Aphid.js" }) \
+  and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => "Library/Aphid.Combined.js" }) \
+  and sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => "Library/Aphid.Documented.js", :strip_comments => false }) \
+  and lessify(File.join("Assets", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
   puts
 end
 
@@ -130,23 +159,33 @@ task :docs => [ "docs:build", "docs:open" ]
 desc "Generate the Aphid documentation"
 task "docs:build" => [ :build, "docs:clean" ] do
   header "Generating Documentation"
-  PDoc.run({
-    :source_files => "Build/Aphid.Documented.js",
-    :destination => File.join(ROOT_PATH, "Documentation"),
-    :syntax_highlighter => :coderay,
-    :markdown_parser => :maruku,
-    :src_code_href => proc { |obj|
-      "https://github.com/activeprospect/aphid/blob/#{current_head}/#{obj.file}#LID#{obj.line_number}"
-    },
-    :pretty_urls => false,
-    :bust_cache => true,
-    :name => 'Aphid Framework',
-    :short_name => 'Aphid',
-    :home_url => 'http://aphid.activeprospect.com/',
-    :doc_url => 'http://aphid.activeprospect.com/api',
-    :version => "0.9.1-PRE",
-    :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
-  })
+  begin
+    PDoc.run({
+      :source_files => "Build/Aphid.Documented.js",
+      :destination => File.join(ROOT_PATH, "Documentation"),
+      :syntax_highlighter => :coderay,
+      :markdown_parser => :maruku,
+      :src_code_href => proc { |obj|
+        "https://github.com/activeprospect/aphid/blob/#{current_head}/#{obj.file}#LID#{obj.line_number}"
+      },
+      :pretty_urls => false,
+      :bust_cache => true,
+      :name => 'Aphid Framework',
+      :short_name => 'Aphid',
+      :home_url => 'http://aphid.activeprospect.com/',
+      :doc_url => 'http://aphid.activeprospect.com/api',
+      :version => "0.9.1-PRE",
+      :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
+    })
+  rescue => e
+    $FAILED = true
+    if $GROWL
+      $GROWL.notify "Build Failed", "Aphid Build Failed — PDoc",
+        "An error occurred while compiling documentation with PDoc:\n\n#{e}\n\nReference the console for more information…"
+    end
+    puts e
+    exit unless $WATCHING
+  end
 end
 
 desc "Clean up the generated documentation"
@@ -224,6 +263,19 @@ def sprocketize(output, options = {})
   puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."
   sprockets = Sprockets::Secretary.new(sprockets_options)
   sprockets.concatenation.save_to(output)
+rescue => e
+  $FAILED = true
+  if $WATCHING and $GROWL
+    # prefix = "An "
+    # if e.instance_of? Less::SyntaxError
+    #   prefix = "A syntax"
+    # end
+    $GROWL.notify "Build Failed", "Aphid Build Failed — Sprocketize",
+      "An error occurred while compiling JavaScripts with Sprockets:\n\n#{e.message}\n\nReference the console for more information…"
+  end
+  puts e
+  exit unless $WATCHING
+  false
 end
 
 def lessify(input, output, options = {})
@@ -234,6 +286,19 @@ def lessify(input, output, options = {})
   File.open(output, 'w') do |file|
     file.write less.to_css
   end
+rescue => e
+  $FAILED = true
+  if $WATCHING and $GROWL
+    prefix = "An "
+    if e.instance_of? Less::SyntaxError
+      prefix = "A syntax"
+    end
+    $GROWL.notify "Build Failed", "Aphid Build Failed — Lessify",
+      "#{prefix} error occurred while compiling CSS with Less.\n\nReference the console for more information…"
+  end
+  puts e
+  exit unless $WATCHING
+  false
 end
 
 def header(message)
