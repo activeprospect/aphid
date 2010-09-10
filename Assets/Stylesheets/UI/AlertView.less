@@ -1,90 +1,153 @@
 
 @import "../Configuration";
 
+// Alert View ----------------------------------------------------------------
+
 .AlertView
 {
+
+  /* Configuration -------------------------------------------------------- */
+
+  @header-height: 3em;
+  @footer-height: 3em;
+
+  /* Dialog --------------------------------------------------------------- */
+
   position: fixed;
   top: 50%;
   left: 50%;
-  height: 140px;
-  width: 400px;
-  margin-top: -70px;
-  margin-left: -200px;
+  height: 200px;
+  width: 420px;
+  margin-top: -100px;
+  margin-left: -210px;
   z-index: @overlay-z-index + 1;
   -webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
-  -webkit-border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  border-radius: 0.5em;
   background-color: #eee;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
   background-image: -moz-linear-gradient(top, #f3f4f5, #ccc);
-}
 
-.AlertView header h1
-{
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
-               "Helvetica Neue", sans-serif;
-  font-weight: 300;
-  font-size: 18px;
-  line-height: 24px;
-  color: #333;
-  text-shadow: 0 1px 1px solid #fff;
-}
+  /* Header --------------------------------------------------------------- */
 
-.AlertView p.message
-{
-  position: absolute;
-  top: 40px;
-  left: 10px;
-  font-size: 0.9em;
-  margin: 0;
-}
+  header
+  {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: @header-height;
+    line-height: @header-height;
 
-.AlertView p.status
-{
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 0.9em;
-  color: #666;
-  margin: 0;
-  text-shadow: 0 1px 1px #fff;
-}
+    padding-left: 1em;
 
-.AlertView input[type=button]
-{
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  text-align: center;
-  border: 1px solid #888;
-  -webkit-border-radius: 0.3em;
-  -moz-border-radius: 0.3em;
-  border-radius: 0.3em;
-  background-color: #eee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
-  background-image: -moz-linear-gradient(top, #f3f4f5, #ccc);
-  font-weight: bold;
-  padding: 0.4em 0.8em;
-  color: #333;
-  text-shadow: 0 1px 1px #fff;
-}
+    background-color: rgba(255, 255, 255, 0.25);
+    border-bottom: 0.1em solid rgba(0, 0, 0, 0.1);
 
-.AlertView input[type=button]:hover
-{
-  background-color: #f3f4f5;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-  background-image: -moz-linear-gradient(top, #fff, #ddd);
-  color: #222;
-}
+    h1
+    {
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+                   "Helvetica Neue", sans-serif;
+      font-weight: 300;
+      font-size: @header-height / 2;
 
-.AlertView input[type=button]:active
-{
-  background-color: #ddd;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
-  background-image: -moz-linear-gradient(top, #ddd, #fff);
-  color: #222;
+      color: #333;
+
+      text-shadow: 0 0.2em 0.2em solid white;
+    }
+  }
+
+  /* Message Section ------------------------------------------------------ */
+
+  section#alertMessageSection
+  {
+    display: block;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: @header-height + 0.1em;
+    bottom: @footer-height;
+
+    padding: 1em;
+
+    overflow: auto;
+
+    p.message
+    {
+      /*font-size: 0.9em;*/
+      margin: 0;
+      text-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.5);
+    }
+
+    ul
+    {
+      margin-top: 0.5em;
+
+      li
+      {
+        list-style: disc;
+        line-height: 150%;
+        margin-left: 2em;
+      }
+    }
+  }
+
+  /* Footer --------------------------------------------------------------- */
+
+  footer
+  {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3em;
+    background-color: rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: inset 0 0.1em 0.2em rgba(0, 0, 0, 0.25);
+
+    p.status
+    {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 0.9em;
+      color: #666;
+      margin: 0;
+      text-shadow: 0 1px 1px #fff;
+    }
+
+    input[type=button]
+    {
+      position: absolute;
+      bottom: 0.5em;
+      right: 0.5em;
+      text-align: center;
+      border: 0.1em solid #888;
+      -webkit-border-radius: 0.3em;
+      -moz-border-radius: 0.3em;
+      border-radius: 0.3em;
+      background-color: #eee;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ccc));
+      background-image: -moz-linear-gradient(top, #f3f4f5, #ccc);
+      font-weight: bold;
+      height: 2.3em;
+      color: #333;
+      text-shadow: 0 1px 1px #fff;
+
+      :hover
+      {
+        background-color: #f3f4f5;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+        background-image: -moz-linear-gradient(top, #fff, #ddd);
+        color: #222;
+      }
+      
+      :active
+      {
+        background-color: #ddd;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
+        background-image: -moz-linear-gradient(top, #ddd, #fff);
+        color: #222;
+      }
+    }
+  }
+
 }

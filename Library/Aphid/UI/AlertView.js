@@ -92,24 +92,26 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
     var element = new Element("section");
     element.addClassName("AlertView");
 
-    // Title Element
-    var headerElement = new Element("header");
+    // Header
+    var headerElement  = new Element("header");
     this._titleElement = new Element("h1");
     headerElement.insert(this._titleElement);
     element.insert(headerElement);
 
-    // Message Element
+    // Message Area
+    var sectionElement   = new Element("section", { id: "alertMessageSection" });
     this._messageElement = new Element("p").addClassName("message");
-    element.insert(this._messageElement);
+    sectionElement.insert(this._messageElement);
+    element.insert(sectionElement);
 
-    // Status Element
+    // Footer
+    var footerElement   = new Element("footer");
     this._statusElement = new Element("p").addClassName("status");
-    element.insert(this._statusElement);
-
-    // Close Button
-    var closeButton = new Element("input", { type: "button", value: "Dismiss" });
+    var closeButton     = new Element("input", { type: "button", value: "Dismiss" });
+    footerElement.insert(this._statusElement);
+    footerElement.insert(closeButton);
     closeButton.observe("click", this.dismissAnimated.bind(this));
-    element.insert(closeButton);
+    element.insert(footerElement);
 
     return element;
   },
