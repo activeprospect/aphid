@@ -1,77 +1,70 @@
+//
+// Aphid.UI.ListView Styles
+//
 
 ul.ListView
 {
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: none;
+
+  /* List View Items ------------------------------------------------------ */
+
+  li
+  {
+    margin: 0.2em;
+    line-height: 3em;
+    height: 3em;
+    padding-left: 1em;
+
+    :nth-of-type(even)
+    {
+      background-color: #f3f4f5;
+    }
+  }
+
+  li.selected
+  {
+    background-color: #336699;
+    text-shadow: 0 -0.1em 0.1em rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.7);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#bac7d1), to(#94a3b1));
+  }
+
 }
 
-ul.ListView li
+/* Sortable List Views ---------------------------------------------------- */
+
+ul.ListView.sortable
 {
-  margin: 0.2em;
-  line-height: 3em;
-  height: 3em;
-  padding-left: 1em;
-}
+  
+  li:after
+  {
+    content: "";
 
-ul.ListView li:nth-of-type(even)
-{
-  background-color: #f3f4f5;
-}
+    position: absolute;
+    top: 0;
+    right: 1em;
+    height: inherit;
+    width: 16px;
 
-ul.ListView li.selected
-{
-  background-color: #336699;
+    opacity: 0.2;
+    background-image: url('../Assets/Images/UI/ListView/DragHandle.png');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+  }
 
-/*  color: white;*/
-  text-shadow: 0 -0.1em 0.1em rgba(0, 0, 0, 0.5);
+  li.selected:after
+  {
+    opacity: 0.5;
+    background-image: url('../Assets/Images/UI/ListView/DragHandle.selected.png');
 
-/*  color: #111;*/
-  text-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.7);
+  }
 
+  /*
+  li:hover:after          { opacity: 0.35; }
+  li:active:after         { opacity: 0.50 !important; }
+  li.selected:hover:after { opacity: 0.75; }
+  */
 
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#bac7d1), to(#94a3b1));
-/*  border-bottom: 0.1em solid #7e868f;
-  border-right: 0.1em solid #7e868f;
-  border-top: 0.1em solid #c5d1db;
-  border-left: 0.1em solid #c5d1db;
-*/}
-
-ul.ListView li:hover .handle
-{
-/*  opacity: 0.2;
-*/}
-
-ul.ListView li:hover .handle:hover
-{
-  opacity: 0.35;
-}
-
-ul.ListView li.selected:hover .handle:hover
-{
-  opacity: 0.75;
-}
-
-ul.ListView li .handle:active
-{
-  opacity: 0.50 !important;
-}
-
-ul.ListView .handle
-{
-  position: absolute;
-  top: 0;
-  right: 1em;
-  height: inherit;
-  width: 16px;
-  background-image: url('../Assets/Images/UI/ListView/DragHandle.png');
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  opacity: 0.2;
-}
-
-ul.ListView li.selected .handle
-{
-  opacity: 0.5;
-  background-image: url('../Assets/Images/UI/ListView/DragHandle.selected.png');
 }

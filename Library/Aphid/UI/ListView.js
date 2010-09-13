@@ -163,7 +163,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * in the script.aculo.us library. Defaults:
    *
    *     {
-   *       handle: "handle",
    *       onChange: this._listViewOrderDidChange.bind(this),
    *       onUpdate: this._listViewOrderDidUpdate.bind(this)
    *     }
@@ -181,7 +180,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     this.items = $A();
     this.sortableOptions = {
-      handle: "handle",
       onChange: this._listViewOrderDidChange.bind(this),
       onUpdate: this._listViewOrderDidUpdate.bind(this)
     };
@@ -312,8 +310,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.addSubview(item);
 
     // Observe Item
-    // TODO Change the nomenclature on this to _observeItem
-    this._initializeItem(item);
+    this._observeItem(item);
 
     return item;
 
@@ -332,23 +329,23 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   /*
-   * Aphid.UI.ListView#_initializeItems() -> null
+   * Aphid.UI.ListView#_observeItems() -> null
    *
-   * Calls [[Aphid.UI.ListView#_initializeItem]] for each item.
+   * Calls [[Aphid.UI.ListView#_observeItem]] for each item.
   **/
-  _initializeItems: function()
+  _observeItems: function()
   {
-    this.items.each(this._initializeItem, this);
+    this.items.each(this._observeItem, this);
   },
 
   /*
-   * Aphid.UI.ListView#_initializeItem(item) -> null
+   * Aphid.UI.ListView#_observeItem(item) -> null
    *
    * - item (Element): the item to be initialized
    *
-   * Initializes the item by adding observers and sort handles, if enabled.
+   * Observes the list view item's element for click events.
   **/
-  _initializeItem: function(item)
+  _observeItem: function(item)
   {
     item.element.observe('click', this._handleClickEvent.bindAsEventListener(this, item));
     item.element.observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
@@ -644,7 +641,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       Sortable.destroy(this.element);
     else
       this.element.addClassName('sortable');
-    this._addDragHandlesToItems();
     this._addOrderedIdentitiesToItems();
     Sortable.create(this.element, this.sortableOptions);
   },
@@ -652,18 +648,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _addOrderedIdentitiesToItems: function()
   {
     this.items.each(function(item) { item.element.identify() });
-  },
-
-  _addDragHandlesToItems: function()
-  {
-    this.items.each(this._addDragHandleToItem, this);
-  },
-
-  _addDragHandleToItem: function(item)
-  {
-    if (item.element.down('div.handle')) return;
-    var dragHandle = new Element('div').addClassName('handle');
-    item.element.insert(dragHandle);
   },
 
   // Call the listViewOrderDidChange method on the delegate, if the
@@ -898,12 +882,10 @@ Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.desele
 Aphid.UI.ListView.prototype.deselectItemAtIndex.displayName = "Aphid.UI.ListView.deselectItemAtIndex";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
-Aphid.UI.ListView.prototype._initializeItems.displayName = "Aphid.UI.ListView._initializeItems";
-Aphid.UI.ListView.prototype._initializeItem.displayName = "Aphid.UI.ListView._initializeItem";
+Aphid.UI.ListView.prototype._observeItems.displayName = "Aphid.UI.ListView._observeItems";
+Aphid.UI.ListView.prototype._observeItem.displayName = "Aphid.UI.ListView._observeItem";
 Aphid.UI.ListView.prototype._setupSorting.displayName = "Aphid.UI.ListView._setupSorting";
 Aphid.UI.ListView.prototype._addOrderedIdentitiesToItems.displayName = "Aphid.UI.ListView._addOrderedIdentitiesToItems";
-Aphid.UI.ListView.prototype._addDragHandlesToItems.displayName = "Aphid.UI.ListView._addDragHandlesToItems";
-Aphid.UI.ListView.prototype._addDragHandleToItem.displayName = "Aphid.UI.ListView._addDragHandleToItem";
 Aphid.UI.ListView.prototype._listViewOrderDidChange.displayName = "Aphid.UI.ListView._listViewOrderDidChange";
 Aphid.UI.ListView.prototype._listViewOrderDidUpdate.displayName = "Aphid.UI.ListView._listViewOrderDidUpdate";
 Aphid.UI.ListView.prototype._handleClickEvent.displayName = "Aphid.UI.ListView._handleClickEvent";

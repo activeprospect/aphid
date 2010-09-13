@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * List view items in sortable list views are now draggable anywhere in the
+   element instead of just the drag handle to resolve some issues.
+
  * Initial support for validations on Aphid.Model. Models that implement
    the validate() method will have this method called before saving can take
    place. If any errors have been added to the instance using the addError()
