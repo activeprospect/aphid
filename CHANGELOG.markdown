@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Reordering a sortable list now updates the order of the items in the items
+   array on the list view to match the presented order.
+
  * List view items in sortable list views are now draggable anywhere in the
    element instead of just the drag handle to resolve some issues.
 

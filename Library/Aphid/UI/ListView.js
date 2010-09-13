@@ -306,6 +306,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // Set listView on Item
     item.listView = this;
 
+    // Set the sortIndex property on the item to its index in the items array
+    if (this.sortingEnabled)
+      item.sortIndex = this.items.indexOf(item);
+
     // Add Item View to Subviews
     this.addSubview(item);
 
@@ -662,8 +666,27 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _listViewOrderDidUpdate: function()
   {
     $L.info('_listViewOrderDidUpdate', 'Aphid.UI.ListView');
+    this._updateSortIndexes();
     if (this.delegate && this.delegate.listViewOrderDidUpdate)
       this.delegate.listViewOrderDidUpdate(this);
+  },
+
+  _updateSortIndexes: function()
+  {
+    var sequence = Sortable.sequence(this.element);
+    sequence.each(
+      function(seq, index)
+      {
+        var item = this.items.find(
+          function(item)
+          {
+            return item.element.identify().endsWith("_" + seq);
+          }
+        );
+        item.sortIndex = index;
+      }.bind(this)
+    );
+    this.items.sort(function(a, b) { return a.sortIndex - b.sortIndex; });
   },
 
   // Event Handling ----------------------------------------------------------

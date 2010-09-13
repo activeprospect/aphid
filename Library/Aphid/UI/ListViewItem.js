@@ -23,6 +23,15 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   **/
   listView: false,
 
+  /**
+   * Aphid.UI.ListViewItem#sortIndex -> Number | false
+   *
+   * When sorting is enabled on the list view that the item belongs to, this
+   * property will be set to the index of this item in the sorted list. If
+   * sorting is not enabled, the value of this property will be false.
+  **/
+  sortIndex: false,
+
   // Initialization ----------------------------------------------------------
 
   /**
