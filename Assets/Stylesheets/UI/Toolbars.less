@@ -1,4 +1,6 @@
 
+/* Standard Toolbar (in Footers) ------------------------------------------ */
+
 footer.toolbar
 {
   background-color: #f3f4f5;
@@ -12,55 +14,66 @@ footer.toolbar
   line-height: 2.5em;
   border-top: 0.1em solid #ddd;
   color: #666;
-}
-
-footer.toolbar ul.actions
-{
-  display: inline-block;
-  height: inherit;
-  line-height: inherit;
-  border-right: 0.1em solid #fff;
-  border-right-color: rgba(255, 255, 255, 0.8);
   -webkit-user-select: none;
   -moz-user-select: none;
-}
 
-footer.toolbar ul.actions li
-{
-  float: left;
-  width: 1.9em;
-  height: inherit;
-  line-height: inherit;
-  text-align: center;
-  text-shadow: 0px 1px 0px #fff;
-  font-weight: bold;
-  font-size: 1.3em;
-  border-right: 0.1em solid #ccc;
-  border-right-color: rgba(0, 0, 0, 0.1);
-  border-left: 0.1em solid #fff;
-  border-left-color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-}
+  /* Action Buttons ------------------------------------------------------- */
 
-footer.toolbar ul.actions li:hover
-{
-  background-color: #fff;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
-  background-image: -moz-linear-gradient(top, #fff, #eee);
-}
+  ul.actions
+  {
+    display: inline-block;
+    height: inherit;
+    line-height: inherit;
+    border-right: 0.1em solid #fff;
+    border-right-color: rgba(255, 255, 255, 0.8);
 
-footer.toolbar ul.actions li:active
-{
-  background-color: #e3e4e5;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#e3e4e5), to(#f3f4f5));
-  background-image: -moz-linear-gradient(top, #e3e4e5, #f3f4f5);
-}
+    -webkit-user-select: none;
+    -moz-user-select: none;
 
-footer.toolbar .status
-{
-  float: left;
-  display: block;
-  font-size: 0.9em;
-  font-weight: bold;
-  text-shadow: 0px 1px 0px #fff;
+    li
+    {
+      float: left;
+      width: 1.9em;
+      height: inherit;
+      line-height: inherit;
+      text-align: center;
+      text-shadow: 0px 1px 0px #fff;
+      font-weight: bold;
+      font-size: 1.3em;
+      border-right: 0.1em solid #ccc;
+      border-right-color: rgba(0, 0, 0, 0.1);
+      border-left: 0.1em solid #fff;
+      border-left-color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+
+      :hover
+      {
+        background-color: #fff;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+        background-image: -moz-linear-gradient(top, #fff, #eee);
+      }
+
+      :active
+      {
+        background-color: #e3e4e5;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#e3e4e5), to(#f3f4f5));
+        background-image: -moz-linear-gradient(top, #e3e4e5, #f3f4f5);
+      }
+    }
+  }
+
+  /* Status Messages ------------------------------------------------------ */
+
+  .status
+  {
+    float: left;
+    display: block;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    cursor: default;
+  }
+
 }
