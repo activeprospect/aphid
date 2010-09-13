@@ -685,7 +685,7 @@ Aphid.Support.Extensions.Date = {
   strftime: function(format)
   {
     var formatted,
-        ordinals   = $H({ 1: "st", 2: "nd", 3: "rd", 4: "th", 5: "th", 6: "th", 7: "th", 8: "th", 9: "th" }),
+        ordinals   = $H({ 1: "st", 2: "nd", 3: "rd", 4: "th", 5: "th", 6: "th", 7: "th", 8: "th", 9: "th", 0: "th" }),
         syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
         components = {
           a:  Date.dayNames[this.getDay()].substring(0, 3),
