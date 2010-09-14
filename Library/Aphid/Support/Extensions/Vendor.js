@@ -9,3 +9,4 @@
 Aphid.Support.Extensions.Vendor = {};
 
 //= require "Vendor/Prototype"
+//= require "Vendor/Scriptaculous"
