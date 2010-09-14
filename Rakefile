@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'rubygems'
 require 'rake'
 require 'rake/packagetask'
@@ -144,9 +146,9 @@ end
 desc "Build the project"
 task :build do
   header "Building Aphid"
-  sprocketize(File.join("Build", "Aphid.js"), { :source_files => "Library/Aphid.js" }) \
-  and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => "Library/Aphid.Combined.js" }) \
-  and sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => "Library/Aphid.Documented.js", :strip_comments => false }) \
+  sprocketize(File.join("Build", "Aphid.js"), { :source_files => [ "Library/Aphid.js" ] }) \
+  and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => [ "Library/Aphid.Combined.js" ] }) \
+  and sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => [ "Library/Aphid.Documented.js" ], :strip_comments => false }) \
   and lessify(File.join("Assets", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
   puts
 end
@@ -161,7 +163,7 @@ task "docs:build" => [ :build, "docs:clean" ] do
   header "Generating Documentation"
   begin
     PDoc.run({
-      :source_files => "Build/Aphid.Documented.js",
+      :source_files => [ "Build/Aphid.Documented.js" ],
       :destination => File.join(ROOT_PATH, "Documentation"),
       :syntax_highlighter => :coderay,
       :markdown_parser => :maruku,
@@ -258,7 +260,7 @@ def sprocketize(output, options = {})
   sprockets_options = {
     :root         => ROOT_PATH,
     :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src", "Vendor/excanvas" ],
-    :source_files => "Library/**/*.js"
+    :source_files => [ "Library/**/*.js" ]
   }.merge(options)
   puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."
   sprockets = Sprockets::Secretary.new(sprockets_options)
