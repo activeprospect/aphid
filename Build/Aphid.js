@@ -769,24 +769,20 @@ Aphid.Model = Class.create({
       {
         if (Object.isArray(this[attribute]))
         {
-          if (this[attribute].length != this["_" + attribute].length)
-          {
+          if (!this[attribute].compare(this["_" + attribute]))
             isDirty = true;
-          }
           else
           {
             this[attribute].each(function(proxyAttribute) {
               if (!proxyAttribute.identifier && proxyAttribute.isDirty())
-              {
                 isDirty = true;
-              }
             }, this);
           }
         }
       }
       else if (Object.isArray(this[attribute]))
       {
-        if (this[attribute].length != this["_" + attribute].length)
+        if (!this[attribute].compare(this["_" + attribute]))
           isDirty = true;
       }
       else if (this[attribute] != this["_" + attribute])
@@ -830,6 +826,7 @@ Aphid.Model = Class.create({
       });
     else
       this[attribute] = new klass({ object: this[attribute] });
+    this["_" + attribute] = Object.isUndefined(this[attribute].clone) ? this[attribute] : this[attribute].clone();
   },
 
 

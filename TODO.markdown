@@ -102,6 +102,8 @@
    instead of recreating each list view item each time that reload data is
    called.
 
+ * Add tests for sorting behavior.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
