@@ -278,6 +278,20 @@ Aphid.Support.Extensions.Object = {
 Object.extend(Object, Aphid.Support.Extensions.Object);
 Aphid.Support.Extensions.Array = {
 
+  compare: function(otherArray)
+  {
+    if (Object.isUndefined(otherArray)) return false;
+    if (this.length != otherArray.length) return false;
+    for (var i = 0; i < otherArray.length; i++)
+    {
+      if (this[i].compare)
+        return this[i].compare(otherArray[i]);
+      else if (this[i] !== otherArray[i])
+        return false;
+    }
+    return true;
+  },
+
   random: function()
   {
     return this[parseInt(Math.random() * this.length)];

@@ -7,6 +7,28 @@
 Aphid.Support.Extensions.Array = {
 
   /**
+   * Aphid.Support.Extensions.Array#compare(otherArray) -> Boolean
+   *
+   * - otherArray (Array): the array to compare with
+   *
+   * Compares the array against another array, returning true if the arrays
+   * are identical.
+  **/
+  compare: function(otherArray)
+  {
+    if (Object.isUndefined(otherArray)) return false;
+    if (this.length != otherArray.length) return false;
+    for (var i = 0; i < otherArray.length; i++)
+    {
+      if (this[i].compare)
+        return this[i].compare(otherArray[i]);
+      else if (this[i] !== otherArray[i])
+        return false;
+    }
+    return true;
+  },
+
+  /**
    * Aphid.Support.Extensions.Array#random() -> Object
    *
    * Returns a random element from the array.

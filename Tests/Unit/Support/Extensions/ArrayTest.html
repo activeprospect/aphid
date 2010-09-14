@@ -32,6 +32,29 @@
     <script>
       new Test.Unit.Runner({
 
+        testArrayCompareShouldReturnTrueForIdenticalArrays: function() { with(this) {
+          var testArray  = [ "A", "B", "C" ];
+          var otherArray = [ "A", "B", "C" ];
+          assert(testArray.compare(otherArray));
+        }},
+
+        testArrayCompareShouldReturnFalseForDifferentArrays: function() { with(this) {
+          var testArray  = [ "A", "B", 1 ];
+          assert(!testArray.compare([ "B", "A", 1 ])); // Different Sort
+          assert(!testArray.compare([ 1, 2, 3 ])); // Different Values
+          assert(!testArray.compare([ "A", "B", "1" ])); // Different Types
+          assert(!testArray.compare([ "A", "B" ])); // Different Length
+          assert(!testArray.compare()); // No Comparison Provided
+        }},
+
+        testArrayCompareShouldTestNestedArrays: function() { with(this) {
+          var testArray      = [ "A", [ "B", "C" ], "D" ];
+          var identicalArray = [ "A", [ "B", "C" ], "D" ];
+          var changedArray   = [ "A", [ "C", "B" ], "D" ];
+          assert(testArray.compare(identicalArray));
+          assert(!testArray.compare(changedArray));
+        }},
+
         testArrayRandomShouldReturnRandomElement: function() { with(this) {
           var testArray = [ "A", "B", "C" ];
           var random    = testArray.random();
