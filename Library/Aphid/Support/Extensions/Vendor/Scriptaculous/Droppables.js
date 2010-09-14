@@ -37,6 +37,24 @@ Aphid.Support.Extensions.Vendor.Scriptaculous.Droppables = {
 
       if (drop != this.last_active) Droppables.activate(drop);
     }
+  },
+
+  updateDrag: function(event)
+  {
+    if (!this.activeDraggable) return;
+    var pointer = [Event.pointerX(event), Event.pointerY(event)];
+
+    // now dragging takes into account the scroll offset of the containers.
+    var offsetcache = Element.cumulativeScrollOffset(this.activeDraggable.element);
+    pointer[0] += offsetcache[0];
+    pointer[1] += offsetcache[1];
+
+    // Mozilla-based browsers fire successive mousemove events with
+    // the same coordinates, prevent needless redrawing (moz bug?)
+    if(this._lastPointer && (this._lastPointer.inspect() == pointer.inspect())) return;
+    this._lastPointer = pointer;
+
+    this.activeDraggable.updateDrag(event, pointer);
   }
 
 };

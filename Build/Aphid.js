@@ -295,6 +295,21 @@ Aphid.Support.Extensions.Vendor.Scriptaculous.Droppables = {
 
       if (drop != this.last_active) Droppables.activate(drop);
     }
+  },
+
+  updateDrag: function(event)
+  {
+    if (!this.activeDraggable) return;
+    var pointer = [Event.pointerX(event), Event.pointerY(event)];
+
+    var offsetcache = Element.cumulativeScrollOffset(this.activeDraggable.element);
+    pointer[0] += offsetcache[0];
+    pointer[1] += offsetcache[1];
+
+    if(this._lastPointer && (this._lastPointer.inspect() == pointer.inspect())) return;
+    this._lastPointer = pointer;
+
+    this.activeDraggable.updateDrag(event, pointer);
   }
 
 };

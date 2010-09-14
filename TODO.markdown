@@ -104,6 +104,12 @@
 
  * Add tests for sorting behavior.
 
+ * Implement (fix) support for scrolling list views when dragging list view
+   items to the edge of the container when overflow is in use. There are a lot
+   of problems with this in current script.aculo.us, including incompatibility
+   with Prototype 1.7 and issues with the dragged item not respecting the
+   scroll offset when being scrolled.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
