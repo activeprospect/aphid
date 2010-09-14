@@ -84,7 +84,7 @@ Aphid.Support.Extensions.Date = {
         };
     formatted = format.interpolate(components, syntax);
     if (formatted.indexOf("%o") >= 0)
-      formatted = formatted.replace("%o", this.getDate() > 10 ? ordinals.get(this.getDate().toString().substring(1)) : ordinals.get(this.getDate()));
+      formatted = formatted.replace("%o", this.getDate() >= 10 ? ordinals.get(this.getDate().toString().substring(1)) : ordinals.get(this.getDate()));
     return formatted;
   }
 
