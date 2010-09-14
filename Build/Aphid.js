@@ -2825,6 +2825,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       }.bind(this)
     );
     this.items.sort(function(a, b) { return a.sortIndex - b.sortIndex; });
+
+    if (this.selectedItem)
+      this.selectedItemIndex = this.items.indexOf(this.selectedItem);
+    else if (this.selectedItems)
+      this.selectedItemIndexes = this.selectedItems.each(function(item) { return this.items.indexOf(item) }, this);
   },
 
 
