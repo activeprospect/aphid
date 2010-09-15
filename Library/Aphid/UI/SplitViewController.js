@@ -136,7 +136,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
     this._insertDragHandle(options.constraint);
     $super(this.dragHandle, options);
     this._setupObservers();
-    this._initializePaneDimensions();
+//    this._initializePaneDimensions();
   },
 
   updateDrag: function($super, event, pointer)
