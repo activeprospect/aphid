@@ -446,7 +446,7 @@ Aphid.Support.Extensions.String = {
 
   toDate: function()
   {
-    return new Date(this);
+    return new Date(this.toString());
   },
 
   pluralize: function(count, plural)
@@ -457,6 +457,7 @@ Aphid.Support.Extensions.String = {
   }
 
 };
+
 Object.extend(String.prototype, Aphid.Support.Extensions.String);
 
 String.random = function(length)
