@@ -3,8 +3,8 @@
 .DS_Store
 .rake_tasks
 .rvmrc
-Assets/Stylesheets/*.css
-Assets/Stylesheets/**/*.css
+Resources/Stylesheets/*.css
+Resources/Stylesheets/**/*.css
 #Build
 Build/Aphid.css
 Build/Aphid.Combined.js
