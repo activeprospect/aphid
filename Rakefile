@@ -120,7 +120,7 @@ task :watch do
   end
   $WATCHING = true
   header "Waiting for Change(s)"
-  watched_files = Dir["Library/**/*.js"] + Dir["Assets/Stylesheets/**/*.less"]
+  watched_files = Dir["Library/**/*.js"] + Dir["Resources/Stylesheets/**/*.less"]
   FileWatcher.new(watched_files).watch do |filename|
     puts filename + " was changed. Rebuilding project...\n"
     DEFAULT_TASKS.each { |task| Rake::Task[task].reenable }
@@ -149,7 +149,7 @@ task :build do
   sprocketize(File.join("Build", "Aphid.js"), { :source_files => [ "Library/Aphid.js" ] }) \
   and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => [ "Library/Aphid.Combined.js" ] }) \
   and sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => [ "Library/Aphid.Documented.js" ], :strip_comments => false }) \
-  and lessify(File.join("Assets", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
   puts
 end
 
@@ -283,7 +283,7 @@ end
 def lessify(input, output, options = {})
   puts "Lessifying #{input} to #{output} ..."
   template = File.read(input)
-  $LESS_LOAD_PATH = [ "Assets/Stylesheets" ]
+  $LESS_LOAD_PATH = [ "Resources/Stylesheets" ]
   less = Less::Engine.new(template)
   File.open(output, 'w') do |file|
     file.write less.to_css
