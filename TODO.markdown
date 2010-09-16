@@ -43,6 +43,9 @@
 
  * Formally define mixins for delegate protocols (i.e. Aphid.UI.View.DelegateMethods).
 
+ * Possibly introduce the concept of Layout controllers (examples might
+   included TabbedLayoutController, ToolbarLayoutController, etc).
+
 ### Aphid.Model
 
  * Add support for pluggable backends (i.e. Node.js, Rails, etc) since each
