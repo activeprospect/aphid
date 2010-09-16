@@ -111,10 +111,10 @@ Aphid.Support.Extensions.Vendor.Prototype.Element = {
     htmlString = htmlString.trim();
     var element;
     if (Prototype.BrowserFeatures.HTML5StructuralElements())
-      element = new Element('div').update(htmlString).firstChild;
+      element = new Element('div').update(htmlString);
     else
-      element = new Element('div').updateSafe(htmlString).firstChild;
-    return element;
+      element = new Element('div').updateSafe(htmlString);
+    return element.firstDescendant();
   }
 
 };
