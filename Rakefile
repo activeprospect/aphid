@@ -259,12 +259,14 @@ end
 def sprocketize(output, options = {})
   sprockets_options = {
     :root         => ROOT_PATH,
+    :asset_root   => "Build/Images",
     :load_path    => [ "Library", "Vendor/Prototype/src", "Vendor/script.aculo.us/src", "Vendor/excanvas" ],
     :source_files => [ "Library/**/*.js" ]
   }.merge(options)
   puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."
   sprockets = Sprockets::Secretary.new(sprockets_options)
   sprockets.concatenation.save_to(output)
+  sprockets.install_assets
 rescue => e
   $FAILED = true
   if $WATCHING and $GROWL

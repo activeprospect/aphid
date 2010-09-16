@@ -5271,3 +5271,4 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
 Aphid.UI.ListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";
 Aphid.UI.ListViewItem.prototype.deselect.displayName = "Aphid.UI.ListViewItem.deselect";
+

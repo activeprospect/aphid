@@ -36,3 +36,5 @@ var Aphid = {
 //= require <Aphid/Core>
 //= require <Aphid/Model>
 //= require <Aphid/UI>
+
+//= provide "../Resources/Images"
