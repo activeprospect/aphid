@@ -1,0 +1,7 @@
+.TabViewController ul#mainTabs li { color: #eeeeee; }
+.TabViewController ul#mainTabs li.current { background-color: #7d8286; }
+footer.toolbar ul.actions { border-right-color: white; }
+footer.toolbar ul.actions li {
+  border-right-width: 1px;
+  border-left-width: 1px;
+}
