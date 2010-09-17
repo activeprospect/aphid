@@ -149,7 +149,11 @@ task :build do
   sprocketize(File.join("Build", "Aphid.js"), { :source_files => [ "Library/Aphid.js" ] }) \
   and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => [ "Library/Aphid.Combined.js" ] }) \
   and sprocketize(File.join("Build", "Aphid.Documented.js"), { :source_files => [ "Library/Aphid.Documented.js" ], :strip_comments => false }) \
-  and lessify(File.join("Resources", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css"))
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.less"), File.join("Build", "Aphid.css")) \
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.IE.less"), File.join("Build", "Aphid.IE.css")) \
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.IE7.less"), File.join("Build", "Aphid.IE7.css")) \
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.IE8.less"), File.join("Build", "Aphid.IE8.css")) \
+  and lessify(File.join("Resources", "Stylesheets", "Aphid.IE9.less"), File.join("Build", "Aphid.IE9.css"))
   puts
 end
 
