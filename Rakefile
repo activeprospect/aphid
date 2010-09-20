@@ -4,8 +4,10 @@ require 'rubygems'
 require 'rake'
 require 'rake/packagetask'
 
-ROOT_PATH = File.expand_path(File.dirname(__FILE__))
-DEFAULT_TASKS = [ :clean, :build, "docs:build", "demo:update", "templates:update" ]
+ROOT_PATH          = File.expand_path(File.dirname(__FILE__))
+DEFAULT_TASKS      = [ :clean, :build, "docs:build", "demo:update", "templates:update" ]
+WATCH_SOURCE_TASKS = [ :clean, :build ]
+WATCH_DOCS_TASKS   = [ "docs:build", "demo:update", "templates:update" ]
 
 $WATCHING  = false
 $FAILED    = false
@@ -85,6 +87,23 @@ rescue LoadError
   # Do nothing...
 end
 
+if ARGV[0].include? "watch"
+  begin
+    require "filewatcher"
+  rescue LoadError
+    puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
+    puts "  $ gem install filewatcher"
+    puts "\nand you should be all set!\n\n"
+    exit
+  end
+  unless $GROWL
+    header "Growl Support Notice"
+    puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
+    puts "  $ gem install ruby-growl"
+    puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+  end
+end
+
 # Default Tasks --------------------------------------------------------------
 
 desc "Defaults to #{DEFAULT_TASKS.inspect}"
@@ -104,41 +123,12 @@ end
 
 desc "Watches for changes and rebuilds the project and documentation as changes occur"
 task :watch do
-  begin
-    require "filewatcher"
-  rescue LoadError
-    puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
-    puts "  $ gem install filewatcher"
-    puts "\nand you should be all set!\n\n"
-    exit
-  end
-  unless $GROWL
-    header "Growl Support Notice"
-    puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
-    puts "  $ gem install ruby-growl"
-    puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
-  end
-  $WATCHING = true
-  header "Waiting for Change(s)"
-  watched_files = Dir["Library/**/*.js"] + Dir["Resources/Stylesheets/**/*.less"]
-  FileWatcher.new(watched_files).watch do |filename|
-    puts filename + " was changed. Rebuilding project...\n"
-    DEFAULT_TASKS.each { |task| Rake::Task[task].reenable }
-    DEFAULT_TASKS.each do |task|
-      if $FAILED
-        puts
-        header "Build Failed!"
-        break
-      end
-      Rake::Task[task].invoke
-    end
-    if $GROWL and $WATCHING and not $FAILED
-      $GROWL.notify "Build Succeeded", "Aphid Build Succeeded",
-        "Automated build of Aphid has completed successfully."
-    end
-    $FAILED = false
-    header "Waiting for Change(s)"
-  end
+  watch_with DEFAULT_TASKS
+end
+
+desc "Watches for changes and rebuilds the project source as changes occur"
+task "watch:source" do
+  watch_with WATCH_SOURCE_TASKS
 end
 
 # Build Tasks ----------------------------------------------------------------
@@ -307,6 +297,30 @@ rescue => e
   puts e
   exit unless $WATCHING
   false
+end
+
+def watch_with(tasks)
+  $WATCHING = true
+  header "Waiting for Change(s)"
+  watched_files = Dir["Library/**/*.js"] + Dir["Resources/Stylesheets/**/*.less"]
+  FileWatcher.new(watched_files).watch do |filename|
+    puts filename + " was changed. Rebuilding project...\n"
+    tasks.each { |task| Rake::Task[task].reenable }
+    tasks.each do |task|
+      if $FAILED
+        puts
+        header "Build Failed!"
+        break
+      end
+      Rake::Task[task].invoke
+    end
+    if $GROWL and $WATCHING and not $FAILED
+      $GROWL.notify "Build Succeeded", "Aphid Build Succeeded",
+        "Automated build of Aphid has completed successfully."
+    end
+    $FAILED = false
+    header "Waiting for Change(s)"
+  end
 end
 
 def header(message)
