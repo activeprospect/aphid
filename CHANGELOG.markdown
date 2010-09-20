@@ -3,6 +3,8 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * Merged a new tab view template into Aphid proper.
+
  * [Aphid.Support.Extensions] Added Array#compare() for comparing two arrays.
 
  * Reordering a sortable list now updates the order of the items in the items
