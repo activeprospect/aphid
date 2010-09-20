@@ -7,6 +7,7 @@ ul.ListView.sortable li.selected { background-image: url('Images/UI/ListView/Dra
 .TabViewController > header {
   left: 0;
   right: 0;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#464d53, endColorstr=#2b3036);
 }
 .TabViewController > header h1 { color: #eeeeee; }
 .TabViewController > header h1 small { color: #bbbbbb; }
@@ -15,6 +16,7 @@ ul.ListView.sortable li.selected { background-image: url('Images/UI/ListView/Dra
   color: #eeeeee;
 }
 .TabViewController ul#mainTabs li.current { background-color: #7d8286; }
+footer.toolbar { filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#e3e4e5); }
 footer.toolbar ul.actions {
   border-right-color: white;
   float: left;

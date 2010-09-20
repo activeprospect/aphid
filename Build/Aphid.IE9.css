@@ -1,0 +1,3 @@
+ul.ListView li.selected { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#bac7d1, endColorstr=#94a3b1)"; }
+.TabViewController > header { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#464d53, endColorstr=#2b3036)"; }
+footer.toolbar { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#e3e4e5)"; }

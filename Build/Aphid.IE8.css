@@ -1,5 +1,7 @@
+.TabViewController > header { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#464d53, endColorstr=#2b3036)"; }
 .TabViewController ul#mainTabs li { color: #eeeeee; }
 .TabViewController ul#mainTabs li.current { background-color: #7d8286; }
+footer.toolbar { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#e3e4e5)"; }
 footer.toolbar ul.actions { border-right-color: white; }
 footer.toolbar ul.actions li {
   border-right-width: 1px;
