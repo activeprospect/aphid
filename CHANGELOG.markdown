@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added Aphid.UI.View#clearSubviews() for removing all
+   subviews of a view.
+
  * Merged a new tab view template into Aphid proper.
 
  * [Aphid.Support.Extensions] Added Array#compare() for comparing two arrays.

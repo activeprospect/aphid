@@ -1197,9 +1197,7 @@ Aphid.UI.View = Class.create(
   {
     if (Object.isUndefined(animated)) animated = false;
 
-    this.subviews.invoke('removeFromSuperview', animated);
-
-    this.subviews = $A();
+    this.clearSubviews(animated);
 
     this.addSubviewAnimated(view, animated);
   },
@@ -1300,6 +1298,16 @@ Aphid.UI.View = Class.create(
 
     if (this.viewDidDisappear)
       this.viewDidDisappear();
+  },
+
+  clearSubviews: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
+
+    this.subviews.invoke('removeFromSuperviewAnimated', animated);
+
+    this.subviews = $A();
+
   },
 
 
@@ -1560,6 +1568,7 @@ Aphid.UI.View.prototype._addSubview.displayName = "Aphid.UI.View._addSubview";
 Aphid.UI.View.prototype.removeFromSuperview.displayName = "Aphid.UI.View.removeFromSuperview";
 Aphid.UI.View.prototype.removeFromSuperviewAnimated.displayName = "Aphid.UI.View.removeFromSuperviewAnimated";
 Aphid.UI.View.prototype._removeFromSuperview.displayName = "Aphid.UI.View._removeFromSuperview";
+Aphid.UI.View.prototype.clearSubviews.displayName = "Aphid.UI.View.clearSubviews";
 Aphid.UI.View.prototype._loadTemplate.displayName = "Aphid.UI.View._loadTemplate";
 Aphid.UI.View.prototype._templateDidFinishLoading.displayName = "Aphid.UI.View._templateDidFinishLoading";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";

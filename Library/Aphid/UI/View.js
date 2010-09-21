@@ -326,12 +326,8 @@ Aphid.UI.View = Class.create(
   {
     if (Object.isUndefined(animated)) animated = false;
 
-    // Remove existing views
-    // TODO Add viewWillDisappear/viewDidDisappear callbacks
-    this.subviews.invoke('removeFromSuperview', animated);
-
     // Clear the Subviews
-    this.subviews = $A();
+    this.clearSubviews(animated);
 
     // Add the specified view as the view's only subview
     this.addSubviewAnimated(view, animated);
@@ -484,6 +480,24 @@ Aphid.UI.View = Class.create(
     // TODO if animated, this needs to be called when the animation has completed instead...
     if (this.viewDidDisappear)
       this.viewDidDisappear();
+  },
+
+  /**
+   * Aphid.UI.View#clearSubviews([animated = false]) -> null
+   *
+   * Removes all subviews from the view.
+  **/
+  clearSubviews: function(animated)
+  {
+    if (Object.isUndefined(animated)) animated = false;
+
+    // Remove existing views
+    // TODO Add viewWillDisappear/viewDidDisappear callbacks
+    this.subviews.invoke('removeFromSuperviewAnimated', animated);
+
+    // Clear the Subviews
+    this.subviews = $A();
+
   },
 
   // View Loading ------------------------------------------------------------
@@ -829,6 +843,7 @@ Aphid.UI.View.prototype._addSubview.displayName = "Aphid.UI.View._addSubview";
 Aphid.UI.View.prototype.removeFromSuperview.displayName = "Aphid.UI.View.removeFromSuperview";
 Aphid.UI.View.prototype.removeFromSuperviewAnimated.displayName = "Aphid.UI.View.removeFromSuperviewAnimated";
 Aphid.UI.View.prototype._removeFromSuperview.displayName = "Aphid.UI.View._removeFromSuperview";
+Aphid.UI.View.prototype.clearSubviews.displayName = "Aphid.UI.View.clearSubviews";
 Aphid.UI.View.prototype._loadTemplate.displayName = "Aphid.UI.View._loadTemplate";
 Aphid.UI.View.prototype._templateDidFinishLoading.displayName = "Aphid.UI.View._templateDidFinishLoading";
 Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
