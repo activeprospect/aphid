@@ -412,7 +412,7 @@ Aphid.UI.View = Class.create(
     this.element.insert(view.element);
 
     // Display the View
-    animated ? view.element.appear({ duration: 0.25 }) : view.element.show();
+    animated ? view.element.appear({ duration: 0.25, queue: "end" }) : view.element.show();
 
     // "View Did Appear..."
     if (view.viewDidAppear)
