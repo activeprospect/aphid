@@ -2251,14 +2251,14 @@ Aphid.UI.LoadingIndicator = Class.create({
 
     this._startAnimation();
     var opacity = $(this._canvas).getStyle('opacity');
-    this._canvas.appear({ duration: 0.35, to: opacity });
+    this._canvas.appear({ duration: 0.2, to: opacity });
   },
 
   hide: function()
   {
     $L.info('Hiding the loading indicator...', 'Aphid.UI.LoadingIndicator');
-    this._canvas.fade({ duration: 0.15 });
-    this._stopAnimation.bind(this).delay(0.15);
+    this._canvas.fade({ duration: 0.2 });
+    this._stopAnimation.bind(this).delay(0.2);
   },
 
   /*
