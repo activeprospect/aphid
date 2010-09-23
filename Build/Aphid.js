@@ -1384,7 +1384,7 @@ Aphid.UI.View = Class.create(
 
     if (this.outlet)
     {
-      this.element = this.outlet.update(loadedTemplate);
+      this.element = this.outlet.update().insert(loadedTemplate.childElements());
     }
 
     else

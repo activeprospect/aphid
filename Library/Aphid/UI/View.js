@@ -548,9 +548,12 @@ Aphid.UI.View = Class.create(
     // instance.
     if (this.outlet)
     {
-      this.element = this.outlet.update(loadedTemplate);
-      // // TODO We may need to ensure that we aren't doubling-up on the wrapper element with the same ID, etc...
-      // this.element.update(template);
+      // Update the view's element to the outlet element and add all child
+      // elements from the loaded template to the outlet element so that we're
+      // not double-wrapping the view (i.e. the template may have the same
+      // DOM ID in its wrapper as the outlet).
+      this.element = this.outlet.update().insert(loadedTemplate.childElements());
+      // The old way... this.element = this.outlet.update(loadedTemplate);
     }
 
     // // Otherwise, set the template directly on the object and let its delegate

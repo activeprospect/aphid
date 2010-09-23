@@ -3,6 +3,11 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * [Aphid.UI.View] When initializing views from outlets that are loaded from
+   a template, add only the template wrapper's child elements to the outlet
+   element to avoid double-wrapping the view with an element with the same
+   DOM ID (or other characteristics).
+
  * [Aphid.Model] Fixed an issue where proxies whose attributes were either
    undefined or null were preventing the model instance from fully
    initializing.
