@@ -148,7 +148,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
 
     var mainWindow = Application.sharedInstance.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
-    mainWindow.addSubview(this);
+    mainWindow.addSubviewAnimated(this);
   },
 
   /**
