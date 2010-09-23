@@ -711,7 +711,9 @@ Aphid.Model = Class.create({
     $H(this.proxies).keys().each(
       function(proxyAttribute)
       {
-        if (Object.isArray(this[proxyAttribute]))
+        if (Object.isUndefined(this[proxyAttribute]) || this[proxyAttribute] == null)
+          return
+        else if (Object.isArray(this[proxyAttribute]))
           this[proxyAttribute].each(
             function(instance)
             {
