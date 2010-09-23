@@ -2488,7 +2488,7 @@ Aphid.UI.View = Class.create(
   **/
   addSubviewAnimated: function(view, animated)
   {
-    if (Object.isUndefined(animated)) animated = false;
+    if (Object.isUndefined(animated)) animated = true;
 
     // If the view is loading, we need to wait for it to finish loading before
     // we can add it to the DOM.

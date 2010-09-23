@@ -1213,7 +1213,7 @@ Aphid.UI.View = Class.create(
 
   addSubviewAnimated: function(view, animated)
   {
-    if (Object.isUndefined(animated)) animated = false;
+    if (Object.isUndefined(animated)) animated = true;
 
     if (view.isLoading)
       this._addSubview.bind(this).delay(0.1, view, animated);
