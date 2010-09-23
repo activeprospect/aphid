@@ -890,13 +890,26 @@ Aphid.Model = Class.create({
   {
     var attribute = proxy[0],
         klass     = proxy[1];
-    if (Object.isArray(this[attribute]))
+
+    if (Object.isString(klass))
+      klass = eval(klass);
+
+    $L.info("Instantiating proxy " + attribute + " ...", this.displayName);
+
+    if (Object.isUndefined(this[attribute]) || this[attribute] == null)
+      return;
+
+    else if (Object.isArray(this[attribute]))
+    {
       this[attribute] = this[attribute].collect(function(tuple) {
-        var instance = new klass({ object: tuple })
+        var instance = new klass({ object: tuple });
         return instance;
       });
+    }
+
     else
       this[attribute] = new klass({ object: this[attribute] });
+
     this["_" + attribute] = Object.isUndefined(this[attribute].clone) ? this[attribute] : this[attribute].clone();
   },
 

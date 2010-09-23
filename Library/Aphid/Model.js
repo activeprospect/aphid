@@ -534,13 +534,34 @@ Aphid.Model = Class.create({
   {
     var attribute = proxy[0],
         klass     = proxy[1];
-    if (Object.isArray(this[attribute]))
+
+    // Allow the proxy class to be defined as a String
+    // NOTE I don't really care for this little bit of code, but not sure
+    //      what else to do to be sure that the class is defined before it is
+    //      referenced by a model's proxy configuration...
+    if (Object.isString(klass))
+      klass = eval(klass);
+
+    $L.info("Instantiating proxy " + attribute + " ...", this.displayName);
+
+    // Do not instantiate proxies that are null or undefined
+    if (Object.isUndefined(this[attribute]) || this[attribute] == null)
+      return;
+
+    // If the attribute value is an array, instantiate proxy for each member
+    // of the array
+    else if (Object.isArray(this[attribute]))
+    {
       this[attribute] = this[attribute].collect(function(tuple) {
-        var instance = new klass({ object: tuple })
+        var instance = new klass({ object: tuple });
         return instance;
       });
+    }
+
+    // Instantiate proxy for a single value
     else
       this[attribute] = new klass({ object: this[attribute] });
+
     this["_" + attribute] = Object.isUndefined(this[attribute].clone) ? this[attribute] : this[attribute].clone();
   },
 
@@ -643,6 +664,9 @@ Aphid.Model = Class.create({
     new Ajax.Request(url, options);
   },
 
+  /**
+   * Aphid.Model#reload() -> null
+  **/
   reload: function()
   {
     $L.info("Reloading " + this.displayName + " with identifier " + this.identifier);

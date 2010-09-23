@@ -3,6 +3,14 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * [Aphid.Model] Fixed an issue where proxies whose attributes were either
+   undefined or null were preventing the model instance from fully
+   initializing.
+
+ * [Aphid.Model] Fixed an issue where models that were initialized with
+   missing attributes (as defined by the model's attribute property) were
+   silently failing to initialize.
+
  * [Aphid.Model] Added afterInitialize() callback that is called after the
    model instance has finished initialization.
 
