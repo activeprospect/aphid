@@ -3,6 +3,9 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * [Aphid.Model] Added afterInitialize() callback that is called after the
+   model instance has finished initialization.
+
  * [Aphid.UI.View] Added Aphid.UI.View#clearSubviews() for removing all
    subviews of a view.
 

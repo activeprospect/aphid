@@ -760,6 +760,7 @@ Aphid.Model = Class.create({
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
+    this._afterInitialize();
   },
 
   /*
@@ -785,6 +786,7 @@ Aphid.Model = Class.create({
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
+    this._afterInitialize();
   },
 
   /*
@@ -816,6 +818,7 @@ Aphid.Model = Class.create({
         this["_" + attribute] = null;
       }.bind(this)
     );
+    this._afterInitialize();
   },
 
 
@@ -1032,6 +1035,12 @@ Aphid.Model = Class.create({
     this.errors.push(new Aphid.Model.Error(message, field));
   },
 
+
+  _afterInitialize: function()
+  {
+    if (this.afterInitialize)
+      this.afterInitialize(this);
+  },
 
   _afterLoad: function()
   {

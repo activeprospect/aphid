@@ -1724,6 +1724,7 @@ Aphid.Model = Class.create({
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
+    this._afterInitialize();
   },
 
   /*
@@ -1749,6 +1750,7 @@ Aphid.Model = Class.create({
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
+    this._afterInitialize();
   },
 
   /*
@@ -1780,6 +1782,7 @@ Aphid.Model = Class.create({
         this["_" + attribute] = null;
       }.bind(this)
     );
+    this._afterInitialize();
   },
 
   // Dirty State Tracking ----------------------------------------------------
@@ -2039,6 +2042,12 @@ Aphid.Model = Class.create({
   },
 
   // Callbacks ---------------------------------------------------------------
+
+  _afterInitialize: function()
+  {
+    if (this.afterInitialize)
+      this.afterInitialize(this);
+  },
 
   _afterLoad: function()
   {
