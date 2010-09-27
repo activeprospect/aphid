@@ -1,3 +1,16 @@
+.AlertView { filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#cccccc); }
+.AlertView header {
+  background-color: #f3f4f5;
+  border-bottom: 0.1em solid #dddddd;
+}
+.AlertView footer { border-top: 0.1em dotted #bbbbbb; }
+.AlertView footer input[type=button] {
+  border: 0.1em solid #aaaaaa;
+  font-size: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#cccccc);
+}
 ul.ListView.sortable li {
   background-image: url('Images/UI/ListView/DragHandle.png');
   background-position: 99% 50%;

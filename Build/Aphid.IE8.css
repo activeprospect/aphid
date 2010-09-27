@@ -1,3 +1,13 @@
+.AlertView { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#cccccc)"; }
+.AlertView header {
+  background-color: #f3f4f5;
+  border-bottom: 0.1em solid #dddddd;
+}
+.AlertView footer { border-top: 0.1em dotted #bbbbbb; }
+.AlertView footer input[type=button] {
+  border: 0.1em solid #aaaaaa;
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#cccccc)";
+}
 .TabViewController > header { -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#464d53, endColorstr=#2b3036)"; }
 .TabViewController ul#mainTabs li { color: #eeeeee; }
 .TabViewController ul#mainTabs li.current { background-color: #7d8286; }
