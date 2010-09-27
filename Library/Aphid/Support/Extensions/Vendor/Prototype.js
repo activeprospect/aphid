@@ -6,5 +6,6 @@
 
 Aphid.Support.Extensions.Vendor.Prototype = {};
 
+//= require "Prototype/Browser"
 //= require "Prototype/BrowserFeatures"
 //= require "Prototype/Element"
