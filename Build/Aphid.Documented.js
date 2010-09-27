@@ -3169,7 +3169,7 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
       this._overlayElement.hide();
       Element.insert(document.body, { top: this._overlayElement });
     }
-    animated ? this._overlayElement.appear({ duration: 0.25 }) : this._overlayElement.show();
+    animated ? this._overlayElement.appear({ duration: 0.25, to: 0.6 }) : this._overlayElement.show();
   },
 
   /** related to: Aphid.UI.Window#dismissOverlayAnimated
