@@ -9953,7 +9953,7 @@ Aphid.Model = Class.create({
   _instantiateProxy: function(proxy)
   {
     var attribute = proxy[0],
-        klass     = proxy[1];
+        klass     = proxy[1]["type"] || proxy[1];
 
     if (Object.isString(klass))
       klass = eval(klass);
@@ -9964,12 +9964,10 @@ Aphid.Model = Class.create({
       return;
 
     else if (Object.isArray(this[attribute]))
-    {
       this[attribute] = this[attribute].collect(function(tuple) {
         var instance = new klass({ object: tuple });
         return instance;
       });
-    }
 
     else
       this[attribute] = new klass({ object: this[attribute] });
@@ -10093,6 +10091,10 @@ Aphid.Model = Class.create({
     $H(this.proxies).keys().each(
       function(proxyAttribute)
       {
+        var validate = this.proxies[proxyAttribute]["validate"];
+        if (Object.isUndefined(validate)) validate = true;
+        if (!validate) return;
+
         if (Object.isUndefined(this[proxyAttribute]) || this[proxyAttribute] == null)
           return
         else if (Object.isArray(this[proxyAttribute]))

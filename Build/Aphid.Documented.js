@@ -1950,12 +1950,9 @@ Aphid.Model = Class.create({
   _instantiateProxy: function(proxy)
   {
     var attribute = proxy[0],
-        klass     = proxy[1];
+        klass     = proxy[1]["type"] || proxy[1];
 
-    // Allow the proxy class to be defined as a String
-    // NOTE I don't really care for this little bit of code, but not sure
-    //      what else to do to be sure that the class is defined before it is
-    //      referenced by a model's proxy configuration...
+    // Allow the class name to be specified as a String
     if (Object.isString(klass))
       klass = eval(klass);
 
@@ -1968,12 +1965,10 @@ Aphid.Model = Class.create({
     // If the attribute value is an array, instantiate proxy for each member
     // of the array
     else if (Object.isArray(this[attribute]))
-    {
       this[attribute] = this[attribute].collect(function(tuple) {
         var instance = new klass({ object: tuple });
         return instance;
       });
-    }
 
     // Instantiate proxy for a single value
     else
@@ -2128,6 +2123,11 @@ Aphid.Model = Class.create({
     $H(this.proxies).keys().each(
       function(proxyAttribute)
       {
+        // Check for a validate flag on the proxy, defaulting to true
+        var validate = this.proxies[proxyAttribute]["validate"];
+        if (Object.isUndefined(validate)) validate = true;
+        if (!validate) return;
+
         if (Object.isUndefined(this[proxyAttribute]) || this[proxyAttribute] == null)
           return
         else if (Object.isArray(this[proxyAttribute]))

@@ -3,6 +3,12 @@
 
 ## Version 0.9.1 - *Not Yet Released*
 
+ * [Aphid.Model] Added support for specifying proxied attributes as a hash
+   with the following keys: type and validate. Type would be the class name
+   of the proxy (as a string or a literal) and validate is a boolean denoting
+   whether or not the proxy should be validated when validate() is called on
+   its parent model.
+
  * [Aphid.UI.View] When initializing views from outlets that are loaded from
    a template, add only the template wrapper's child elements to the outlet
    element to avoid double-wrapping the view with an element with the same
