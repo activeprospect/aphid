@@ -5,10 +5,6 @@
 .rvmrc
 Resources/Stylesheets/*.css
 Resources/Stylesheets/**/*.css
-#Build
-Build/Aphid.css
-Build/Aphid.Combined.js
-Build/Images
 Demo/JavaScripts/Aphid*.js
 Demo/Stylesheets/Aphid*.css
 Documentation

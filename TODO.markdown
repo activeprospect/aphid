@@ -1,5 +1,10 @@
 # Aphid To-Do List
 
+## Packaging
+
+ * We should not be versioning the built resources of Aphid. We need a better
+   strategy for projects to bring in Aphid other than as a git submodule.
+
 ## Documentation
 
  * Add overview documentation on how to start a new project with Aphid that
