@@ -1,6 +1,10 @@
 
 # Aphid Release History
 
+## Version 0.9.2 - *Not Yet Released*
+
+ * 
+
 ## Version 0.9.1 - *Not Yet Released*
 
  * [Aphid.Model] Added support for specifying proxied attributes as a hash
