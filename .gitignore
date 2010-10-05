@@ -3,10 +3,12 @@
 .DS_Store
 .rake_tasks
 .rvmrc
-Resources/Stylesheets/*.css
-Resources/Stylesheets/**/*.css
+Documentation
 Demo/JavaScripts/Aphid*.js
 Demo/Stylesheets/Aphid*.css
-Documentation
+Resources/Stylesheets/*.css
+Resources/Stylesheets/**/*.css
+Skeleton/Resources/Stylesheets/*.css
+Skeleton/Resources/Stylesheets/**/*.css
 Templates/JavaScripts
 Templates/Stylesheets

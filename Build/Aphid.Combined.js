@@ -9653,7 +9653,7 @@ Aphid.Core.Application = Class.create({
     this._initializeLogger();
     this._initializeLoadingIndicator();
     this.mainWindow = new Aphid.UI.Window();
-    this.baseViewPath = "Views";
+    this.baseViewPath = "Resources/Templates";
   },
 
   applicationDidFinishInitialization: function()
