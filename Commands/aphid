@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+begin
+  require 'commander/import'
+rescue LoadError
+  puts "\nYou'll need the Commander gem to run this command. Simply run:\n\n"
+  puts "  $ gem install commander"
+  puts "\nand you should be all set!\n\n"
+  exit
+end
+
+APHID_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+
+require File.join(File.dirname(__FILE__), 'lib', 'aphid', 'bootstrapper')
+
+# :name is optional, otherwise uses the basename of this executable
+program :name, "Aphid Bootstrapper"
+program :version, File.read("#{APHID_ROOT}/VERSION").strip
+program :description, 'Aphid'
+
+default_command :help
+
+command :new do |c|
+  c.syntax = 'aphid new [name]'
+  c.description = 'Creates [name] as a new Aphid project'
+  c.action do |args, options|
+    if args.first.nil?
+      command(:help).call(["new"])
+      exit
+    end
+    aphid = Aphid::Bootstrapper.new(args.first)
+    aphid.bootstrap!
+  end
+end
