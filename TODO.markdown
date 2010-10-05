@@ -23,6 +23,9 @@
    strip out whitespace on elements with the data-placeholder attribute so that
    the CSS rule will be applied on supporting browsers.
 
+ * Add support for loading IE-specific CSS overrides via JavaScript so that
+   we no longer require the use of IE comment conditionals.
+
 ## Tools
 
  * Add an `aphid` command-line tool for starting new Aphid projects or for

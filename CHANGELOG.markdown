@@ -3,7 +3,12 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
- * 
+ * [Skeleton] Added a skeleton project in the Skeleton directory that may be
+   used to start new Aphid-based applications. It contains an application
+   delegate, a view controller and a Rakefile for building the project.
+
+ * [Aphid.UI.View] Changed the default load path for view templates from
+   _APPLICATION_/Views to _APPLICATION_/Resources/Templates.
 
 ## Version 0.9.1 - *Not Yet Released*
 
