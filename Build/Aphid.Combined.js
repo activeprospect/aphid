@@ -9015,7 +9015,7 @@ Form.Element.DelayedObserver = Class.create({
 
 var Aphid = {
 
-  Version: '0.9.1-PRE'
+  Version: '0.9.2-DEV'
 
 };
 

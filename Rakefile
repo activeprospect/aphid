@@ -170,7 +170,7 @@ task "docs:build" => [ :build, "docs:clean" ] do
       :short_name => 'Aphid',
       :home_url => 'http://aphid.activeprospect.com/',
       :doc_url => 'http://aphid.activeprospect.com/api',
-      :version => "0.9.2-DEV",
+      :version => File.read("#{ROOT_PATH}/VERSION").strip,
       :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
     })
   rescue => e
