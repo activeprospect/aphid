@@ -24,11 +24,10 @@ rescue LoadError
 end
 
 begin
-  require "#{ROOT_PATH}/Vendor/Sprockets/lib/sprockets"
+  require "sprockets"
 rescue LoadError
   puts "\nYou'll need Sprockets to build this project. Simply run:\n\n"
-  puts "  $ git submodule init"
-  puts "  $ git submodule update"
+  puts "  $ gem install sprockets"
   puts "\nand you should be all set!\n\n"
   exit
 end

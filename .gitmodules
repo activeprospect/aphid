@@ -7,6 +7,3 @@
 [submodule "Vendor/PDoc"]
 	path = Vendor/PDoc
 	url = http://github.com/tobie/pdoc.git
-[submodule "Vendor/Sprockets"]
-	path = Vendor/Sprockets
-	url = http://github.com/sstephenson/sprockets.git
