@@ -87,7 +87,7 @@ rescue LoadError
   # Do nothing...
 end
 
-if ARGV[0].include? "watch"
+if ARGV[0] and ARGV[0].include? "watch"
   begin
     require "filewatcher"
   rescue LoadError
