@@ -3,6 +3,7 @@
 .DS_Store
 .rake_tasks
 .rvmrc
+Build/Packages
 Documentation
 Demo/JavaScripts/Aphid*.js
 Demo/Stylesheets/Aphid*.css

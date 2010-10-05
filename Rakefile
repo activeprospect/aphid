@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'rake'
-require 'rake/packagetask'
+require 'rake/gempackagetask'
 
 ROOT_PATH          = File.expand_path(File.dirname(__FILE__))
 DEFAULT_TASKS      = [ :clean, :build, "docs:build", "demo:update", "templates:update" ]
@@ -13,33 +13,6 @@ $WATCHING  = false
 $FAILED    = false
 
 # Check Vendor Dependencies --------------------------------------------------
-
-begin
-  require "less"
-rescue LoadError
-  puts "\nYou'll need Less to build this project. Simply run:\n\n"
-  puts "  $ gem install less"
-  puts "\nand you should be all set!\n\n"
-  exit
-end
-
-begin
-  require "sprockets"
-rescue LoadError
-  puts "\nYou'll need Sprockets to build this project. Simply run:\n\n"
-  puts "  $ gem install sprockets"
-  puts "\nand you should be all set!\n\n"
-  exit
-end
-
-begin
-  require "json"
-rescue LoadError
-  puts "\nYou'll need the JSON gem to build this project. Simply run:\n\n"
-  puts "  $ gem install json"
-  puts "\nand you should be all set!\n\n"
-  exit
-end
 
 begin
   require "maruku"
@@ -134,6 +107,7 @@ end
 
 desc "Build the project"
 task :build do
+  load_build_dependencies
   header "Building Aphid"
   sprocketize(File.join("Build", "Aphid.js"), { :source_files => [ "Library/Aphid.js" ] }) \
   and sprocketize(File.join("Build", "Aphid.Combined.js"), { :source_files => [ "Library/Aphid.Combined.js" ] }) \
@@ -247,6 +221,47 @@ JavaScriptTestTask.new(:test) do |test|
   test.browser(:safari)
 end
 
+# Package Tasks --------------------------------------------------------------
+
+spec = Gem::Specification.new do |s|
+  s.name = "aphid"
+  s.version = File.read("VERSION").strip.downcase.gsub("-", ".")
+  s.date = Date.today
+  s.authors = "Justin Mecham"
+  s.email = "justin@activeprospect.com"
+  s.summary = "An elegant HTML5 web framework"
+  s.homepage = "http://aphid.activeprospect.com/"
+  s.files = [
+    "VERSION",
+    "README.markdown",
+    "ROADMAP.markdown",
+    "TODO.markdown",
+    "CHANGELOG.markdown",
+    "Rakefile",
+    Dir["Build/**/*"],
+    Dir["Commands/**/*"],
+    Dir["Demo/**/*"],
+    Dir["Library/**/*"],
+    Dir["Resources/**/*"],
+    Dir["Skeleton/**/*"],
+    Dir["Templates/**/*"],
+    Dir["Tests/**/*"],
+    Dir["Vendor/**/*"]
+  ]
+  s.bindir = "Commands"
+  s.executables = ["aphid"]
+  s.default_executable = "aphid"
+  s.add_dependency("less")
+  s.add_dependency("sprockets")
+  s.add_dependency("commander")
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
+  pkg.package_dir = "Build/Packages"
+end
+
 # Support Methods ------------------------------------------------------------
 
 def sprocketize(output, options = {})
@@ -329,4 +344,37 @@ end
 
 def current_head
   `git show-ref --head --hash HEAD`
+end
+
+# Dependencies ---------------------------------------------------------------
+
+def load_build_dependencies
+
+  begin
+    require "less"
+  rescue LoadError
+    puts "\nYou'll need Less to build this project. Simply run:\n\n"
+    puts "  $ gem install less"
+    puts "\nand you should be all set!\n\n"
+    exit
+  end
+
+  begin
+    require "sprockets"
+  rescue LoadError
+    puts "\nYou'll need Sprockets to build this project. Simply run:\n\n"
+    puts "  $ gem install sprockets"
+    puts "\nand you should be all set!\n\n"
+    exit
+  end
+
+  begin
+    require "json"
+  rescue LoadError
+    puts "\nYou'll need the JSON gem to build this project. Simply run:\n\n"
+    puts "  $ gem install json"
+    puts "\nand you should be all set!\n\n"
+    exit
+  end
+
 end

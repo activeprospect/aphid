@@ -3,6 +3,8 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Tools] Added rake tasks to support building packages and gem files.
+
  * [Tools] Added an "aphid" command-line tool that can be used to bootstrap a
    new Aphid application (e.g. "aphid new ProjectName").
 
