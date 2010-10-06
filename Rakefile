@@ -12,6 +12,13 @@ WATCH_DOCS_TASKS   = [ "docs:build", "demo:update", "templates:update" ]
 $WATCHING  = false
 $FAILED    = false
 
+# Support Methods ------------------------------------------------------------
+
+def header(message)
+  message = " #{message} "
+  puts "\n#{message.center(`stty size`.split(' ')[1].to_i, '-')}\n\n"
+end
+
 # Check Vendor Dependencies --------------------------------------------------
 
 begin
@@ -335,11 +342,6 @@ def watch_with(tasks)
     $FAILED = false
     header "Waiting for Change(s)"
   end
-end
-
-def header(message)
-  message = " #{message} "
-  puts "\n#{message.center(`stty size`.split(' ')[1].to_i, '-')}\n\n"
 end
 
 def current_head
