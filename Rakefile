@@ -360,10 +360,11 @@ def load_build_dependencies
   end
 
   begin
-    require "sprockets"
+    require "#{ROOT_PATH}/Vendor/Sprockets/lib/sprockets"
   rescue LoadError
     puts "\nYou'll need Sprockets to build this project. Simply run:\n\n"
-    puts "  $ gem install sprockets"
+    puts "  $ git submodule init"
+    puts "  $ git submodule update"
     puts "\nand you should be all set!\n\n"
     exit
   end
