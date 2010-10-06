@@ -32,7 +32,7 @@ var Aphid = {
    *
    * The version number for Aphid in the *major.minor.build* format *(e.g. 1.0.123)*.
   **/
-  Version: '0.9.2-DEV'
+  Version: '0.9.2-PRE'
 
 };
 
