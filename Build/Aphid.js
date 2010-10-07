@@ -1,7 +1,7 @@
 
 var Aphid = {
 
-  Version: '0.9.1-PRE'
+  Version: '0.9.1'
 
 };
 

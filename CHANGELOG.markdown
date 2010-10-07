@@ -1,7 +1,7 @@
 
 # Aphid Release History
 
-## Version 0.9.1 - *Not Yet Released*
+## Version 0.9.1 - October 7th, 2010
 
  * [Aphid.Model] Added support for specifying proxied attributes as a hash
    with the following keys: type and validate. Type would be the class name
