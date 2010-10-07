@@ -15,10 +15,6 @@
 
 ## Compatibility
 
- * Ensure compatibility with Internet Explorer 7+.
-
- * Ensure compatibility with Firefox 3+.
-
  * Add support for placeholders on block elements to IE and also automatically
    strip out whitespace on elements with the data-placeholder attribute so that
    the CSS rule will be applied on supporting browsers.
@@ -27,14 +23,6 @@
    we no longer require the use of IE comment conditionals.
 
 ## Tools
-
- * Add an `aphid` command-line tool for starting new Aphid projects or for
-   applying Aphid to a Rails or other type of project.
-
- * Add a rake task for creating gem packages of Aphid (that would include the
-   `aphid` command for easy project setup).
-
- * Add a rake task for creating release packages of Aphid.
 
 ## Library
 
@@ -87,9 +75,6 @@
 
  * Add support for programmatically declaring a View's markup/element.
 
- * Add Aphid.UI.View#enable() and Aphid.UI.View#disable() for enabling or
-   disabling the view by standard conventions.
-
  * Add support for caching views that are loaded from a template on a class
    level for reuse without re-requesting the template from the server.
 
@@ -123,6 +108,11 @@
  * Convert to a subclass of Aphid.UI.View.
 
  * Add tests.
+
+ * Add support for a CSS-based animation for browsers that support it.
+
+ * Allow multiple loading indicator instances so that we can show one on each
+   view that is initializing.
 
 ### Aphid.UI.SplitViewController
 
