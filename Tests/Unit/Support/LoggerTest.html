@@ -92,6 +92,14 @@
           assertEqual('debug', this.lastLevel);
         }},
 
+        testShouldLogDebugMessagesWithSender: function() { with(this) {
+          var message = "This is a message at the debug level";
+          var object = { displayName: "Foo" };
+          this.logger.debug(message, object);
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('debug', this.lastLevel);
+        }},
+
         testShouldLogInfoMessages: function() { with(this) {
           var message = "This is a message at the info level";
           this.logger.info(message);
@@ -102,6 +110,14 @@
         testShouldLogInfoMessagesWithPrefix: function() { with(this) {
           var message = "This is a message at the info level";
           this.logger.info(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('info', this.lastLevel);
+        }},
+
+        testShouldLogInfoMessagesWithSender: function() { with(this) {
+          var message = "This is a message at the info level";
+          var object = { displayName: "Foo" };
+          this.logger.info(message, object);
           assertEqual("[Foo] " + message, this.lastMessage);
           assertEqual('info', this.lastLevel);
         }},
@@ -120,6 +136,14 @@
           assertEqual('warn', this.lastLevel);
         }},
 
+        testShouldLogWarningMessagesWithSender: function() { with(this) {
+          var message = "This is a message at the warn level";
+          var object = { displayName: "Foo" };
+          this.logger.warn(message, object);
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('warn', this.lastLevel);
+        }},
+
         testShouldLogErrorMessages: function() { with(this) {
           var message = "This is a message at the error level";
           this.logger.error(message);
@@ -130,6 +154,14 @@
         testShouldLogErrorMessagesWithPrefix: function() { with(this) {
           var message = "This is a message at the error level";
           this.logger.error(message, "Foo");
+          assertEqual("[Foo] " + message, this.lastMessage);
+          assertEqual('error', this.lastLevel);
+        }},
+
+        testShouldLogErrorMessagesWithSender: function() { with(this) {
+          var message = "This is a message at the error level";
+          var object = { displayName: "Foo" };
+          this.logger.error(message, object);
           assertEqual("[Foo] " + message, this.lastMessage);
           assertEqual('error', this.lastLevel);
         }}

@@ -33,85 +33,93 @@ Aphid.Support.Logger = Class.create({
   },
 
   /**
-   * Aphid.Support.Logger#debug(message[, prefix]) -> null
+   * Aphid.Support.Logger#debug(message[, sender]) -> null
    *
    * - message (String): the message to be displayed in the console
-   * - prefix (String): an optional prefix to be displayed before the message
-   *   that will be wrapped in square brackets (i.e. "\[*prefix*] *message*").
+   * - sender (Object | String): the Object that is responsible for sending
+   *   the message or a String to use as a prefix to the message.
    *
    * Prints the *message* to the console at the *debug* level (if
    * [[Aphid.Support.Logger#level]] instance variable is set to at least
    * `DEBUG_LEVEL`).
   **/
-  debug: function(message, prefix)
+  debug: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.DEBUG_LEVEL) return;
-    if (prefix)
-      window.console.debug('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.debug('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.debug('[' + sender + '] ' + message);
     else
       window.console.debug(message);
   },
 
   /**
-   * Aphid.Support.Logger#info(message[, prefix]) -> null
+   * Aphid.Support.Logger#info(message[, sender]) -> null
    *
    * - message (String): the message to be displayed in the console
-   * - prefix (String): an optional prefix to be displayed before the message
-   *   that will be wrapped in square brackets (i.e. "\[*prefix*] *message*").
+   * - sender (Object | String): the Object that is responsible for sending
+   *   the message or a String to use as a prefix to the message.
    *
    * Prints the *message* to the console at the *info* level (if
    * [[Aphid.Support.Logger#level]] instance variable is set to at least
    * `INFO_LEVEL`).
   **/
-  info: function(message, prefix)
+  info: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.INFO_LEVEL) return;
-    if (prefix)
-      window.console.info('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.info('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.info('[' + sender + '] ' + message);
     else
       window.console.info(message);
   },
 
   /**
-   * Aphid.Support.Logger#warn(message[, prefix]) -> null
+   * Aphid.Support.Logger#warn(message[, sender]) -> null
    *
    * - message (String): the message to be displayed in the console
-   * - prefix (String): an optional prefix to be displayed before the message
-   *   that will be wrapped in square brackets (i.e. "\[*prefix*] *message*").
+   * - sender (Object | String): the Object that is responsible for sending
+   *   the message or a String to use as a prefix to the message.
    *
    * Prints the *message* to the console at the *warn* level (if
    * [[Aphid.Support.Logger#level]] instance variable is set to at least
    * `WARNING_LEVEL`).
   **/
-  warn: function(message, prefix)
+  warn: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.WARNING_LEVEL) return;
-    if (prefix)
-      window.console.warn('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.warn('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.warn('[' + sender + '] ' + message);
     else
       window.console.warn(message);
   },
   
   /**
-   * Aphid.Support.Logger#error(message[, prefix]) -> null
+   * Aphid.Support.Logger#error(message[, sender]) -> null
    *
    * - message (String): the message to be displayed in the console
-   * - prefix (String): an optional prefix to be displayed before the message
-   *   that will be wrapped in square brackets (i.e. "\[*prefix*] *message*").
+   * - sender (Object | String): the Object that is responsible for sending
+   *   the message or a String to use as a prefix to the message.
    *
    * Prints the *message* to the console at the *error* level (if
    * [[Aphid.Support.Logger#level]] instance variable is set to at least
    * `ERROR_LEVEL`).
   **/
-  error: function(message, prefix)
+  error: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.ERROR_LEVEL) return;
-    if (prefix)
-      window.console.error('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.error('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.error('[' + sender + '] ' + message);
     else
       window.console.error(message);
   }

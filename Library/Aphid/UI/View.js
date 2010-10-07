@@ -141,7 +141,7 @@ Aphid.UI.View = Class.create(
    * track down issues as it will be used when logging errors and warnings or
    * other informational messages.
   **/
-  displayName: false,
+  displayName: "Aphid.UI.View",
 
   /**
    * Aphid.UI.View#template -> String
@@ -261,19 +261,19 @@ Aphid.UI.View = Class.create(
 
   _initializeFromElement: function()
   {
-    $L.info("Initializing from Element", "Aphid.UI.View");
+    $L.info("Initializing from Element", this);
     this._setupView();
   },
 
   _initializeFromTemplate: function()
   {
-    $L.info("Initializing from Template", "Aphid.UI.View");
+    $L.info("Initializing from Template", this);
     this._loadTemplate();
   },
 
   _initializeFromOutlet: function()
   {
-    $L.info("Initializing from Outlet", "Aphid.UI.View");
+    $L.info("Initializing from Outlet", this);
     if (this.template)
       this._initializeFromTemplate();
     else
@@ -397,7 +397,7 @@ Aphid.UI.View = Class.create(
       return;
     }
 
-    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
+    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Setup the View
     view.element.hide();
@@ -518,7 +518,7 @@ Aphid.UI.View = Class.create(
           onFailure: function(transport)
           {
             if (transport.status == 404)
-              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", "Aphid.UI.View");
+              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", this);
           }.bind(this)
         };
 
@@ -661,7 +661,7 @@ Aphid.UI.View = Class.create(
     if (this.element.childElements().length == 0) return;
 
     var outletElements = this.element.select('*[data-outlet]');
-    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     outletElements.each(
       function(element)
@@ -681,7 +681,7 @@ Aphid.UI.View = Class.create(
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
-          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
+          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', this);
           try {
 
             // Set options from data-* attributes...
@@ -713,14 +713,14 @@ Aphid.UI.View = Class.create(
           }
           catch (error)
           {
-            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error);
+            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error, this);
             return;
           }
           this[outlet] = instance;
           this.subviews.push(instance);
         }
         else
-          $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', 'Aphid.UI.View');
+          $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', this);
       }.bind(this)
     );
   },
@@ -752,7 +752,7 @@ Aphid.UI.View = Class.create(
     if (this.element.childElements().length == 0) return;
 
     var actionElements = this.element.select('*[data-action]');
-    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     actionElements.each(
       function(element)
@@ -773,7 +773,7 @@ Aphid.UI.View = Class.create(
           // this[outlet] = instance;
         }
         else
-          $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', 'Aphid.UI.View');
+          $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', this);
       }.bind(this)
     );
   },

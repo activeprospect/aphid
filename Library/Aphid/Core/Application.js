@@ -29,6 +29,8 @@ var Application;
 
 Aphid.Core.Application = Class.create({
 
+  displayName: "Aphid.Core.Application",
+
   /**
    * Aphid.Core.Application#logger -> Aphid.Support.Logger | false
    *
@@ -137,7 +139,7 @@ Aphid.Core.Application.bootstrap = function()
 {
   if (Object.isUndefined(Application))
   {
-    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", "Aphid.Core.Application");
+    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
     Application = Class.create(Aphid.Core.Application);
   }
   Application.sharedInstance = new Application();

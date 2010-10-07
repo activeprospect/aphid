@@ -11,6 +11,8 @@
 
 Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
+  displayName: "Aphid.UI.SplitViewController",
+
   // Panes
   firstView: false,
   secondView: false,
@@ -59,7 +61,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   viewDidLoad: function($super)
   {
     $super();
-    $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
+    $L.info('viewDidLoad', this);
     this.element.addClassName('SplitViewController');
     if (!this.asynchronousLoadingEnabled)
       this._initializeDraggableInstance();
@@ -71,7 +73,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   {
     if (!this.firstView && !this.secondView)
     {
-      $L.error("firstView and secondView have not been defined", "Aphid.UI.SplitViewController");
+      $L.error("firstView and secondView have not been defined", this);
       return;
     }
     if (this.firstView.isLoaded && this.secondView.isLoaded)
@@ -82,22 +84,22 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   onStart: function(arg)
   {
-    $L.debug("onStart", "Aphid.UI.SplitViewController");
+    $L.debug("onStart", this);
   },
 
   onDrag: function(arg)
   {
-    $L.debug("onDrag", "Aphid.UI.SplitViewController");
+    $L.debug("onDrag", this);
   },
 
   change: function(arg)
   {
-    $L.debug("change", "Aphid.UI.SplitViewController");
+    $L.debug("change", this);
   },
 
   onEnd: function(arg)
   {
-    $L.debug("onEnd", "Aphid.UI.SplitViewController");
+    $L.debug("onEnd", this);
   }
 
 });
@@ -114,6 +116,8 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
  *  * Move some of the logic out of this to a delegate or callback
 **/
 Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
+
+  displayName: "Aphid.UI.SplitViewController.Draggable",
 
   // DOM Elements
   firstPane: null,
@@ -141,7 +145,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   updateDrag: function($super, event, pointer)
   {
-    $L.debug("updateDrag", "Aphid.UI.SplitViewController.Draggable")
+    $L.debug("updateDrag", this);
     var minWidth, maxWidth, minHeight, maxHeight;
     var offset = this.firstPane.cumulativeOffset();
 

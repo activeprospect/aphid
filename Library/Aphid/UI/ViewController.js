@@ -14,6 +14,8 @@
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
+  displayName: "Aphid.UI.ViewController",
+
   /*
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false
    *
@@ -55,7 +57,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   **/
   presentModalViewController: function(viewController)
   {
-    $L.info("presentModalViewController", "Aphid.UI.ViewController");
+    $L.info("presentModalViewController", this);
     this.presentModalViewControllerAnimated(viewController, false);
   },
 
@@ -104,7 +106,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
       return;
     }
 
-    $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
+    $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Display the Overlay
     var mainWindow = Application.sharedInstance.mainWindow;

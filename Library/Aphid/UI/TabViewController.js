@@ -45,7 +45,7 @@
 
 Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
-  displayName: "TabViewController",
+  displayName: "Aphid.UI.TabViewController",
 
   /**
    * Aphid.UI.TabViewController#persistSelectedTab -> Boolean
@@ -114,14 +114,14 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
       var selectedTab = $C.get(this.displayName + '.selectedTab');
       if (selectedTab)
       {
-        $L.info('Restoring previously selected tab "' + selectedTab + '"');
+        $L.info('Restoring previously selected tab "' + selectedTab + '"', this);
         this.selectTab(selectedTab);
         return;
       }
     }
 
     // ... or Default Tab
-    $L.info('Selecting default tab "' + this.defaultTab + '"');
+    $L.info('Selecting default tab "' + this.defaultTab + '"', this);
     this.selectDefaultTab();
   },
 
@@ -146,7 +146,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
         tab = this._findTabByName(tabName);
         if (Object.isUndefined(tab))
         {
-          $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template');
+          $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template', this);
           return;
         }
       }

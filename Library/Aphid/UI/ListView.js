@@ -237,7 +237,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // Ensure that we are only passed instances of Aphid.UI.ListViewItem...
     if (!items.all(this._validateItem))
     {
-      $L.error("All items must be instances of Aphid.UI.ListViewItem!", "Aphid.UI.ListView");
+      $L.error("All items must be instances of Aphid.UI.ListViewItem!", this);
       return;
     }
 
@@ -324,7 +324,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (!this.items.include(item))
     {
-      $L.error("Attempted to remove item that is not a part of the list", this.displayName);
+      $L.error("Attempted to remove item that is not a part of the list", this);
       return;
     }
     this.deselectItem(item);
@@ -385,7 +385,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemCount)
       listViewItemCount = this.dataSource.listViewItemCount(this);
     else
-      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this.displayName);
+      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this);
     return listViewItemCount;
   },
 
@@ -402,7 +402,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemForIndex)
       listViewItem = this.dataSource.listViewItemForIndex(this, index);
     else
-      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this.displayName);
+      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this);
     return listViewItem;
   },
 
@@ -658,14 +658,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   // delegate has defined it.
   _listViewOrderDidChange: function()
   {
-    $L.info('_listViewOrderDidChange', 'Aphid.UI.ListView');
+    $L.info('_listViewOrderDidChange', this);
     if (this.delegate && this.delegate.listViewOrderDidChange)
       this.delegate.listViewOrderDidChange(this);
   },
 
   _listViewOrderDidUpdate: function()
   {
-    $L.info('_listViewOrderDidUpdate', 'Aphid.UI.ListView');
+    $L.info('_listViewOrderDidUpdate', this);
     this._updateSortIndexes();
     if (this.delegate && this.delegate.listViewOrderDidUpdate)
       this.delegate.listViewOrderDidUpdate(this);
@@ -887,7 +887,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (this.element.tagName != 'UL')
     {
-      $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', 'Aphid.UI.ListView');
+      $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', this);
       return false;
     }
     return true;

@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Logger] Added support for sending an object to the Logger
+   instead of a String to use as the prefix. The logger will use the
+   displayName property of the class as the message prefix, if available.
+
  * [Tools] Added rake tasks to support building packages and gem files.
 
  * [Tools] Added an "aphid" command-line tool that can be used to bootstrap a

@@ -8,6 +8,8 @@
 
 Aphid.UI.LoadingIndicator = Class.create({
 
+  displayName: "Aphid.UI.LoadingIndicator",
+
   /*
    * Aphid.UI.LoadingIndicator#_canvas -> Element
    *
@@ -79,7 +81,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   **/
   initialize: function()
   {
-    $L.info('Initializing...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Initializing...', this);
 
     // Set Defaults
     this.barCount       = 10;
@@ -127,7 +129,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   {
     if (this.isAnimating) return;
 
-    $L.info('Showing the loading indicator...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Showing the loading indicator...', this);
 
     this._startAnimation();
     var opacity = $(this._canvas).getStyle('opacity');
@@ -141,7 +143,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   **/
   hide: function()
   {
-    $L.info('Hiding the loading indicator...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Hiding the loading indicator...', this);
     this._canvas.fade({ duration: 0.2 });
     this._stopAnimation.bind(this).delay(0.2);
   },

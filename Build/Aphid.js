@@ -565,42 +565,50 @@ Aphid.Support.Logger = Class.create({
     this.level = Object.isUndefined(level) ? Aphid.Support.Logger.INFO_LEVEL : level;
   },
 
-  debug: function(message, prefix)
+  debug: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.DEBUG_LEVEL) return;
-    if (prefix)
-      window.console.debug('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.debug('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.debug('[' + sender + '] ' + message);
     else
       window.console.debug(message);
   },
 
-  info: function(message, prefix)
+  info: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.INFO_LEVEL) return;
-    if (prefix)
-      window.console.info('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.info('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.info('[' + sender + '] ' + message);
     else
       window.console.info(message);
   },
 
-  warn: function(message, prefix)
+  warn: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.WARNING_LEVEL) return;
-    if (prefix)
-      window.console.warn('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.warn('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.warn('[' + sender + '] ' + message);
     else
       window.console.warn(message);
   },
 
-  error: function(message, prefix)
+  error: function(message, sender)
   {
     if (!window.console) return;
     if (this.level < Aphid.Support.Logger.ERROR_LEVEL) return;
-    if (prefix)
-      window.console.error('[' + prefix + '] ' + message);
+    if (sender && sender.displayName)
+      window.console.error('[' + sender.displayName + '] ' + message);
+    else if (sender)
+      window.console.error('[' + sender + '] ' + message);
     else
       window.console.error(message);
   }

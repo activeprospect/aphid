@@ -152,6 +152,8 @@
 
 Aphid.Model = Class.create({
 
+  displayName: "Aphid.Model",
+
   /**
    * Aphid.Model#delegate -> Object
    *
@@ -332,7 +334,7 @@ Aphid.Model = Class.create({
   **/
   _initializeFromIdentifier: function()
   {
-    $L.info("Initializing from Record Identifier...", "Aphid.Model");
+    $L.info("Initializing from Record Identifier...", this);
 
     // Assemble URL
     var urlTemplate = new Template(this.url);
@@ -373,20 +375,20 @@ Aphid.Model = Class.create({
   **/
   _initializeFromElement: function()
   {
-    $L.info("Initializing from Element...", "Aphid.Model");
+    $L.info("Initializing from Element...", this);
     if (Object.isString(this.element))
       this.element = Element.fromString(this.element);
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"', this);
         this[attribute] = this.element.getData(attribute);
         this["_" + attribute] = this.element.getData(attribute);
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
@@ -401,11 +403,11 @@ Aphid.Model = Class.create({
   **/
   _initializeFromObject: function()
   {
-    $L.info("Initializing from Object...", "Aphid.Model");
+    $L.info("Initializing from Object...", this);
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"', this);
         if (!Object.isUndefined(this.object[attribute]))
         {
           this[attribute] = this.object[attribute];
@@ -420,7 +422,7 @@ Aphid.Model = Class.create({
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
@@ -436,7 +438,7 @@ Aphid.Model = Class.create({
   **/
   _initializeFromJSON: function()
   {
-    $L.info("Initializing from JSON...", "Aphid.Model");
+    $L.info("Initializing from JSON...", this);
     this.object = this.json.evalJSON();
     this._initializeFromObject();
   },
@@ -448,7 +450,7 @@ Aphid.Model = Class.create({
   **/
   _initializeEmptyObject: function()
   {
-    $L.info("Initializing empty object...", "Aphid.Model");
+    $L.info("Initializing empty object...", this);
     this.attributes.each(
       function(attribute)
       {
@@ -539,7 +541,7 @@ Aphid.Model = Class.create({
     if (Object.isString(klass))
       klass = eval(klass);
 
-    $L.info("Instantiating proxy " + attribute + " ...", this.displayName);
+    $L.info("Instantiating proxy " + attribute + " ...", this);
 
     // Do not instantiate proxies that are null or undefined
     if (Object.isUndefined(this[attribute]) || this[attribute] == null)
@@ -607,7 +609,7 @@ Aphid.Model = Class.create({
   **/
   save: function()
   {
-    $L.info("Saving...", this.displayName);
+    $L.info("Saving...", this);
 
     // Validate
     this.errors = false;
@@ -664,7 +666,7 @@ Aphid.Model = Class.create({
   **/
   reload: function()
   {
-    $L.info("Reloading " + this.displayName + " with identifier " + this.identifier);
+    $L.info("Reloading " + this.displayName + " with identifier " + this.identifier, this);
 
     // TODO Make the loading logic common between initialization and reloading
 
