@@ -156,8 +156,12 @@ task "docs:build" => [ :build, "docs:clean" ] do
   rescue => e
     $FAILED = true
     if $GROWL
-      $GROWL.notify "Build Failed", "Aphid Build Failed — PDoc",
-        "An error occurred while compiling documentation with PDoc:\n\n#{e}\n\nReference the console for more information…"
+      begin
+        $GROWL.notify "Build Failed", "Aphid Build Failed — PDoc",
+          "An error occurred while compiling documentation with PDoc:\n\n#{e}\n\nReference the console for more information…"
+      rescue Errno::ECONNREFUSED
+        puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+      end
     end
     puts e
     exit unless $WATCHING
@@ -285,12 +289,12 @@ def sprocketize(output, options = {})
 rescue => e
   $FAILED = true
   if $WATCHING and $GROWL
-    # prefix = "An "
-    # if e.instance_of? Less::SyntaxError
-    #   prefix = "A syntax"
-    # end
-    $GROWL.notify "Build Failed", "Aphid Build Failed — Sprocketize",
-      "An error occurred while compiling JavaScripts with Sprockets:\n\n#{e.message}\n\nReference the console for more information…"
+    begin
+      $GROWL.notify "Build Failed", "Aphid Build Failed — Sprocketize",
+        "An error occurred while compiling JavaScripts with Sprockets:\n\n#{e.message}\n\nReference the console for more information…"
+    rescue Errno::ECONNREFUSED
+      puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+    end
   end
   puts e
   exit unless $WATCHING
@@ -312,8 +316,12 @@ rescue => e
     if e.instance_of? Less::SyntaxError
       prefix = "A syntax"
     end
-    $GROWL.notify "Build Failed", "Aphid Build Failed — Lessify",
-      "#{prefix} error occurred while compiling CSS with Less.\n\nReference the console for more information…"
+    begin
+      $GROWL.notify "Build Failed", "Aphid Build Failed — Lessify",
+        "#{prefix} error occurred while compiling CSS with Less.\n\nReference the console for more information…"
+    rescue Errno::ECONNREFUSED
+      puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+    end
   end
   puts e
   exit unless $WATCHING
@@ -336,8 +344,12 @@ def watch_with(tasks)
       Rake::Task[task].invoke
     end
     if $GROWL and $WATCHING and not $FAILED
-      $GROWL.notify "Build Succeeded", "Aphid Build Succeeded",
-        "Automated build of Aphid has completed successfully."
+      begin
+        $GROWL.notify "Build Succeeded", "Aphid Build Succeeded",
+          "Automated build of Aphid has completed successfully."
+      rescue Errno::ECONNREFUSED
+        puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+      end
     end
     $FAILED = false
     header "Waiting for Change(s)"
