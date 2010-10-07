@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.UI.View] Improved error reporting when a template load request fails
+   for any reason by displaying an AlertView with the error that was
+   encountered.
+
  * [Aphid.Support.Logger] Added support for sending an object to the Logger
    instead of a String to use as the prefix. The logger will use the
    displayName property of the class as the message prefix, if available.

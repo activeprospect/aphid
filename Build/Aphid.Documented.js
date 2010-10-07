@@ -2777,12 +2777,8 @@ Aphid.UI.View = Class.create(
         options  = {
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
-          onComplete: this._templateDidFinishLoading.bind(this),
-          onFailure: function(transport)
-          {
-            if (transport.status == 404)
-              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", this);
-          }.bind(this)
+          onSuccess: this._templateDidFinishLoading.bind(this),
+          onFailure: this._templateRequestDidFail.bind(this)
         };
 
     this.isLoaded  = false;
@@ -2832,6 +2828,20 @@ Aphid.UI.View = Class.create(
     // Process the template by connecting outlets and actions and calling any
     // callbacks and delegate methods.
     this._setupView();
+  },
+
+  _templateRequestDidFail: function(transport)
+  {
+    var templatePath = Application.sharedInstance.baseViewPath + "/" + this.template + ".html";
+
+    if (transport.status == 404)
+    $L.error("Faild to load template \"" + templatePath + "\" (Error " + transport.status + " - " + transport.statusText + ")", this);
+
+    var alertView = new Aphid.UI.AlertView();
+    alertView.title = "Error Loading Template";
+    alertView.message = "Failed to load template at path <strong>" + templatePath + "</strong> for <strong>" + this.displayName + "</strong>.";
+    alertView.status = "Error " + transport.status + " - " + transport.statusText;
+    alertView.showAnimated();
   },
 
   // View Processing ---------------------------------------------------------
