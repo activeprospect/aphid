@@ -19,7 +19,7 @@
  * [Aphid.UI.View] Changed the default load path for view templates from
    _APPLICATION_/Views to _APPLICATION_/Resources/Templates.
 
-## Version 0.9.1 - *Not Yet Released*
+## Version 0.9.1 - October 7th, 2010
 
  * [Aphid.Model] Added support for specifying proxied attributes as a hash
    with the following keys: type and validate. Type would be the class name

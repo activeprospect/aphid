@@ -9646,6 +9646,8 @@ var Application;
 
 Aphid.Core.Application = Class.create({
 
+  displayName: "Aphid.Core.Application",
+
   logger: false,
 
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
@@ -9714,7 +9716,7 @@ Aphid.Core.Application.bootstrap = function()
 {
   if (Object.isUndefined(Application))
   {
-    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", "Aphid.Core.Application");
+    $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
     Application = Class.create(Aphid.Core.Application);
   }
   Application.sharedInstance = new Application();
@@ -9724,6 +9726,8 @@ Aphid.Core.Application.bootstrap = function()
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
 Aphid.Model = Class.create({
+
+  displayName: "Aphid.Model",
 
   delegate: false,
 
@@ -9778,7 +9782,7 @@ Aphid.Model = Class.create({
   **/
   _initializeFromIdentifier: function()
   {
-    $L.info("Initializing from Record Identifier...", "Aphid.Model");
+    $L.info("Initializing from Record Identifier...", this);
 
     var urlTemplate = new Template(this.url);
     var url = urlTemplate.evaluate({ identifier: this.identifier });
@@ -9815,20 +9819,20 @@ Aphid.Model = Class.create({
   **/
   _initializeFromElement: function()
   {
-    $L.info("Initializing from Element...", "Aphid.Model");
+    $L.info("Initializing from Element...", this);
     if (Object.isString(this.element))
       this.element = Element.fromString(this.element);
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"');
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"', this);
         this[attribute] = this.element.getData(attribute);
         this["_" + attribute] = this.element.getData(attribute);
       }.bind(this)
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
@@ -9843,11 +9847,11 @@ Aphid.Model = Class.create({
   **/
   _initializeFromObject: function()
   {
-    $L.info("Initializing from Object...", "Aphid.Model");
+    $L.info("Initializing from Object...", this);
     this.attributes.each(
       function(attribute)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"');
+        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"', this);
         if (!Object.isUndefined(this.object[attribute]))
         {
           this[attribute] = this.object[attribute];
@@ -9862,7 +9866,7 @@ Aphid.Model = Class.create({
     );
     if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"');
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
       this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
@@ -9878,7 +9882,7 @@ Aphid.Model = Class.create({
   **/
   _initializeFromJSON: function()
   {
-    $L.info("Initializing from JSON...", "Aphid.Model");
+    $L.info("Initializing from JSON...", this);
     this.object = this.json.evalJSON();
     this._initializeFromObject();
   },
@@ -9890,7 +9894,7 @@ Aphid.Model = Class.create({
   **/
   _initializeEmptyObject: function()
   {
-    $L.info("Initializing empty object...", "Aphid.Model");
+    $L.info("Initializing empty object...", this);
     this.attributes.each(
       function(attribute)
       {
@@ -9966,7 +9970,7 @@ Aphid.Model = Class.create({
     if (Object.isString(klass))
       klass = eval(klass);
 
-    $L.info("Instantiating proxy " + attribute + " ...", this.displayName);
+    $L.info("Instantiating proxy " + attribute + " ...", this);
 
     if (Object.isUndefined(this[attribute]) || this[attribute] == null)
       return;
@@ -10014,7 +10018,7 @@ Aphid.Model = Class.create({
 
   save: function()
   {
-    $L.info("Saving...", this.displayName);
+    $L.info("Saving...", this);
 
     this.errors = false;
     if (!this.validate())
@@ -10062,7 +10066,7 @@ Aphid.Model = Class.create({
 
   reload: function()
   {
-    $L.info("Reloading " + this.displayName + " with identifier " + this.identifier);
+    $L.info("Reloading " + this.displayName + " with identifier " + this.identifier, this);
 
 
     var urlTemplate = new Template(this.url);
@@ -10212,7 +10216,7 @@ Aphid.UI.View = Class.create(
 
   delegate: false,
 
-  displayName: false,
+  displayName: "Aphid.UI.View",
 
   template: false,
 
@@ -10256,19 +10260,19 @@ Aphid.UI.View = Class.create(
 
   _initializeFromElement: function()
   {
-    $L.info("Initializing from Element", "Aphid.UI.View");
+    $L.info("Initializing from Element", this);
     this._setupView();
   },
 
   _initializeFromTemplate: function()
   {
-    $L.info("Initializing from Template", "Aphid.UI.View");
+    $L.info("Initializing from Template", this);
     this._loadTemplate();
   },
 
   _initializeFromOutlet: function()
   {
-    $L.info("Initializing from Outlet", "Aphid.UI.View");
+    $L.info("Initializing from Outlet", this);
     if (this.template)
       this._initializeFromTemplate();
     else
@@ -10347,7 +10351,7 @@ Aphid.UI.View = Class.create(
       return;
     }
 
-    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.View');
+    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     view.element.hide();
     view.superview = this;
@@ -10433,7 +10437,7 @@ Aphid.UI.View = Class.create(
           onFailure: function(transport)
           {
             if (transport.status == 404)
-              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", "Aphid.UI.View");
+              $L.error("Missing Template (" + Application.sharedInstance.baseViewPath + "/" + this.template + ".html)", this);
           }.bind(this)
         };
 
@@ -10544,7 +10548,7 @@ Aphid.UI.View = Class.create(
     if (this.element.childElements().length == 0) return;
 
     var outletElements = this.element.select('*[data-outlet]');
-    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     outletElements.each(
       function(element)
@@ -10563,7 +10567,7 @@ Aphid.UI.View = Class.create(
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
-          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', 'Aphid.UI.View');
+          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', this);
           try {
 
             var options = $H();
@@ -10592,14 +10596,14 @@ Aphid.UI.View = Class.create(
           }
           catch (error)
           {
-            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error);
+            $L.error("Unable to connect outlet (" + outlet + ") to view class (" + viewClass + ")... " + error, this);
             return;
           }
           this[outlet] = instance;
           this.subviews.push(instance);
         }
         else
-          $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', 'Aphid.UI.View');
+          $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', this);
       }.bind(this)
     );
   },
@@ -10630,7 +10634,7 @@ Aphid.UI.View = Class.create(
     if (this.element.childElements().length == 0) return;
 
     var actionElements = this.element.select('*[data-action]');
-    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', 'Aphid.UI.View');
+    $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     actionElements.each(
       function(element)
@@ -10647,7 +10651,7 @@ Aphid.UI.View = Class.create(
 
         }
         else
-          $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', 'Aphid.UI.View');
+          $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', this);
       }.bind(this)
     );
   },
@@ -10735,6 +10739,8 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 
+  displayName: "Aphid.UI.ViewController",
+
   /*
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false
    *
@@ -10753,7 +10759,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
   presentModalViewController: function(viewController)
   {
-    $L.info("presentModalViewController", "Aphid.UI.ViewController");
+    $L.info("presentModalViewController", this);
     this.presentModalViewControllerAnimated(viewController, false);
   },
 
@@ -10787,7 +10793,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
       return;
     }
 
-    $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', 'Aphid.UI.ViewController');
+    $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     var mainWindow = Application.sharedInstance.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
@@ -10840,7 +10846,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
 Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
-  displayName: "TabViewController",
+  displayName: "Aphid.UI.TabViewController",
 
   persistSelectedTab: false,
 
@@ -10878,13 +10884,13 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
       var selectedTab = $C.get(this.displayName + '.selectedTab');
       if (selectedTab)
       {
-        $L.info('Restoring previously selected tab "' + selectedTab + '"');
+        $L.info('Restoring previously selected tab "' + selectedTab + '"', this);
         this.selectTab(selectedTab);
         return;
       }
     }
 
-    $L.info('Selecting default tab "' + this.defaultTab + '"');
+    $L.info('Selecting default tab "' + this.defaultTab + '"', this);
     this.selectDefaultTab();
   },
 
@@ -10899,7 +10905,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
         tab = this._findTabByName(tabName);
         if (Object.isUndefined(tab))
         {
-          $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template');
+          $L.warn('Tried to select a tab (' + tabName + ') that could not be found in the template', this);
           return;
         }
       }
@@ -11014,6 +11020,8 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
 
 Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
+  displayName: "Aphid.UI.SplitViewController",
+
   firstView: false,
   secondView: false,
 
@@ -11057,7 +11065,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   viewDidLoad: function($super)
   {
     $super();
-    $L.info('viewDidLoad', 'Aphid.UI.SplitViewController');
+    $L.info('viewDidLoad', this);
     this.element.addClassName('SplitViewController');
     if (!this.asynchronousLoadingEnabled)
       this._initializeDraggableInstance();
@@ -11068,7 +11076,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   {
     if (!this.firstView && !this.secondView)
     {
-      $L.error("firstView and secondView have not been defined", "Aphid.UI.SplitViewController");
+      $L.error("firstView and secondView have not been defined", this);
       return;
     }
     if (this.firstView.isLoaded && this.secondView.isLoaded)
@@ -11078,22 +11086,22 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   onStart: function(arg)
   {
-    $L.debug("onStart", "Aphid.UI.SplitViewController");
+    $L.debug("onStart", this);
   },
 
   onDrag: function(arg)
   {
-    $L.debug("onDrag", "Aphid.UI.SplitViewController");
+    $L.debug("onDrag", this);
   },
 
   change: function(arg)
   {
-    $L.debug("change", "Aphid.UI.SplitViewController");
+    $L.debug("change", this);
   },
 
   onEnd: function(arg)
   {
-    $L.debug("onEnd", "Aphid.UI.SplitViewController");
+    $L.debug("onEnd", this);
   }
 
 });
@@ -11110,6 +11118,8 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
  *  * Move some of the logic out of this to a delegate or callback
 **/
 Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
+
+  displayName: "Aphid.UI.SplitViewController.Draggable",
 
   firstPane: null,
   secondPane: null,
@@ -11133,7 +11143,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   updateDrag: function($super, event, pointer)
   {
-    $L.debug("updateDrag", "Aphid.UI.SplitViewController.Draggable")
+    $L.debug("updateDrag", this);
     var minWidth, maxWidth, minHeight, maxHeight;
     var offset = this.firstPane.cumulativeOffset();
 
@@ -11280,6 +11290,8 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
 Aphid.UI.LoadingIndicator = Class.create({
 
+  displayName: "Aphid.UI.LoadingIndicator",
+
   /*
    * Aphid.UI.LoadingIndicator#_canvas -> Element
    *
@@ -11315,7 +11327,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   initialize: function()
   {
-    $L.info('Initializing...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Initializing...', this);
 
     this.barCount       = 10;
     this.barSize        = { width: 4, height: 12 };
@@ -11353,7 +11365,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   {
     if (this.isAnimating) return;
 
-    $L.info('Showing the loading indicator...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Showing the loading indicator...', this);
 
     this._startAnimation();
     var opacity = $(this._canvas).getStyle('opacity');
@@ -11362,7 +11374,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   hide: function()
   {
-    $L.info('Hiding the loading indicator...', 'Aphid.UI.LoadingIndicator');
+    $L.info('Hiding the loading indicator...', this);
     this._canvas.fade({ duration: 0.2 });
     this._stopAnimation.bind(this).delay(0.2);
   },
@@ -11655,7 +11667,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (!items.all(this._validateItem))
     {
-      $L.error("All items must be instances of Aphid.UI.ListViewItem!", "Aphid.UI.ListView");
+      $L.error("All items must be instances of Aphid.UI.ListViewItem!", this);
       return;
     }
 
@@ -11725,7 +11737,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (!this.items.include(item))
     {
-      $L.error("Attempted to remove item that is not a part of the list", this.displayName);
+      $L.error("Attempted to remove item that is not a part of the list", this);
       return;
     }
     this.deselectItem(item);
@@ -11779,7 +11791,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemCount)
       listViewItemCount = this.dataSource.listViewItemCount(this);
     else
-      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this.displayName);
+      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this);
     return listViewItemCount;
   },
 
@@ -11796,7 +11808,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemForIndex)
       listViewItem = this.dataSource.listViewItemForIndex(this, index);
     else
-      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this.displayName);
+      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this);
     return listViewItem;
   },
 
@@ -11970,14 +11982,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   _listViewOrderDidChange: function()
   {
-    $L.info('_listViewOrderDidChange', 'Aphid.UI.ListView');
+    $L.info('_listViewOrderDidChange', this);
     if (this.delegate && this.delegate.listViewOrderDidChange)
       this.delegate.listViewOrderDidChange(this);
   },
 
   _listViewOrderDidUpdate: function()
   {
-    $L.info('_listViewOrderDidUpdate', 'Aphid.UI.ListView');
+    $L.info('_listViewOrderDidUpdate', this);
     this._updateSortIndexes();
     if (this.delegate && this.delegate.listViewOrderDidUpdate)
       this.delegate.listViewOrderDidUpdate(this);
@@ -12186,7 +12198,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (this.element.tagName != 'UL')
     {
-      $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', 'Aphid.UI.ListView');
+      $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', this);
       return false;
     }
     return true;
@@ -12229,7 +12241,7 @@ Aphid.UI.ListView.prototype._validateItem.displayName = "Aphid.UI.ListView._vali
 
 Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
-  displayName: "ListViewItem",
+  displayName: "Aphid.UI.ListViewItem",
 
   isSelected: false,
 
@@ -12243,7 +12255,7 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
     $super(options);
     if (!this.element)
     {
-      $L.debug("Initializing default element...", this.displayName)
+      $L.debug("Initializing default element...", this);
       this.element = new Element('li').addClassName("ListViewItem");
       this.isLoaded = true;
     }
@@ -12257,7 +12269,7 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
   select: function()
   {
-    $L.debug("Selected...", this.displayName);
+    $L.debug("Selected...", this);
     this.element.addClassName('selected');
     this.isSelected = true;
     return this;
@@ -12265,7 +12277,7 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
   deselect: function()
   {
-    $L.debug("Deselected...", this.displayName);
+    $L.debug("Deselected...", this);
     this.element.removeClassName('selected');
     this.isSelected = false;
     return this;
