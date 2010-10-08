@@ -125,7 +125,7 @@ Aphid.Support.Compatibility.String.TrimSupport = {
 if (Object.isUndefined("".trim))
   Object.extend(String.prototype, Aphid.Support.Compatibility.String.TrimSupport);
 /**
- * class Aphid.Support.Compatibility.HTML5
+ * Aphid.Support.Compatibility.HTML5
  *
  * Compatibility code to bring emerging standards support to legacy browsers,
  * such as Internet Explorer.
@@ -209,10 +209,13 @@ if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
       document.createElement(elementName);
     },
 
+    /**
+     * Aphid.Support.Compatibility.HTML5.Element
+    **/
     Element: {
 
       /**
-       * Aphid.Support.Extensions.Compatibility.HTML5.Element#constructor(tagName, attributes) -> Element
+       * Aphid.Support.Compatibility.HTML5.Element#constructor(tagName, attributes) -> Element
        *
        * Custom implementation of the Element constructor (i.e. new Element())
        * implemented by Prototype that prevents element caching from occurring
@@ -237,10 +240,13 @@ if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
         return Element.writeAttribute(cache[tagName].cloneNode(false), attributes);
       },
 
+      /**
+       * mixin Aphid.Support.Compatibility.HTML5.Element.ClassMethods
+      **/
       ClassMethods: {
 
         /**
-         * Aphid.Support.Extensions.Compatibility.HTML5.Element.ClassMethods#fromString(htmlString) -> Element
+         * Aphid.Support.Compatibility.HTML5.Element.ClassMethods#fromString(htmlString) -> Element
          *
          * - htmlString (String): an HTML-formatted string with a single outer
          *   element.
@@ -260,12 +266,12 @@ if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
       },
 
       /**
-       * mixin Aphid.Support.Extensions.Vendor.Prototype.Element.Methods
+       * mixin Aphid.Support.Compatibility.HTML5.Element.Methods
       **/
       Methods: {
 
         /**
-         *  Aphid.Support.Extensions.Compatibility.HTML5.Element.Methods#updateSafe(element, content) -> Element
+         * Aphid.Support.Compatibility.HTML5.Element.Methods#updateSafe(element, content) -> Element
          *
          * Wraps Prototype's update() method with support for adding HTML5 elements
          * in Internet Explorer. Based on innerShiv by Joe Bartlett (See
