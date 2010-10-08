@@ -163,7 +163,7 @@ task "docs:build" => [ :build, "docs:clean" ] do
         puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
       end
     end
-    puts e
+    puts e.message
     exit unless $WATCHING
   end
 end
