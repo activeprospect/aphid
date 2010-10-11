@@ -1582,6 +1582,8 @@ Aphid.Core.NotificationCenter = Class.create({
       callback: callback,
       sender: sender
     }));
+
+    $L.info("Registered as an observer for \"" + notificationName + "\" notifications", observer);
   },
 
   /**
@@ -1596,10 +1598,14 @@ Aphid.Core.NotificationCenter = Class.create({
   removeObservers: function(observer)
   {
     this.observers.each(function(pair) {
-      var observers = pair.value;
+      var notificationName = pair.key,
+          observers = pair.value;
       observers.each(function(notification) {
         if (notification.get("observer") == observer)
+        {
           observers.remove(notification);
+          $L.info("Stopped observing for \"" + notificationName + "\" notifications", observer);
+        }
       }, this);
     });
   },
@@ -1624,9 +1630,15 @@ Aphid.Core.NotificationCenter = Class.create({
 
     observers.each(function(notification) {
       if (sender && notification.get("sender") == sender && notification.get("observer") == observer)
+      {
         observers.remove(notification);
+        $L.info("Stopped observing for \"" + notificationName + "\" notifications", observer);
+      }
       else if (notification.get("observer") == observer)
+      {
         observers.remove(notification);
+        $L.info("Stopped observing for \"" + notificationName + "\" notifications", observer);
+      }
     }, this);
   },
 
@@ -1647,6 +1659,8 @@ Aphid.Core.NotificationCenter = Class.create({
   {
     var observers = this.observers.get(notificationName);
     if (!observers) return;
+
+    $L.info("Posted Notification \"" + notificationName + "\"", sender);
 
     observers.each(function(notification) {
       var observedSender = notification.get("sender");
