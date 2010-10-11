@@ -43,6 +43,11 @@
           assertInstanceOf(Aphid.Support.Logger, this.application.logger);
         }},
 
+        testShouldInitializeNotificationCenter: function() { with(this) {
+          assert(this.application.notificationCenter);
+          assertInstanceOf(Aphid.Core.NotificationCenter, this.application.notificationCenter);
+        }},
+
         testShouldInitializeLoadingIndicator: function() { with(this) {
           assert(this.application.loadingIndicator);
           assertInstanceOf(Aphid.UI.LoadingIndicator, this.application.loadingIndicator);

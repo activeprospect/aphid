@@ -9652,6 +9652,8 @@ Aphid.Core.Application = Class.create({
 
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
 
+  notificationCenter: false,
+
   loadingIndicator: false,
 
   mainWindow: false,
@@ -9661,6 +9663,7 @@ Aphid.Core.Application = Class.create({
   initialize: function()
   {
     this._initializeLogger();
+    this._initializeNotificationCenter();
     this._initializeLoadingIndicator();
     this.mainWindow = new Aphid.UI.Window();
     this.baseViewPath = "Resources/Templates";
@@ -9669,6 +9672,32 @@ Aphid.Core.Application = Class.create({
   applicationDidFinishInitialization: function()
   {
 
+  },
+
+  /*
+   * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
+   *
+   * Initializes a new Logger instance to be shared by the Application. The
+   * Logger instance is accessible as Application.sharedInstance.logger as
+   * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
+   */
+  _initializeLogger: function()
+  {
+    this.logger = new Aphid.Support.Logger(this.logLevel);
+    return this.logger;
+  },
+
+  /*
+   * Aphid.Core.Application#_initializeNotificationCenter() -> Aphid.Support.NotificationCenter
+   *
+   * Initializes a new NotificationCenter instance to be shared by the
+   * Application. The NotificationCenter instance is accessible as
+   * Application.sharedInstance.notificationCenter.
+   */
+  _initializeNotificationCenter: function()
+  {
+    this.notificationCenter = new Aphid.Core.NotificationCenter();
+    return this.notificationCenter;
   },
 
   /*
@@ -9685,19 +9714,6 @@ Aphid.Core.Application = Class.create({
       onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
     });
     return this.loadingIndicator;
-  },
-
-  /*
-   * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
-   *
-   * Initializes a new Logger instance to be shared by the Application. The
-   * Logger instance is accessible as Application.sharedInstance.logger as
-   * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
-   */
-  _initializeLogger: function()
-  {
-    this.logger = new Aphid.Support.Logger(this.logLevel);
-    return this.logger;
   }
 
 });

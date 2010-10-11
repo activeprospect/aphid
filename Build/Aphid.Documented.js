@@ -1331,6 +1331,13 @@ Aphid.Core.Application = Class.create({
   logLevel: Aphid.Support.Logger.DEBUG_LEVEL,
 
   /**
+   * Aphid.Core.Application#notificationCenter -> Aphid.Core.NotificationCenter | false
+   *
+   * A global, shared instance of [[Aphid.Core.NotificationCenter]].
+  **/
+  notificationCenter: false,
+
+  /**
    * Aphid.Core.Application#loadingIndicator -> Aphid.Support.LoadingIndicator | false
    *
    * A global, shared instance of [[Aphid.Support.LoadingIndicator]].
@@ -1361,6 +1368,7 @@ Aphid.Core.Application = Class.create({
   initialize: function()
   {
     this._initializeLogger();
+    this._initializeNotificationCenter();
     this._initializeLoadingIndicator();
     this.mainWindow = new Aphid.UI.Window();
     this.baseViewPath = "Resources/Templates";
@@ -1379,6 +1387,32 @@ Aphid.Core.Application = Class.create({
   },
 
   /*
+   * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
+   *
+   * Initializes a new Logger instance to be shared by the Application. The
+   * Logger instance is accessible as Application.sharedInstance.logger as
+   * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
+   */
+  _initializeLogger: function()
+  {
+    this.logger = new Aphid.Support.Logger(this.logLevel);
+    return this.logger;
+  },
+
+  /*
+   * Aphid.Core.Application#_initializeNotificationCenter() -> Aphid.Support.NotificationCenter
+   *
+   * Initializes a new NotificationCenter instance to be shared by the
+   * Application. The NotificationCenter instance is accessible as
+   * Application.sharedInstance.notificationCenter.
+   */
+  _initializeNotificationCenter: function()
+  {
+    this.notificationCenter = new Aphid.Core.NotificationCenter();
+    return this.notificationCenter;
+  },
+
+  /*
    * Aphid.Core.Application#_initializeLoadingIndicator() -> Aphid.UI.LoadingIndicator
    *
    * Initializes a new LoadingIndicator instance to be shared by the
@@ -1392,19 +1426,6 @@ Aphid.Core.Application = Class.create({
       onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
     });
     return this.loadingIndicator;
-  },
-
-  /*
-   * Aphid.Core.Application#_initializeLogger() -> Aphid.Support.Logger
-   *
-   * Initializes a new Logger instance to be shared by the Application. The
-   * Logger instance is accessible as Application.sharedInstance.logger as
-   * well as the shortcut $L (i.e. $L.warn("Danger, Will Robinson! Danger!")).
-   */
-  _initializeLogger: function()
-  {
-    this.logger = new Aphid.Support.Logger(this.logLevel);
-    return this.logger;
   }
 
 });

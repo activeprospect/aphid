@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Core.Application] Initialize a shared notification center during
+   application initialization (accessible as
+   Application.sharedInstance.notificationCenter).
+
  * [Aphid.Core.NotificationCenter] Added NotificationCenter which provides a
    mechanism for broadcasting information throughout an application.
 
