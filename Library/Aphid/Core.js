@@ -8,3 +8,4 @@
 Aphid.Core = {};
 
 //= require "Core/Application"
+//= require "Core/NotificationCenter"

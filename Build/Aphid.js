@@ -711,6 +711,73 @@ Aphid.Core.Application.bootstrap = function()
 }
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
+Aphid.Core.NotificationCenter = Class.create({
+
+  displayName: "Aphid.Core.NotificationCenter",
+
+  observers: false,
+
+  initialize: function()
+  {
+    this.observers = $H();
+  },
+
+  addObserver: function(observer, callback, notificationName, sender)
+  {
+    var registeredNotification = this.observers.get(notificationName);
+    if (!registeredNotification)
+      registeredNotification = this.observers.set(notificationName, $A());
+
+    registeredNotification.push($H({
+      observer: observer,
+      callback: callback,
+      sender: sender
+    }));
+  },
+
+  removeObservers: function(observer)
+  {
+    this.observers.each(function(pair) {
+      var observers = pair.value;
+      observers.each(function(notification) {
+        if (notification.get("observer") == observer)
+          observers.remove(notification);
+      }, this);
+    });
+  },
+
+  removeObserver: function(observer, notificationName, sender)
+  {
+    var observers = this.observers.get(notificationName);
+    if (!observers) return;
+
+    observers.each(function(notification) {
+      if (sender && notification.get("sender") == sender && notification.get("observer") == observer)
+        observers.remove(notification);
+      else if (notification.get("observer") == observer)
+        observers.remove(notification);
+    }, this);
+  },
+
+  postNotification: function(notificationName, sender, info)
+  {
+    var observers = this.observers.get(notificationName);
+    if (!observers) return;
+
+    observers.each(function(notification) {
+      var observedSender = notification.get("sender");
+      var observer = notification.get("observer");
+      var callback = notification.get("callback");
+
+      if (observedSender && sender != observedSender)
+        return;
+
+      callback.call(observer, sender, info);
+    });
+  }
+
+});
+
 Aphid.Model = Class.create({
 
   displayName: "Aphid.Model",
