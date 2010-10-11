@@ -109,8 +109,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Display the Overlay
-    var mainWindow = Application.sharedInstance.mainWindow;
-    mainWindow.displayOverlayAnimated(animated);
+    $AppDelegate.mainWindow.displayOverlayAnimated(animated);
 
     // Display the Modal View Container
     if (!this._modalViewContainer)
@@ -169,8 +168,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     if (!this.modalViewController) return;
 
     // Hide the Overlay
-    var mainWindow = Application.sharedInstance.mainWindow;
-    mainWindow.dismissOverlayAnimated(animated);
+    $AppDelegate.mainWindow.dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
     animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();

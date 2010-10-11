@@ -510,7 +510,7 @@ Aphid.UI.View = Class.create(
   **/
   _loadTemplate: function()
   {
-    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.template + '.html',
+    var viewPath = $AppDelegate.baseViewPath + '/' + this.template + '.html',
         options  = {
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
@@ -569,7 +569,7 @@ Aphid.UI.View = Class.create(
 
   _templateRequestDidFail: function(transport)
   {
-    var templatePath = Application.sharedInstance.baseViewPath + "/" + this.template + ".html";
+    var templatePath = $AppDelegate.baseViewPath + "/" + this.template + ".html";
 
     if (transport.status == 404)
     $L.error("Faild to load template \"" + templatePath + "\" (Error " + transport.status + " - " + transport.statusText + ")", this);

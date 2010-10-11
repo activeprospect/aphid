@@ -146,7 +146,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
     this._messageElement.update(this.message || "");
     this._statusElement.update(this.status || "");
 
-    var mainWindow = Application.sharedInstance.mainWindow;
+    var mainWindow = $AppDelegate.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
     mainWindow.addSubviewAnimated(this);
   },
@@ -174,7 +174,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
   {
     if (Object.isUndefined(animated)) animated = true;
 
-    var mainWindow = Application.sharedInstance.mainWindow;
+    var mainWindow = $AppDelegate.mainWindow;
     mainWindow.dismissOverlayAnimated(animated);
 
     this.removeFromSuperviewAnimated();

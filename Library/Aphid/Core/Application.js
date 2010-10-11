@@ -164,7 +164,8 @@ Aphid.Core.Application.bootstrap = function()
     Application = Class.create(Aphid.Core.Application);
   }
   Application.sharedInstance = new Application();
-  if (!Object.isUndefined(Application.sharedInstance.applicationDidFinishInitialization))
-    Application.sharedInstance.applicationDidFinishInitialization();
+  $AppDelegate = Application.sharedInstance;
+  if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
+    $AppDelegate.applicationDidFinishInitialization();
 }
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);

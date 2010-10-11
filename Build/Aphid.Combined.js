@@ -9736,8 +9736,9 @@ Aphid.Core.Application.bootstrap = function()
     Application = Class.create(Aphid.Core.Application);
   }
   Application.sharedInstance = new Application();
-  if (!Object.isUndefined(Application.sharedInstance.applicationDidFinishInitialization))
-    Application.sharedInstance.applicationDidFinishInitialization();
+  $AppDelegate = Application.sharedInstance;
+  if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
+    $AppDelegate.applicationDidFinishInitialization();
 }
 document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
 
@@ -10512,7 +10513,7 @@ Aphid.UI.View = Class.create(
   **/
   _loadTemplate: function()
   {
-    var viewPath = Application.sharedInstance.baseViewPath + '/' + this.template + '.html',
+    var viewPath = $AppDelegate.baseViewPath + '/' + this.template + '.html',
         options  = {
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
@@ -10559,7 +10560,7 @@ Aphid.UI.View = Class.create(
 
   _templateRequestDidFail: function(transport)
   {
-    var templatePath = Application.sharedInstance.baseViewPath + "/" + this.template + ".html";
+    var templatePath = $AppDelegate.baseViewPath + "/" + this.template + ".html";
 
     if (transport.status == 404)
     $L.error("Faild to load template \"" + templatePath + "\" (Error " + transport.status + " - " + transport.statusText + ")", this);
@@ -10888,8 +10889,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
-    var mainWindow = Application.sharedInstance.mainWindow;
-    mainWindow.displayOverlayAnimated(animated);
+    $AppDelegate.mainWindow.displayOverlayAnimated(animated);
 
     if (!this._modalViewContainer)
     {
@@ -10926,8 +10926,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     if (Object.isUndefined(animated)) animated = true;
     if (!this.modalViewController) return;
 
-    var mainWindow = Application.sharedInstance.mainWindow;
-    mainWindow.dismissOverlayAnimated(animated);
+    $AppDelegate.mainWindow.dismissOverlayAnimated(animated);
 
     animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();
     animated ? this._modalViewContainer.update.delay(0.25) : this._modalViewContainer.update();
@@ -11658,7 +11657,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
     this._messageElement.update(this.message || "");
     this._statusElement.update(this.status || "");
 
-    var mainWindow = Application.sharedInstance.mainWindow;
+    var mainWindow = $AppDelegate.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
     mainWindow.addSubviewAnimated(this);
   },
@@ -11672,7 +11671,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
   {
     if (Object.isUndefined(animated)) animated = true;
 
-    var mainWindow = Application.sharedInstance.mainWindow;
+    var mainWindow = $AppDelegate.mainWindow;
     mainWindow.dismissOverlayAnimated(animated);
 
     this.removeFromSuperviewAnimated();

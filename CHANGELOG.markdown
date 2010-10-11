@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Core.Application] Alias Application.sharedInstance to $AppDelegate
+   upon application initialization.
+
  * [Aphid.Core.Application] Initialize a shared notification center during
    application initialization (accessible as
    Application.sharedInstance.notificationCenter).

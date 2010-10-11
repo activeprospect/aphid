@@ -41,8 +41,7 @@
  *       lastAccessLabel: false,
  *       viewDidLoad: function()
  *       {
- *         var notificationCenter = Application.sharedInstance.notificationCenter;
- *         notificationCenter.addObserver(this,
+ *         $AppDelegate.notificationCenter.addObserver(this,
  *           this.handleUserReloadNotification,
  *           "UserReloadedNotification");
  *       },
@@ -71,8 +70,7 @@
  *       ...
  *       afterReload: function()
  *       {
- *         var notificationCenter = Application.sharedInstance.notificationCenter;
- *         notificationCenter.postNotification("UserReloadedNotification", this);
+ *         $AppDelegate.notificationCenter.postNotification("UserReloadedNotification", this);
  *       }
  *       ...
  *     });
