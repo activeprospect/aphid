@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.UI.Controls.SelectView] Added SelectView, a custom control that
+   replaces HTML SELECT controls with our own custom styling and behaviors.
+
  * [Aphid.Core.Application] Alias Application.sharedInstance to $AppDelegate
    upon application initialization.
 

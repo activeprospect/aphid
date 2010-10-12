@@ -10844,6 +10844,399 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
 });
 
 
+
+Aphid.UI.Controls = {};
+
+
+Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
+
+  displayName: "Aphid.UI.Controls.SelectView",
+
+  selectElement: false,
+  widgetElement: false,
+  listElement: false,
+  hoverElement: false,
+
+  _isDragging: false,
+
+
+  viewDidLoad: function()
+  {
+
+    if (Prototype.Browser.IE7)
+      return;
+
+    this.selectElement = this.element;
+
+    this.element = new Element("div").addClassName("SelectView");
+    this.element.observe('mousedown', this._handleMouseDownEvent.bind(this));
+
+    this.widgetElement = new Element("div").addClassName("widget");
+    this.widgetElement.setAttribute("tabindex", 0);
+    this.widgetElement.observe("focus", this._handleFocusEvent.bind(this));
+    this.widgetElement.observe("blur", this._handleBlurEvent.bind(this));
+    this.element.insert(this.widgetElement);
+
+    this.listElement = new Element("ul");
+    this.listElement.hide();
+    this.element.insert(this.listElement);
+
+    this._initializeItemsFromSelectElement();
+
+    this.selectElement.insert({ after: this.element });
+
+    this.selectElement.observe("change", function(event) {
+      var value = event.element().value;
+      this.select(value);
+    }.bind(this));
+
+    var selectedOption = this.selectElement.down("[selected]");
+    if (selectedOption)
+      this.select(selectedOption.readAttribute("value"));
+    else
+      this.selectIndex(0);
+
+    if (Prototype.Browser.IE)
+    {
+      this.element.onselectstart = function() { return false };
+      this.widgetElement.onselectstart = function() { return false };
+      this.listElement.onselectstart = function() { return false };
+    }
+  },
+
+
+  _initializeItemsFromSelectElement: function()
+  {
+
+    this._options = this.selectElement.childElements().collect(this._parseOptionElement, this);
+
+    this._listItems = this._options.collect(this._listItemForOption, this);
+    this.listElement.insert(this._listItems);
+
+  },
+
+  _parseOptionElement: function(element)
+  {
+    return {
+      label: element.innerHTML,
+      value: element.readAttribute("value")
+    };
+  },
+
+  _listItemForOption: function(option)
+  {
+    var listItemElement = new Element("li");
+    listItemElement.update(option.label);
+    listItemElement.setData("value", option.value);
+    listItemElement.observe('click', this._handleClickEventOnListItem.bind(this));
+    listItemElement.observe("mousemove", this._handleMouseMoveEventOnListItem.bind(this));
+    listItemElement.observe("mouseout", this._handleMouseOutEventOnListItem.bind(this));
+    return listItemElement;
+  },
+
+
+
+  displayOptions: function()
+  {
+    $L.info("displayOptions", this.displayName);
+
+    this.listElement.style.visibility = "hidden";
+    this.listElement.show();
+
+    this.listElement.select(".selected").invoke("removeClassName", "selected");
+    this.selectedItem = this.listElement.down("[data-value='" + this.selectedOption["value"] + "']");
+    this.selectedItem.addClassName("selected");
+
+    var offset = (this.selectedItem.getHeight() / 2) + this.selectedItem.positionedOffset().top;
+
+    this._updateHoverElement(this.selectedItem);
+
+    this.listElement.style.top = (this.widgetElement.positionedOffset().top - this.selectedItem.positionedOffset().top) + "px";
+    this.listElement.style.left = this.widgetElement.positionedOffset().left - 10 + "px";
+    this.listElement.style.minWidth = this.widgetElement.getWidth() + "px";
+
+    this.listElement.hide();
+    this.listElement.style.visibility = "visible";
+    this.listElement.appear({ duration: 0.2 });
+
+    this._handleMouseDownEventOnDocumentCached = this._handleMouseDownEventOnDocument.bindAsEventListener(this);
+    document.observe("mousedown", this._handleMouseDownEventOnDocumentCached);
+  },
+
+  dismissOptions: function()
+  {
+    $L.info("dismissOptions", this.displayName);
+    this.listElement.fade({ duration: 0.2, queue: "end" });
+    document.stopObserving("mousedown", this._handleMouseDownEventOnDocumentCached);
+  },
+
+
+  select: function(value)
+  {
+    var selectedOption = this._options.find(
+      function(option)
+      {
+        return option["value"] == value;
+      }
+    );
+    this.widgetElement.update(selectedOption["label"]);
+    this.selectedOption = selectedOption;
+
+    var originalOption = this.selectElement.select("[value='" + value + "']");
+    if (originalOption.length == 1)
+    {
+      originalOptionElement = originalOption.first();
+      originalOptionElement.selected = true;
+    }
+
+    if (this.listElement.visible())
+    {
+      var selectedElement = this.listElement.down("[data-value='" + selectedOption["value"] + "']");
+      if (selectedElement)
+      {
+        new Effect.Pulsate(selectedElement, { duration: 0.1, pulses: 1 });
+        this.dismissOptions();
+      }
+      this.widgetElement.focus();
+    }
+  },
+
+  selectIndex: function(index)
+  {
+    var selectedOption = this._options[index];
+    this.widgetElement.update(selectedOption["label"]);
+    this.selectedOption = selectedOption;
+
+    if (this.listElement.visible())
+      this.dismissOptions();
+  },
+
+
+  _handleMouseDownEvent: function(event)
+  {
+    var element = event.element();
+    event.stop();
+
+    $L.info("_handleMouseDownEvent - " + element.outerHTML, this.displayName);
+
+    this.widgetElement.focus();
+
+    this._isDraggingTimer = setTimeout(function() {
+      $L.info("\"Drag to Selection\" enabled...", this.displayName);
+      this._isDragging = true;
+     }.bind(this), 250);
+
+    if (!this.listElement.visible())
+      this.displayOptions();
+
+    this._preventTextSelection();
+
+    this._handleMouseUpEventOnDocumentCached = this._handleMouseUpEventOnDocument.bindAsEventListener(this);
+    document.body.observe("mouseup", this._handleMouseUpEventOnDocumentCached);
+  },
+
+  _handleMouseDownEventOnDocument: function(event)
+  {
+    $L.info(event.element().outerHTML, this.displayName);
+    event.stop();
+    if (!event.element().descendantOf(this.listElement))
+      this.dismissOptions();
+  },
+
+  _handleMouseUpEventOnDocument: function(event)
+  {
+    var element = event.element();
+    event.stop();
+
+    $L.info("_handleMouseUpEventOnDocument - " + element.outerHTML, this.displayName);
+
+    clearTimeout(this._isDraggingTimer);
+
+    if (this._isDragging)
+    {
+      var hoveredElement = this.listElement.down(".hover");
+      if (hoveredElement)
+        this.select(hoveredElement.getData("value"));
+      else
+        this.dismissOptions();
+    }
+
+    this._allowTextSelection();
+    document.body.stopObserving("mouseup", this._handleMouseUpEventOnDocumentCached);
+
+    this._isDragging = false;
+  },
+
+  _handleClickEventOnListItem: function(event)
+  {
+    var element = event.element();
+    event.stop();
+
+    $L.info("_handleClickEvent - " + element.outerHTML, this.displayName);
+
+    this.select(element.getData("value"));
+  },
+
+  _handleMouseMoveEventOnListItem: function(event)
+  {
+    var element = event.element();
+    if (element != this.hoverElement)
+      this._updateHoverElement(element);
+  },
+
+  _handleMouseOutEventOnListItem: function(event)
+  {
+    var element = event.element();
+    element.removeClassName("hover");
+    this.hoverElement = false;
+  },
+
+  _handleKeyDownEvent: function(event)
+  {
+    var selectedValue = false;
+
+    if (event.keyCode == 38)
+    {
+      event.stop();
+
+      if (!this.listElement.visible())
+        return this.displayOptions();
+
+      var element;
+      if (this.hoverElement)
+        element = this.hoverElement.previous()
+      else
+        element = this.listElement.childElements().last();
+
+      if (!Object.isUndefined(element))
+        this._updateHoverElement(element);
+
+      return;
+    }
+
+    else if (event.keyCode == 40)
+    {
+      event.stop();
+
+      if (!this.listElement.visible())
+        return this.displayOptions();
+
+      var element;
+      if (this.hoverElement)
+        element = this.hoverElement.next()
+      else
+        element = this.listElement.childElements().first();
+
+      if (!Object.isUndefined(element))
+        this._updateHoverElement(element);
+
+      return;
+    }
+
+    else if (event.keyCode == 32)
+    {
+      event.stop();
+
+      if (!this.listElement.visible())
+        return this.displayOptions();
+
+      if (this.hoverElement)
+        selectedValue = this.hoverElement.getData("value");
+    }
+
+    else if (event.keyCode == 13)
+    {
+      event.stop();
+
+      if (!this.listElement.visible())
+        return this.displayOptions();
+
+      if (this.listElement.visible())
+      {
+        if (this.hoverElement)
+          selectedValue = this.hoverElement.getData("value");
+      }
+    }
+
+    else if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 48 && event.keyCode <= 57))
+    {
+      if (!this.listElement.visible() && (event.ctrlKey || event.metaKey))
+        return;
+
+      event.stop();
+
+      var character       = String.fromCharCode(event.keyCode);
+      var matchingElement = this.listElement.childElements().find(
+        function(element)
+        {
+          return element.innerHTML[0] == character;
+        }
+      );
+
+      if (matchingElement)
+      {
+        if (this.listElement.visible())
+          this._updateHoverElement(matchingElement);
+        else
+          selectedValue = matchingElement.getData("value");
+      }
+    }
+
+    if (selectedValue)
+      this.select(selectedValue);
+  },
+
+  _handleFocusEvent: function(event)
+  {
+    this._handleKeyDownEventCached = this._handleKeyDownEvent.bindAsEventListener(this);
+    this.element.observe("keydown", this._handleKeyDownEventCached);
+  },
+
+  _handleBlurEvent: function(event)
+  {
+    this.element.stopObserving("keydown", this._handleKeyDownEventCached);
+    this._handleKeyDownEventCached = false;
+  },
+
+  _updateHoverElement: function(element)
+  {
+    if (this.hoverElement) this.hoverElement.removeClassName("hover");
+    this.hoverElement = element.addClassName("hover");
+  },
+
+
+  /*
+   * Aphid.UI.Controls.SelectView#_preventTextSelection() -> null
+   *
+   * Disables any text selection from occurring on the document. Text
+   * selection can be re-enabled by calling [[Aphid.UI.Controls.SelectView#_allowTextSelection]].
+  **/
+  _preventTextSelection: function()
+  {
+    document.body.setStyle({
+      "-webkit-user-select": "none",
+      "-moz-user-select": "none"
+    });
+  },
+
+  /*
+   * Aphid.UI.Controls.SelectView#_allowTextSelection() -> null
+   *
+   * Allows text selection to occur on the document. This is normally called
+   * after text selection has been suspended with a previous call to
+   * [[Aphid.UI.Controls.SelectView#_preventTextSelection]].
+  **/
+  _allowTextSelection: function()
+  {
+    document.body.setStyle({
+      "-webkit-user-select": "auto",
+      "-moz-user-select": "auto"
+    });
+  }
+
+});
+
+
 Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 {
 

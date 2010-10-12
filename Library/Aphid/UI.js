@@ -10,6 +10,10 @@ Aphid.UI = {};
 //= require "UI/View"
 //= require "UI/Window"
 
+//= Controls -----------------------------------------------------------------
+
+//= require "UI/Controls"
+
 // Controllers ---------------------------------------------------------------
 
 //= require "UI/ViewController"

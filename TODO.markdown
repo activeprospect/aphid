@@ -48,7 +48,7 @@
    service may need to serialize and save differently.
 
  * Add more callbacks and delegates to the workflow (i.e. beforeSave,
-   beforeLoad, afterInitiaze, beforeInitialize, etc).
+   beforeLoad, afterInitialize, beforeInitialize, etc).
 
  * Add proper relationship support and clarify the meaning of a proxy versus
    a relationship.
@@ -166,3 +166,22 @@
    included in both classes.
 
  * Add tests for selection persistence.
+
+### Aphid.UI.Controls.SelectView
+
+ * Add support for Internet Explorer 7.
+
+ * Ensure that we are observing for change events on the original SELECT
+   element.
+
+ * Need to validate the element before initializing to make sure it is a
+   <select> and multiple="false".
+
+ * Add support for detecting the "nearest" letter during type-ahead find.
+
+ * Add support for matching more than just the first letter if typed in
+   succession within a buffer timeout interval.
+
+ * Finish writing documentation for the SelectView control.
+
+ * Add tests for the SelectView control.

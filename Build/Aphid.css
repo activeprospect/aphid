@@ -729,56 +729,6 @@ table.default tbody tr.even { background-color: #f3f4f5; }
 table.default tr { line-height: 2em; }
 table.details tr { line-height: 2em; }
 table.details tbody th { width: 10em; }
-ul.segmented {
-  display: inline-block;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  line-height: 2em;
-}
-ul.segmented li {
-  display: inline-block;
-  float: left;
-  font-weight: bold;
-  color: #555555;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-}
-ul.segmented li:hover { color: #222222; }
-ul.segmented li a {
-  text-decoration: none;
-  color: inherit;
-}
-ul.segmented li label {
-  display: block;
-  background-color: #eeeeee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dddddd));
-  background-image: -moz-linear-gradient(top, #ffffff, #dddddd);
-  border: 0.1em solid #cdcdcd;
-  padding: 0 1em;
-  font-size: 0.9em;
-}
-ul.segmented li:first-of-type label {
-  -webkit-border-top-left-radius: 0.5em;
-  -webkit-border-bottom-left-radius: 0.5em;
-  border-right-width: 0;
-}
-ul.segmented li:last-of-type label {
-  -webkit-border-top-right-radius: 0.5em;
-  -webkit-border-bottom-right-radius: 0.5em;
-}
-ul.segmented li input[type=radio] { display: none; }
-ul.segmented li input[type=radio]:checked + label {
-  color: #222222;
-  background-color: #eeeeee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#ffffff));
-  background-image: -moz-linear-gradient(top, #dddddd, #ffffff);
-}
-ul.segmented li.current label {
-  color: #222222;
-  background-color: #eeeeee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#ffffff));
-  background-image: -moz-linear-gradient(top, #dddddd, #ffffff);
-}
 .overlay {
   position: absolute;
   z-index: 1000;
@@ -1126,4 +1076,136 @@ footer.toolbar .status {
   -webkit-user-select: none;
   -moz-user-select: none;
   cursor: default;
+}
+ul.segmented {
+  display: inline-block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 2em;
+}
+ul.segmented li {
+  display: inline-block;
+  float: left;
+  font-weight: bold;
+  color: #555555;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+ul.segmented li:hover { color: #222222; }
+ul.segmented li a {
+  text-decoration: none;
+  color: inherit;
+}
+ul.segmented li label {
+  display: block;
+  background-color: #eeeeee;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dddddd));
+  background-image: -moz-linear-gradient(top, #ffffff, #dddddd);
+  border: 0.1em solid #cdcdcd;
+  padding: 0 1em;
+  font-size: 0.9em;
+}
+ul.segmented li:first-of-type label {
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-bottom-left-radius: 0.5em;
+  border-right-width: 0;
+}
+ul.segmented li:last-of-type label {
+  -webkit-border-top-right-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
+}
+ul.segmented li input[type=radio] { display: none; }
+ul.segmented li input[type=radio]:checked + label {
+  color: #222222;
+  background-color: #eeeeee;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#ffffff));
+  background-image: -moz-linear-gradient(top, #dddddd, #ffffff);
+}
+ul.segmented li.current label {
+  color: #222222;
+  background-color: #eeeeee;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#ffffff));
+  background-image: -moz-linear-gradient(top, #dddddd, #ffffff);
+}
+.SelectView {
+  font-weight: bold;
+  text-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  display: inline-block;
+}
+.SelectView .widget {
+  text-align: left;
+  line-height: 1.5em;
+  display: inline-block;
+  width: 10em;
+  height: 1.5em;
+  padding-left: 0.5em;
+  border: 0.1em solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.6);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.8)), to(rgba(255, 255, 255, 0.4)));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+  -webkit-border-radius: 0.25em;
+  -moz-border-radius: 0.25em;
+  border-radius: 0.25em;
+  overflow: hidden;
+  -webkit-box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
+  -moz-box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
+}
+.SelectView .widget:focus {
+  -webkit-box-shadow: 0 0 3px rgba(46, 96, 138, 0.6);
+  -moz-box-shadow: 0 0 3px rgba(46, 96, 138, 0.6);
+}
+.SelectView .widget:hover {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.025)), to(rgba(0, 0, 0, 0.075)));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.075));
+}
+.SelectView .widget:after {
+  text-align: center;
+  height: 1.5em;
+  line-height: 1.5em;
+  float: right;
+  content: "\25BE";
+  font-weight: bold;
+  width: 1.5em;
+  display: inline-block;
+  border-left: 0.1em solid rgba(255, 255, 255, 0.3);
+  outline: 0.1em solid rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 1px white;
+  color: rgba(0, 0, 0, 0.75);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.075)), to(rgba(0, 0, 0, 0.15)));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.075), rgba(0, 0, 0, 0.15));
+}
+.SelectView .widget:hover:after { color: rgba(0, 0, 0, 0.85); }
+.SelectView ul {
+  padding: 0.2em;
+  position: absolute;
+  border: 0.1em solid rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 0.25em;
+  -moz-border-radius: 0.25em;
+  border-radius: 0.25em;
+  background-color: rgba(255, 255, 255, 0.9);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  cursor: default !important;
+}
+.SelectView li {
+  padding: 0.1em 0.5em;
+  padding-left: 2em;
+  text-align: left;
+  cursor: default !important;
+}
+.SelectView li.hover {
+  color: white;
+  background-color: #336699;
+  text-shadow: none;
+}
+.SelectView li.selected:before {
+  content: "\2713";
+  margin-left: -2em;
+  width: 2em;
+  display: inline-block;
+  text-align: center;
 }
