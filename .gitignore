@@ -5,12 +5,8 @@
 .rvmrc
 Build/Packages
 Documentation
-Demo/JavaScripts/Aphid*.js
-Demo/Stylesheets/Aphid*.css
 Resources/Stylesheets/*.css
 Resources/Stylesheets/**/*.css
 Skeleton/Build/*
 Skeleton/Resources/Stylesheets/*.css
 Skeleton/Resources/Stylesheets/**/*.css
-Templates/JavaScripts
-Templates/Stylesheets

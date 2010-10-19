@@ -183,42 +183,6 @@ task "docs:open" do
   puts "open \"#{ROOT_PATH}/Documentation/index.html\"\n\n"
 end
 
-# Demo Tasks -----------------------------------------------------------------
-
-desc "Update and launch the demo application"
-task :demo => [ 'demo:update' ] do
-  `open "#{ROOT_PATH}/Demo/index.html"`
-end
-
-namespace "demo" do
-  desc "Update the demo application with the built project files and vendor libraries"
-  task :update => [ :build ] do
-    header "Updating Demo"
-    cp "Build/Aphid.Combined.js", "Demo/JavaScripts/Aphid.Combined.js"
-    cp "Build/Aphid.css", "Demo/Stylesheets/Aphid.css"
-    puts
-  end
-end
-
-# Template Tasks -------------------------------------------------------------
-
-# desc "Update and launch the demo application"
-# task :demo => [ 'demo:update' ] do
-#   `open "#{ROOT_PATH}/Demo/index.html"`
-# end
-
-namespace "templates" do
-  desc "Update the templates with the built project files and vendor libraries"
-  task :update => [ :build ] do
-    header "Updating Templates"
-    mkdir "Templates/JavaScripts" unless File.exists? "Templates/JavaScripts"
-    mkdir "Templates/Stylesheets" unless File.exists? "Templates/Stylesheets"
-    cp "Build/Aphid.Combined.js", "Templates/JavaScripts/Aphid.Combined.js"
-    cp "Build/Aphid.css", "Templates/Stylesheets/Aphid.css"
-    puts
-  end
-end
-
 # Test Tasks -----------------------------------------------------------------
 
 desc "Runs all the JavaScript unit tests and collects the results"
