@@ -2040,7 +2040,8 @@ Aphid.Model = Class.create({
         alertView.message = "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
         alertView.status = "Error " + transport.status + " - " + transport.statusText;
         alertView.showAnimated();
-      }.bind(this)
+      }.bind(this),
+      onException: function(transport, exception) { throw exception }
     };
 
     // Make Request
@@ -2334,7 +2335,8 @@ Aphid.Model = Class.create({
         alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>";
         alertView.status = "Error " + transport.status + " - " + transport.statusText;
         alertView.showAnimated();
-      }.bind(this)
+      }.bind(this),
+      onException: function(transport, exception) { throw exception }
     };
 
     // Make Request
@@ -2372,7 +2374,8 @@ Aphid.Model = Class.create({
         alertView.message = "Failed to reload an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
         alertView.status = "Error " + transport.status + " - " + transport.statusText;
         alertView.showAnimated();
-      }.bind(this)
+      }.bind(this),
+      onException: function(transport, exception) { throw exception }
     };
 
     // Make Request
@@ -3031,7 +3034,8 @@ Aphid.UI.View = Class.create(
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
           onSuccess: this._templateDidFinishLoading.bind(this),
-          onFailure: this._templateRequestDidFail.bind(this)
+          onFailure: this._templateRequestDidFail.bind(this),
+          onException: function(transport, exception) { throw exception }
         };
 
     this.isLoaded  = false;

@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [General] Added an exception handler to all Ajax.Request instances so that
+   exceptions thrown in callback methods are properly thrown to the user so
+   that we no longer have cases where an error in viewDidLoad fails silently.
+
  * [Aphid.UI.Controls.SelectView] Added SelectView, a custom control that
    replaces HTML SELECT controls with our own custom styling and behaviors.
 

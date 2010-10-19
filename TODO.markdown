@@ -24,6 +24,14 @@
 
 ## Tools
 
+ * Generating new Aphid applications with the "aphid new" command should
+   support vendorizing Aphid as a git submodule. This should initialize the
+   new application with git and add the submodule automatically.
+
+ * Add support for evaluating files in the Skeleton folder with Erb or another
+   template language so that we can replace placeholders for the application
+   name and do any other required evaluation at the time of setup.
+
 ## Library
 
 ### General
