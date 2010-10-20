@@ -1,12 +1,13 @@
 # encoding: UTF-8
 
+require "rake"
 require "fileutils"
 require File.join(File.dirname(__FILE__), "support")
 
 # Default Task ---------------------------------------------------------------
 
-desc "Defaults to #{lambda { DEFAULT_TASKS.inspect }}"
-task :default => lambda { DEFAULT_TASKS }
+desc "Defaults to build"
+task :default => :build
 
 # Cleanup & Preparation Tasks ------------------------------------------------
 
