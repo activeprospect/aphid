@@ -115,8 +115,8 @@ module Aphid
 
       # TODO Move this to something like Aphid.vendorize! with various options to vendor from gem or git
       def copy_vendored_aphid_to_build_folder
-        mkdir "#{ROOT_PATH}/Build/Vendor"
-        mkdir "#{ROOT_PATH}/Build/Vendor/Aphid"
+        mkdir "#{ROOT_PATH}/Build/Vendor" unless File.exist? "#{ROOT_PATH}/Build/Vendor"
+        mkdir "#{ROOT_PATH}/Build/Vendor/Aphid" unless File.exist? "#{ROOT_PATH}/Build/Vendor/Aphid"
         Dir.clone! "Vendor/Aphid/Build", "Build/Vendor/Aphid", [ "\.git" ]
       end
 
