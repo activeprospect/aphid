@@ -12,11 +12,11 @@
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f3f4f5, endColorstr=#cccccc);
 }
 ul.ListView.sortable li {
-  background-image: url('Images/UI/ListView/DragHandle.png');
+  background-image: url('../Images/UI/ListView/DragHandle.png');
   background-position: 99% 50%;
   background-repeat: no-repeat;
 }
-ul.ListView.sortable li.selected { background-image: url('Images/UI/ListView/DragHandle.selected.png'); }
+ul.ListView.sortable li.selected { background-image: url('../Images/UI/ListView/DragHandle.selected.png'); }
 .TabViewController > header {
   left: 0;
   right: 0;

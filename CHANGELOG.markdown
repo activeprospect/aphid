@@ -3,6 +3,20 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [General] New Aphid projects no longer have an index.html file in the root
+   of the project. Instead, the default file is located in
+   Resources/Templates/Application.html and is output as Build/index.html
+   when building. This file is also now observed for changes by the "watch"
+   Rake task.
+
+ * [Tools] Expanded the Aphid library for Ruby to also include most of the
+   Rake tasks and supporting methods that can be shared by both Aphid and
+   Aphid-based projects.
+
+ * [General] Restructured the Build output folder so that it follows a
+   similar, albeit *compiled* structure resembling typical Aphid project
+   structures (i.e. Library, Resources/Images, Resources/Stylesheets, etc).
+
  * [General] Added an exception handler to all Ajax.Request instances so that
    exceptions thrown in callback methods are properly thrown to the user so
    that we no longer have cases where an error in viewDidLoad fails silently.

@@ -1,7 +1,3 @@
-/*
- * Aphid Framework
-**/
-
 /**
  * ==Aphid Framework==
  *
