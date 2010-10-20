@@ -515,7 +515,8 @@ Aphid.UI.View = Class.create(
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',
           onSuccess: this._templateDidFinishLoading.bind(this),
-          onFailure: this._templateRequestDidFail.bind(this)
+          onFailure: this._templateRequestDidFail.bind(this),
+          onException: function(transport, exception) { throw exception }
         };
 
     this.isLoaded  = false;
