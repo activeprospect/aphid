@@ -50,6 +50,14 @@
         testStringToDateShouldCastStringAsDate: function() { with(this) {
           var testString = "Tue Aug 24 2010 15:59:11 GMT-0500 (CDT)";
           var date       = testString.toDate();
+          assertNotEqual(date, "Invalid Date");
+          assertInstanceOf(Date, date);
+        }},
+
+        testStringToDateShouldCastISO8601FormattedStringAsDate: function() { with(this) {
+          var testString = "2010-10-21T01:05:55.074Z";
+          var date       = testString.toDate();
+          assertNotEqual(date, "Invalid Date");
           assertInstanceOf(Date, date);
         }},
 

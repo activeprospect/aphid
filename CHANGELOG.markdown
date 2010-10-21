@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Added support to String#toDate() for parsing
+   strings in the ISO 8601 format.
+
  * [General] New Aphid projects no longer have an index.html file in the root
    of the project. Instead, the default file is located in
    Resources/Templates/Application.html and is output as Build/index.html

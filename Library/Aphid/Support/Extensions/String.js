@@ -63,7 +63,25 @@ Aphid.Support.Extensions.String = {
   **/
   toDate: function()
   {
-    return new Date(this.toString());
+    var date, parts, year, month, day, hours, minutes, seconds;
+
+    // Check for ISO 8601 dates
+    if (parts = this.match(/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})\.[0-9]{3}Z$/))
+    {
+      year    = parts[1];
+      month   = parts[2];
+      day     = parts[3];
+      hours   = parts[4];
+      minutes = parts[5];
+      seconds = parts[6];
+      date = new Date(month + "/" + day + "/" + year + " " + hours + ":" + minutes + ":" + seconds);
+    }
+
+    // Pass-through all other date formats...
+    else
+      date = new Date(this.toString());
+
+    return date;
   },
 
   /**
