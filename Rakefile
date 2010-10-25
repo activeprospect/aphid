@@ -1,7 +1,5 @@
 # encoding: UTF-8
 
-require 'rubygems'
-require 'rake'
 require 'rake/gempackagetask'
 
 require File.expand_path(File.dirname(__FILE__)) + "/Commands/lib/aphid/rake"

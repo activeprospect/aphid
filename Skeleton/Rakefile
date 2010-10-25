@@ -1,5 +1,4 @@
 
-require 'rubygems'
 require 'aphid/rake'
 
 PROJECT_NAME         = "New Application" # TODO Replace this with Erb
