@@ -9444,6 +9444,26 @@ Aphid.Support.Extensions.String = {
     if (Object.isUndefined(plural))
       plural = this + 's';
     return (count == 1 ? this + '' : plural);
+  },
+
+  parseURI: function()
+  {
+    var keys         = [ "source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor" ],
+        parser       = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+        paramsParser = /(?:^|&)([^&=]*)=?([^&]*)/g;
+        uri          = {},
+        i            = keys.length,
+        match        = parser.exec(this);
+
+    while (i--) uri[keys[i]] = match[i] || "";
+
+    uri["params"] = {};
+    uri["query"].replace(paramsParser, function($0, $1, $2)
+    {
+      if ($1) uri["params"][$1] = $2;
+    });
+
+    return uri;
   }
 
 };

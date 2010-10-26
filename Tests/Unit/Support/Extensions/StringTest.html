@@ -84,6 +84,26 @@
         testStringRandomShouldGenerateRandomStringWithLength: function() { with(this) {
           var testString = String.random(128);
           assertMatch(/^[a-zA-Z0-9]{128}$/, testString);
+        }},
+
+        testShouldParseURI: function() { with(this) {
+          var testString = "http://jdoe:password@www.example.com:8080/foo/bar.html?baz=bang&one=two#foobar";
+          var uri = testString.parseURI();
+          assertEqual("http", uri.protocol);
+          assertEqual("jdoe:password", uri.userInfo);
+          assertEqual("jdoe", uri.user);
+          assertEqual("password", uri.password);
+          assertEqual("www.example.com", uri.host);
+          assertEqual("8080", uri.port);
+          assertEqual("jdoe:password@www.example.com:8080", uri.authority);
+          assertEqual("/foo/", uri.directory);
+          assertEqual("/foo/bar.html", uri.path);
+          assertEqual("bar.html", uri.file);
+          assertEqual("baz=bang&one=two", uri.query);
+          assertEqual("foobar", uri.anchor);
+          assertEqual("/foo/bar.html?baz=bang&one=two#foobar", uri.relative);
+          assertEqual("bang", uri.params.baz);
+          assertEqual("two", uri.params.one);
         }}
 
       }, { testLog: "logSection" });

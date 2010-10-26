@@ -1000,6 +1000,38 @@ Aphid.Support.Extensions.String = {
     if (Object.isUndefined(plural))
       plural = this + 's';
     return (count == 1 ? this + '' : plural);
+  },
+
+  /**
+   * Aphid.Support.Extensions.String#parseURI() -> Object
+   *
+   * Parses the String as a URI and returns an Object containing all of its
+   * parts.
+   *
+   * This implementation is based on parseUri 1.2 by Steven Levithan. More
+   * information on his implementation may be found at
+   * http://blog.stevenlevithan.com/archives/parseuri.
+  **/
+  parseURI: function()
+  {
+    var keys         = [ "source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor" ],
+        parser       = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+        paramsParser = /(?:^|&)([^&=]*)=?([^&]*)/g;
+        uri          = {},
+        i            = keys.length,
+        match        = parser.exec(this);
+
+    // URI Parts
+    while (i--) uri[keys[i]] = match[i] || "";
+
+    // Request Parameters
+    uri["params"] = {};
+    uri["query"].replace(paramsParser, function($0, $1, $2)
+    {
+      if ($1) uri["params"][$1] = $2;
+    });
+
+    return uri;
   }
 
 };

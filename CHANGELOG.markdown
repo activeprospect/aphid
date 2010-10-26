@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Added String#parseURI() for parsing a URI string
+   into its various parts (i.e. protocol, host, port, path, etc).
+
  * [Aphid.Support.Extensions] Added support to String#toDate() for parsing
    strings in the ISO 8601 format.
 
