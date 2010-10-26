@@ -9430,7 +9430,7 @@ Aphid.Support.Extensions.String = {
       hours   = parts[4];
       minutes = parts[5];
       seconds = parts[6];
-      date = new Date(month + "/" + day + "/" + year + " " + hours + ":" + minutes + ":" + seconds);
+      date = new Date(Date.UTC(year, month, day, hours, minutes, seconds));
     }
 
     else

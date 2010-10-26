@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Fixed parsing of ISO-8601 formatted dates when
+   using String#toDate() so that it initializes the date as a UTC date.
+
  * [Aphid.Support.Extensions] Added String#parseURI() for parsing a URI string
    into its various parts (i.e. protocol, host, port, path, etc).
 
