@@ -56,6 +56,7 @@
           assertEqual("3", testDate.strftime("%w"), "%w should interpolate to '3'");
           assertEqual("10", testDate.strftime("%y"), "%y should interpolate to '10'");
           assertEqual("2010", testDate.strftime("%Y"), "%Y should interpolate to '2010'");
+          assertMatch(/^-[0-9]{1,2}$/, testDate.strftime("%z"), "%z should interpolate to the local timezone offset");
         }}
 
       }, { testLog: "logSection" });

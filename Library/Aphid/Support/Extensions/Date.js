@@ -41,6 +41,7 @@ Aphid.Support.Extensions.Date = {
    *     %w  // Day of the week (Sunday is 0, 0..6)
    *     %y  // Year without a century (00..99)
    *     %Y  // Year with century (2010)
+   *     %z  // Time Zone Offset (-4, -6, +10, ...)
    *
    * ## Examples
    *
@@ -80,11 +81,14 @@ Aphid.Support.Extensions.Date = {
           SS: this.getSeconds().toPaddedString(2),
           w:  this.getDay(),
           y:  this.getFullYear().toString().substring(2, 4),
-          Y:  this.getFullYear()
+          Y:  this.getFullYear(),
+          z:  "%z", // Pass Through
         };
     formatted = format.interpolate(components, syntax);
     if (formatted.indexOf("%o") >= 0)
       formatted = formatted.replace("%o", this.getDate() >= 10 ? ordinals.get(this.getDate().toString().substring(1)) : ordinals.get(this.getDate()));
+    if (formatted.indexOf("%z") >= 0)
+      formatted = formatted.replace("%z", (this.getTimezoneOffset() / 60) > 0 ? (this.getTimezoneOffset() / 60) * -1 : "+" + (this.getTimezoneOffset() / 60));
     return formatted;
   }
 

@@ -3,6 +3,9 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Updated Date#strftime with a new formatting
+   component (%z) for displaying the timezone offset (i.e. -4).
+
  * [Aphid.Support.Extensions] Fixed parsing of ISO-8601 formatted dates when
    using String#toDate() so that it initializes the date as a UTC date.
 
