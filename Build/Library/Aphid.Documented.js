@@ -888,7 +888,7 @@ Aphid.Support.Extensions.Date = {
           w:  this.getDay(),
           y:  this.getFullYear().toString().substring(2, 4),
           Y:  this.getFullYear(),
-          z:  "%z", // Pass Through
+          z:  "%z" // Pass Through
         };
     formatted = format.interpolate(components, syntax);
     if (formatted.indexOf("%o") >= 0)
