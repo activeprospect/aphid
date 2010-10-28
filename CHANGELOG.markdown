@@ -3,6 +3,8 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [General] Added support for Google Chrome Frame.
+
  * [Aphid.Core.Application] Redirect users of unsupported browsers (Internet
    Explorer 6 only, for now) to a page that explains that we do not support
    their browser and provides a list of supported browsers.
