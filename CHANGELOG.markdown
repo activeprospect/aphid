@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Core.Application] Redirect users of unsupported browsers (Internet
+   Explorer 6 only, for now) to a page that explains that we do not support
+   their browser and provides a list of supported browsers.
+
  * [Tools] Add or update the .buildstamp file to the Build output directory
    after each build and add the .buildstamp file to the list of watched files
    when Aphid is vendored within another application so that changes to the
