@@ -14,17 +14,16 @@ task :default => :build
 desc "Clean up the built project"
 task :clean do
   header "Cleaning Project"
-  rm_rf "#{ROOT_PATH}/Build"
+  rm_rf "#{ROOT_PATH}/Build/*"
   puts
 end
 
 task :prepare do
   header "Preparing Build Folder"
-  mkdir "#{ROOT_PATH}/Build"
-  mkdir "#{ROOT_PATH}/Build/Library"
-  mkdir "#{ROOT_PATH}/Build/Resources"
-  mkdir "#{ROOT_PATH}/Build/Resources/Images"
-  mkdir "#{ROOT_PATH}/Build/Resources/Stylesheets"
+  mkdir_p "#{ROOT_PATH}/Build/Library"
+  mkdir_p "#{ROOT_PATH}/Build/Resources/Images"
+  mkdir_p "#{ROOT_PATH}/Build/Resources/Stylesheets"
+  mkdir_p "#{ROOT_PATH}/Build/Resources/Templates"
   puts
 end
 
@@ -92,6 +91,11 @@ task :build => [ :clean, :prepare ] do
 
   # Copy Vendored Aphid
   copy_vendored_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
+
+  # Update Buildstamp
+  File.open("Build/.buildstamp", 'w') do |file|
+    file.puts Time.now.to_i
+  end
 
   puts
 end

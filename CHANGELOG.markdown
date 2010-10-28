@@ -3,6 +3,11 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Tools] Add or update the .buildstamp file to the Build output directory
+   after each build and add the .buildstamp file to the list of watched files
+   when Aphid is vendored within another application so that changes to the
+   vendored Aphid result in a rebuild of the application.
+
  * [Aphid.Support.Extensions] Updated Date#strftime with a new formatting
    component (%z) for displaying the timezone offset (i.e. -4).
 
