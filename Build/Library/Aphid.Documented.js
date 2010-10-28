@@ -1492,6 +1492,15 @@ Aphid.Core.Application = Class.create({
 **/
 Aphid.Core.Application.bootstrap = function()
 {
+
+  // If the user is using IE6, send them to the unsupported page...
+  // TODO Expand this to a blacklist so that we can blacklist early Firefox and others
+  if (Prototype.Browser.IE6)
+  {
+    window.location.href = "Vendor/Aphid/Resources/Templates/Unsupported.html";
+    return
+  }
+
   if (Object.isUndefined(Application))
   {
     $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);

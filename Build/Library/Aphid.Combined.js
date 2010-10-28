@@ -9679,6 +9679,13 @@ Aphid.Core.Application = Class.create({
 **/
 Aphid.Core.Application.bootstrap = function()
 {
+
+  if (Prototype.Browser.IE6)
+  {
+    window.location.href = "Vendor/Aphid/Resources/Templates/Unsupported.html";
+    return
+  }
+
   if (Object.isUndefined(Application))
   {
     $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
