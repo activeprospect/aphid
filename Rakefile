@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 require 'rake/gempackagetask'
-
 require File.expand_path(File.dirname(__FILE__)) + "/Commands/lib/aphid/rake"
 
 PROJECT_NAME         = "Aphid"

@@ -33,4 +33,5 @@ spec = Gem::Specification.new do |s|
   s.add_dependency("less")
   s.add_dependency("sprockets")
   s.add_dependency("commander")
+  s.add_dependency("net-scp")
 end

@@ -128,7 +128,11 @@ module Aphid
       end
 
       def current_head
-        `git show-ref --head --hash HEAD`
+        `git show-ref --head --hash HEAD`.chop
+      end
+
+      def dirty?
+        `git diff --shortstat`.chop.length > 0
       end
 
     end

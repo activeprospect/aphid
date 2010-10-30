@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Tools] Added initial support for publishing the built project output of
+   Aphid-based projects by using "rake publish" (publishing is configured in
+   the Publish.rb file in the Aphid project root).
+
  * [General] Added support for Google Chrome Frame.
 
  * [Aphid.Core.Application] Redirect users of unsupported browsers (Internet
