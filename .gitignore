@@ -3,7 +3,7 @@
 .DS_Store
 .rake_tasks
 .rvmrc
-Build/.buildstamp
+Build
 Distribution
 Documentation
 Resources/Stylesheets/*.css
