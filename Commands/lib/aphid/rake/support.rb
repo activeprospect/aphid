@@ -122,9 +122,13 @@ module Aphid
 
       # ------------------------------------------------------------------------
 
-      def header(message)
+      def header(message, &block)
         message = " #{message} "
         puts "\n#{message.center(`stty size`.split(' ')[1].to_i, '-')}\n\n"
+        if block_given?
+          yield
+          puts
+        end
       end
 
       def current_head
