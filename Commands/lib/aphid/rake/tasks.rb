@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include Aphid::Rake
+
 # Default Task ---------------------------------------------------------------
 
 desc "Defaults to build"
@@ -9,18 +11,18 @@ task :default => :build
 
 desc "Clean up the built project"
 task :clean do
-  header "Cleaning Project"
-  rm_rf "#{ROOT_PATH}/Build/*"
-  puts
+  header "Cleaning Project" do
+    rm_rf "#{ROOT_PATH}/Build/*"
+  end
 end
 
 task :prepare do
-  header "Preparing Build Folder"
-  mkdir_p "#{ROOT_PATH}/Build/Library"
-  mkdir_p "#{ROOT_PATH}/Build/Resources/Images"
-  mkdir_p "#{ROOT_PATH}/Build/Resources/Stylesheets"
-  mkdir_p "#{ROOT_PATH}/Build/Resources/Templates"
-  puts
+  header "Preparing Build Folder" do
+    mkdir_p "#{ROOT_PATH}/Build/Library"
+    mkdir_p "#{ROOT_PATH}/Build/Resources/Images"
+    mkdir_p "#{ROOT_PATH}/Build/Resources/Stylesheets"
+    mkdir_p "#{ROOT_PATH}/Build/Resources/Templates"
+  end
 end
 
 # Build Tasks ----------------------------------------------------------------
@@ -58,195 +60,157 @@ task :build => [ :clean, :prepare ] do
     end
   end
 
-  header "Building #{PROJECT_NAME}"
+  header "Building #{PROJECT_NAME}" do
 
-  # Copy Application Template
-  if File.exist? File.join("Resources", "Templates", "Application.html")
-    cp File.join("Resources", "Templates", "Application.html"), File.join("Build", "index.html")
+    # Copy Application Template
+    if File.exist? File.join("Resources", "Templates", "Application.html")
+      cp File.join("Resources", "Templates", "Application.html"), File.join("Build", "index.html")
+    end
+
+    # Copy Templates
+    if File.exist? "Resources/Templates"
+      Dir.clone! "Resources/Templates", "Build/Resources/Templates"
+    end
+
+    # Sprocketize Source
+    SOURCE_FILES.each do |file|
+      sprocketize(File.join("Build", "Library", File.basename(file)), { :source_Files => [ file ]})
+    end
+
+    # Sprocketize Source w/Documentation Intact
+    if DOCUMENTATION_SOURCE
+      sprocketize(File.join("Build", "Library", File.basename(DOCUMENTATION_SOURCE).gsub(/js$/, "Documented.js")), { :source_files => [ DOCUMENTATION_SOURCE ], :strip_comments => false })
+    end
+
+    # Lessify Stylesheets
+    STYLESHEET_FILES.each do |file|
+      lessify(file, File.join("Build", "Resources", "Stylesheets", File.basename(file).gsub(/less/, "css")))
+    end
+
+    # Copy Vendored Aphid
+    copy_vendored_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
+
+    # Update Buildstamp
+    File.open("Build/.buildstamp", 'w') do |file|
+      file.puts Time.now.to_i
+    end
+
   end
-
-  # Copy Templates
-  if File.exist? "Resources/Templates"
-    Dir.clone! "Resources/Templates", "Build/Resources/Templates"
-  end
-
-  # Sprocketize Source
-  SOURCE_FILES.each do |file|
-    sprocketize(File.join("Build", "Library", File.basename(file)), { :source_Files => [ file ]})
-  end
-
-  # Sprocketize Source w/Documentation Intact
-  if DOCUMENTATION_SOURCE
-    sprocketize(File.join("Build", "Library", File.basename(DOCUMENTATION_SOURCE).gsub(/js$/, "Documented.js")), { :source_files => [ DOCUMENTATION_SOURCE ], :strip_comments => false })
-  end
-
-  # Lessify Stylesheets
-  STYLESHEET_FILES.each do |file|
-    lessify(file, File.join("Build", "Resources", "Stylesheets", File.basename(file).gsub(/less/, "css")))
-  end
-
-  # Copy Vendored Aphid
-  copy_vendored_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
-
-  # Update Buildstamp
-  File.open("Build/.buildstamp", 'w') do |file|
-    file.puts Time.now.to_i
-  end
-
-  puts
 end
 
-# Publish --------------------------------------------------------------------
+# Publish Tasks --------------------------------------------------------------
 
 namespace :publish do
 
-  desc "Setup"
+  desc "Prepares each configured host for publishing"
   task :setup do
     begin
-      config = Aphid::Rake::Publish.config
+      config = Publish.config
 
-      puts
-      puts "  Setting up hosts for publishing:"
-      puts
-
-      config[:hosts].each do |host|
-        print "    * #{host} ... "
-        connection = Aphid::Rake::Publish.connection(host)
-        connection.exec! "mkdir -p \"#{config[:path]}\""
-        connection.exec! "mkdir -p \"#{config[:path]}/releases\""
-        print "done!\n"
+      header "Preparing Hosts for Publishing" do
+        Publish.setup
       end
-      puts
     ensure
-      Aphid::Rake::Publish.disconnect
+      Publish.disconnect
     end
   end
 
-  desc "List all releases currently on the publish hosts"
+  desc "Lists all published releases"
   task :releases do
     begin
-      releases = Aphid::Rake::Publish.releases
-      timestamps = releases.keys.sort
-      puts
-      puts "   " + "Release".ljust(18) + "Revision".ljust(11) + "Dirty?".ljust(9) + "Publish Date".ljust(29) + "Hosts"
-      puts "".ljust(`stty size`.split(' ')[1].to_i, "-")
-      timestamps.each do |release|
-        metadata = releases[release]
-        hosts = metadata[:hosts].collect { |host| host[0, host.index(".")] }
-        puts (metadata[:current] ? "*" : "").ljust(3) + release.ljust(18) + (metadata[:revision] || "-")[0, 8].ljust(11) + (metadata[:dirty] ? "Y" : "N").ljust(9) + metadata[:timestamp].strftime("%Y-%m-%d %I:%M:%S %p %Z").ljust(29) + hosts.join(", ")
+      releases = Publish.releases
+      header "Published Releases" do
+        if releases.length == 0
+          puts "Error: There are no published releases.\n\n"
+          exit
+        end
+
+        puts "   " + "Release".ljust(18) + "Revision".ljust(11) + "Dirty?".ljust(9) + "Publish Date".ljust(29) + "Hosts"
+        puts "".ljust(`stty size`.split(' ')[1].to_i, "-")
+
+        releases.keys.sort.each do |release|
+          metadata = releases[release]
+          hosts = metadata[:hosts].collect { |host| host[0, host.index(".")] }
+          puts (metadata[:current] ? "*" : "").ljust(3) + release.ljust(18) + (metadata[:revision] || "-")[0, 8].ljust(11) + (metadata[:dirty] ? "Y" : "N").ljust(9) + metadata[:timestamp].strftime("%Y-%m-%d %I:%M:%S %p %Z").ljust(29) + hosts.join(", ")
+        end
       end
-      puts
     ensure
-      Aphid::Rake::Publish.disconnect
+      Publish.disconnect
     end
   end
 
-  desc "Rollback to a previously published release (specified with RELEASE=)"
+  desc "Rollback to the published release specified as RELEASE=YYYYMMDDHHMM.SS"
   task :rollback do
     begin
-      config = Aphid::Rake::Publish.config
-      available_releases = Aphid::Rake::Publish.releases.keys
-
-      # Allow a specific release to be specified as an environment variable
       release = ENV["RELEASE"] || ENV["release"]
-      unless release.nil? or release =~ /^[0-9]{12}\.[0-9]{2}$/
-        puts "\nError: You must specify a release to rollback to. For example:\n\n"
-        puts "  $ rake publish:rollback RELEASE=YYYYMMDDHHMM.SS\n\n"
-        exit
-      end
 
-      # Default to the previous release
-      if release.nil? or release.strip == ""
-        release = Aphid::Rake::Publish.previous_release
-      end
+      header "Rolling Back" do
 
-      unless available_releases.include? release
-        if release
-          puts "\nError: Release #{release} was not found. View published releases with:\n\n"
-          puts "  $ rake publish:releases\n\n"
-        else
-          puts "\nError: No previous releases are published.\n\n"
+        # Allow the release to be specified as an environment variable...
+        unless release.nil? or release =~ /^[0-9]{12}\.[0-9]{2}$/
+          puts "Error: You must specify a valid release. Example:\n\n"
+          puts "  $ rake publish:rollback RELEASE=YYYYMMDDHHMM.SS\n\n"
+          exit
         end
-        exit
-      end
 
-      puts "\nRolling back to release #{release} ...\n\n"
+        # Default to the previous release...
+        release = Publish.previous_release if release.nil?
 
-      # Update Current
-      config[:hosts].each do |host|
-        connection = Aphid::Rake::Publish.connection(host)
-        connection.exec! "rm \"#{config[:path]}/current\""
-        connection.exec! "ln -sf \"#{config[:path]}/releases/#{release}\" \"#{config[:path]}/current\""
+        # Ensure that there is at least one previously published release...
+        unless release
+          puts "Error: There are no previous releases to roll back to.\n\n"
+          exit
+        end
+
+        print "Rolling back to #{release} ... "
+        Publish.activate_release release
+        print "done!\n"
       end
+    rescue Publish::InvalidReleaseError
+      puts "\n\nError: #{release} is not a valid release. To list available releases, run:\n\n"
+      puts "  $ rake publish:releases\n\n"
     ensure
-      Aphid::Rake::Publish.disconnect
+      Publish.disconnect
     end
   end
 
-  desc "Cleanup"
+  desc "Cleans up old releases (retains the last 3 by default, override with RETAIN=n)"
   task :cleanup do
     begin
-      config          = Aphid::Rake::Publish.config
-      releases        = Aphid::Rake::Publish.releases
-      current_release = Aphid::Rake::Publish.current_release
-      release_times   = releases.keys.sort
-      current_index   = release_times.index(current_release)
+      config = Aphid::Rake::Publish.config
+      retain = ENV["retain"] || ENV["RETAIN"]
 
-      puts
-      puts "  Cleaning up releases:"
-      puts
-
-      retain = ENV["retain"] || ENV["RETAIN"] || 5
-
-      cleanup = release_times[0, current_index - retain.to_i]
-      cleanup.each do |release|
-        releases[release][:hosts].each do |host|
-          connection = Aphid::Rake::Publish.connection(host)
-          puts "    * [#{host}] rm -rf \"#{config[:path]}/releases/#{release}\""
-          connection.exec! "rm -rf \"#{config[:path]}/releases/#{release}\""
+      header "Cleaning Up Published Releases" do
+        if !Publish.cleanup(retain)
+          puts "No releases to clean up!"
         end
       end
-      puts
     ensure
-      Aphid::Rake::Publish.disconnect
+      Publish.disconnect
     end
   end
 
 end
 
-desc "Publish the project"
+desc "Publishes the project to the configured hosts"
 task :publish do
   begin
-    config   = Aphid::Rake::Publish.config
-    release  = Aphid::Rake::Publish.generate_release_time
-    revision = Aphid::Rake::Publish.current_git_revision
+    config  = Publish.config
+    release = nil
 
-    puts
-    puts "  Publishing built project to remote host(s):"
-    puts
+    header "Publishing Project" do
 
-    # Publish Release
-    config[:hosts].each do |host|
-      connection = Aphid::Rake::Publish.connection(host)
-      print "    * Uploading to #{host} ... "
-      Net::SSH.start(host, config[:user]) do |ssh|
-        connection.scp.upload! "Build", "#{config[:path]}/releases/#{release}", :recursive => true, :verbose => true
-        connection.exec! "echo \"#{revision}\" > \"#{config[:path]}/releases/#{release}/.revision\""
-      end
-      print "done!\n"
+      # Publish Release
+      release = Publish.publish "Build"
+
+      # Activate Release
+      Publish.activate_release release
+
     end
-
-    # Update Current
-    config[:hosts].each do |host|
-      connection = Aphid::Rake::Publish.connection(host)
-      print "    * Linking current to release #{release} ... "
-      connection.exec! "rm \"#{config[:path]}/current\""
-      connection.exec! "ln -sf \"#{config[:path]}/releases/#{release}\" \"#{config[:path]}/current\""
-      print "done!\n"
-    end
-    puts
+  rescue Publish::HostStateError => e
+    puts "Error: #{e.message}\n\n"
   ensure
-    Aphid::Rake::Publish.disconnect
+    Publish.disconnect
   end
 end
 
