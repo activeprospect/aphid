@@ -19,6 +19,7 @@ module Aphid
       class PublishError              < StandardError; end
       class HostStateError            < StandardError; end
       class InvalidReleaseError       < StandardError; end
+      class AtomicHostStateError      < StandardError; end
 
       # Configuration --------------------------------------------------------
 
@@ -126,7 +127,7 @@ module Aphid
         puts "Cleaning up #{old_releases.length} releases ...\n\n"
 
         old_releases.each do |release|
-          release_path   = "#{config[:path]}/releases/#{release}"
+          release_path = "#{config[:path]}/releases/#{release}"
           releases[release][:hosts].each do |host|
             next unless hosts.include? host
             connection = connection(host)
@@ -143,9 +144,28 @@ module Aphid
       #
       # Returns the active release.
       #
-      def self.active_release
-        @@active_release ||= begin
-          connection    = connection(config[:hosts].first)
+      def self.active_releases
+        @@active_releases ||= begin
+          active_releases = {}
+          config[:hosts].collect do |host|
+            connection    = connection(host)
+            current_link  = connection.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
+            release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
+            active_releases[host] = release_match ? release_match[1] : false
+          end
+          active_releases
+        end
+      rescue
+        false
+      end
+
+      #
+      # Returns the active release.
+      #
+      def self.active_release(host)
+        @@active_release ||= {}
+        @@active_release[host] ||= begin
+          connection    = connection(host)
           current_link  = connection.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
           release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
           release_match ? release_match[1] : false
@@ -157,11 +177,72 @@ module Aphid
       #
       # Returns the release that directly preceeds the active release.
       #
-      def self.previous_release
-        @@previous_release ||= begin
-          release_times = releases.keys.sort
-          index = release_times.index(active_release) - 1
+      def self.previous_release(host)
+        @@previous_release ||= {}
+        @@previous_release[host] ||= begin
+          release_times = releases(host).keys.sort
+          index = release_times.index(active_release(host)) - 1
           index >= 0 ? release_times[index] : false
+        end
+      rescue
+        false
+      end
+
+      def self.has_release?(release, host)
+        connection = connection(host)
+        if folders = connection.exec!("ls \"#{config[:path]}/releases\"")
+          folders = folders.split(/\s+/)
+          folders.include? release
+        else
+          false
+        end
+      end
+
+      #
+      # Returns the release that directly preceeds the active release and is
+      # present on all hosts.
+      #
+      def self.previous_atomic_release
+        @@previous_atomic_release ||= begin
+          unless self.atomic?
+            raise AtomicHostStateError, "Configured hosts are not in an atomic state"
+          end
+
+          release_times = releases.keys.sort
+          index = release_times.index(atomic_release) - 1
+          index >= 0 ? release_times[index] : false
+        end
+      rescue
+        false
+      end
+
+      #
+      # Enumerates across all configured hosts to validate that they all have
+      # the same active release.
+      #
+      def self.atomic?
+        all_active_releases = config[:hosts].collect do |host|
+          self.active_release host
+        end
+        all_active_releases.uniq.length == 1
+      end
+
+      def self.atomic_release
+        return false unless self.atomic?
+        all_active_releases = config[:hosts].collect do |host|
+          self.active_release host
+        end
+        all_active_releases.uniq.reduce
+      end
+
+      #
+      # Returns the active release.
+      #
+      def self.atomic_releases
+        @@atomic_releases ||= begin
+          atomic_releases = releases.collect do |release|
+            release[:hosts] == config[:hosts]
+          end
         end
       rescue
         false
@@ -170,10 +251,12 @@ module Aphid
       #
       # Returns all published releases.
       #
-      def self.releases
-        @@releases ||= begin
+      def self.releases(hosts = nil)
+        hosts = parse_hosts(hosts)
+        @@releases ||= {}
+        @@releases[hosts.to_s] ||= begin
           releases = {}
-          config[:hosts].each do |host|
+          hosts.each do |host|
             connection = connection(host)
 
             if folders = connection.exec!("ls \"#{config[:path]}/releases\"")
@@ -188,13 +271,15 @@ module Aphid
 
               if releases[folder]
                 releases[folder][:hosts] << host
+                releases[folder][:active] = true if (folder == active_release(host))
               else
                 releases[folder] = {
                   :revision  => revision,
                   :dirty     => (revision =~ /dirty/),
                   :timestamp => parse_release_time(folder),
                   :hosts     => [ host ],
-                  :current   => (folder == active_release)
+                  :active    => (folder == active_release(host)),
+                  :atomic    => (atomic? and active_release(host) == atomic_release)
                 }
               end
             end
@@ -209,15 +294,22 @@ module Aphid
       #
       def self.activate_release(release, hosts = nil)
         hosts = parse_hosts(hosts)
-        available_releases = releases.keys
+        available_releases = releases(hosts).keys
 
         # Ensure that the requested release is not the active release...
-        if release == active_release
-          raise PublishError, "Specified release is the currently active release."
-        end
+        # if release == active_release
+        #   raise PublishError, "Specified release is the currently active release."
+        # end
 
         # Ensure that the release is available for rollback...
         raise InvalidReleaseError unless available_releases.include? release
+
+        # Ensure that the specified +hosts+ have the requested release
+        hosts.each do |host|
+          unless has_release? release, host
+            raise PublishError, "Release #{release} is not published on all requested hosts."
+          end
+        end
 
         # Update the "current" symlink to point to the requested release...
         hosts.each do |host|
@@ -241,8 +333,28 @@ module Aphid
           if hosts.nil?
             hosts = config[:hosts]
           else
-            hosts = [ hosts ] unless hosts.respond_to? :each
+            if hosts.respond_to? :each
+              hosts = hosts.collect do |host|
+                found = config[:hosts].detect do |configured_host|
+                  configured_host =~ /^#{host}/
+                end
+                unless found
+                  raise PublishError, "Host #{host} was not found in the publish configuration."
+                end
+                found
+              end
+            else
+              found = config[:hosts].detect do |configured_host|
+                configured_host =~ /^#{hosts}/
+              end
+              if found
+                hosts = [ found ]
+              else
+                raise PublishError, "Host #{hosts} was not found in the publish configuration."
+              end
+            end
           end
+          hosts
         end
 
         #
@@ -277,7 +389,9 @@ module Aphid
         def self.reset_cached_attributes!
           @@active_release = nil
           @@previous_release = nil
+          @@previous_atomic_release = nil
           @@releases = nil
+          @@atomic_releases = nil
         end
 
     end

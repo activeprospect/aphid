@@ -140,13 +140,18 @@ module Aphid
       end
 
       def read_environment_variable(name, default = nil)
-        name = name.to_s
-        if ENV.include? name.upcase
+        name  = name.to_s
+        value = if ENV.include? name.upcase
           ENV[name.upcase]
         elsif ENV.include? name.downcase
           ENV[name.downcase]
         else
           default
+        end
+        if value =~ /,/
+          value.split(/,/)
+        else
+          value
         end
       end
 

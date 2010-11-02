@@ -105,10 +105,10 @@ namespace :publish do
   desc "Prepares each configured host for publishing"
   task :setup do
     begin
-      config = Publish.config
+      hosts = read_environment_variable(:hosts)
 
       header "Preparing Hosts for Publishing" do
-        Publish.setup
+        Publish.setup hosts
       end
     ensure
       Publish.disconnect
@@ -118,8 +118,10 @@ namespace :publish do
   desc "Lists all published releases"
   task :releases do
     begin
-      releases = Publish.releases
       header "Published Releases" do
+        hosts    = read_environment_variable(:hosts)
+        releases = Publish.releases(hosts)
+
         if releases.length == 0
           puts "Error: There are no published releases.\n\n"
           exit
@@ -130,10 +132,15 @@ namespace :publish do
 
         releases.keys.sort.each do |release|
           metadata = releases[release]
-          hosts = metadata[:hosts].collect { |host| host[0, host.index(".")] }
-          puts (metadata[:current] ? "*" : "").ljust(3) + release.ljust(18) + (metadata[:revision] || "-")[0, 8].ljust(11) + (metadata[:dirty] ? "Y" : "N").ljust(9) + metadata[:timestamp].strftime("%Y-%m-%d %I:%M:%S %p %Z").ljust(29) + hosts.join(", ")
+          hosts    = metadata[:hosts].collect { |host| host[0, host.index(".")] }
+          active   = metadata[:active] ? (metadata[:atomic] ? "*" : "-") : ""
+
+          puts active.ljust(3) + release.ljust(18) + (metadata[:revision] || "-")[0, 8].ljust(11) + (metadata[:dirty] ? "Y" : "N").ljust(9) + metadata[:timestamp].strftime("%Y-%m-%d %I:%M:%S %p %Z").ljust(29) + hosts.join(", ")
         end
+        puts "\n- = Active Release, * = Atomic Active Release"
       end
+    rescue Publish::HostStateError, Publish::PublishError => e
+      puts "Error: #{e.message}\n\n"
     ensure
       Publish.disconnect
     end
@@ -143,6 +150,7 @@ namespace :publish do
   task :rollback do
     begin
       release = read_environment_variable(:release)
+      hosts   = read_environment_variable(:hosts)
 
       header "Rolling Back" do
 
@@ -153,8 +161,13 @@ namespace :publish do
           exit
         end
 
+        if release.nil? and !Publish.atomic?
+          puts "Error: Cannot rollback atomically as hosts are not in an atomic state.\n\n"
+          exit
+        end
+
         # Default to the previous release...
-        release = Publish.previous_release if release.nil?
+        release = Publish.previous_atomic_release if release.nil?
 
         # Ensure that there is at least one previously published release...
         unless release
@@ -162,13 +175,15 @@ namespace :publish do
           exit
         end
 
-        print "Rolling back to #{release} ... "
-        Publish.activate_release release
-        print "done!\n"
+        puts "Rolling back to #{release} ...\n\n"
+        Publish.activate_release release, hosts
+
       end
     rescue Publish::InvalidReleaseError
       puts "\n\nError: #{release} is not a valid release. To list available releases, run:\n\n"
       puts "  $ rake publish:releases\n\n"
+    rescue Publish::PublishError => e
+      puts "Error: #{e.message}\n\n"
     ensure
       Publish.disconnect
     end
@@ -177,11 +192,11 @@ namespace :publish do
   desc "Cleans up old releases (retains the last 3 by default, override with RETAIN=n)"
   task :cleanup do
     begin
-      config = Aphid::Rake::Publish.config
       retain = read_environment_variable(:retain, 3)
+      hosts  = read_environment_variable(:hosts)
 
       header "Cleaning Up Published Releases" do
-        if !Publish.cleanup(retain)
+        if !Publish.cleanup(retain, hosts)
           puts "No releases to clean up!"
         end
       end
@@ -195,19 +210,19 @@ end
 desc "Publishes the project to the configured hosts"
 task :publish do
   begin
-    config  = Publish.config
+    hosts   = read_environment_variable(:hosts)
     release = nil
 
     header "Publishing Project" do
 
       # Publish Release
-      release = Publish.publish "Build"
+      release = Publish.publish "Build", hosts
 
       # Activate Release
-      Publish.activate_release release
+      Publish.activate_release release, hosts
 
     end
-  rescue Publish::HostStateError => e
+  rescue Publish::HostStateError, Publish::PublishError => e
     puts "Error: #{e.message}\n\n"
   ensure
     Publish.disconnect
