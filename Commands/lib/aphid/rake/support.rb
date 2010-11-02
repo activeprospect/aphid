@@ -139,6 +139,17 @@ module Aphid
         `git diff --shortstat`.chop.length > 0
       end
 
+      def read_environment_variable(name, default = nil)
+        name = name.to_s
+        if ENV.include? name.upcase
+          ENV[name.upcase]
+        elsif ENV.include? name.downcase
+          ENV[name.downcase]
+        else
+          default
+        end
+      end
+
     end
   end
 end

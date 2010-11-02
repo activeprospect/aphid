@@ -142,7 +142,7 @@ namespace :publish do
   desc "Rollback to the published release specified as RELEASE=YYYYMMDDHHMM.SS"
   task :rollback do
     begin
-      release = ENV["RELEASE"] || ENV["release"]
+      release = read_environment_variable(:release)
 
       header "Rolling Back" do
 
@@ -178,7 +178,7 @@ namespace :publish do
   task :cleanup do
     begin
       config = Aphid::Rake::Publish.config
-      retain = ENV["retain"] || ENV["RETAIN"]
+      retain = read_environment_variable(:retain, 3)
 
       header "Cleaning Up Published Releases" do
         if !Publish.cleanup(retain)
