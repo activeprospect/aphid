@@ -3,6 +3,11 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Tools] Added support for copying any files and folders under Public (in
+   the project root) to the Build output folder during builds. This could be
+   used for other assets (images, files, etc) that do not fit in to the normal
+   Aphid structure.
+
  * [Tools] Added initial support for publishing the built project output of
    Aphid-based projects by using "rake publish" (publishing is configured in
    the Publish.rb file in the Aphid project root).

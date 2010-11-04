@@ -72,6 +72,11 @@ task :build => [ :clean, :prepare ] do
       Dir.clone! "Resources/Templates", "Build/Resources/Templates"
     end
 
+    # Copy Public Assets
+    if File.exist? "Public"
+      Dir.clone! "Public", "Build"
+    end
+
     # Sprocketize Source
     SOURCE_FILES.each do |file|
       sprocketize(File.join("Build", "Library", File.basename(file)), { :source_Files => [ file ]})
