@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.Support.Properties Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Support.Properties Tests</h1>
+    </header>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestClass = Class.create({
+        _testProperty: false,
+        _customProperty: false,
+        customProperty: function() { return this._customProperty; },
+        setCustomProperty: function(value) { this._customProperty = value; return this._customProperty; }
+      });
+      Object.extend(TestClass.prototype, Aphid.Support.Properties);
+
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+          this.testObject = new TestClass();
+        },
+
+        testShouldSetProperty: function() { with(this) {
+          this.testObject.set("testProperty", "foo");
+          assertEqual("foo", this.testObject._testProperty);
+        }},
+
+        testShouldGetProperty: function() { with(this) {
+          this.testObject.set("testProperty", "bar");
+          var propertyValue = this.testObject.get("testProperty");
+          assertEqual("bar", propertyValue);
+        }},
+
+        testShouldUseCustomGetter: function() { with(this) {
+          this.testObject.setCustomProperty("foo");
+          var propertyValue = this.testObject.get("customProperty");
+          assertEqual("foo", propertyValue);
+        }},
+
+        testShouldUseCustomSetter: function() { with(this) {
+          var returnValue = this.testObject.set("customProperty", "foo");
+          assertEqual("foo", this.testObject._customProperty);
+        }},
+
+        testShouldThrowExceptionForUndefinedPropertiesWhenGetting: function() { with(this) {
+          var testFunction = function() { this.testObject.get("foo") }.bind(this);
+          assertRaise("UndefinedPropertyError", testFunction);
+        }},
+
+        testShouldThrowExceptionForUndefinedPropertiesWhenSetting: function() { with(this) {
+          var testFunction = function() { this.testObject.set("foo", "bar") }.bind(this);
+          assertRaise("UndefinedPropertyError", testFunction);
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

@@ -146,6 +146,10 @@ Aphid.Core.Application = Class.create({
 
 });
 
+// Mixins --------------------------------------------------------------------
+
+Object.extend(Aphid.Core.Application.prototype, Aphid.Support.Properties);
+
 /*
  * Aphid.Core.Application.bootstrap() -> null
  *

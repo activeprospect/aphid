@@ -800,4 +800,8 @@ Aphid.Model = Class.create({
 
 });
 
+// Mixins --------------------------------------------------------------------
+
+Object.extend(Aphid.Core.Application.prototype, Aphid.Support.Properties);
+
 //= require "Model/Error"

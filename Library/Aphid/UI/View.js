@@ -846,6 +846,10 @@ Aphid.UI.View = Class.create(
 
 });
 
+// Mixins --------------------------------------------------------------------
+
+Object.extend(Aphid.Core.Application.prototype, Aphid.Support.Properties);
+
 // Method Name Mappings for Debugging ----------------------------------------
 
 Aphid.UI.View.prototype.setView.displayName = "Aphid.UI.View.setView";
