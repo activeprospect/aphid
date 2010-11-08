@@ -3,6 +3,11 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Model] Added support for properties (Aphid.Support.Properties) on
+   instances of Aphid.Model and changed the way that properties are declared
+   on models from an array of keys to a hash of keys with an options hash as
+   the value.
+
  * [Aphid.Support] Added Aphid.Support.Properties, a mixin that defines a
    standard accessor and setter pattern for Objects in Aphid.
 

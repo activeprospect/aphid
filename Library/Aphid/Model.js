@@ -220,14 +220,14 @@ Aphid.Model = Class.create({
   json: false,
 
   /**
-   * Aphid.Model#attributes -> Array
+   * Aphid.Model#properties -> Hash
    *
    * An array of all possible attribute names that instances of the model will
    * contain. When initializing the object from another object, JSON string,
    * or HTML element (using data-* attributes), these attribute names will be
    * referenced to set values from the initialization data.
   **/
-  attributes: $A(),
+  properties: $H(),
 
   /**
    * Aphid.Model#proxies -> Hash
@@ -245,14 +245,23 @@ Aphid.Model = Class.create({
    * accomplish this, we would first define our models as so:
    *
    *     var Address = Class.create(Aphid.Model, {
-   *       attributes: [ "street", "city", "state", "zip" ],
+   *       properties: {
+   *         "street": { type: "string" },
+   *         "city": { type: "string" },
+   *         "state": { type: "string" },
+   *         "zipCode": { type: "string", key: "zip_code" }
+   *       },
    *       toString: function() {
-   *         return this.street + "\n" + this.city + ", " + this.state + " " + this.zip;
+   *         return this._street + "\n" + this._city + ", " + this._state + " " + this._zip;
    *       }
    *     });
    *     var Contact = Class.create(Aphid.Model, {
-   *       attributes: [ "name", "email", "address" ],
-   *       proxies: { address: Address }
+   *       properties: {
+   *         "name": { type: "string" },
+   *         "email": { type: "string" },
+   *         "address": { type: "string" }
+   *       },
+   *       proxies: { address: "Address" }
    *     });
    *
    * Now we can pass in a Hash as the value to the address attribute and
@@ -270,10 +279,10 @@ Aphid.Model = Class.create({
    *       }
    *     })
    *
-   * The _address_ attribute on the Contact model will now return an instance
+   * The _address_ property on the Contact model will now return an instance
    * of the Address class:
    *
-   *     contact.address.toString();
+   *     contact.get("address").toString();
    *     // "123 Sample Street
    *     //  Anytown, TX 12345"
    *
@@ -307,6 +316,9 @@ Aphid.Model = Class.create({
   initialize: function(options)
   {
     Object.applyOptionsToInstance(this, options);
+
+    this.properties = $H(this.properties);
+    this.proxies    = $H(this.proxies);
 
     if (this.identifier)
       this._initializeFromIdentifier();
@@ -379,18 +391,19 @@ Aphid.Model = Class.create({
     $L.info("Initializing from Element...", this);
     if (Object.isString(this.element))
       this.element = Element.fromString(this.element);
-    this.attributes.each(
-      function(attribute)
+    this.properties.keys().each(
+      function(property)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.element.getData(attribute) + '"', this);
-        this[attribute] = this.element.getData(attribute);
-        this["_" + attribute] = this.element.getData(attribute);
+        var attribute = property.attributize();
+        $L.debug('Setting value of property "' + property + '" to "' + this.element.getData(attribute) + '"', this);
+        this["_" + property] = this.element.getData(attribute);
+        this["__" + property] = this.element.getData(attribute);
       }.bind(this)
     );
-    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    if (this.identifierAttribute && !this.identifier && this["_" + this.identifierAttribute])
     {
       $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
-      this.identifier = this[this.identifierAttribute];
+      this.identifier = this["_" + this.identifierAttribute];
     }
     this._instantiateProxies();
     this._afterInitialize();
@@ -405,26 +418,32 @@ Aphid.Model = Class.create({
   _initializeFromObject: function()
   {
     $L.info("Initializing from Object...", this);
-    this.attributes.each(
-      function(attribute)
+    this.properties.each(
+      function(pair)
       {
-        $L.debug('Setting value of attribute "' + attribute + '" to "' + this.object[attribute] + '"', this);
-        if (!Object.isUndefined(this.object[attribute]))
+        var property = pair.key,
+            options  = pair.value,
+            key      = options["key"] || property,
+            value    = Object.isUndefined(key) ? "null" : this.object[key];
+
+        $L.debug('Setting value of property "' + property + '" to "' + value + '"', this);
+
+        if (value)
         {
-          this[attribute] = this.object[attribute];
-          this["_" + attribute] = Object.isUndefined(this.object[attribute].clone) ? this.object[attribute] : this.object[attribute].clone();
+          this["_" + property] = value;
+          this["__" + property] = Object.isUndefined(value.clone) ? value : value.clone();
         }
         else
         {
-          this[attribute] = null;
-          this["_" + attribute] = null;
+          this["_" + property] = null;
+          this["__" + property] = null;
         }
       }.bind(this)
     );
-    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
+    if (this.identifierAttribute && !this.identifier && this["_" + this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
-      this.identifier = this[this.identifierAttribute];
+      $L.debug('Setting identifier to ' + this["_" + this.identifierAttribute] + '"', this);
+      this.identifier = this["_" + this.identifierAttribute];
     }
     this._instantiateProxies();
     this._afterInitialize();
@@ -452,11 +471,11 @@ Aphid.Model = Class.create({
   _initializeEmptyObject: function()
   {
     $L.info("Initializing empty object...", this);
-    this.attributes.each(
-      function(attribute)
+    this.properties.keys().each(
+      function(property)
       {
-        this[attribute] = null;
-        this["_" + attribute] = null;
+        this["_" + property] = null;
+        this["__" + property] = null;
       }.bind(this)
     );
     this._afterInitialize();
@@ -479,30 +498,31 @@ Aphid.Model = Class.create({
   isDirty: function()
   {
     var isDirty = false;
+    var properties = this.properties.keys();
 
-    this.attributes.each(function(attribute)
+    properties.each(function(property)
     {
-      if (this.proxies && $H(this.proxies).keys().include(attribute))
+      if (this.proxies && $H(this.proxies).keys().include(property))
       {
-        if (Object.isArray(this[attribute]))
+        if (Object.isArray(this["_" + property]))
         {
-          if (!this[attribute].compare(this["_" + attribute]))
+          if (!this["_" + property].compare(this["__" + property]))
             isDirty = true;
           else
           {
-            this[attribute].each(function(proxyAttribute) {
-              if (!proxyAttribute.identifier && proxyAttribute.isDirty())
+            this["_" + property].each(function(proxyProperty) {
+              if (!proxyProperty.identifier && proxyProperty.isDirty())
                 isDirty = true;
             }, this);
           }
         }
       }
-      else if (Object.isArray(this[attribute]))
+      else if (Object.isArray(this["_" + property]))
       {
-        if (!this[attribute].compare(this["_" + attribute]))
+        if (!this["_" + property].compare(this["__" + property]))
           isDirty = true;
       }
-      else if (this[attribute] != this["_" + attribute])
+      else if (this["_" + property] != this["__" + property])
       {
         isDirty = true;
       }
@@ -535,32 +555,32 @@ Aphid.Model = Class.create({
   **/
   _instantiateProxy: function(proxy)
   {
-    var attribute = proxy[0],
-        klass     = proxy[1]["type"] || proxy[1];
+    var property = proxy[0],
+        klass    = proxy[1]["type"] || proxy[1];
   
     // Allow the class name to be specified as a String
     if (Object.isString(klass))
       klass = eval(klass);
 
-    $L.info("Instantiating proxy " + attribute + " ...", this);
+    $L.info("Instantiating proxy " + property + " ...", this);
 
     // Do not instantiate proxies that are null or undefined
-    if (Object.isUndefined(this[attribute]) || this[attribute] == null)
+    if (Object.isUndefined(this["_" + property]) || this["_" + property] == null)
       return;
 
     // If the attribute value is an array, instantiate proxy for each member
     // of the array
-    else if (Object.isArray(this[attribute]))
-      this[attribute] = this[attribute].collect(function(tuple) {
+    else if (Object.isArray(this["_" + property]))
+      this["_" + property] = this["_" + property].collect(function(tuple) {
         var instance = new klass({ object: tuple });
         return instance;
       });
 
     // Instantiate proxy for a single value
     else
-      this[attribute] = new klass({ object: this[attribute] });
+      this["_" + property] = new klass({ object: this["_" + property] });
 
-    this["_" + attribute] = Object.isUndefined(this[attribute].clone) ? this[attribute] : this[attribute].clone();
+    this["__" + property] = Object.isUndefined(this["_" + property].clone) ? this["_" + property] : this["_" + property].clone();
   },
 
   // -------------------------------------------------------------------------
@@ -575,18 +595,23 @@ Aphid.Model = Class.create({
   **/
   serialize: function()
   {
-    var attributes = {};
+    var properties = {};
 
-    this.attributes.each(function(attribute)
+    this.properties.each(function(pair)
     {
+      var property = pair.key,
+          options  = pair.value,
+          key      = options["key"] || property,
+          value    = Object.isUndefined(key) ? "null" : this.object[key];
+
       // Undefined Properties
-      if (Object.isUndefined(this[attribute]) || this[attribute] == null)
-        attributes[attribute] = "";
+      if (Object.isUndefined(this["_" + property]) || this["_" + property] == null)
+        properties[key] = "";
 
       // Arrays (Values, Model Relationships, etc)
-      else if (Object.isArray(this[attribute]))
+      else if (Object.isArray(this["_" + property]))
       {
-        attributes[attribute] = this[attribute].collect(
+        properties[key] = this["_" + property].collect(
           function(tuple) {
             return Object.isUndefined(tuple.serialize) ? tuple : tuple.serialize()
           }
@@ -594,15 +619,15 @@ Aphid.Model = Class.create({
       }
 
       // Model Relationships
-      else if (this[attribute].serialize)
-        attributes[attribute] = this[attribute].serialize();
+      else if (this["_" + property].serialize)
+        properties[key] = this["_" + property].serialize();
 
       // Simple Value
       else
-        attributes[attribute] = this[attribute];
+        properties[key] = this["_" + property];
     }, this);
 
-    return attributes;
+    return properties;
   },
 
   /**
@@ -788,14 +813,14 @@ Aphid.Model = Class.create({
   **/
   toTemplateReplacements: function()
   {
-    var attributes = {};
-    this.attributes.each(
-      function(attribute)
+    var properties = {};
+    this.properties.keys().each(
+      function(property)
       {
-        attributes[attribute] = this[attribute];
+        properties[property] = this.get(property);
       }.bind(this)
     );
-    return attributes;
+    return properties;
   }
 
 });
