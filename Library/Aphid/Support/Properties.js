@@ -54,6 +54,17 @@ Aphid.Support.Properties = {
       return this[customSetterName](value)
 
     return this["_" + property] = value;
+  },
+
+  /**
+   * Aphid.Support.Properties#hasProperty(property) -> Boolean
+   *
+   * Returns true or false depending on whether or not the object has the
+   * specified +property+ defined.
+  **/
+  hasProperty: function(property)
+  {
+    return !Object.isUndefined(this["_" + property]);
   }
 
 };
