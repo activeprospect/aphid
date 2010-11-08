@@ -32,7 +32,7 @@ Aphid.Support.Properties = {
     // Check for a Custom Accessor
     var customAccessor = "get" + property.upperCaseFirst();
     if (this[customAccessor])
-      return this[customAccessor];
+      return this[customAccessor]();
 
     // Otherwise, return the property directly...
     return this["_" + property];
