@@ -28,11 +28,18 @@ Aphid.Support.Extensions.Object = {
   applyOptionsToInstance: function(instance, options)
   {
     options = $H(options);
-    options.each(function(pair) {
-      // if (Object.isFunction(pair.value)) return;
-      if (Object.isUndefined(instance[pair.key])) return;
+    options.each(function(pair)
+    {
+      var property = pair.key,
+          value    = pair.value;
+
+      if (instance.hasProperty && instance.hasProperty(property))
+        instance.set(property, value);
+      else if (!Object.isUndefined(instance[property]))
+        instance[property] = value;
+      else return;
+
       $L.debug("Setting " + pair.key + " = " + pair.value, "Object#applyOptionsToInstance");
-      instance[pair.key] = pair.value;
     });
   }
 
