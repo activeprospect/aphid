@@ -3,6 +3,8 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Added support for computed properties.
+
  * [Aphid.Model] Added support for properties (Aphid.Support.Properties) on
    instances of Aphid.Model and changed the way that properties are declared
    on models from an array of keys to a hash of keys with an options hash as

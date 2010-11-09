@@ -25,8 +25,9 @@
 
       var TestClass = Class.create({
         testProperty: false,
+        computedProperty: function() { return "foo" },
         customProperty: false,
-        customProperty: function() { return this.customProperty; },
+        getCustomProperty: function() { return this.customProperty; },
         setCustomProperty: function(value) { return this.customProperty = value; }
       });
       Object.extend(TestClass.prototype, Aphid.Support.Properties);
@@ -49,6 +50,11 @@
           assertEqual("bar", propertyValue);
         }},
 
+        testShouldGetComputedProperty: function() { with(this) {
+          var propertyValue = this.testObject.get("computedProperty");
+          assertEqual("foo", propertyValue);
+        }},
+
         testShouldUseCustomGetter: function() { with(this) {
           this.testObject.setCustomProperty("foo");
           var propertyValue = this.testObject.get("customProperty");
@@ -60,14 +66,19 @@
           assertEqual("foo", this.testObject.customProperty);
         }},
 
-        testShouldThrowExceptionForUndefinedPropertiesWhenGetting: function() { with(this) {
+        testShouldRaiseUndefinedPropertyErrorWhenGetting: function() { with(this) {
           var testFunction = function() { this.testObject.get("foo") }.bind(this);
           assertRaise("UndefinedPropertyError", testFunction);
         }},
 
-        testShouldThrowExceptionForUndefinedPropertiesWhenSetting: function() { with(this) {
+        testShouldRaiseUndefinedPropertyErrorWhenSetting: function() { with(this) {
           var testFunction = function() { this.testObject.set("foo", "bar") }.bind(this);
           assertRaise("UndefinedPropertyError", testFunction);
+        }},
+
+        testShouldRaiseReadOnlyPropertyErrorOnComputedProperties: function() { with(this) {
+          var testFunction = function() { this.testObject.set("computedProperty", "bar") }.bind(this);
+          assertRaise("ReadOnlyPropertyError", testFunction);
         }}
 
       }, { testLog: "logSection" });

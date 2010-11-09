@@ -25,6 +25,10 @@ Aphid.Support.Properties = {
     if (!this.hasProperty(property))
       throw this._undefinedPropertyError(property);
 
+    // Check for Computed Property
+    if (Object.isFunction(this[property]))
+      return this[property]();
+
     // Check for a Custom Accessor
     var customAccessor = "get" + property.upperCaseFirst();
     if (this[customAccessor])
@@ -48,6 +52,10 @@ Aphid.Support.Properties = {
   {
     if (!this.hasProperty(property))
       throw this._undefinedPropertyError(property);
+
+    // Check for Computed Property
+    if (Object.isFunction(this[property]))
+      throw this._readOnlyPropertyError(property);
 
     // Check for a Custom Setter
     var customSetterName = "set" + property.upperCaseFirst();
@@ -83,6 +91,23 @@ Aphid.Support.Properties = {
     var error  = new Error("Property '" + property + "' is not defined on " + this.displayName);
     error.name = "UndefinedPropertyError";
     return error;
+  },
+
+
+  /*
+   * Aphid.Support.Properties#_readOnlyPropertyError(property) -> Error
+   *
+   * - property (String): the property that is read-only
+   *
+   * Returns an Error object stating that the specified +property+ is
+   * read-only or a computed property.
+   */
+  _readOnlyPropertyError: function(property)
+  {
+    var error  = new Error("Property '" + property + "' is read-only (or computed) on " + this.displayName);
+    error.name = "ReadOnlyPropertyError";
+    return error;
   }
+
 
 };
