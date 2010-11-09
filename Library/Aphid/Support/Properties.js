@@ -12,11 +12,6 @@
 
 Aphid.Support.Properties = {
 
-  UndefinedPropertyError: {
-    name: "UndefinedPropertyError",
-    message: "The specified property does not exist"
-  },
-
   /**
    * Aphid.Support.Properties#get(property) -> Object
    *
@@ -28,7 +23,7 @@ Aphid.Support.Properties = {
   get: function(property)
   {
     if (!this.hasProperty(property))
-      throw this.UndefinedPropertyError
+      throw this._undefinedPropertyError(property);
 
     // Check for a Custom Accessor
     var customAccessor = "get" + property.upperCaseFirst();
@@ -52,7 +47,7 @@ Aphid.Support.Properties = {
   set: function(property, value)
   {
     if (!this.hasProperty(property))
-      throw this.UndefinedPropertyError
+      throw this._undefinedPropertyError(property);
 
     // Check for a Custom Setter
     var customSetterName = "set" + property.upperCaseFirst();
@@ -71,6 +66,23 @@ Aphid.Support.Properties = {
   hasProperty: function(property)
   {
     return !Object.isUndefined(this[property]);
+  },
+
+  // -------------------------------------------------------------------------
+
+  /*
+   * Aphid.Support.Properties#_undefinedPropertyError(property) -> Error
+   *
+   * - property (String): the property that is not defined
+   *
+   * Returns an Error object stating that the specified +property+ is not
+   * defined on the class.
+   */
+  _undefinedPropertyError: function(property)
+  {
+    var error  = new Error("Property '" + property + "' is not defined on " + this.displayName);
+    error.name = "UndefinedPropertyError";
+    return error;
   }
 
 };
