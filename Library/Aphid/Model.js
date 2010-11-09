@@ -737,7 +737,7 @@ Aphid.Model = Class.create({
       function(proxyAttribute)
       {
         // Check for a validate flag on the proxy, defaulting to true
-        var validate = this.proxies[proxyAttribute]["validate"];
+        var validate = this.proxies.get(proxyAttribute)["validate"];
         if (Object.isUndefined(validate)) validate = true;
         if (!validate) return;
 
