@@ -24,10 +24,10 @@
     <script>
 
       var TestClass = Class.create({
-        _testProperty: false,
-        _customProperty: false,
-        customProperty: function() { return this._customProperty; },
-        setCustomProperty: function(value) { this._customProperty = value; return this._customProperty; }
+        testProperty: false,
+        customProperty: false,
+        customProperty: function() { return this.customProperty; },
+        setCustomProperty: function(value) { return this.customProperty = value; }
       });
       Object.extend(TestClass.prototype, Aphid.Support.Properties);
 
@@ -40,7 +40,7 @@
 
         testShouldSetProperty: function() { with(this) {
           this.testObject.set("testProperty", "foo");
-          assertEqual("foo", this.testObject._testProperty);
+          assertEqual("foo", this.testObject.testProperty);
         }},
 
         testShouldGetProperty: function() { with(this) {
@@ -57,7 +57,7 @@
 
         testShouldUseCustomSetter: function() { with(this) {
           var returnValue = this.testObject.set("customProperty", "foo");
-          assertEqual("foo", this.testObject._customProperty);
+          assertEqual("foo", this.testObject.customProperty);
         }},
 
         testShouldThrowExceptionForUndefinedPropertiesWhenGetting: function() { with(this) {

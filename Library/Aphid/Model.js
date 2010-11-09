@@ -396,14 +396,14 @@ Aphid.Model = Class.create({
       {
         var attribute = property.attributize();
         $L.debug('Setting value of property "' + property + '" to "' + this.element.getData(attribute) + '"', this);
+        this[property] = this.element.getData(attribute);
         this["_" + property] = this.element.getData(attribute);
-        this["__" + property] = this.element.getData(attribute);
       }.bind(this)
     );
-    if (this.identifierAttribute && !this.identifier && this["_" + this.identifierAttribute])
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
       $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
-      this.identifier = this["_" + this.identifierAttribute];
+      this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
     this._afterInitialize();
@@ -430,20 +430,20 @@ Aphid.Model = Class.create({
 
         if (value)
         {
-          this["_" + property] = value;
-          this["__" + property] = Object.isUndefined(value.clone) ? value : value.clone();
+          this[property] = value;
+          this["_" + property] = Object.isUndefined(value.clone) ? value : value.clone();
         }
         else
         {
+          this[property] = null;
           this["_" + property] = null;
-          this["__" + property] = null;
         }
       }.bind(this)
     );
-    if (this.identifierAttribute && !this.identifier && this["_" + this.identifierAttribute])
+    if (this.identifierAttribute && !this.identifier && this[this.identifierAttribute])
     {
-      $L.debug('Setting identifier to ' + this["_" + this.identifierAttribute] + '"', this);
-      this.identifier = this["_" + this.identifierAttribute];
+      $L.debug('Setting identifier to ' + this[this.identifierAttribute] + '"', this);
+      this.identifier = this[this.identifierAttribute];
     }
     this._instantiateProxies();
     this._afterInitialize();
@@ -474,8 +474,8 @@ Aphid.Model = Class.create({
     this.properties.keys().each(
       function(property)
       {
+        this[property] = null;
         this["_" + property] = null;
-        this["__" + property] = null;
       }.bind(this)
     );
     this._afterInitialize();
@@ -504,25 +504,25 @@ Aphid.Model = Class.create({
     {
       if (this.proxies && $H(this.proxies).keys().include(property))
       {
-        if (Object.isArray(this["_" + property]))
+        if (Object.isArray(this[property]))
         {
-          if (!this["_" + property].compare(this["__" + property]))
+          if (!this[property].compare(this["_" + property]))
             isDirty = true;
           else
           {
-            this["_" + property].each(function(proxyProperty) {
+            this[property].each(function(proxyProperty) {
               if (!proxyProperty.identifier && proxyProperty.isDirty())
                 isDirty = true;
             }, this);
           }
         }
       }
-      else if (Object.isArray(this["_" + property]))
+      else if (Object.isArray(this[property]))
       {
-        if (!this["_" + property].compare(this["__" + property]))
+        if (!this[property].compare(this["_" + property]))
           isDirty = true;
       }
-      else if (this["_" + property] != this["__" + property])
+      else if (this[property] != this["_" + property])
       {
         isDirty = true;
       }
@@ -565,22 +565,22 @@ Aphid.Model = Class.create({
     $L.info("Instantiating proxy " + property + " ...", this);
 
     // Do not instantiate proxies that are null or undefined
-    if (Object.isUndefined(this["_" + property]) || this["_" + property] == null)
+    if (Object.isUndefined(this[property]) || this[property] == null)
       return;
 
     // If the attribute value is an array, instantiate proxy for each member
     // of the array
-    else if (Object.isArray(this["_" + property]))
-      this["_" + property] = this["_" + property].collect(function(tuple) {
+    else if (Object.isArray(this[property]))
+      this[property] = this[property].collect(function(tuple) {
         var instance = new klass({ object: tuple });
         return instance;
       });
 
     // Instantiate proxy for a single value
     else
-      this["_" + property] = new klass({ object: this["_" + property] });
+      this[property] = new klass({ object: this[property] });
 
-    this["__" + property] = Object.isUndefined(this["_" + property].clone) ? this["_" + property] : this["_" + property].clone();
+    this["_" + property] = Object.isUndefined(this[property].clone) ? this[property] : this[property].clone();
   },
 
   // -------------------------------------------------------------------------
@@ -605,13 +605,13 @@ Aphid.Model = Class.create({
           value    = Object.isUndefined(key) ? "null" : this.object[key];
 
       // Undefined Properties
-      if (Object.isUndefined(this["_" + property]) || this["_" + property] == null)
+      if (Object.isUndefined(this[property]) || this[property] == null)
         properties[key] = "";
 
       // Arrays (Values, Model Relationships, etc)
-      else if (Object.isArray(this["_" + property]))
+      else if (Object.isArray(this[property]))
       {
-        properties[key] = this["_" + property].collect(
+        properties[key] = this[property].collect(
           function(tuple) {
             return Object.isUndefined(tuple.serialize) ? tuple : tuple.serialize()
           }
@@ -619,12 +619,12 @@ Aphid.Model = Class.create({
       }
 
       // Model Relationships
-      else if (this["_" + property].serialize)
-        properties[key] = this["_" + property].serialize();
+      else if (this[property].serialize)
+        properties[key] = this[property].serialize();
 
       // Simple Value
       else
-        properties[key] = this["_" + property];
+        properties[key] = this[property];
     }, this);
 
     return properties;

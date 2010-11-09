@@ -27,7 +27,7 @@ Aphid.Support.Properties = {
    **/
   get: function(property)
   {
-    if (!this.hasProperty)
+    if (!this.hasProperty(property))
       throw this.UndefinedPropertyError
 
     // Check for a Custom Accessor
@@ -36,7 +36,7 @@ Aphid.Support.Properties = {
       return this[customAccessor]();
 
     // Otherwise, return the property directly...
-    return this["_" + property];
+    return this[property];
   },
 
   /**
@@ -51,7 +51,7 @@ Aphid.Support.Properties = {
   **/
   set: function(property, value)
   {
-    if (!this.hasProperty)
+    if (!this.hasProperty(property))
       throw this.UndefinedPropertyError
 
     // Check for a Custom Setter
@@ -59,7 +59,7 @@ Aphid.Support.Properties = {
     if (this[customSetterName])
       return this[customSetterName](value)
 
-    return this["_" + property] = value;
+    return this[property] = value;
   },
 
   /**
@@ -70,7 +70,7 @@ Aphid.Support.Properties = {
   **/
   hasProperty: function(property)
   {
-    return !Object.isUndefined(this["_" + property]);
+    return !Object.isUndefined(this[property]);
   }
 
 };

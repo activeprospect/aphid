@@ -98,42 +98,42 @@
           });
           wait(1000, function() {
             assert(testContact.isLoaded);
-            assertEqual("John Doe", testContact._name);
-            assertEqual("jdoe@example.com", testContact._email);
+            assertEqual("John Doe", testContact.name);
+            assertEqual("jdoe@example.com", testContact.email);
           });
         }},
 
         testShouldInitializeEmptyModel: function() { with(this) {
           var testContact = new TestContact();
-          assert(!Object.isUndefined(testContact._name));
-          assert(!Object.isUndefined(testContact._email));
+          assert(!Object.isUndefined(testContact.name));
+          assert(!Object.isUndefined(testContact.email));
         }},
 
         testShouldInitializeModelFromObject: function() { with(this) {
           var object = { name: "John Doe", email: "jdoe@example.com" };
           var testContact = new TestContact({ object: object });
-          assertEqual("John Doe", testContact._name);
-          assertEqual("jdoe@example.com", testContact._email);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromJSON: function() { with(this) {
           var jsonString = '{"name":"John Doe","email":"jdoe@example.com"}';
           var testContact = new TestContact({ json: jsonString });
-          assertEqual("John Doe", testContact._name);
-          assertEqual("jdoe@example.com", testContact._email);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromElement: function() { with(this) {
           var testContact = new TestContact({ element: $('testContactElement') });
-          assertEqual("John Doe", testContact._name);
-          assertEqual("jdoe@example.com", testContact._email);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInitializeModelFromHTMLString: function() { with(this) {
           var htmlString = '<div id="testContactElement" data-name="John Doe" data-email="jdoe@example.com"></div>';
           var testContact = new TestContact({ element: htmlString });
-          assertEqual("John Doe", testContact._name);
-          assertEqual("jdoe@example.com", testContact._email);
+          assertEqual("John Doe", testContact.name);
+          assertEqual("jdoe@example.com", testContact.email);
         }},
 
         testShouldInstatiateProxies: function() { with(this) {
@@ -149,11 +149,11 @@
           };
           var testContact = new TestContactWithAddressProxy({ object: object });
           window.console.log(testContact)
-          assertInstanceOf(TestAddress, testContact._address);
-          assertEqual("123 Easy Street", testContact._address._street);
-          assertEqual("Anytown", testContact._address._city);
-          assertEqual("Anystate", testContact._address._state);
-          assertEqual(12345, testContact._address._zip);
+          assertInstanceOf(TestAddress, testContact.address);
+          assertEqual("123 Easy Street", testContact.address.street);
+          assertEqual("Anytown", testContact.address.city);
+          assertEqual("Anystate", testContact.address.state);
+          assertEqual(12345, testContact.address.zip);
         }},
 
         testShouldInstatiateProxiesForArrays: function() { with(this) {
@@ -167,11 +167,11 @@
             ]
           };
           var testContact = new TestContactWithPhoneNumbersProxy({ object: object });
-          assert(Object.isArray, testContact._phoneNumbers);
-          testContact._phoneNumbers.each(function(phoneNumber) {
+          assert(Object.isArray, testContact.phoneNumbers);
+          testContact.phoneNumbers.each(function(phoneNumber) {
             assertInstanceOf(TestPhoneNumber, phoneNumber);
           });
-          assertEqual(3, testContact._phoneNumbers.length);
+          assertEqual(3, testContact.phoneNumbers.length);
         }},
 
         /*
@@ -184,8 +184,8 @@
           testRemoteContact.reload();
           // Attributes should match those in the fixture, not the values
           // defined in the "object" hash above.
-          assertEqual("John Doe", testRemoteContact._name);
-          assertEqual("jdoe@example.com", testRemoteContact._email);
+          assertEqual("John Doe", testRemoteContact.name);
+          assertEqual("jdoe@example.com", testRemoteContact.email);
         }},
 
         /*
