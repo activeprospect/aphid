@@ -2,9 +2,6 @@
 
 ## Packaging
 
- * We should not be versioning the built resources of Aphid. We need a better
-   strategy for projects to bring in Aphid other than as a git submodule.
-
 ## Documentation
 
  * Add overview documentation on how to start a new project with Aphid that
@@ -40,11 +37,6 @@
    ListView#options = { isSortable: ... } instead of ListView#isSortable),
    public (ListView#items) and private (ListView#_itemElements) properties.
 
- * Add get/set methods on Object for getting and setting properties (i.e.
-   ListView.get("items")) so that we can optionally intercept and/or perform
-   actions when properties are requested (or set). This may require us to
-   assign public properties to the class _properties property.
-
  * Formally define mixins for delegate protocols (i.e. Aphid.UI.View.DelegateMethods).
 
  * Possibly introduce the concept of Layout controllers (examples might
@@ -64,6 +56,13 @@
  * Document and test the hash syntax for proxied attribute values.
 
 ### Aphid.Support.Logger
+
+### Aphid.Support.Properties
+
+ * Add support for chained properties in get() and set(). Examples:
+
+    - this.get("form.filters.rules") => this.get("form").get("filters").get("rules")
+    - this.set("form.filters.rules", newRules) => this.get("form").get("filters").set("rules", newRules)
 
 ### Aphid.UI.Window
 
