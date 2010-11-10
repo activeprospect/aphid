@@ -16,12 +16,22 @@ Aphid.Support.Properties = {
    * Aphid.Support.Properties#get(property) -> Object
    *
    * - property (String): name of the property that should be retrieved
-    *
-    * Gets the value of the specified +property+. This method will check for a
-    * get_PropertyName_ method definition and will call it, if present.
-   **/
+   *
+   * Gets the value of the specified +property+. This method will check for a
+   * get_PropertyName_ method definition and will call it, if present.
+  **/
   get: function(property)
   {
+    // Handle nested property access
+    if (property.indexOf(".") > 0)
+    {
+      var chainedProperties   = property.split("."),
+          thisProperty        = chainedProperties.first(),
+          remainingProperties = chainedProperties.slice(1).join(".");
+      return this.get(thisProperty).get(remainingProperties);
+    }
+
+    // Ensure that the property is defined
     if (!this.hasProperty(property))
       throw this._undefinedPropertyError(property);
 
@@ -50,6 +60,15 @@ Aphid.Support.Properties = {
   **/
   set: function(property, value)
   {
+    // Handle nested property access
+    if (property.indexOf(".") > 0)
+    {
+      var chainedProperties   = property.split("."),
+          thisProperty        = chainedProperties.first(),
+          remainingProperties = chainedProperties.slice(1).join(".");
+      return this.get(thisProperty).set(remainingProperties, value);
+    }
+
     if (!this.hasProperty(property))
       throw this._undefinedPropertyError(property);
 

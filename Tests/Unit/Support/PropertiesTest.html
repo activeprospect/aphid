@@ -23,12 +23,17 @@
     <!-- Tests -->
     <script>
 
+      var NestedClass = Class.create({ level: 0 });
+      Object.extend(NestedClass.prototype, Aphid.Support.Properties);
+      Object.extend(NestedClass.prototype, { nestedProperty: new NestedClass, testProperty: false });
+
       var TestClass = Class.create({
         testProperty: false,
         computedProperty: function() { return "foo" },
         customProperty: false,
         getCustomProperty: function() { return this.customProperty; },
-        setCustomProperty: function(value) { return this.customProperty = value; }
+        setCustomProperty: function(value) { return this.customProperty = value; },
+        chainedProperty: new NestedClass()
       });
       Object.extend(TestClass.prototype, Aphid.Support.Properties);
 
@@ -44,10 +49,20 @@
           assertEqual("foo", this.testObject.testProperty);
         }},
 
+        testShouldsetChainedProperty: function() { with(this) {
+          this.testObject.set("chainedProperty.nestedProperty.testProperty", "foo");
+          assertEqual("foo", this.testObject.chainedProperty.nestedProperty.testProperty);
+        }},
+
         testShouldGetProperty: function() { with(this) {
           this.testObject.set("testProperty", "bar");
           var propertyValue = this.testObject.get("testProperty");
           assertEqual("bar", propertyValue);
+        }},
+
+        testShouldGetChainedProperty: function() { with(this) {
+          var propertyValue = this.testObject.get("chainedProperty.nestedProperty.nestedProperty");
+          assertInstanceOf(NestedClass, propertyValue);
         }},
 
         testShouldGetComputedProperty: function() { with(this) {
@@ -66,12 +81,17 @@
           assertEqual("foo", this.testObject.customProperty);
         }},
 
-        testShouldRaiseUndefinedPropertyErrorWhenGetting: function() { with(this) {
+        testShouldRaiseUndefinedPropertyErrorWhenGettingProperty: function() { with(this) {
           var testFunction = function() { this.testObject.get("foo") }.bind(this);
           assertRaise("UndefinedPropertyError", testFunction);
         }},
 
-        testShouldRaiseUndefinedPropertyErrorWhenSetting: function() { with(this) {
+        testShouldRaiseUndefinedPropertyErrorWhenGettingChainedProperty: function() { with(this) {
+          var testFunction = function() { this.testObject.get("chainedProperty.nestedProperty.unknownProperty") }.bind(this);
+          assertRaise("UndefinedPropertyError", testFunction);
+        }},
+
+        testShouldRaiseUndefinedPropertyErrorWhenSettingProperty: function() { with(this) {
           var testFunction = function() { this.testObject.set("foo", "bar") }.bind(this);
           assertRaise("UndefinedPropertyError", testFunction);
         }},

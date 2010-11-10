@@ -3,6 +3,10 @@
 
 ## Version 0.9.2 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Added support for getting or setting chained
+   properties (i.e. foo.get("bar.baz.bong") instead of
+   foo.get("foo").get("baz").get("bong")).
+
  * [Aphid.Support.Properties] Added support for computed properties.
 
  * [Aphid.Model] Added support for properties (Aphid.Support.Properties) on
