@@ -43,6 +43,18 @@ module Aphid
       Dir.clone! "#{APHID_ROOT}/Skeleton", @project_path, ["^\\."]
     end
 
+    def evaluate_templates
+      puts "Evaluating Templates ..."
+      Dir["#{@project_path}/**/*.erb"].each do |filename|
+        File.open(filename, "r+") do |file|
+          template = ERB.new file.read
+          file.rewind
+          file.write template.result(binding)
+        end
+        File.rename filename, filename[0..-5]
+      end
+    end
+
     def vendorize_aphid
       puts "Vendorizing Aphid ..."
       vendorized_path = "#{@project_path}/Vendor/Aphid"
@@ -59,6 +71,7 @@ module Aphid
     def bootstrap!
       create_project_folder
       create_project_structure
+      evaluate_templates
       vendorize_aphid
       build_project
       puts "Initialized \"#{project_name}\" in #{@project_path} ..."

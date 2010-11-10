@@ -1,7 +1,7 @@
 
 require 'aphid/rake'
 
-PROJECT_NAME         = "New Application" # TODO Replace this with Erb
+PROJECT_NAME         = "<%= @project_name %>"
 ROOT_PATH            = File.expand_path(File.dirname(__FILE__))
 DEFAULT_TASKS        = [ :build ]
 WATCH_TASKS          = DEFAULT_TASKS

@@ -3,7 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
- * 
+ * [Tools] Added support for pre-processing the new project skeleton files
+   with Erb.
 
 ## Version 0.9.2 - November 10th, 2010
 

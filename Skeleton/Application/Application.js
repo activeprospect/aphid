@@ -29,9 +29,9 @@ var Application = Class.create(Aphid.Core.Application, {
     // You should initialize and add your primary view controller to the
     // browser window in this callback.
     //
-    this.mainViewController = new MainViewController({ delegate: this });
-    if (this.mainViewController.isLoaded)
-      this.mainWindow.addSubview(this.mainViewController);
+    this.set("mainViewController", new MainViewController({ delegate: this }));
+    if (this.get("mainViewController.isLoaded"))
+      this.get("mainWindow").addSubview(this.get("mainViewController"));
   }
 
 });

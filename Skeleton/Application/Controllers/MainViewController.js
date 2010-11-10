@@ -21,7 +21,7 @@ var MainViewController = Class.create(Aphid.UI.ViewController, {
   viewDidLoad: function($super)
   {
     $super();
-    this.label.element.update("Hello, world!");
+    this.get("label.element").update("Hello, world!");
   }
 
 });
