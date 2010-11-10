@@ -59,11 +59,6 @@
 
 ### Aphid.Support.Properties
 
- * Add support for chained properties in get() and set(). Examples:
-
-    - this.get("form.filters.rules") => this.get("form").get("filters").get("rules")
-    - this.set("form.filters.rules", newRules) => this.get("form").get("filters").set("rules", newRules)
-
 ### Aphid.UI.Window
 
  * Add documentation and tests for Aphid.UI.Window.

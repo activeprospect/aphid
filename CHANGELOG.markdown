@@ -1,7 +1,7 @@
 
 # Aphid Release History
 
-## Version 0.9.2 - *Not Yet Released*
+## Version 0.9.2 - November 10th, 2010
 
  * [Aphid.Support.Properties] Added support for getting or setting chained
    properties (i.e. foo.get("bar.baz.bong") instead of
