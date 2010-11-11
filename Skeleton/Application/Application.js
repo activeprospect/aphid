@@ -9,6 +9,8 @@
 
 var Application = Class.create(Aphid.Core.Application, {
 
+  displayName: "Application",
+
   mainViewController: false,
 
   initialize: function($super)
