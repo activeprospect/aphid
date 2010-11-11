@@ -122,6 +122,31 @@ module Aphid
 
       # ------------------------------------------------------------------------
 
+      def add_asset_timestamps(filename)
+        File.open filename, "r+" do |template|
+          puts "Adding asset timestamps to #{filename} ..."
+          markup = template.read
+          markup.scan(/((link.*href=|script.*src=|url\()"?'?([^"')]+))/).each do |match|
+            asset = match[2]
+            path = "#{ROOT_PATH}/#{File.dirname(filename)}/#{asset}"
+            next if asset =~ /^http/
+            next if asset =~ /\?[0-9]+$/
+            begin
+              File.open(path, "r") do |file|
+                timestamp = file.mtime.to_i
+                markup.sub! asset, "#{asset}?#{timestamp}"
+              end
+            rescue Errno::ENOENT
+              puts "ERROR: Unable to add asset timestamp for missing file '#{path}' (referenced in #{filename})"
+              next
+            end
+          end
+          template.rewind and template.write markup
+        end
+      end
+
+      # ------------------------------------------------------------------------
+
       def header(message, &block)
         message = " #{message} "
         puts "\n#{message.center(`stty size`.split(' ')[1].to_i, '-')}\n\n"

@@ -95,6 +95,11 @@ task :build => [ :clean, :prepare ] do
     # Copy Vendored Aphid
     copy_vendored_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
 
+    # Add Asset Timestamps
+    (Dir["Build/**/*.html"] + Dir["Build/**/*.css"]).each do |file|
+      add_asset_timestamps file
+    end
+
     # Update Buildstamp
     File.open("Build/.buildstamp", 'w') do |file|
       file.puts Time.now.to_i

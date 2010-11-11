@@ -510,7 +510,7 @@ Aphid.UI.View = Class.create(
   **/
   _loadTemplate: function()
   {
-    var viewPath = $AppDelegate.baseViewPath + '/' + this.template + '.html',
+    var viewPath = $AppDelegate.baseViewPath + '/' + this.template + '.html?' + $AppDelegate.buildstamp(),
         options  = {
           asynchronous: this.asynchronousLoadingEnabled,
           method: 'get',

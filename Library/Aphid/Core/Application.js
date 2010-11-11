@@ -142,6 +142,28 @@ Aphid.Core.Application = Class.create({
       onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
     });
     return this.loadingIndicator;
+  },
+
+  buildstamp: function()
+  {
+    if (this._buildstamp) return this._buildstamp;
+
+    new Ajax.Request(".buildstamp", {
+      method: 'get',
+      asynchronous: false,
+      onSuccess: function(transport)
+      {
+        this._buildstamp = parseInt(transport.responseText);
+        $L.debug("Successfully loaded build stamp: " + this._buildstamp, this);
+      }.bind(this),
+      onFailure: function(transport)
+      {
+        window.console.log(transport)
+        $L.error("Could not retrieve build stamp (Error: " + transport.status + " " + transport.statusText + ")", this);
+      }.bind(this)
+    });
+
+    return this._buildstamp;
   }
 
 });

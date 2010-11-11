@@ -10,11 +10,11 @@ class Dir
       source_path      = File.join(source, file)
       destination_path = File.join(destination, file)
 
-      if File.directory?(source_path)
-        FileUtils.mkdir(destination_path) unless File.exists?(destination_path)
+      if File.directory? source_path
+        FileUtils.mkdir(destination_path) unless File.exists? destination_path
         clone! source_path, destination_path, exclude
       else
-        FileUtils.cp(source_path, destination_path)
+        FileUtils.cp source_path, destination_path, :preserve => true
       end
     end
   end
