@@ -126,9 +126,9 @@ module Aphid
         File.open filename, "r+" do |template|
           puts "Adding asset timestamps to #{filename} ..."
           markup = template.read
-          markup.scan(/((link.*href=|script.*src=|url\()"?'?([^"')]+))/).each do |match|
+          markup.scan(/((link.*href=|script.*src=|img.*src=|url\()"?'?([^"')]+))/).each do |match|
             asset = match[2]
-            path = "#{ROOT_PATH}/#{File.dirname(filename)}/#{asset}"
+            path = asset =~ /^\.\.\// ? "#{ROOT_PATH}/#{File.dirname(filename)}/#{asset}" : "#{ROOT_PATH}/#{asset}"
             next if asset =~ /^http/
             next if asset =~ /\?[0-9]+$/
             begin
