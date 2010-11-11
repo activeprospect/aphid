@@ -78,8 +78,10 @@ task :build => [ :clean, :prepare ] do
     end
 
     # Sprocketize Source
-    SOURCE_FILES.each do |file|
-      sprocketize(File.join("Build", "Library", File.basename(file)), { :source_Files => [ file ]})
+    SOURCE_FILES.each do |input|
+      output = File.join("Build", "Library", File.basename(input))
+      sprocketize(output, { :source_Files => [ input ]})
+      optimize output
     end
 
     # Sprocketize Source w/Documentation Intact
@@ -88,8 +90,10 @@ task :build => [ :clean, :prepare ] do
     end
 
     # Lessify Stylesheets
-    STYLESHEET_FILES.each do |file|
-      lessify(file, File.join("Build", "Resources", "Stylesheets", File.basename(file).gsub(/less/, "css")))
+    STYLESHEET_FILES.each do |input|
+      output = File.join("Build", "Resources", "Stylesheets", File.basename(input).gsub(/less/, "css"))
+      lessify(input, output)
+      optimize output
     end
 
     # Copy Vendored Aphid

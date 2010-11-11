@@ -3,6 +3,17 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Added support for compressing JavaScript and CSS build output using
+   the YUI Compressor at build time.
+
+ * Added a sample Apache configuration file that that is configured with the
+   appropriate caching and compression options for serving Aphid-based
+   applications efficiently.
+
+ * [Tools] Added support for appending asset timestamps to any references
+   found in templates or stylesheets in order to bust browser caches upon
+   publishing new releases.
+
  * [Tools] Added support for pre-processing the new project skeleton files
    with Erb.
 
