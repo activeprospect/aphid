@@ -343,7 +343,7 @@ Aphid.Model = Class.create({
    * when the model has been completely initialized.
    *
    * TODO Implement error handling for when the request fails
-  **/
+   */
   _initializeFromIdentifier: function()
   {
     $L.info("Initializing from Record Identifier...", this);
@@ -385,7 +385,7 @@ Aphid.Model = Class.create({
    *
    * Initializes the instance from the HTML Element provided as an option
    * during initialization.
-  **/
+   */
   _initializeFromElement: function()
   {
     $L.info("Initializing from Element...", this);
@@ -414,7 +414,7 @@ Aphid.Model = Class.create({
    *
    * Initializes the instance from a JavaScript object by applying any of the
    * attributes for this model that are found in the object to the instance.
-  **/
+   */
   _initializeFromObject: function()
   {
     $L.info("Initializing from Object...", this);
@@ -455,7 +455,7 @@ Aphid.Model = Class.create({
    * Initializes the instance from the JSON string provided as an option
    * during initialization by first evaluating the string and then passing it
    * on to [[Aphid.Model#_initializeFromObject()]].
-  **/
+   */
   _initializeFromJSON: function()
   {
     $L.info("Initializing from JSON...", this);
@@ -467,7 +467,7 @@ Aphid.Model = Class.create({
    * Aphid.Model#_initializeEmptyObject() -> null
    *
    * Initializes an empty instance with each attribute set to null.
-  **/
+   */
   _initializeEmptyObject: function()
   {
     $L.info("Initializing empty object...", this);
@@ -537,7 +537,7 @@ Aphid.Model = Class.create({
    * Aphid.Model#_instantiateProxies() -> null
    *
    * Instantiates any configured proxies on the model instance.
-  **/
+   */
   _instantiateProxies: function()
   {
     $H(this.proxies).each(this._instantiateProxy, this);
@@ -552,7 +552,7 @@ Aphid.Model = Class.create({
    * Instantiates a new instance of the configured class for the given
    * proxy (attribute). If the attribute's value is an array, each element of
    * the array will be instantiated as the configured proxy class.
-  **/
+   */
   _instantiateProxy: function(proxy)
   {
     var property = proxy[0],

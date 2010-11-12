@@ -44,7 +44,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
    *
    * A reference to the element that will display the message string in the
    * alert dialog markup.
-  **/
+   */
   _messageElement: false,
 
   /**
@@ -60,7 +60,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
    *
    * A reference to the element that will display the status message string in
    * the alert dialog markup.
-  **/
+   */
   _statusElement: false,
 
   // -------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
    * Aphid.UI.AlertView#_element() -> Element
    *
    * Creates the element for the AlertView programmatically.
-  **/
+   */
   // TODO Programatically declaring a Views element should be a supported feature
   _element: function()
   {

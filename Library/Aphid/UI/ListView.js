@@ -166,6 +166,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *       onChange: this._listViewOrderDidChange.bind(this),
    *       onUpdate: this._listViewOrderDidUpdate.bind(this)
    *     }
+   *
   **/
   sortableOptions: false,
 
@@ -200,7 +201,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   /*
    * Aphid.UI.ListView#_initializeStaticListViewItems() -> null
-  **/
+   */
   _initializeStaticListViewItems: function()
   {
     var items = this.element.select('>li').collect(
@@ -279,7 +280,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Internal implementation for adding an item to the list view that bypasses
    * any delegate or callback methods.
-  **/
+   */
   _addItem: function(item)
   {
 
@@ -336,7 +337,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Aphid.UI.ListView#_observeItems() -> null
    *
    * Calls [[Aphid.UI.ListView#_observeItem]] for each item.
-  **/
+   */
   _observeItems: function()
   {
     this.items.each(this._observeItem, this);
@@ -348,7 +349,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * - item (Element): the item to be initialized
    *
    * Observes the list view item's element for click events.
-  **/
+   */
   _observeItem: function(item)
   {
     item.element.observe('click', this._handleClickEvent.bindAsEventListener(this, item));
@@ -395,7 +396,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Proxy method that returns the list view item for the specified index as
    * returned by the dataSource. If the object set as the dataSource has not
    * implemented the `listViewItemForIndex` method, an error will be raised.
-  **/
+   */
   _listViewItemForIndex: function(index)
   {
     var listViewItem;
@@ -497,7 +498,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Internal implementation for deselecting the specified list item without
    * calling any of the delegate or callback methods.
-  **/
+   */
   _deselectItem: function(item)
   {
     // Get the index of the item
@@ -638,7 +639,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   /*
    * Aphid.UI.ListView#_setupSorting() -> null
-  **/
+   */
   _setupSorting: function()
   {
     if (this.element.hasClassName('sortable'))
@@ -701,7 +702,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Aphid.UI.ListView#_handleClickEvent() -> null
    *
    * Handles "click" events that are triggered by the observer on each item.
-  **/
+   */
   _handleClickEvent: function(event, item)
   {
     event.stop();
@@ -716,7 +717,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Aphid.UI.ListView#_handleDoubleClickEvent() -> null
    *
    * Handles "dblclick" events that are triggered by the observer on each item.
-  **/
+   */
   _handleDoubleClickEvent: function(event, item)
   {
     event.stop();
@@ -736,7 +737,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Delegates have the final say in whether or not the item should be
    * selected.
-  **/
+   */
   _shouldSelectItem: function(item)
   {
     var shouldSelect = true;
@@ -755,7 +756,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Performs any internal actions after an item has been selected before
    * calling the `didSelectItem` callback and the `listViewSelectionDidChange`
    * delegate method.
-  **/
+   */
   _didSelectItem: function(item)
   {
     // Call the public callback, that may have been implemented by a subclass.
@@ -778,7 +779,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Delegates have the final say in whether or not the item should be
    * deselected.
-  **/
+   */
   _shouldDeselectItem: function(item)
   {
     var shouldDeselect = true;
@@ -799,7 +800,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Performs any internal actions after an item has been deselected before
    * calling the `didDeselectItem` callback and the `listViewSelectionDidChange`
    * delegate method.
-  **/
+   */
   _didDeselectItem: function(item)
   {
     // Call the public callback, that may have been implemented by a subclass.
@@ -822,7 +823,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Delegates have the final say in whether or not the list selection should
    * be cleared.
-  **/
+   */
   _shouldClearSelection: function()
   {
     var shouldClearSelection = true;
@@ -845,7 +846,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Delegates have the final say in whether or not the item should be
    * opened.
-  **/
+   */
   _shouldOpenItem: function(item)
   {
     var shouldOpen = true;
@@ -862,7 +863,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    * Performs any internal actions after an item has been opened before
    * calling the `didOpenItem` callback and the `listViewDidOpenItem`
    * delegate method.
-  **/
+   */
   _didOpenItem: function(item)
   {
     // Call the public callback, that may have been implemented by a subclass.
@@ -882,7 +883,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    *
    * Evaluates the element for this instance to ensure that the element meets
    * all requirements to be used with this class.
-  **/
+   */
   _validateContainer: function()
   {
     if (this.element.tagName != 'UL')

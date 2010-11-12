@@ -114,7 +114,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
  * ### TODO
  * 
  *  * Move some of the logic out of this to a delegate or callback
-**/
+ */
 Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
 
   displayName: "Aphid.UI.SplitViewController.Draggable",

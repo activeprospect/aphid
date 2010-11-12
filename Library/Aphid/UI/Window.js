@@ -15,7 +15,7 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
    *
    * The semi-translucent overlay element that is displayed behind modal
    * views, alert and message dialogs.
-  **/
+   */
   _overlayElement: false,
 
   /**

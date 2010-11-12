@@ -83,7 +83,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    * Aphid.UI.TabViewController#contentView -> Element | false
    *
    * TODO ...
-  **/
+   */
   contentView: false,
 
   // Initialization ----------------------------------------------------------
@@ -191,7 +191,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    *
    * Iterates across each tab item in the tab view, adding event observers for
    * handling the events that we're interested in.
-  **/
+   */
   _setupObservers: function()
   {
     this.tabs.invoke('observe', 'click', this._handleClickEvent.bind(this));
@@ -214,7 +214,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    * 
    * Iterates the `tabs` property and returns the first tab element that
    * matches the data-tab attribute with the provided *tabName*.
-  **/
+   */
   _findTabByName: function(tabName)
   {
     return this.tabs.find(
@@ -238,7 +238,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    *
    * Delegates have the final say in whether or not the tab should be
    * selected.
-  **/
+   */
   _shouldSelectTab: function(tab)
   {
     var shouldSelect = true;
@@ -257,7 +257,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    * Performs any internal actions after a tab has been selected before
    * calling the `didSelectTab` callback and the `tabViewSelectionDidChange`
    * delegate method.
-  **/
+   */
   _didSelectTab: function(tab)
   {
     // Persist Tab Selection

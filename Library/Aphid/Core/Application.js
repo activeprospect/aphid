@@ -181,7 +181,7 @@ Object.extend(Aphid.Core.Application.prototype, Aphid.Support.Properties);
  *
  * This method should be called after the DOM has been loaded and should never
  * be called directly by your application.
-**/
+ */
 Aphid.Core.Application.bootstrap = function()
 {
 

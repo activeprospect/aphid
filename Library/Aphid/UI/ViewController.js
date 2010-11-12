@@ -20,7 +20,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false
    *
    * The container element that will contain the modal view controller's view.
-  **/
+   */
   _modalViewContainer: false,
 
   /**
@@ -92,7 +92,7 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller, presenting it optionally with an animated effect.
-  **/
+   */
   _presentModalViewController: function(viewController, animated)
   {
     if (Object.isUndefined(animated)) animated = false;

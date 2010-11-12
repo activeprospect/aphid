@@ -321,7 +321,7 @@ Aphid.UI.View = Class.create(
    *
    * Clears all subviews of the current view and presents the specified *view*
    * with an animated effect (currently this effect is *appear*).
-  **/
+   */
   _setView: function(view, animated)
   {
     if (Object.isUndefined(animated)) animated = false;
@@ -383,7 +383,7 @@ Aphid.UI.View = Class.create(
    *
    * Adds the specified *view* as a subview of the view instance and optionally
    * presents it with an animated effect.
-  **/
+   */
   _addSubview: function(view, animated)
   {
     if (Object.isUndefined(animated)) animated = false;
@@ -452,7 +452,7 @@ Aphid.UI.View = Class.create(
    * Removes the view from its superview, with an optional animated effect.
    * This method will return immediately if the view does not belong to a
    * superview.
-  **/
+   */
   _removeFromSuperview: function(animated)
   {
     if (Object.isUndefined(animated)) animated = false;
@@ -507,7 +507,7 @@ Aphid.UI.View = Class.create(
    *
    * Loads the View template (as derived from the *template* and
    * *Application.baseViewPath* properties) asynchronously.
-  **/
+   */
   _loadTemplate: function()
   {
     var viewPath = $AppDelegate.baseViewPath + '/' + this.template + '.html?' + $AppDelegate.buildstamp(),
@@ -535,7 +535,7 @@ Aphid.UI.View = Class.create(
    *
    * TODO This method should probably just be viewDidFinishLoading so that subclasses can call it instead of making it a delegate call
    *
-  **/
+   */
   _templateDidFinishLoading: function(transport)
   {
     var loadedTemplate = Element.fromString(transport.responseText);
@@ -591,7 +591,7 @@ Aphid.UI.View = Class.create(
    * present in the page when initialized with an element. This will connect
    * all outlets and actions to the view instance and call the appropriate
    * callbacks.
-  **/
+   */
   _setupView: function()
   {
     // Wire Outlets & Actions
@@ -666,7 +666,7 @@ Aphid.UI.View = Class.create(
    * * TODO This is still a little early in its implementation and needs to be
    *      thought out better on how to handle different event types or
    *      different element types.
-  **/
+   */
   _connectToOutlets: function()
   {
     if (this.element.childElements().length == 0) return;
@@ -757,7 +757,7 @@ Aphid.UI.View = Class.create(
    * TODO This is still a little early in its implementation and needs to be
    *      thought out better on how to handle different event types or
    *      different element types.
-  **/
+   */
   _wireActionsToInstance: function()
   {
     if (this.element.childElements().length == 0) return;

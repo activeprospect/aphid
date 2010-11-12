@@ -14,7 +14,7 @@ Aphid.UI.LoadingIndicator = Class.create({
    * Aphid.UI.LoadingIndicator#_canvas -> Element
    *
    * The canvas element where the loading indicator is drawn.
-  **/
+   */
   _canvas: false,
 
   /*
@@ -71,7 +71,7 @@ Aphid.UI.LoadingIndicator = Class.create({
    * Aphid.UI.LoadingIndicator#_currentOffset -> Integer
    *
    * Whether or not the loading indicator is currently animating.
-  **/
+   */
   _currentOffset: 0,
 
   /**
@@ -152,7 +152,7 @@ Aphid.UI.LoadingIndicator = Class.create({
    * Aphid.UI.LoadingIndicator#_startAnimation() -> null
    *
    * Starts the loading indicator animation.
-  **/
+   */
   _startAnimation: function()
   {
     this.isAnimating = true;
@@ -163,7 +163,7 @@ Aphid.UI.LoadingIndicator = Class.create({
    * Aphid.UI.LoadingIndicator#_stopAnimation() -> null
    *
    * Stops drawing the loading indicator and clears its context state.
-  **/
+   */
   _stopAnimation: function()
   {
     this.isAnimating = false;
@@ -172,7 +172,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_draw(context, offset) -> null
-  **/
+   */
   _draw: function(context, offset)
   {
     this._clearFrame(context);
@@ -193,7 +193,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_drawBlock(context, barNumber) -> null
-  **/
+   */
   _drawBlock: function(context, barNumber)
   {
     context.fillStyle = this._makeRGBA(this.barColor.red, this.barColor.green, this.barColor.blue, (this.barCount + 1 - barNumber) / (this.barCount + 1));
@@ -202,7 +202,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_animateNextFrame() -> null
-  **/
+   */
   _animateNextFrame: function()
   {
     if (!this.isAnimating) return;
@@ -213,7 +213,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_clearFrame() -> null
-  **/
+   */
   _clearFrame: function(context)
   {
     context.clearRect(0, 0, this._canvas.clientWidth, this._canvas.clientHeight);
@@ -221,7 +221,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_calculateAngle(barNumber) -> Float
-  **/
+   */
   _calculateAngle: function(barNumber)
   {
     return 2 * barNumber * Math.PI / this.barCount;
@@ -229,7 +229,7 @@ Aphid.UI.LoadingIndicator = Class.create({
 
   /*
    * Aphid.UI.LoadingIndicator#_calculatePosition(barNumber) -> Object
-  **/
+   */
   _calculatePosition: function(barNumber)
   {
     var angle = this._calculateAngle(barNumber);
@@ -240,7 +240,7 @@ Aphid.UI.LoadingIndicator = Class.create({
     };
   },
 
-  // TODO Move this to Aphid.UI.Support
+  // TODO Move this to Aphid.Support
   _makeRGBA: function()
   {
     return "rgba(" + [].slice.call(arguments, 0).join(",") + ")";
