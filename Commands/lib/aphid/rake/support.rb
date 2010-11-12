@@ -128,7 +128,7 @@ module Aphid
           markup = template.read
           markup.scan(/((link.*href=|script.*src=|img.*src=|url\()"?'?([^"')]+))/).each do |match|
             asset = match[2]
-            path = asset =~ /^\.\.\// ? "#{ROOT_PATH}/#{File.dirname(filename)}/#{asset}" : "#{ROOT_PATH}/#{asset}"
+            path = asset =~ /^\.\.\// ? "#{ROOT_PATH}/#{File.dirname(filename)}/#{asset}" : "#{ROOT_PATH}/Build/#{asset}"
             next if asset =~ /^http/
             next if asset =~ /\?[0-9]+$/
             begin
