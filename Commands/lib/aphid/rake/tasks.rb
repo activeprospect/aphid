@@ -80,7 +80,7 @@ task :build => [ :clean, :prepare ] do
     # Sprocketize Source
     SOURCE_FILES.each do |input|
       output = File.join("Build", "Library", File.basename(input))
-      sprocketize(output, { :source_Files => [ input ]})
+      sprocketize(output, { :source_files => [ input ]})
       optimize output
     end
 
