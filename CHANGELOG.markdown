@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Fixed ordinal suffix output in Date#strftime.
+
  * [Tools] Added support for compressing JavaScript and CSS build output using
    the YUI Compressor at build time.
 

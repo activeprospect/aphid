@@ -57,7 +57,12 @@ Aphid.Support.Extensions.Date = {
   strftime: function(format)
   {
     var formatted,
-        ordinals   = $H({ 1: "st", 2: "nd", 3: "rd", 4: "th", 5: "th", 6: "th", 7: "th", 8: "th", 9: "th", 0: "th" }),
+        ordinals   = $H({
+          1:  "st", 2:  "nd", 3:  "rd", 4:  "th", 5:  "th", 6:  "th", 7:  "th",
+          8:  "th", 9:  "th", 10: "th", 11: "th", 12: "th", 13: "th", 14: "th",
+          15: "th", 16: "th", 17: "th", 18: "th", 19: "th", 20: "th", 21: "st",
+          22: "nd", 23: "rd", 24: "th", 25: "th", 26: "th", 27: "th", 28: "th",
+          29: "th", 30: "th", 31: "st" }),
         syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
         components = {
           a:  Date.dayNames[this.getDay()].substring(0, 3),
@@ -86,7 +91,7 @@ Aphid.Support.Extensions.Date = {
         };
     formatted = format.interpolate(components, syntax);
     if (formatted.indexOf("%o") >= 0)
-      formatted = formatted.replace("%o", this.getDate() >= 10 ? ordinals.get(this.getDate().toString().substring(1)) : ordinals.get(this.getDate()));
+      formatted = formatted.replace("%o", ordinals.get(this.getDate()));
     if (formatted.indexOf("%z") >= 0)
       formatted = formatted.replace("%z", (this.getTimezoneOffset() / 60) > 0 ? (this.getTimezoneOffset() / 60) * -1 : "+" + (this.getTimezoneOffset() / 60));
     return formatted;
