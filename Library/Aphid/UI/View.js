@@ -601,6 +601,9 @@ Aphid.UI.View = Class.create(
     this.isLoaded  = true;
     this.isLoading = false;
 
+    // Add "View" CSS Class
+    this.get("element").addClassName("View");
+
     // Determine Enabled State
     if (this.get("element").hasClassName("disabled"))
       this.disable();

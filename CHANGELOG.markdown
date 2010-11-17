@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Implemented custom scrollbars for WebKit-based browsers.
+
  * [Aphid.Support.Extensions] Fixed ordinal suffix output in Date#strftime.
 
  * [Tools] Added support for compressing JavaScript and CSS build output using
