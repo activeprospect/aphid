@@ -20,7 +20,7 @@
  *       contentView: false,
  *       viewDidLoad: function()
  *       {
- *         this.fooLabel.element.update('Bar!');
+ *         this.get("fooLabel.element").update('Bar!');
  *       }
  *     });
  *
@@ -246,17 +246,16 @@ Aphid.UI.View = Class.create(
     this.isLoading = false;
 
     // Initialize from Outlet
-    if (this.outlet)
+    if (this.get("outlet"))
       this._initializeFromOutlet();
 
     // Initialize from Element
-    else if (this.element)
+    else if (this.get("element"))
       this._initializeFromElement();
 
     // Initialize from Template
-    else if (this.template)
+    else if (this.get("template"))
       this._initializeFromTemplate();
-
   },
 
   _initializeFromElement: function()
@@ -274,11 +273,11 @@ Aphid.UI.View = Class.create(
   _initializeFromOutlet: function()
   {
     $L.info("Initializing from Outlet", this);
-    if (this.template)
+    if (this.get("template"))
       this._initializeFromTemplate();
     else
     {
-      this.element = this.outlet;
+      this.set("element", this.get("outlet"));
       this._setupView();
     }
   },
@@ -400,19 +399,19 @@ Aphid.UI.View = Class.create(
     $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Setup the View
-    view.element.hide();
-    view.superview = this;
-    this.subviews.push(view);
+    view.get("element").hide();
+    view.set("superview", this);
+    this.get("subviews").push(view);
 
     // "View Will Appear..."
     if (view.viewWillAppear)
       view.viewWillAppear();
 
     // Insert the view into the DOM
-    this.element.insert(view.element);
+    this.get("element").insert(view.get("element"));
 
     // Display the View
-    animated ? view.element.appear({ duration: 0.25, queue: "end" }) : view.element.show();
+    animated ? view.get("element").appear({ duration: 0.25, queue: "end" }) : view.get("element").show();
 
     // "View Did Appear..."
     if (view.viewDidAppear)
@@ -456,7 +455,7 @@ Aphid.UI.View = Class.create(
   _removeFromSuperview: function(animated)
   {
     if (Object.isUndefined(animated)) animated = false;
-    if (!this.superview)
+    if (!this.get("superview"))
       return;
 
     // "View Will Disappear"
@@ -464,17 +463,17 @@ Aphid.UI.View = Class.create(
       this.viewWillDisappear();
 
     // Hide the View
-    animated ? this.element.fade({ duration: 0.25 }) : this.element.hide();
+    animated ? this.get("element").fade({ duration: 0.25 }) : this.get("element").hide();
 
     // Remove the View's element from the DOM
-    if (this.element.parentNode != null)
-      this.element = this.element.remove()
+    if (this.get("element").parentNode != null)
+      this.set("element", this.get("element").remove());
 
     // Remove from superview's subviews
-    this.superview.subviews.remove(this);
+    this.get("superview.subviews").remove(this);
 
     // Remove reference to superview
-    this.superview = false;
+    this.set("superview", false);
 
     // "View Did Disappear"
     // TODO if animated, this needs to be called when the animation has completed instead...
@@ -549,7 +548,7 @@ Aphid.UI.View = Class.create(
       // elements from the loaded template to the outlet element so that we're
       // not double-wrapping the view (i.e. the template may have the same
       // DOM ID in its wrapper as the outlet).
-      this.element = this.outlet.update().insert(loadedTemplate.childElements());
+      this.set("element", this.get("outlet").update().insert(loadedTemplate.childElements()));
       // The old way... this.element = this.outlet.update(loadedTemplate);
     }
 
@@ -558,9 +557,9 @@ Aphid.UI.View = Class.create(
     else
     {
       if (Object.isElement(loadedTemplate))
-        this.element = loadedTemplate;
+        this.set("element", loadedTemplate);
       else
-        this.element = new Element("section", { className: "view" }).update(transport.responseText);
+        this.set("element", new Element("section", { className: "view" })).update(transport.responseText);
     }
 
     // Process the template by connecting outlets and actions and calling any
@@ -570,7 +569,7 @@ Aphid.UI.View = Class.create(
 
   _templateRequestDidFail: function(transport)
   {
-    var templatePath = $AppDelegate.baseViewPath + "/" + this.template + ".html";
+    var templatePath = $AppDelegate.baseViewPath + "/" + this.get("template") + ".html";
 
     if (transport.status == 404)
     $L.error("Faild to load template \"" + templatePath + "\" (Error " + transport.status + " - " + transport.statusText + ")", this);
@@ -603,7 +602,7 @@ Aphid.UI.View = Class.create(
     this.isLoading = false;
 
     // Determine Enabled State
-    if (this.element.hasClassName("disabled"))
+    if (this.get("element").hasClassName("disabled"))
       this.disable();
     else if (this.isEnabled)
       this.enable();
@@ -630,7 +629,7 @@ Aphid.UI.View = Class.create(
   {
     this.isEnabled = true;
     if (!this.isLoaded) return;
-    this.element.removeClassName("disabled");
+    this.get("element").removeClassName("disabled");
   },
 
   /**
@@ -643,7 +642,7 @@ Aphid.UI.View = Class.create(
   {
     this.isEnabled = false;
     if (!this.isLoaded) return;
-    this.element.addClassName("disabled");
+    this.get("element").addClassName("disabled");
   },
 
   // View Outlets ------------------------------------------------------------
@@ -669,9 +668,9 @@ Aphid.UI.View = Class.create(
    */
   _connectToOutlets: function()
   {
-    if (this.element.childElements().length == 0) return;
+    if (this.get("element").childElements().length == 0) return;
 
-    var outletElements = this.element.select('*[data-outlet]');
+    var outletElements = this.get("element").select('*[data-outlet]');
     $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     outletElements.each(
@@ -760,9 +759,9 @@ Aphid.UI.View = Class.create(
    */
   _wireActionsToInstance: function()
   {
-    if (this.element.childElements().length == 0) return;
+    if (this.get("element").childElements().length == 0) return;
 
-    var actionElements = this.element.select('*[data-action]');
+    var actionElements = this.get("element").select('*[data-action]');
     $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     actionElements.each(
@@ -810,7 +809,7 @@ Aphid.UI.View = Class.create(
    *       contentView: false,
    *       viewDidLoad: function()
    *       {
-   *         this.fooLabel.element.update('Bar!');
+   *         this.get("fooLabel.element").update('Bar!');
    *       }
    *     });
    *
