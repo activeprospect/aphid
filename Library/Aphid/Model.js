@@ -142,6 +142,9 @@
  *  * `modelDidFinishLoading(model)` - Called when the model has finished
  *    loading and is fully initialized after an asynchronous load operation.
  *
+ *  * `modelDidFailToLoad(model)` - Called when the there was a problem with
+ *    loading the model.
+ *
  *  * `modelDidFinishReloading(model)` - Called when the model has finished
  *    reloading.
  *
@@ -367,6 +370,10 @@ Aphid.Model = Class.create({
       }.bind(this),
       onFailure: function(transport)
       {
+        if (this.delegate && this.delegate.modelDidFailToLoad)
+          this.delegate.modelDidFailToLoad(this);
+
+        // Display Notification
         var alertView = new Aphid.UI.AlertView();
         alertView.set("title", "Error Loading Resource");
         alertView.set("message", "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>");
