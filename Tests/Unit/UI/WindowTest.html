@@ -19,7 +19,8 @@
     <!-- Test Case Description -->
     <section id="descriptionSection">
       <p>
-        ...
+        Tests for the functionality provided by Aphid.UI.Window, mainly the
+        support for overlays.
       </p>
     </section>
 
@@ -31,9 +32,30 @@
     <script>
       new Test.Unit.Runner({
 
-        testShouldSucceed: function() { with(this) {
-          assert(true);
-        }}
+        testShouldInitializeWindow: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          assertInstanceOf(Aphid.UI.Window, mainWindow);
+        }},
+
+        testShouldDisplayOverlay: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.displayOverlay();
+          assert(mainWindow.get("overlayVisible"), "overlay should be visible");
+          mainWindow.dismissOverlay();
+          assert(!mainWindow.get("overlayVisible"), "overlay should not be visible");
+        }},
+
+        testShouldDisplayOverlayAnimated: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.displayOverlayAnimated();
+          wait(1000, function() {
+            assert(mainWindow.get("overlayVisible"), "overlay should be visible");
+          });
+          mainWindow.dismissOverlayAnimated();
+          wait(1000, function() {
+            assert(!mainWindow.get("overlayVisible"), "overlay should not be visible");
+          });
+        }},
 
       }, { testLog: "logSection" });
     </script>
