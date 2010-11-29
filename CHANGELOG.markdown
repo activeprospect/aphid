@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Window] Added a new property to Window (overlayVisible) for
+   determining whether or not the overlay is currently visible as well as
+   tests for the overlay functionality.
+
  * [Aphid.Model] Added a modelDidFailToLoad delegate method for notifying
    delegates of problems that arise during asynchronous loading of models.
 

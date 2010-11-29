@@ -5,6 +5,11 @@
  * at some point in the view heirarchy children of this view.
  *
  * This element property for the Window is the document's BODY element.
+ *
+ * **Note:** There should only ever be a single instance of [[Aphid.UI.Window]]
+ * in your application. The default application delegate implementation will
+ * automatically initialize a shared instance of [[Aphid.UI.Window]] as
+ * [[Aphid.Core.Application#mainWindow]].
 **/
 Aphid.UI.Window = Class.create(Aphid.UI.View, {
 
@@ -19,12 +24,40 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
   _overlayElement: false,
 
   /**
+   * Aphid.UI.Window#overlayVisible -> Boolean
+   *
+   * Returns true or false depending on whether or not the overlay is
+   * currently visible.
+  **/
+  overlayVisible: function()
+  {
+    return this.get("overlayElement").visible();
+  },
+
+  /**
+   * Aphid.UI.Window#overlayElement -> Element
+   *
+   * Initializes (if necessary) and returns an element to be used as the
+   * overlay.
+  **/
+  overlayElement: function()
+  {
+    if (!this._overlayElement)
+    {
+      this._overlayElement = new Element("div", { className: 'overlay' });
+      this._overlayElement.hide();
+      Element.insert(document.body, { top: this._overlayElement });
+    }
+    return this._overlayElement;
+  },
+
+  /*
    * new Aphid.UI.Window([options])
    *
    * - options (Hash): Initial property values to be set on the Window instance
    *
-   * Initializes a new Window instance.
-  **/
+   * Initializes a new instance of Aphid.UI.Window.
+   */
   initialize: function($super, options)
   {
     options = $H(options);
@@ -57,15 +90,10 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
   **/
   displayOverlayAnimated: function(animated)
   {
+    if (this.get("overlayVisible")) return;
     if (Object.isUndefined(animated)) animated = true;
-    // Display the Overlay
-    if (!this._overlayElement)
-    {
-      this._overlayElement = new Element("div", { className: 'overlay' });
-      this._overlayElement.hide();
-      Element.insert(document.body, { top: this._overlayElement });
-    }
-    animated ? this._overlayElement.appear({ duration: 0.25, to: 0.6 }) : this._overlayElement.show();
+    var overlayElement = this.get("overlayElement");
+    animated ? overlayElement.appear({ duration: 0.25, to: 0.6 }) : overlayElement.show();
   },
 
   /** related to: Aphid.UI.Window#dismissOverlayAnimated
@@ -88,8 +116,10 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
   **/
   dismissOverlayAnimated: function(animated)
   {
+    if (!this.get("overlayVisible")) return;
     if (Object.isUndefined(animated)) animated = true;
-    animated ? this._overlayElement.fade({ duration: 0.25 }) : this._overlayElement.hide();
+    var overlayElement = this.get("overlayElement");
+    animated ? overlayElement.fade({ duration: 0.25 }) : overlayElement.hide();
   }
 
 });
