@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] Added a modelDidFailToLoad delegate method for notifying
+   delegates of problems that arise during asynchronous loading of models.
+
  * [Aphid.UI.View] Implemented custom scrollbars for WebKit-based browsers.
 
  * [Aphid.Support.Extensions] Fixed ordinal suffix output in Date#strftime.
