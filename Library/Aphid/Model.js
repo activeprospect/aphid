@@ -368,9 +368,9 @@ Aphid.Model = Class.create({
       onFailure: function(transport)
       {
         var alertView = new Aphid.UI.AlertView();
-        alertView.title = "Error Loading Resource";
-        alertView.message = "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
-        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.set("title", "Error Loading Resource");
+        alertView.set("message", "Failed to load an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>");
+        alertView.set("status", "Error " + transport.status + " - " + transport.statusText);
         alertView.showAnimated();
       }.bind(this),
       onException: function(transport, exception) { throw exception }
@@ -647,9 +647,9 @@ Aphid.Model = Class.create({
       errorMessage.insert(errorList);
 
       var alertView = new Aphid.UI.AlertView();
-      alertView.title = "Unable to Save";
-      alertView.message = errorMessage;
-      alertView.status = this.displayName;
+      alertView.set("title", "Unable to Save");
+      alertView.set("message", errorMessage);
+      alertView.set("status", this.displayName);
       alertView.showAnimated();
       return false;
     }
@@ -676,9 +676,9 @@ Aphid.Model = Class.create({
       onFailure: function(transport)
       {
         var alertView = new Aphid.UI.AlertView();
-        alertView.title = "Error Saving Resource";
-        alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>";
-        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.set("title", "Error Saving Resource");
+        alertView.set("message", "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>");
+        alertView.set("status", "Error " + transport.status + " - " + transport.statusText);
         alertView.showAnimated();
       }.bind(this),
       onException: function(transport, exception) { throw exception }
@@ -715,9 +715,9 @@ Aphid.Model = Class.create({
       onFailure: function(transport)
       {
         var alertView = new Aphid.UI.AlertView();
-        alertView.title = "Error Reloading Resource";
-        alertView.message = "Failed to reload an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>";
-        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.set("title", "Error Reloading Resource");
+        alertView.set("message", "Failed to reload an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>");
+        alertView.set("status", "Error " + transport.status + " - " + transport.statusText);
         alertView.showAnimated();
       }.bind(this),
       onException: function(transport, exception) { throw exception }

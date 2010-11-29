@@ -196,9 +196,9 @@
         }},
 
         /*
-         * Ensures that the Model calls the `modelDidFinishLoading` delegate
-         * method when initialized by an identifier which triggers an
-         * asynchronous load.
+         * Ensures that the Model calls the `modelDidFailToLoad` delegate
+         * method when there was an failure while asynchronously loading the
+         * model.
         **/
         testShouldCallModelDidFinishLoadingDelegateMethod: function() { with(this) {
           var lastLoadedModel = false;
@@ -212,6 +212,28 @@
             delegate: modelDelegate
           });
           wait(1000, function() {
+            assertEqual(testRemoteContact, lastLoadedModel);
+          });
+        }},
+
+        /*
+         * Ensures that the Model calls the `modelDidFinishLoading` delegate
+         * method when initialized by an identifier which triggers an
+         * asynchronous load.
+        **/
+        testShouldCallModelDidFailToLoadDelegateMethod: function() { with(this) {
+          var lastLoadedModel = false;
+          var modelDelegate = {
+            modelDidFailToLoad: function(model) {
+              lastLoadedModel = model;
+            }
+          };
+          var testRemoteContact = new TestRemoteContact({
+            identifier: "invalid identifier",
+            delegate: modelDelegate
+          });
+          wait(1000, function() {
+            Aphid.UI.AlertView.currentAlertView.dismissAnimated();
             assertEqual(testRemoteContact, lastLoadedModel);
           });
         }},

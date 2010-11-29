@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.AlertView Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.AlertView Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Ensures that the Aphid.UI.AlertView class can be initialized and that
+        presentation and dismissal of alerts is possible.
+      </p>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      new Test.Unit.Runner({
+
+        setup: function() { with(this) {
+        }},
+
+        teardown: function() { with(this) {
+          if (Aphid.UI.AlertView.currentAlertView)
+            Aphid.UI.AlertView.currentAlertView.dismiss();
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.AlertView can be initialized.
+        **/
+        testShouldInitializeAlertView: function() { with(this) {
+          var alertView = new Aphid.UI.AlertView();
+          assertInstanceOf(Aphid.UI.AlertView, alertView, "alertView should be an instance of Aphid.UI.AlertView");
+        }},
+
+        /*
+         * Ensures that modal view controllers can be presented and dismissed.
+        **/
+        testShouldDisplayAlertView: function() { with(this) {
+          var alertView = new Aphid.UI.AlertView({
+            title: "Title",
+            message: "Message",
+            status: "Status"
+          });
+          alertView.show();
+          assert(alertView.get("superview"));
+          assert($AppDelegate.mainWindow.get("overlayVisible"));
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

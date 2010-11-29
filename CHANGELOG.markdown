@@ -3,6 +3,16 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.AlertView] Fixes to animation preferences when displaying and
+   dismissing alerts as well as other minor bug fixes, improvements and tests.
+
+ * [Aphid.UI.Window] Added a new property to Window (overlayVisible) for
+   determining whether or not the overlay is currently visible as well as
+   tests for the overlay functionality.
+
+ * [Aphid.Model] Added a modelDidFailToLoad delegate method for notifying
+   delegates of problems that arise during asynchronous loading of models.
+
  * [Aphid.UI.View] Implemented custom scrollbars for WebKit-based browsers.
 
  * [Aphid.Support.Extensions] Fixed ordinal suffix output in Date#strftime.

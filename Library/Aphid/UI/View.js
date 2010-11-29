@@ -467,7 +467,7 @@ Aphid.UI.View = Class.create(
 
     // Remove the View's element from the DOM
     if (this.get("element").parentNode != null)
-      this.set("element", this.get("element").remove());
+      this.get("element").remove()
 
     // Remove from superview's subviews
     this.get("superview.subviews").remove(this);
@@ -575,9 +575,9 @@ Aphid.UI.View = Class.create(
     $L.error("Faild to load template \"" + templatePath + "\" (Error " + transport.status + " - " + transport.statusText + ")", this);
 
     var alertView = new Aphid.UI.AlertView();
-    alertView.title = "Error Loading Template";
-    alertView.message = "Failed to load template at path <strong>" + templatePath + "</strong> for <strong>" + this.displayName + "</strong>.";
-    alertView.status = "Error " + transport.status + " - " + transport.statusText;
+    alertView.set("title", "Error Loading Template");
+    alertView.set("message", "Failed to load template at path <strong>" + templatePath + "</strong> for <strong>" + this.displayName + "</strong>.");
+    alertView.set("status", "Error " + transport.status + " - " + transport.statusText);
     alertView.showAnimated();
   },
 

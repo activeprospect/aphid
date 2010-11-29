@@ -68,52 +68,63 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
   /**
    * new Aphid.UI.AlertView([options])
    *
-   * - options (Hash): Initial property values to set on the View Controller instance
+   * - options (Hash): Initial property values to set on the AlertView instance
    *
-   * Initializes a new View Controller.
+   * Initializes a new AlertView instance.
+   *
+   * #### Example
+   *
+   *     var alertView = new Aphid.UI.AlertView({
+   *       title: "Error Loading Resource",
+   *       message: "An error occurred while attempting to load the resource.",
+   *       status: "Error 404 - Not Found"
+   *     });
+   *     alertView.showAnimated();
+   *
   **/
   initialize: function($super, options)
   {
-    options = $H(options);
-    options.set("element", this._element());
+    this._titleElement   = new Element("h1");
+    this._messageElement = new Element("p").addClassName("message");
+    this._statusElement  = new Element("p").addClassName("status");
+
     $super(options);
   },
 
   /*
-   * Aphid.UI.AlertView#_element() -> Element
+   * Aphid.UI.AlertView#element() -> Element
    *
    * Creates the element for the AlertView programmatically.
    */
-  // TODO Programatically declaring a Views element should be a supported feature
-  _element: function()
+  element: function()
   {
 
+    if (this._element)
+      return this._element;
+
     // Container
-    var element = new Element("section");
-    element.addClassName("AlertView");
+    this._element = new Element("section");
+    this._element.addClassName("AlertView");
 
     // Header
     var headerElement  = new Element("header");
-    this._titleElement = new Element("h1");
     headerElement.insert(this._titleElement);
-    element.insert(headerElement);
+    this._element.insert(headerElement);
 
     // Message Area
     var sectionElement   = new Element("section", { id: "alertMessageSection" });
-    this._messageElement = new Element("p").addClassName("message");
     sectionElement.insert(this._messageElement);
-    element.insert(sectionElement);
+    this._element.insert(sectionElement);
 
     // Footer
     var footerElement   = new Element("footer");
-    this._statusElement = new Element("p").addClassName("status");
     var closeButton     = new Element("input", { type: "button", value: "Dismiss" });
     footerElement.insert(this._statusElement);
     footerElement.insert(closeButton);
     closeButton.observe("click", this.dismissAnimated.bind(this));
-    element.insert(footerElement);
+    this._element.insert(footerElement);
 
-    return element;
+    return this._element;
   },
 
   /**
@@ -141,14 +152,12 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
     // TODO Add a queue so that subsequent alerts are not lost...
     if (Aphid.UI.AlertView.currentAlertView) return;
 
-    // Update View
-    this._titleElement.update(this.title || "");
-    this._messageElement.update(this.message || "");
-    this._statusElement.update(this.status || "");
+    // Set as "Current Alert View"
+    Aphid.UI.AlertView.currentAlertView = this;
 
     var mainWindow = $AppDelegate.mainWindow;
     mainWindow.displayOverlayAnimated(animated);
-    mainWindow.addSubviewAnimated(this);
+    mainWindow.addSubviewAnimated(this, animated);
   },
 
   /**
@@ -174,14 +183,37 @@ Aphid.UI.AlertView = Class.create(Aphid.UI.View,
   {
     if (Object.isUndefined(animated)) animated = true;
 
+    // Unset "Current Alert View"
+    Aphid.UI.AlertView.currentAlertView = false;
+
     var mainWindow = $AppDelegate.mainWindow;
     mainWindow.dismissOverlayAnimated(animated);
 
-    this.removeFromSuperviewAnimated();
+    this.removeFromSuperviewAnimated(animated);
 
-    this.title = false;
-    this.message = false;
-    this.status = false;
+    this.set("title", false);
+    this.set("message", false);
+    this.set("status", false);
+  },
+
+  // Property Setters --------------------------------------------------------
+
+  setTitle: function(title)
+  {
+    this.title = title;
+    this._titleElement.update(title || "");
+  },
+
+  setMessage: function(message)
+  {
+    this.message = message;
+    this._messageElement.update(message || "");
+  },
+
+  setStatus: function(status)
+  {
+    this.status = status;
+    this._statusElement.update(status || "");
   }
 
 });
