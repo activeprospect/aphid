@@ -57,8 +57,6 @@
 
 ### Aphid.UI.Window
 
- * Add documentation and tests for Aphid.UI.Window.
-
 ### Aphid.UI.View
 
  * Formalize event handling support by automatically observing views when the
@@ -70,8 +68,6 @@
  * Add support for specifying the delegate and dataSource properties for views
    that are initialized by outlet with data-* attributes that will evaluate to
    properties on the view that owns the outlet.
-
- * Add support for programmatically declaring a View's markup/element.
 
  * Add support for caching views that are loaded from a template on a class
    level for reuse without re-requesting the template from the server.

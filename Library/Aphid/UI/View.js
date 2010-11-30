@@ -679,8 +679,9 @@ Aphid.UI.View = Class.create(
     outletElements.each(
       function(element)
       {
-        var outlet    = element.getAttribute('data-outlet'),
-            viewClass = element.getAttribute('data-view-class');
+        var outlet    = element.getData('outlet'),
+            viewClass = element.getData('view-class'),
+            viewClassImplementation;
 
         // If a custom view class was not provided, default to Aphid.UI.View
         if (!viewClass)
@@ -770,7 +771,7 @@ Aphid.UI.View = Class.create(
     actionElements.each(
       function(element)
       {
-        var action = element.getAttribute('data-action');
+        var action = element.getData('action');
         if (!Object.isUndefined(this[action]))
         {
           element.observe('click', 
