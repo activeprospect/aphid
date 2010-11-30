@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.TabViewController] Added support for lazily initializing views
+   by specifying the data-view-class attribute on the tab Elements that make
+   up the tab view.
+
  * [Aphid.UI.AlertView] Fixes to animation preferences when displaying and
    dismissing alerts as well as other minor bug fixes, improvements and tests.
 

@@ -1,26 +1,31 @@
 /**
  * class Aphid.UI.TabViewController < Aphid.UI.ViewController
  *
- * Tab View Controller
+ * By default, controllers that inherit from Aphid.UI.TabViewController are
+ * intended to handle the full-screen navigation.
  *
- * #### Initializing From HTML
+ * #### Example View Template
  *
- * **TODO** This is out of date...
- *
- *     // In your View Template:
- *     <ul class="tabs">
- *       <li class="tab" data-tab="tab-1" data-view="firstTabView">Tab 1</li>
- *       <li class="tab" data-tab="tab-2" data-view="secondTabView">Tab 2</li>
- *     </ul>
- *
- *     <section data-outlet="firstTabView">
- *       First Tab!
+ *     <section id="myTabView">
+ *       <header>
+ *         <h1>My Application</h1>
+ *         <ul class="tabs">
+ *           <li data-tab="home" data-view="homeView" data-view-class="HomeViewController">
+ *             Home
+ *           </li>
+ *           <li data-tab="products" data-view="productsView" data-view-class="ProductsController">
+ *             Products
+ *           </li>
+ *           <li data-tab="contact" data-view="contactView" data-view-class="ContactViewController">
+ *             Contact Us
+ *           </li>
+ *         </ul>
+ *       </header>
+ *       <section id="contentView" data-outlet="contentView">
+ *         <!-- Tab View Contents -->
+ *       </section>
  *     </section>
- *
- *     <section data-outlet="secondTabView">
- *       Second Tab!
- *     </section>
- *
+ * 
  * #### Delegate Methods
  *
  *  * `tabViewShouldSelectTab(tabView, tab)` - Called just before the tab
@@ -164,6 +169,9 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     // Set Current Tab State
     this.selectedTab = tab;
 
+    // Switch View
+    this._switchView(tab);
+
     // Call the internal callback that will handle anything that needs to
     // happen after a tab has been selected, including notifying the delegate.
     this._didSelectTab(tab);
@@ -220,10 +228,36 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     return this.tabs.find(
       function(tab)
       {
-        if (tab.getAttribute('data-tab') == tabName)
+        if (tab.getData('tab') == tabName)
           return true;
       }
     )
+  },
+
+  /*
+   * Aphid.UI.TabViewController#_switchView(tab) -> null
+   *
+   * - tab (Element): the tab Element
+   *
+   * Attempts to switch the content view based on the data-view and
+   * data-view-class attributes on the tab Element.
+   */
+  _switchView: function(tab)
+  {
+    // Instantiate & Switch to View
+    var view      = tab.getData('view'),
+        viewClass = tab.getData('view-class'),
+        viewClassImplementation;
+
+    // Initialize the View
+    if (!this[view] && viewClass)
+    {
+      viewClassImplementation = eval(viewClass);
+      this[view] = new viewClassImplementation({ delegate: this });
+    }
+
+    // Set the View as the Content View
+    this.contentView.setView(this[view]);
   },
 
   // Callbacks ---------------------------------------------------------------
@@ -263,7 +297,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     // Persist Tab Selection
     if (this.persistSelectedTab)
     {
-      var tabName = tab.getAttribute('data-tab');
+      var tabName = tab.getData('tab');
       $C.set(this.displayName + '.selectedTab', tabName);
     }
 
