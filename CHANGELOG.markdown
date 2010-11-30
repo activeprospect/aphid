@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Added default styles for controllers that
+   inherit from split views, as well as 2 additional styles: padded and
+   borderless. The additional styles can be set by adding the padded or
+   borderless class to the split view.
+
  * [Aphid.UI.TabViewController] Added support for lazily initializing views
    by specifying the data-view-class attribute on the tab Elements that make
    up the tab view.

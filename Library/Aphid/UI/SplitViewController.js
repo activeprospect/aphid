@@ -61,8 +61,10 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   viewDidLoad: function($super)
   {
     $super();
-    $L.info('viewDidLoad', this);
-    this.element.addClassName('SplitViewController');
+
+    this.get("element").addClassName("SplitViewController");
+    this.get("element").addClassName(this.constraint || "horizontal");
+
     if (!this.asynchronousLoadingEnabled)
       this._initializeDraggableInstance();
   },

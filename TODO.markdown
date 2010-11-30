@@ -55,6 +55,10 @@
 
 ### Aphid.Support.Properties
 
+ * Add support for calling setters for property values that are defined
+   directly on a class (i.e. "constrained: true" in a SplitViewController
+   subclass).
+
 ### Aphid.UI.Window
 
 ### Aphid.UI.View
@@ -125,10 +129,6 @@
    and the max-width or max-height of the first view has not been met but the
    min-width or min-width of the second view has been met, resizing should be
    stopped.
-
- * Automatically detect vertical or horizontal constraint based on the
-   absolute position characteristics (i.e. if both have top: 0 we can assume
-   its a vertical split, or if both have left: 0 we can assume its horizontal).
 
  * Automatically position and size the drag handle based on the following
    formulas:

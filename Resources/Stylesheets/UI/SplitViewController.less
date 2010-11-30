@@ -1,36 +1,203 @@
 
+/* Split Views (SplitViewController) -------------------------------------- */
+
+@first-view-height: 16em;
+@first-view-width: 16em;
+@drag-handle-height: 1em;
+@drag-handle-width: 1em;
+
+/* Defaults --------------------------------------------------------------- */
+
 .SplitViewController
 {
-}
-
-.SplitViewController .dragHandle
-{
-  position: absolute !important;
-  z-index: 1000;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  opacity: 0.3;
-  -webkit-transition-property: opacity;
-  -webkit-transition-duration: 0.35s;
-}
-
-.SplitViewController .vertical.dragHandle
-{
-  cursor: row-resize;
-  background-image: url('../Images/UI/SplitViewController/DragHandle.horizontal.png');
-  left: 0;
-  right: 0;
-}
-
-.SplitViewController .horizontal.dragHandle
-{
-  cursor: col-resize;
-  background-image: url('../Images/UI/SplitViewController/DragHandle.vertical.png');
+  position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
+
+  .dragHandle
+  {
+    position: absolute !important;
+    z-index: 1000;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    opacity: 0.8;
+    -webkit-transition-property: opacity;
+    -webkit-transition-duration: 0.35s;
+
+    :hover
+    {
+      opacity: 1.0;
+    }
+  }
 }
 
-.SplitViewController .dragHandle:hover
+/* Horizontal Split View Defaults ----------------------------------------- */
+
+.SplitViewController.horizontal
 {
-  opacity: 1.0;
+
+  .firstView
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: @first-view-width;
+    min-width: @first-view-width / 2;
+    max-width: @first-view-width * 3;
+  }
+
+  .secondView
+  {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: @first-view-width + @drag-handle-width;
+    right: 0;
+  }
+
+  .dragHandle
+  {
+    left: @first-view-width;
+    width: @drag-handle-width - 0.2em;
+    cursor: col-resize;
+    top: 0;
+    bottom: 0;
+    background-image: -webkit-gradient(linear, left top, right top, from(#f3f4f5), to(#d3d4d5));
+    background-image: -moz-linear-gradient(left, #f3f4f5, #d3d4d5);
+    border-left: 0.1em solid #ccc;
+    border-right: 0.1em solid #bbb;
+  }
+
+}
+
+/* Vertical Split View Defaults ------------------------------------------- */
+
+.SplitViewController.vertical
+{
+
+  .firstView
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: @first-view-height;
+    min-height: @first-view-height / 2;
+    max-height: @first-view-height * 3;
+  }
+
+  .secondView
+  {
+    position: absolute;
+    top: @first-view-height + @drag-handle-height;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .dragHandle
+  {
+    top: @first-view-height;
+    height: @drag-handle-height - 0.2em;
+    cursor: row-resize;
+    left: 0;
+    right: 0;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#d3d4d5));
+    background-image: -moz-linear-gradient(top, #f3f4f5, #d3d4d5);
+    border-top: 0.1em solid #ccc;
+    border-bottom: 0.1em solid #bbb;
+  }
+
+}
+
+/* "Padded" Style --------------------------------------------------------- */
+
+@padded-width: 2em;
+
+.SplitViewController.padded
+{
+  top: @padded-width;
+  left: @padded-width;
+  right: @padded-width;
+  bottom: @padded-width;
+  
+  .dragHandle
+  {
+    opacity: 0.5;
+  }
+}
+
+.SplitViewController.padded.vertical
+{
+  .secondView
+  {
+    top: @first-view-height + @padded-width;
+  }
+    
+  .dragHandle
+  {
+    background-image: url('../Images/UI/SplitViewController/DragHandle.horizontal.png');
+    border: none;
+    height: @padded-width;
+  }
+}
+
+.SplitViewController.padded.horizontal
+{
+  .secondView
+  {
+    left: @first-view-width + @padded-width;
+  }
+
+  .dragHandle
+  {
+    background-image: url('../Images/UI/SplitViewController/DragHandle.vertical.png');
+    border: none;
+    width: @padded-width;
+  }
+}
+
+/* "Borderless" Style ----------------------------------------------------- */
+
+@borderless-drag-handle-width: 0.5;
+@borderless-drag-handle-height: 0.5;
+
+.SplitViewController.borderless
+{
+  .dragHandle
+  {
+    border: none;
+    background-image: none;
+  }    
+}
+
+.SplitViewController.borderless.vertical
+{
+  .secondView
+  {
+    top: @first-view-height;
+  }
+    
+  .dragHandle
+  {
+    top: @first-view-height - (@borderless-drag-handle-height / 2);
+    height: @borderless-drag-handle-height;
+  }
+}
+
+.SplitViewController.borderless.horizontal
+{
+  .secondView
+  {
+    left: @first-view-width;
+  }
+
+  .dragHandle
+  {
+    left: @first-view-width - (@borderless-drag-handle-width / 2);
+    width: @borderless-drag-handle-width;
+  }
 }
