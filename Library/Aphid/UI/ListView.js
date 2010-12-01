@@ -204,12 +204,12 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _initializeStaticListViewItems: function()
   {
-    var items = this.element.select('>li').collect(
+    var items = this.get("element").select('>li').collect(
       function(element)
       {
         return new Aphid.UI.ListViewItem({ element: element });
       });
-    this.setItems(items);
+    this.set("items", items);
   },
 
   viewDidLoad: function($super)
@@ -217,8 +217,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     $super();
     if (this._validateContainer())
     {
-      this.element.addClassName('ListView');
-      this.element.observe('click', this.clearSelection.bind(this));
+      this.get("element").addClassName("ListView");
+      this.get("element").observe("click", this.clearSelection.bind(this));
       this._initializeStaticListViewItems();
     }
   },
@@ -285,31 +285,32 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
 
     // Add Item to items Property
-    this.items.push(item);
+    this.get("items").push(item);
 
     // Select Item
-    if (item.isSelected)
+    if (item.get("isSelected"))
     {
-      var itemIndex = this.items.indexOf(item);
-      if (!this.multipleSelectionEnabled)
+      var itemIndex = this.get("items").indexOf(item);
+      if (!this.get("multipleSelectionEnabled"))
       {
-        if (this.selectedItem) this._deselectItem(this.selectedItem);
-        this.selectedItem = item;
-        this.selectedItemIndex = itemIndex;
+        if (this.get("selectedItem"))
+          this._deselectItem(this.get("selectedItem"));
+        this.set("selectedItem", item);
+        this.set("selectedItemIndex", itemIndex);
       }
       else
       {
-        this.selectedItems.push(item);
-        this.selectedItemIndexes.push(itemIndex);
+        this.get("selectedItems").push(item);
+        this.get("selectedItemIndexes").push(itemIndex);
       }
     }
 
     // Set listView on Item
-    item.listView = this;
+    item.set("listView", this);
 
     // Set the sortIndex property on the item to its index in the items array
-    if (this.sortingEnabled)
-      item.sortIndex = this.items.indexOf(item);
+    if (this.get("sortingEnabled"))
+      item.set("sortIndex", this.get("items").indexOf(item));
 
     // Add Item View to Subviews
     this.addSubview(item);
@@ -323,14 +324,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   removeItem: function(item)
   {
-    if (!this.items.include(item))
+    if (!this.get("items").include(item))
     {
       $L.error("Attempted to remove item that is not a part of the list", this);
       return;
     }
     this.deselectItem(item);
     item.removeFromSuperview();
-    this.items.remove(item);
+    this.get("items").remove(item);
   },
 
   /*
@@ -340,7 +341,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _observeItems: function()
   {
-    this.items.each(this._observeItem, this);
+    this.get("items").each(this._observeItem, this);
   },
 
   /*
@@ -352,8 +353,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _observeItem: function(item)
   {
-    item.element.observe('click', this._handleClickEvent.bindAsEventListener(this, item));
-    item.element.observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
+    item.get("element").observe('click', this._handleClickEvent.bindAsEventListener(this, item));
+    item.get("element").observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
   },
 
   // Data Source -------------------------------------------------------------
@@ -370,7 +371,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     var itemCount = this._listViewItemCount();
     for (var i = 0; i < itemCount; i++)
       items.push(this._listViewItemForIndex(i));
-    this.setItems(items);
+    this.set("items", items);
   },
 
   /*
@@ -424,21 +425,21 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return false;
 
     // Get the index of the selected item
-    var index = this.items.indexOf(item);
+    var index = this.get("items").indexOf(item);
 
     // Clear the previous selection and set the newly selected item, unless
     // multiple selection is enabled.
-    if (!this.multipleSelectionEnabled)
+    if (!this.get("multipleSelectionEnabled"))
     {
       this._clearSelection();
-      this.selectedItem = item.select();
-      this.selectedItemIndex = index;
+      this.set("selectedItem", item.select());
+      this.set("selectedItemIndex", index);
       this.scrollToSelectedItem();
     }
     else
     {
-      this.selectedItems.push(item.select());
-      this.selectedItemIndexes.push(index);
+      this.get("selectedItems").push(item.select());
+      this.get("selectedItemIndexes").push(index);
     }
 
     this._didSelectItem(item);
@@ -456,7 +457,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   selectItemAtIndex: function(index)
   {
-    var item = this.items[index];
+    var item = this.get("items")[index];
     return this.selectItem(item);
   },
 
@@ -489,7 +490,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   deselectItemAtIndex: function(index)
   {
-    var item = this.items[index];
+    var item = this.get("items")[index];
     return this.deselectItem(item);
   },
 
@@ -502,21 +503,21 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _deselectItem: function(item)
   {
     // Get the index of the item
-    var index = this.items.indexOf(item);
+    var index = this.get("items").indexOf(item);
 
     // Deselect the item
     item.deselect();
 
     // Clear the selection state
-    if (this.multipleSelectionEnabled)
+    if (this.get("multipleSelectionEnabled"))
     {
-      this.selectedItems = this.selectedItems.without(item);
-      this.selectedItemIndexes = this.selectedItemIndexes.without(index);
+      this.set("selectedItems", this.selectedItems.without(item));
+      this.set("selectedItemIndexes", this.selectedItemIndexes.without(index));
     }
     else
     {
-      this.selectedItem = false;
-      this.selectedItemIndex = false;
+      this.set("selectedItem", false);
+      this.set("selectedItemIndex", false);
     }
   },
 
@@ -541,22 +542,22 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   _clearSelection: function()
   {
-    if (this.items)
-      this.items.invoke('deselect');
-    if (this.selectedItem)
+    if (this.get("items"))
+      this.get("items").invoke('deselect');
+    if (this.get("selectedItem"))
     {
-      this.selectedItem = false;
-      this.selectedItemIndex = false;
+      this.set("selectedItem", false);
+      this.set("selectedItemIndex", false);
     }
-    if (this.multipleSelectionEnabled)
+    if (this.get("multipleSelectionEnabled"))
     {
-      this.selectedItems = $A();
-      this.selectedItemIndexes = $A();
+      this.set("selectedItems", $A());
+      this.set("selectedItemIndexes", $A());
     }
     else
     {
-      this.selectedItems = false;
-      this.selectedItemIndexes = false;
+      this.set("selectedItems", false);
+      this.set("selectedItemIndexes", false);
     }
   },
 
@@ -589,7 +590,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   openItemAtIndex: function(index)
   {
-    var item = this.items[itemIndex];
+    var item = this.get("items")[itemIndex];
     return this.openItem(item);
   },
 
@@ -602,15 +603,15 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   scrollToSelectedItem: function()
   {
-    if (this.element.scrollHeight < this.element.getHeight())
+    if (this.get("element").scrollHeight < this.get("element").getHeight())
       return;
 
-    var selectedItemTop     = this.selectedItem.element.cumulativeOffset().top - this.element.cumulativeOffset().top;
-    var selectedItemBottom  = selectedItemTop + this.selectedItem.element.getHeight();
-    var currentScrollTop    = this.element.scrollTop;
-    var currentScrollBottom = this.element.scrollTop + this.element.getHeight();
-    var itemTopMargin       = parseInt(this.selectedItem.element.getStyle("margin-top"));
-    var itemBottomMargin    = parseInt(this.selectedItem.element.getStyle("margin-bottom"));
+    var selectedItemTop     = this.get("selectedItem.element").cumulativeOffset().top - this.get("element").cumulativeOffset().top;
+    var selectedItemBottom  = selectedItemTop + this.get("selectedItem.element").getHeight();
+    var currentScrollTop    = this.get("element").scrollTop;
+    var currentScrollBottom = this.get("element").scrollTop + this.get("element").getHeight();
+    var itemTopMargin       = parseInt(this.get("selectedItem.element").getStyle("margin-top"));
+    var itemBottomMargin    = parseInt(this.get("selectedItem.element").getStyle("margin-bottom"));
     var scrollTo            = selectedItemTop - itemTopMargin;
     var shouldScroll        = false;
 
@@ -630,7 +631,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     }
 
     if (shouldScroll)
-      this.element.scrollTop = scrollTo;
+      this.get("element").scrollTop = scrollTo;
 
     return shouldScroll;
   },
@@ -642,17 +643,17 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _setupSorting: function()
   {
-    if (this.element.hasClassName('sortable'))
-      Sortable.destroy(this.element);
+    if (this.get("element").hasClassName('sortable'))
+      Sortable.destroy(this.get("element"));
     else
-      this.element.addClassName('sortable');
+      this.get("element").addClassName('sortable');
     this._addOrderedIdentitiesToItems();
-    Sortable.create(this.element, this.sortableOptions);
+    Sortable.create(this.get("element"), this.get("sortableOptions"));
   },
 
   _addOrderedIdentitiesToItems: function()
   {
-    this.items.each(function(item) { item.element.identify() });
+    this.get("items").each(function(item) { item.get("element").identify() });
   },
 
   // Call the listViewOrderDidChange method on the delegate, if the
@@ -678,22 +679,22 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     sequence.each(
       function(seq, index)
       {
-        var item = this.items.find(
+        var item = this.get("items").find(
           function(item)
           {
-            return item.element.identify().endsWith("_" + seq);
+            return item.get("element").identify().endsWith("_" + seq);
           }
         );
-        item.sortIndex = index;
+        item.set("sortIndex", index);
       }.bind(this)
     );
-    this.items.sort(function(a, b) { return a.sortIndex - b.sortIndex; });
+    this.get("items").sort(function(a, b) { return a.get("sortIndex") - b.get("sortIndex"); });
 
     // Reset Selected Item Index(es)
-    if (this.selectedItem)
-      this.selectedItemIndex = this.items.indexOf(this.selectedItem);
-    else if (this.selectedItems)
-      this.selectedItemIndexes = this.selectedItems.each(function(item) { return this.items.indexOf(item) }, this);
+    if (this.get("selectedItem"))
+      this.set("selectedItemIndex", this.get("items").indexOf(this.get("selectedItem")));
+    else if (this.get("selectedItems"))
+      this.set("selectedItemIndexes", this.get("selectedItems").each(function(item) { return this.get("items").indexOf(item) }, this));
   },
 
   // Event Handling ----------------------------------------------------------
@@ -707,7 +708,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     event.stop();
 
-    if (this.multipleSelectionEnabled && item.isSelected)
+    if (this.get("multipleSelectionEnabled") && item.get("isSelected"))
       this.deselectItem(item);
     else
       this.selectItem(item);
@@ -741,7 +742,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _shouldSelectItem: function(item)
   {
     var shouldSelect = true;
-    if (item == this.selectedItem)
+    if (item == this.get("selectedItem"))
       shouldSelect = false;
     if (this.shouldSelectItem)
       shouldSelect = this.shouldSelectItem(item);
@@ -783,9 +784,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _shouldDeselectItem: function(item)
   {
     var shouldDeselect = true;
-    if (this.multipleSelectionEnabled && !this.selectedItems.include(item))
+    if (this.get("multipleSelectionEnabled") && !this.get("selectedItems").include(item))
       shouldDeselect = false;
-    else if (!this.multipleSelectionEnabled && item != this.selectedItem)
+    else if (!this.get("multipleSelectionEnabled") && item != this.get("selectedItem"))
       shouldDeselect = false;
     if (this.shouldDeselectItem)
       shouldDeselect = this.shouldDeselectItem(item);
@@ -827,9 +828,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _shouldClearSelection: function()
   {
     var shouldClearSelection = true;
-    if (this.multipleSelectionEnabled && this.selectedItems.length == 0)
+    if (this.get("multipleSelectionEnabled") && this.get("selectedItems").length == 0)
       shouldClearSelection = false;
-    else if (!this.multipleSelectionEnabled && !this.selectedItem)
+    else if (!this.get("multipleSelectionEnabled") && !this.get("selectedItem"))
       shouldClearSelection = false;
     if (this.shouldClearSelection)
       shouldClearSelection = this.shouldClearSelection();
@@ -886,7 +887,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _validateContainer: function()
   {
-    if (this.element.tagName != 'UL')
+    if (this.get("element").tagName != 'UL')
     {
       $L.error('Container (' + this.element.inspect() + ') is not an Unordered List (<ul>).', this);
       return false;
@@ -894,6 +895,14 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     return true;
   },
 
+  /*
+   * Aphid.UI.ListView#_validateItem(item) -> Boolean
+   *
+   * - item (Object): the object to be validated
+   *
+   * Evaluates the passed list view item and ensures that it meets the
+   * requirements for use within a list view.
+   */
   _validateItem: function(item)
   {
     return (item instanceof Aphid.UI.ListViewItem);

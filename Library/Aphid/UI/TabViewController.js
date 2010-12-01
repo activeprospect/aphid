@@ -107,10 +107,10 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   {
     $super();
 
-    this.element.addClassName("TabViewController");
+    this.get("element").addClassName("TabViewController");
 
-    var tabElements = this.element.select('li');
-    this.tabs = tabElements
+    var tabElements = this.get("element").select('li');
+    this.set("tabs", tabElements);
     this._setupObservers();
 
     // Select Persisted Tab...
@@ -126,7 +126,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     }
 
     // ... or Default Tab
-    $L.info('Selecting default tab "' + this.defaultTab + '"', this);
+    $L.info('Selecting default tab "' + this.get("defaultTab") + '"', this);
     this.selectDefaultTab();
   },
 
@@ -163,11 +163,11 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
       return;
 
     // Select the Tab
-    this.tabs.invoke('removeClassName', 'current');
+    this.get("tabs").invoke('removeClassName', 'current');
     tab.addClassName('current');
 
     // Set Current Tab State
-    this.selectedTab = tab;
+    this.set("selectedTab", tab);
 
     // Switch View
     this._switchView(tab);
@@ -186,10 +186,10 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   **/
   selectDefaultTab: function()
   {
-    if (this.defaultTab)
-      this.selectTab(this.defaultTab);
+    if (this.get("defaultTab"))
+      this.selectTab(this.get("defaultTab"));
     else
-      this.selectTab(this.tabs.first());
+      this.selectTab(this.get("tabs").first());
   },
 
   // Event Handling ----------------------------------------------------------
@@ -202,7 +202,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    */
   _setupObservers: function()
   {
-    this.tabs.invoke('observe', 'click', this._handleClickEvent.bind(this));
+    this.get("tabs").invoke('observe', 'click', this._handleClickEvent.bind(this));
   },
 
   _handleClickEvent: function(event)
@@ -225,7 +225,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    */
   _findTabByName: function(tabName)
   {
-    return this.tabs.find(
+    return this.get("tabs").find(
       function(tab)
       {
         if (tab.getData('tab') == tabName)
@@ -276,7 +276,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   _shouldSelectTab: function(tab)
   {
     var shouldSelect = true;
-    if (tab == this.selectedTab)
+    if (tab == this.get("selectedTab"))
       shouldSelect = false;
     if (this.shouldSelectTab)
       shouldSelect = this.shouldSelectTab(tab);
@@ -295,7 +295,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   _didSelectTab: function(tab)
   {
     // Persist Tab Selection
-    if (this.persistSelectedTab)
+    if (this.get("persistSelectedTab"))
     {
       var tabName = tab.getData('tab');
       $C.set(this.displayName + '.selectedTab', tabName);

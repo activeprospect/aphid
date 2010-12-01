@@ -44,17 +44,17 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     $super(options);
-    if (!this.element)
+    if (!this.get("element"))
     {
       $L.debug("Initializing default element...", this);
-      this.element = new Element('li').addClassName("ListViewItem");
-      this.isLoaded = true;
+      this.set("element", new Element('li').addClassName("ListViewItem"));
+      this.set("isLoaded", true);
     }
   },
 
   viewDidLoad: function($super)
   {
-    this.element.addClassName("ListViewItem");
+    this.get("element").addClassName("ListViewItem");
   },
 
   // -------------------------------------------------------------------------
@@ -69,8 +69,8 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   select: function()
   {
     $L.debug("Selected...", this);
-    this.element.addClassName('selected');
-    this.isSelected = true;
+    this.get("element").addClassName('selected');
+    this.set("isSelected", true);
     return this;
   },
 
@@ -84,8 +84,8 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   deselect: function()
   {
     $L.debug("Deselected...", this);
-    this.element.removeClassName('selected');
-    this.isSelected = false;
+    this.get("element").removeClassName('selected');
+    this.set("isSelected", false);
     return this;
   }
 

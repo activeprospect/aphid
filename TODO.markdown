@@ -114,6 +114,13 @@
 
 ### Aphid.UI.SplitViewController
 
+ * Formalize the support for specifying the "mode" of the split view (i.e.
+   horizontal or vertical) and unify those definitions (they are reversed in
+   some places).
+
+ * Add support for setting the split view style (standard, padded or
+   borderless) and document how to add new styles.
+
  * Give SplitViewController its own 2 views: firstView, secondView. Instead of
    assigning these views, we should say splitView.firstView.addSubview or
    splitView.firstView.setView.
