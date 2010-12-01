@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Initialize views with an empty element when an element,
+   template or outlet is not set.
+
  * [Aphid.UI.ListView] Changed list views to be positioned absolutely within
    their container view.
 

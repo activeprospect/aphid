@@ -256,23 +256,27 @@ Aphid.UI.View = Class.create(
     // Initialize from Template
     else if (this.get("template"))
       this._initializeFromTemplate();
+
+    // Initialize an Empty View
+    else
+      this._initializeEmptyView();
   },
 
   _initializeFromElement: function()
   {
-    $L.info("Initializing from Element", this);
+    $L.debug("Initializing from Element", this);
     this._setupView();
   },
 
   _initializeFromTemplate: function()
   {
-    $L.info("Initializing from Template", this);
+    $L.debug("Initializing from Template", this);
     this._loadTemplate();
   },
 
   _initializeFromOutlet: function()
   {
-    $L.info("Initializing from Outlet", this);
+    $L.debug("Initializing from Outlet", this);
     if (this.get("template"))
       this._initializeFromTemplate();
     else
@@ -280,6 +284,13 @@ Aphid.UI.View = Class.create(
       this.set("element", this.get("outlet"));
       this._setupView();
     }
+  },
+
+  _initializeEmptyView: function()
+  {
+    $L.debug("Initializing Empty View", this);
+    this.set("element", new Element("div"));
+    this._setupView();
   },
 
   // View Management ---------------------------------------------------------

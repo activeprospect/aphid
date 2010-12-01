@@ -79,7 +79,8 @@
           var view = new Aphid.UI.View();
           assertInstanceOf(Aphid.UI.View, view, "view should be an instance of Aphid.UI.View");
           assertInstanceOf(Array, view.subviews, "subviews should be an instance of Array");
-          assert(!view.isLoaded, "isLoaded should be false");
+          assertInstanceOf(Element, view.element, "element should be an instance of Element");
+          assert(view.isLoaded, "isLoaded should be false");
           assert(!view.isLoading, "isLoading should be false");
         }},
 
