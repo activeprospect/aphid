@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Changed list views to be positioned absolutely within
+   their container view.
+
  * [Aphid.UI.SplitViewController] Added default styles for controllers that
    inherit from split views, as well as 2 additional styles: padded and
    borderless. The additional styles can be set by adding the padded or
