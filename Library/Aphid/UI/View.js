@@ -238,12 +238,13 @@ Aphid.UI.View = Class.create(
   **/
   initialize: function(options)
   {
-    Object.applyOptionsToInstance(this, options);
-
-    // Default State
+    // Set Default State
     this.subviews  = $A();
     this.isLoaded  = false;
     this.isLoading = false;
+
+    // Apply Options to View
+    Object.applyOptionsToInstance(this, options);
 
     // Initialize from Outlet
     if (this.get("outlet"))
@@ -507,7 +508,6 @@ Aphid.UI.View = Class.create(
 
     // Clear the Subviews
     this.subviews = $A();
-
   },
 
   // View Loading ------------------------------------------------------------

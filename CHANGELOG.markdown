@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Set default property values before applying the options
+   hash to the View so that property setters may add subviews during
+   initialization.
+
  * [Aphid.UI.View] Initialize views with an empty element when an element,
    template or outlet is not set.
 
