@@ -28,3 +28,4 @@ Aphid.UI = {};
 //= require "UI/ListViewItem"
 //= require "UI/SourceListView"
 //= require "UI/SourceListViewItem"
+//= require "UI/MatrixView"

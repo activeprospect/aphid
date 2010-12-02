@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.MatrixView] Initial port of MatrixView to Aphid (see
+   matrixview.org for more details on the class).
+
  * [Aphid.UI.SourceListView] Implemented SourceListView and SourceListViewItem
    classes.
 
