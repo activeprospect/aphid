@@ -1,0 +1,72 @@
+
+.SourceListView
+{
+
+  li
+  {
+    position: relative;
+
+    .contentView
+    {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      text-indent: 8px;
+    }
+
+  }
+
+  li.icon
+  {
+    .iconView
+    {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 48px;
+      padding-top: 2px;
+      text-align: center;
+    }
+
+    .contentView
+    {
+      left: 48px;
+      text-indent: 0;
+    }
+  }
+
+  li[data-badge]
+  {
+    
+  }
+
+  li[data-badge]:after
+  {
+    @badge-font-size: 0.85em;
+
+    text-transform: uppercase;
+    font-family: Helvetica;
+    content: attr(data-badge);
+    position: absolute;
+    top: 50%;
+    right: 1em;
+    padding-left: @badge-font-size;
+    padding-right: @badge-font-size;
+    margin-top: @badge-font-size * -1;
+    line-height: @badge-font-size * 2;
+    vertical-align: middle;
+    font-weight: bold;
+    color: white;
+    background-color: #768599;
+    -webkit-border-radius: 1em;
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+    font-size: @badge-font-size;
+    text-shadow: none;
+    -webkit-box-shadow: inset 0px 1px 0px rgba(0, 0, 0, 0.25), inset 0px -1px 0px rgba(255, 255, 255, 0.5);
+  }
+  
+}

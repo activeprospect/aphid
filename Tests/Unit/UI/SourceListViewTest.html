@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.SourceListView Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.SourceListView Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        ...
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <ul id="testSourceListView">
+        <li data-badge="5">
+          <div class="iconView"><img src="Icons/Inbox.png" /></div>
+          <div class="contentView">Inbox</div>
+        </li>
+        <li>
+          <div class="iconView"><img src="Icons/Sent.png" /></div>
+          <div class="contentView">Sent Messages</div>
+        </li>
+        <li>
+          <div class="iconView"><img src="Icons/Trash.png" /></div>
+          <div class="contentView">Trash</div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+      new Test.Unit.Runner({
+
+        /*
+         * Ensures that new instances of Aphid.UI.SourceListView can be
+         * initialized.
+        **/
+        testShouldInitializeListView: function() { with(this) {
+          var listView = new Aphid.UI.SourceListView({ element: $('testSourceListView') });
+          assertInstanceOf(Aphid.UI.SourceListView, listView, "listView should be an instance of Aphid.UI.SourceListView");
+          assertInstanceOf(Aphid.UI.ListView, listView, "listView should be a subclass of Aphid.UI.ListView");
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ListView add the ListView
+         * CSS class to the initialized element.
+        **/
+        testShouldAddClassNameToElement: function() { with(this) {
+          var listView = new Aphid.UI.SourceListView({ element: $('testSourceListView') });
+          assert(listView.element.hasClassName("SourceListView"), "listView element should have CSS class name &quot;SourceListView&quot;");
+        }},
+
+        /*
+         * Ensures that existing items in the list view are processed during
+         * initialization.
+        **/
+        testShouldInitializeWithListItems: function() { with(this) {
+          var listView = new Aphid.UI.SourceListView({ element: $('testSourceListView') });
+          window.console.log(listView)
+          assert(listView.get("items").length == 3, "listView should contain 3 items");
+        }},
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

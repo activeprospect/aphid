@@ -26,3 +26,5 @@ Aphid.UI = {};
 //= require "UI/AlertView"
 //= require "UI/ListView"
 //= require "UI/ListViewItem"
+//= require "UI/SourceListView"
+//= require "UI/SourceListViewItem"

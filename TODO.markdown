@@ -59,6 +59,9 @@
    directly on a class (i.e. "constrained: true" in a SplitViewController
    subclass).
 
+ * Implement Aphid.Core.Object that is automatically extended with
+   Aphid.Support.Properties.
+
 ### Aphid.UI.Window
 
 ### Aphid.UI.View

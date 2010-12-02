@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SourceListView] Implemented SourceListView and SourceListViewItem
+   classes.
+
  * [Aphid.UI.ListView] Initializing list views from static HTML will now
    honor the data-view-class attribute on <li/> elements for instantiating
    described ListViewItem subclasses.

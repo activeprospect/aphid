@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.SourceListViewItem Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.SourceListViewItem Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Ensures that the Aphid.UI.SourceListViewItem class can be initialized
+        and functions as intended.
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      new Test.Unit.Runner({
+
+        /*
+         * Ensures that new instances of Aphid.UI.ListViewItem can be
+         * initialized.
+        **/
+        testShouldInitializeListViewItem: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          assertInstanceOf(Aphid.UI.SourceListViewItem, listViewItem, "listViewItem should be an instance of Aphid.UI.SourceListViewItem");
+          assertInstanceOf(Aphid.UI.ListViewItem, listViewItem, "listViewItem should be a subclass of Aphid.UI.ListViewItem");
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.SourceListViewItem add the
+         * SourceListViewItem CSS class to the initialized element.
+        **/
+        testShouldAddClassNameToElement: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          assert(listViewItem.get("element").hasClassName("SourceListViewItem"));
+        }},
+
+        testShouldSetIcon: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          var imageValue   = listViewItem.set("icon", "Icons/Foo.png");
+          var iconView     = listViewItem.get("iconView");
+          assertInstanceOf(Aphid.UI.View, iconView, "iconView should be an instance of Aphid.UI.View");
+          assertEqual("Resources/Images/Icons/Foo.png", iconView.get("element").down("img").readAttribute("src"), "iconView element should have an &lt;img/&gt; tag with a src of &quot;Resources/Images/Icons/Foo.png&quot;");
+          assertEqual("Icons/Foo.png", imageValue, "setIcon should return &quot;Icons/Foo.png&quot;");
+        }},
+
+        testShouldSetTitle: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          var titleValue   = listViewItem.set("title", "Foo");
+          var contentView  = listViewItem.get("contentView");
+          assertInstanceOf(Aphid.UI.View, contentView, "contentView should be an instance of Aphid.UI.View");
+          assertEqual("Foo", contentView.get("element").innerHTML, "contentView element should be equal to Foo");
+          assertEqual("Foo", titleValue, "setTitle should return 123");
+        }},
+
+        testShouldSetBadge: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          var badgeValue   = listViewItem.set("badge", 123);
+          assertEqual(123, listViewItem.get("element").getData("badge"), "Element's data-badge attribute should equal 123");
+          assertEqual(123, badgeValue, "setBadge should return 123");
+        }},
+
+        testShouldSetIconClassOnListViewItemWhenSettingIconView: function() { with(this) {
+          var listViewItem = new Aphid.UI.SourceListViewItem();
+          listViewItem.set("icon", "Icons/Foo.png");
+          assert(listViewItem.get("element").hasClassName("icon"), "element should have CSS class name &quot;icon&quot;");
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
