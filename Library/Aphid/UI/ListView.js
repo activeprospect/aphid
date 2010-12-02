@@ -204,12 +204,19 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _initializeStaticListViewItems: function()
   {
-    var items = this.get("element").select('>li').collect(
-      function(element)
-      {
-        return new Aphid.UI.ListViewItem({ element: element });
-      });
+    var items = this.get("element").select('>li').collect(this._initializeStaticListViewItem, this);
     this.set("items", items);
+  },
+
+  _initializeStaticListViewItem: function(element)
+  {
+    var viewClass = element.getData("view-class");
+    if (!viewClass) viewClass = "Aphid.UI.ListViewItem";
+
+    $L.info("Initializing Item as " + viewClass, this);
+
+    var viewClassImplementation = eval(viewClass);
+    return new viewClassImplementation({ element: element });
   },
 
   viewDidLoad: function($super)

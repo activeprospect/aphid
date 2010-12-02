@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Initializing list views from static HTML will now
+   honor the data-view-class attribute on <li/> elements for instantiating
+   described ListViewItem subclasses.
+
  * [Aphid.UI.ListView] List views will fall back to operating on the items
    property when either the listViewItemCount or listViewItemForIndex delegate
    methods are not implemented.
