@@ -79,6 +79,12 @@
  * Improve testing for asynchronous and non-asynchronous loading, including
    proper callback and delegate testing.
 
+ * Come up with a universal way to initialize new views from data-view-class,
+   instead of having various implementations throughout the view stack (such
+   as in Aphid.UI.ListView).
+
+ * Replace _setupView with setElement.
+
 ### Aphid.UI.ViewController
 
  * Fix modal view presentation with the new overlay support in Aphid.UI.Window.

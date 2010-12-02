@@ -694,6 +694,17 @@ Aphid.UI.View = Class.create(
             viewClass = element.getData('view-class'),
             viewClassImplementation;
 
+        var parentViewElement = element.up("*[data-view-class]");
+        if (parentViewElement)
+        {
+          var parentViewClass = parentViewElement.getData("view-class");
+          if (this.displayName != parentViewClass)
+          {
+            $L.debug('Not connecting outlet "' + outlet + '" to view because the outlet belongs to "' + parentViewClass + '"', this);
+            return;
+          }
+        }
+
         // If a custom view class was not provided, default to Aphid.UI.View
         if (!viewClass)
         {
@@ -742,7 +753,7 @@ Aphid.UI.View = Class.create(
             return;
           }
           this[outlet] = instance;
-          this.subviews.push(instance);
+          this.get("subviews").push(instance);
         }
         else
           $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', this);
