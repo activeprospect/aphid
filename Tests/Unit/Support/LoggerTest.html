@@ -30,6 +30,7 @@
 
         setup: function()
         {
+          $C.erase("Aphid.Support.Logger.Level");
           this.logger      = new Aphid.Support.Logger(Aphid.Support.Logger.DEBUG_LEVEL);
           this.lastMessage = false;
           this.lastLevel   = false;
@@ -164,6 +165,19 @@
           this.logger.error(message, object);
           assertEqual("[Foo] " + message, this.lastMessage);
           assertEqual('error', this.lastLevel);
+        }},
+
+        testShouldPersistLogLevel: function() { with(this) {
+          this.logger.set("level", Aphid.Support.Logger.DEBUG_LEVEL);
+          var cookie = $C.get("Aphid.Support.Logger.level");
+          assert(cookie);
+          assertEqual(Aphid.Support.Logger.DEBUG_LEVEL, cookie);
+        }},
+
+        testShouldInitializeWithPersistedLogLevel: function() { with(this) {
+          $C.set("Aphid.Support.Logger.level", Aphid.Support.Logger.DEBUG_LEVEL);
+          var logger = new Aphid.Support.Logger();
+          assertEqual(Aphid.Support.Logger.DEBUG_LEVEL, logger.level);
         }}
 
       }, { testLog: "logSection" });

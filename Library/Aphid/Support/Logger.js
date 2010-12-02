@@ -13,6 +13,8 @@
 **/
 Aphid.Support.Logger = Class.create({
 
+  displayName: "Aphid.Support.Logger",
+
   /**
    * Aphid.Support.Logger#level -> Number
    *
@@ -29,7 +31,12 @@ Aphid.Support.Logger = Class.create({
   **/
   initialize: function(level)
   {
-    this.level = Object.isUndefined(level) ? Aphid.Support.Logger.INFO_LEVEL : level;
+    var persistedLevel = $C.get("Aphid.Support.Logger.level");
+
+    if (Object.isUndefined(level))
+      this.level = persistedLevel ? persistedLevel : Aphid.Support.Logger.INFO_LEVEL;
+    else
+      this.level = level;
   },
 
   /**
@@ -122,9 +129,25 @@ Aphid.Support.Logger = Class.create({
       window.console.error('[' + sender + '] ' + message);
     else
       window.console.error(message);
+  },
+
+  // -------------------------------------------------------------------------
+
+  setLevel: function(level)
+  {
+    this.level = level;
+    $C.set("Aphid.Support.Logger.level", this.level);
+    this.debug("Set the log level to " + this.level, this);
+    return this.level;
   }
 
 });
+
+// Mixins --------------------------------------------------------------------
+
+Object.extend(Aphid.Support.Logger.prototype, Aphid.Support.Properties);
+
+// Constants -----------------------------------------------------------------
 
 /**
  * Aphid.Support.Logger.DEBUG_LEVEL = 4;

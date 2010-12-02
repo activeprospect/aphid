@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Logger] Added persistence to the Aphid.Support.Logger#level
+   property so that changing this property manually will persist the level for
+   your entire session.
+
  * [Aphid.UI.View] Set default property values before applying the options
    hash to the View so that property setters may add subviews during
    initialization.
