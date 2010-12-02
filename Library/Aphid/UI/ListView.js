@@ -283,7 +283,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _addItem: function(item)
   {
-
     // Add Item to items Property
     this.get("items").push(item);
 
@@ -319,7 +318,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this._observeItem(item);
 
     return item;
-
   },
 
   removeItem: function(item)
@@ -387,7 +385,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemCount)
       listViewItemCount = this.dataSource.listViewItemCount(this);
     else
-      $L.error('Data source does not implement required method "listViewItemCount(listView)"', this);
+    {
+      $L.warn('Data source does not implement required method "listViewItemCount(listView)"', this);
+      listViewItemCount = this.get("items").length;
+    }
     return listViewItemCount;
   },
 
@@ -404,7 +405,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.dataSource && this.dataSource.listViewItemForIndex)
       listViewItem = this.dataSource.listViewItemForIndex(this, index);
     else
-      $L.error('Data source does not implement required method "listViewItemForIndex(listView, index)"', this);
+    {
+      $L.warn('Data source does not implement required method "listViewItemForIndex(listView, index)"', this);
+      listViewItem = this.get("items")[index];
+    }
     return listViewItem;
   },
 

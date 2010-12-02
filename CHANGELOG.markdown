@@ -3,9 +3,13 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] List views will fall back to operating on the items
+   property when either the listViewItemCount or listViewItemForIndex delegate
+   methods are not implemented.
+
  * [Aphid.UI.View] Views will no longer attempt to connect outlets to the view
-   when those outlets belong to another view (as defined by a parent element
-   with the data-view-class attribute set).
+   when those outlets belong to another view (as determined by a parent
+   element with the data-view-class attribute set).
 
  * [Aphid.Support.Logger] Added persistence to the Aphid.Support.Logger#level
    property so that changing this property manually will persist the level for
