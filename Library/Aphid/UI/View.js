@@ -886,7 +886,7 @@ Aphid.UI.View = Class.create(
    */
   _viewWillAppear: function(animated)
   {
-    $L.info("_viewWillAppear (animated: " + animated + ")", this);
+    $L.debug("_viewWillAppear (animated: " + animated + ")", this);
 
     if (this.viewWillAppear) this.viewWillAppear(animated);
     this.get("subviews").invoke("_viewWillAppear", animated);
