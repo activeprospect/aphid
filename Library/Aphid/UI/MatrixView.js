@@ -1,5 +1,5 @@
 /**
- * Aphid.UI.MatrixView < Aphid.UI.View
+ * class Aphid.UI.MatrixView < Aphid.UI.View
  *
  * ### Delegate Methods
  *
