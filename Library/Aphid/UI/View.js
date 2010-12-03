@@ -341,7 +341,7 @@ Aphid.UI.View = Class.create(
     this.clearSubviews(animated);
 
     // Add the specified view as the view's only subview
-    this.addSubviewAnimated(view, animated);
+    if (view) this.addSubviewAnimated(view, animated);
   },
 
   /**

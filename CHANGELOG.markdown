@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Fixed an issue where calling setView() with no value would
+   throw an error instead of the desired result of simply removing the view.
+
  * [Aphid.UI.MatrixView] Initial port of MatrixView to Aphid (see
    matrixview.org for more details on the class).
 
