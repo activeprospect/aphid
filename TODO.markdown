@@ -62,36 +62,6 @@
  * Implement Aphid.Core.Object that is automatically extended with
    Aphid.Support.Properties.
 
-### Aphid.UI.Window
-
-### Aphid.UI.View
-
- * Formalize event handling support by automatically observing views when the
-   view subclass defines event handling methods (i.e. MyView#onClick()).
-
- * Add support for initializing views from outlets with custom templates
-   defined as the data-template attribute on the outlet element.
-
- * Add support for specifying the delegate and dataSource properties for views
-   that are initialized by outlet with data-* attributes that will evaluate to
-   properties on the view that owns the outlet.
-
- * Add support for caching views that are loaded from a template on a class
-   level for reuse without re-requesting the template from the server.
-
- * Improve testing for asynchronous and non-asynchronous loading, including
-   proper callback and delegate testing.
-
- * Come up with a universal way to initialize new views from data-view-class,
-   instead of having various implementations throughout the view stack (such
-   as in Aphid.UI.ListView).
-
- * Replace _setupView with setElement.
-
-### Aphid.UI.ViewController
-
- * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
-
 ### Aphid.UI.ListView
 
  * When clearing the selection, a callback should be called for subclasses so
@@ -101,6 +71,8 @@
  * Figure out a good pattern for reusing list view items when reloading data
    instead of recreating each list view item each time that reload data is
    called.
+
+ * Honor selection state when initializing from HTML.
 
  * Add tests for sorting behavior.
 
@@ -120,6 +92,11 @@
 
  * Allow multiple loading indicator instances so that we can show one on each
    view that is initializing.
+
+### Aphid.UI.MatrixView
+
+ * Implement MatrixViewItem for managing each item within a MatrixView
+   instance, much like ListViewItems are handled by ListView instances.
 
 ### Aphid.UI.SplitViewController
 
@@ -195,3 +172,33 @@
  * Finish writing documentation for the SelectView control.
 
  * Add tests for the SelectView control.
+
+### Aphid.UI.View
+
+ * Formalize event handling support by automatically observing views when the
+   view subclass defines event handling methods (i.e. MyView#onClick()).
+
+ * Add support for initializing views from outlets with custom templates
+   defined as the data-template attribute on the outlet element.
+
+ * Add support for specifying the delegate and dataSource properties for views
+   that are initialized by outlet with data-* attributes that will evaluate to
+   properties on the view that owns the outlet.
+
+ * Add support for caching views that are loaded from a template on a class
+   level for reuse without re-requesting the template from the server.
+
+ * Improve testing for asynchronous and non-asynchronous loading, including
+   proper callback and delegate testing.
+
+ * Come up with a universal way to initialize new views from data-view-class,
+   instead of having various implementations throughout the view stack (such
+   as in Aphid.UI.ListView).
+
+ * Replace _setupView with setElement.
+
+### Aphid.UI.ViewController
+
+ * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
+
+### Aphid.UI.Window
