@@ -475,7 +475,7 @@ Aphid.UI.View = Class.create(
     if (Object.isUndefined(animated)) animated = false;
     if (!this.get("superview")) return;
 
-    $L.debug("_removeFromSuperview (animated: " + animated + ")", this);
+    $L.info('Removing "' + (this.displayName || "Unknown") + '" from superview to "' + (this.get("superview").displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Call "View Will Disappear" Callback
     this._viewWillDisappear(animated);
