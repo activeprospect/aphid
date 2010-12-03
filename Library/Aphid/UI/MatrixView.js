@@ -30,6 +30,9 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   _isObserving: false,
   _isDragging: false,
 
+  _originX: false,
+  _originY: false,
+
   // Selected Items
   selectedItems: false,
 
@@ -79,34 +82,35 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (event && event.shiftKey)
     {
       // Find first selected item
-      firstSelectedElement      = this.get("element").down("li.selected");
-      firstSelectedElementIndex = this.items().indexOf(firstSelectedElement)
-      selectedElementIndex      = this.items().indexOf(element)
+      var firstSelectedElement      = this.get("element").down("li.selected");
+      var firstSelectedElementIndex = this.items().indexOf(firstSelectedElement);
+      var selectedElementIndex      = this.items().indexOf(element);
 
       // If the first selected element is the element that was clicked on
       // then there's nothing for us to do.
-      if (firstSelectedElement == element)
-        return
+      if (firstSelectedElement == element) return;
 
       // If no elements are selected already, just select the element that
       // was clicked on.
-      if (firstSelectedElementIndex == -1) {
+      if (firstSelectedElementIndex == -1)
+      {
         this.select(element);
         return;
       }
 
-      siblings = null
+      var siblings = null
       if (firstSelectedElementIndex < selectedElementIndex)
-        siblings = firstSelectedElement.nextSiblings()
+        siblings = firstSelectedElement.nextSiblings();
       else
-        siblings = firstSelectedElement.previousSiblings()
-      done = false
+        siblings = firstSelectedElement.previousSiblings();
+      var done = false;
       siblings.each(function(el) {
-        if (done == false) {
+        if (done == false)
+        {
           el.addClassName('selected')
           this.selectedItems.push(el)
         }
-        if (element == el) done = true
+        if (element == el) done = true;
       }, this);
     }
 
@@ -204,85 +208,85 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   expandSelectionLeft: function(event)
   {
     $L.info("expandSelectionLeft", this);
-    element = this.element.down('li.selected')
-    otherElement = element.previous()
-    otherElement.addClassName('selected')
+    var element = this.element.down('li.selected');
+    var otherElement = element.previous();
+    otherElement.addClassName('selected');
     this.get("selectedItems").push(otherElement);
 
-    this.scrollIntoView(element, 'up')
+    this.scrollIntoView(element, 'up');
 
     // If a custom select handler has been defined, call it
     if (this.selectHandler != null)
-      this.selectHandler(element)
+      this.selectHandler(element);
   },
 
   expandSelectionRight: function(event)
   {
     $L.info("expandSelectionRight", this);
-    element = this.element.getElementsBySelector('li.selected').last()
-    otherElement = element.next()
-    otherElement.addClassName('selected')
-    this.get("selectedItems").push(otherElement)
+    var element = this.element.getElementsBySelector('li.selected').last();
+    var otherElement = element.next();
+    otherElement.addClassName('selected');
+    this.get("selectedItems").push(otherElement);
 
-    this.scrollIntoView(element, 'down')
+    this.scrollIntoView(element, 'down');
 
     // If a custom select handler has been defined, call it
     if (this.selectHandler != null)
-      this.selectHandler(element)
+      this.selectHandler(element);
   },
 
   expandSelectionUp: function(event)
   {
     $L.info("expandSelectionUp", this);
-    event.stop()
-    element        = this.element.down('li.selected')
-    itemWidth      = element.getWidth()
-    itemOffset     = Position.cumulativeOffset(element)
-    done = false
+    event.stop();
+    var element = this.element.down("li.selected");
+    var itemWidth = element.getWidth();
+    var itemOffset = Position.cumulativeOffset(element);
+    var done = false;
     element.previousSiblings().each(function(el) {
       if (done == false)
       {
-        el.addClassName('selected')
+        el.addClassName('selected');
         this.get("selectedItems").push(el);
       }
       if (Position.within(el, itemOffset[0], itemOffset[1] - element.getHeight()))
       {
-        done = true
-        this.scrollIntoView(el, 'up')
+        done = true;
+        this.scrollIntoView(el, 'up');
       }
     }, this);
 
     // If a custom select handler has been defined, call it
     if (this.selectHandler != null)
-      this.selectHandler(element)
+      this.selectHandler(element);
   },
 
   expandSelectionDown: function(event)
   {
     $L.info("expandSelectionDown", this);
-    event.stop()
-    element = this.element.getElementsBySelector('li.selected').last()
+    event.stop();
+    var element = this.get("element").select(".selected").last();
 
-    offset = Position.cumulativeOffset(element)
-    y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle('margin-bottom'))
+    var offset = Position.cumulativeOffset(element);
+    var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle("margin-bottom"));
 
-    done = false
+    var done = false;
     element.nextSiblings().each(function(el) {
       if (done == false)
       {
-        el.addClassName('selected')
-        this.selectedItems.push(el)
+        el.addClassName('selected');
+        this.selectedItems.push(el);
       }
       if (Position.within(el, offset[0], y))
       {
-        done = true
-        this.scrollIntoView(el, 'down')
+        done = true;
+        this.scrollIntoView(el, 'down');
       }
     }, this);
  
     // If a custom select handler has been defined, call it
     if (this.selectHandler != null)
-      this.selectHandler(element)
+      this.selectHandler(element);
   },
 
   // Actions -----------------------------------------------------------------
@@ -290,11 +294,11 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   open: function(element)
   {
     $L.info("open", this);
-    this.deselectAll()
-    element.addClassName('selected')
+    this.deselectAll();
+    element.addClassName('selected');
     // If a custom open handler has been defined, call it
     if (this.openHandler != null)
-      this.openHandler(element)
+      this.openHandler(element);
   },
 
   destroy: function(elements)
@@ -302,7 +306,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     $L.info("destroy", this);
     // If a custom open handler has been defined, call it
     if (this.deleteHandler != null)
-      this.deleteHandler(elements)
+      this.deleteHandler(elements);
   },
 
   // Movement ----------------------------------------------------------------
@@ -311,7 +315,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.info("moveLeft", this);
 
-    event.stop()
+    event.stop();
 
     var element         = this.get("element").down(".selected");
     var previousElement = element ? element.previous() : false;
@@ -325,7 +329,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.info("moveRight", this);
 
-    event.stop()
+    event.stop();
 
     var element = this.get("element").select(".selected").last();
     if (!element) return this.selectFirst();
@@ -376,7 +380,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     var element = this.get("element").select(".selected").last();
     if (!element) return this.selectFirst();
 
-    var offset = Position.cumulativeOffset(element)
+    var offset = Position.cumulativeOffset(element);
     var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle('margin-bottom'));
 
     var nextSiblings = element.nextSiblings();
@@ -400,25 +404,25 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   items: function()
   {
-    return this.element.getElementsBySelector('li')
+    return this.get("element").select("li");
   },
 
   scrollIntoView: function(element, direction)
   {
-    scrollingView = this.get("element");
+    var scrollingView = this.get("element");
     if (direction == "down" || direction == "right")
     {
       if ((Position.page(element)[1] + element.getHeight()) >= (scrollingView.getHeight() + Position.cumulativeOffset(scrollingView)[1]))
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight())
+        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight());
       else if (Position.page(element)[1] <= 0)
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight())
+        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight());
     }
     else if (direction == "up" || direction == "left")
     {
       if ((Position.page(element)[1] + element.getHeight()) >= (scrollingView.getHeight() + Position.cumulativeOffset(scrollingView)[1]))
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24
+        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24;
       else if (Position.page(element)[1] <= 0)
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24
+        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24;
     }
   },
 
@@ -581,7 +585,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.info("_handleDoubleClickEvent", this);
 
-    element = event.element();
+    var element = event.element();
     if (element.tagName != 'LI') element = element.up('li');
     if (element)
     {
@@ -614,56 +618,62 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       this.deselectAll();
 
     this._isDragging = true;
-    window.originX = event.pointerX()
-    window.originY = event.pointerY()
-    this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px', left:event.pointerX() - this.element.cumulativeOffset()[0], top:event.pointerY() - this.element.cumulativeOffset()[1] })
+    this._originX = event.pointerX();
+    this._originY = event.pointerY();
+    this.get("selectionOverlayElement").setStyle({
+      width: '0px',
+      height: '0px',
+      left: event.pointerX() - this.element.cumulativeOffset()[0],
+      top: event.pointerY() - this.element.cumulativeOffset()[1]
+    });
 
-    event.preventDefault()
+    event.preventDefault();
   },
 
   _handleMouseUpEvent: function(event)
   {
-      this._isDragging = false;
-      this.get("selectionOverlayElement").hide()
-      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' })
-      event.stop()
-      if (this.selectHandler != null)
-        this.selectHandler(this.selectedItems)
+    this._isDragging = false;
+    this.get("selectionOverlayElement").hide();
+    this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' });
+    event.stop();
+    if (this.selectHandler != null)
+      this.selectHandler(this.selectedItems);
   },
 
-  _handleMouseMoveEvent: function(event) {
+  _handleMouseMoveEvent: function(event)
+  {
     if (this._isDragging)
     {
       var overlay = this.get("selectionOverlayElement");
 
       if (!overlay.visible()) overlay.show();
 
-      var top, left
-      var width  = event.pointerX() - window.originX
-      var height = event.pointerY() - window.originY
+      var top, left, right, bottom;
+      var width  = event.pointerX() - this._originX;
+      var height = event.pointerY() - this._originY;
 
       if (width < 0)
       {
-        width = -width
-        left = event.pointerX()
+        width = -width;
+        left = event.pointerX();
       }
       else
       {
-        left = window.originX
+        left = this._originX;
       }
 
       if (height < 0)
       {
-        height = -height
-        top = event.pointerY()
+        height = -height;
+        top = event.pointerY();
       }
       else
       {
-        top = window.originY
+        top = this._originY;
       }
 
-      left = left - this.element.cumulativeOffset()[0]
-      top  = top  - this.element.cumulativeOffset()[1]
+      left = left - this.element.cumulativeOffset()[0];
+      top  = top  - this.element.cumulativeOffset()[1];
 
       overlay.setStyle({
         left: left + 'px',
@@ -673,25 +683,25 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       })
 
       this.get("element").select('li').each(function(element) {
-        offset = element.cumulativeOffset()
-        dimensions = element.getDimensions()
-        left = offset.left
-        top = offset.top
-        right = left + dimensions.width
-        bottom = top + dimensions.height
+        var offset = element.cumulativeOffset();
+        var dimensions = element.getDimensions();
+        left = offset.left;
+        top = offset.top;
+        right = left + dimensions.width;
+        bottom = top + dimensions.height;
         if (Position.within(overlay, left, top) ||
             Position.within(overlay, right, top) ||
             Position.within(overlay, left, bottom) ||
             Position.within(overlay, right, bottom))
         {
-          element.addClassName('selected')
+          element.addClassName('selected');
           if (this.selectedItems.indexOf(element) == -1)
-            this.selectedItems.push(element)
+            this.selectedItems.push(element);
         }
         else
         {
-          this.selectedItems[this.selectedItems.indexOf(element)] = null
-          element.removeClassName('selected')
+          this.selectedItems[this.selectedItems.indexOf(element)] = null;
+          element.removeClassName('selected');
         }
       }, this);
 
