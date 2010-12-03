@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Vendor/Prototype] Updated to Prototype 1.7.
+
  * [Aphid.UI.SplitViewController] Fixed persistence support for restoring the
    position of the split view divider upon subsequent reloads.
 
