@@ -19,17 +19,24 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   displayName: "Aphid.UI.MatrixView",
 
+  /*
+   * Aphid.UI.MatrixView#_selectionOverlayElement -> Element | false
+   *
+   * The semi-translucent overlay element that is displayed above items in the
+   * view during a mouse drag-select operation.
+   */
+  _selectionOverlayElement: false,
+
   // Selected Items
   selectedItems: false,
+
+  // -------------------------------------------------------------------------
 
   initialize: function($super, options)
   {
     $super(options);
 
     this.selectedItems = $A();
-
-    // Add selection overlay to the view
-    this.get("element").insert('<div id="selectionArea" style="display: none"></div>')
 
     // Observe keys
     document.observe("keydown", function(event) {
@@ -129,15 +136,15 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       window.dragging = true
       window.originX = event.pointerX()
       window.originY = event.pointerY()
-      $('selectionArea').setStyle({ width:'0px', height:'0px', left:event.pointerX() - this.element.cumulativeOffset()[0], top:event.pointerY() - this.element.cumulativeOffset()[1] })
+      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px', left:event.pointerX() - this.element.cumulativeOffset()[0], top:event.pointerY() - this.element.cumulativeOffset()[1] })
 
       event.preventDefault()
     }.bind(this));
 
     this.get("element").observe("mouseup", function(event) {
       window.dragging = false
-      $('selectionArea').hide()
-      $('selectionArea').setStyle({ width:'0px', height:'0px' })
+      this.get("selectionOverlayElement").hide()
+      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' })
       event.stop()
       if (this.selectHandler != null)
         this.selectHandler(this.selectedItems)
@@ -146,7 +153,9 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     this.get("element").observe("mousemove", function(event) {
       if (window.dragging)
       {
-        if (!$('selectionArea').visible()) $('selectionArea').show()
+        var overlay = this.get("selectionOverlayElement");
+
+        if (!overlay.visible()) overlay.show();
 
         var top, left
         var width  = event.pointerX() - window.originX
@@ -175,7 +184,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
         left = left - this.element.cumulativeOffset()[0]
         top  = top  - this.element.cumulativeOffset()[1]
 
-        $('selectionArea').setStyle({
+        overlay.setStyle({
           left: left + 'px',
           top: top + 'px',
           width: width + 'px',
@@ -189,10 +198,10 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
           top = offset.top
           right = left + dimensions.width
           bottom = top + dimensions.height
-          if (Position.within($('selectionArea'), left, top) ||
-              Position.within($('selectionArea'), right, top) ||
-              Position.within($('selectionArea'), left, bottom) ||
-              Position.within($('selectionArea'), right, bottom))
+          if (Position.within(overlay, left, top) ||
+              Position.within(overlay, right, top) ||
+              Position.within(overlay, left, bottom) ||
+              Position.within(overlay, right, bottom))
           {
             element.addClassName('selected')
             if (this.selectedItems.indexOf(element) == -1)
@@ -212,6 +221,25 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   viewDidLoad: function($super)
   {
     this.get("element").addClassName("MatrixView");
+  },
+
+  // -------------------------------------------------------------------------
+
+  /*
+   * Aphid.UI.MatrixView#selectionOverlayElement()  -> Element
+   *
+   * Initializes (if necessary) and returns an element to be used as the
+   * overlay.
+   */
+  selectionOverlayElement: function()
+  {
+    if (!this._selectionOverlayElement)
+    {
+      this._selectionOverlayElement = new Element("div", { className: 'selectionOverlay' });
+      this._selectionOverlayElement.hide();
+      this.get("element").insert({ top: this._selectionOverlayElement });
+    }
+    return this._selectionOverlayElement;
   },
 
   // Selection ---------------------------------------------------------------
