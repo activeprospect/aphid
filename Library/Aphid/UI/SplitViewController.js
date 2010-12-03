@@ -52,7 +52,8 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
         onStart: this.onStart.bind(this),
         onDrag: this.onDrag.bind(this),
         change: this.change.bind(this),
-        onEnd: this.onEnd.bind(this)
+        onEnd: this.onEnd.bind(this),
+        controller: this
       });
   },
 
@@ -142,6 +143,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
     this._insertDragHandle(options.constraint);
     $super(this.dragHandle, options);
     this._setupObservers();
+    this._restoreState();
 //    this._initializePaneDimensions();
   },
 
@@ -203,7 +205,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
   resizeHorizontal: function(x)
   {
     var cumulativeOffset = this.firstPane.cumulativeOffset()[0],
-        borderWidth      = this.firstPane.getBorderWidth(),
+        borderWidth      = isNaN(this.firstPane.getBorderWidth()) ? 0 : this.firstPane.getBorderWidth(),
         dragHandleWidth  = this.dragHandle.getWidth();
     this.firstPane.setStyle({ width: x - cumulativeOffset + 'px' });
     this.secondPane.setStyle({ left: (x - cumulativeOffset + borderWidth + dragHandleWidth) + 'px' });
@@ -213,7 +215,7 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
   resizeVertical: function(y)
   {
     var cumulativeOffset = this.firstPane.cumulativeOffset()[1],
-        borderHeight     = this.firstPane.getBorderHeight(),
+        borderHeight     = isNaN(this.firstPane.getBorderHeight()) ? 0 : this.firstPane.getBorderHeight(),
         dragHandleHeight = this.dragHandle.getHeight();
     this.firstPane.setStyle({ height: y - cumulativeOffset + 'px' });
     this.secondPane.setStyle({ top: (y - cumulativeOffset + borderHeight + dragHandleHeight) + 'px' });
@@ -225,14 +227,16 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
   _persistState: function()
   {
     if (this.options.constraint == 'vertical')
-      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getHeight());
+      $C.set(this.options.controller.displayName + ".position", this.firstPane.getHeight());
     else
-      $C.set("ResizablePanes." + this.paneSet, this.firstPane.getWidth());
+      $C.set(this.options.controller.displayName + ".position", this.firstPane.getWidth());
   },
   
   _restoreState: function()
   {
-    var paneSize = parseInt($C.get("ResizablePanes." + this.paneSet));
+    $L.info("_restoreState", "Blah");
+
+    var paneSize = parseInt($C.get(this.options.controller.displayName + ".position"));
     var offset   = this.firstPane.cumulativeOffset();
 
     if (this.options.constraint == 'vertical')
@@ -241,20 +245,20 @@ Aphid.UI.SplitViewController.Draggable = Class.create(Draggable, {
       this.resizeHorizontal(paneSize + offset[0]);
   },
 
-  _initializePaneDimensions: function()
-  {
-    if (this.options.constraint == 'vertical')
-    {
-      var topOffset = parseInt(this.dragHandle.getStyle('top')) + parseInt(this.dragHandle.getStyle('height'));
-      this.secondPane.setStyle('top: ' + topOffset  + 'px');
-    }
-    else
-    {
-      // var leftOffset = parseInt(this.firstPane.getStyle('width')) + parseInt(this.firstPane.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'))
-      var leftOffset = parseInt(this.dragHandle.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'));
-      this.secondPane.setStyle('left: ' + leftOffset + 'px');
-    }
-  },
+  // _initializePaneDimensions: function()
+  // {
+  //   if (this.options.constraint == 'vertical')
+  //   {
+  //     var topOffset = parseInt(this.dragHandle.getStyle('top')) + parseInt(this.dragHandle.getStyle('height'));
+  //     this.secondPane.setStyle('top: ' + topOffset  + 'px');
+  //   }
+  //   else
+  //   {
+  //     // var leftOffset = parseInt(this.firstPane.getStyle('width')) + parseInt(this.firstPane.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'))
+  //     var leftOffset = parseInt(this.dragHandle.getStyle('left')) + parseInt(this.dragHandle.getStyle('width'));
+  //     this.secondPane.setStyle('left: ' + leftOffset + 'px');
+  //   }
+  // },
 
   // Drag Handle -------------------------------------------------------------
 

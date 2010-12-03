@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Fixed persistence support for restoring the
+   position of the split view divider upon subsequent reloads.
+
  * [Aphid.UI.TabViewController] Added support for animation when switching
    between tabs.
 

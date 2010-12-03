@@ -120,9 +120,6 @@
    logic from the `Draggable` subclass (`Aphid.UI.SplitViewController.Draggable`)
    into delegates or callbacks on `Aphid.UI.SplitViewController`.
 
- * Add persistence to the SplitViewController so that the last dimensions are
-   always used when the view is reloaded.
-
  * Allow min-width/max-width to be enforced on the second view. When resizing
    and the max-width or max-height of the first view has not been met but the
    min-width or min-width of the second view has been met, resizing should be
@@ -138,6 +135,8 @@
    minimizing the first pane).
 
  * Add resizing support to Internet Explorer 7 thru 9.
+
+ * Implement an allowsResize option to enable or disable resizing.
 
 ### Aphid.UI.TabViewController
 
