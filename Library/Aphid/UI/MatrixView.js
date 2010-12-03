@@ -27,6 +27,9 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
    */
   _selectionOverlayElement: false,
 
+  _isObserving: false,
+  _isDragging: false,
+
   // Selected Items
   selectedItems: false,
 
@@ -37,185 +40,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     $super(options);
 
     this.selectedItems = $A();
-
-    // Observe keys
-    document.observe("keydown", function(event) {
-
-      // Meta/Control
-      if (event.metaKey)
-      {
-        if (event.keyCode == 97 || event.keyCode == 65) // Shift-A (Select All)
-        {
-          this.selectAll();
-          event.stop()
-          return false
-        }
-        return
-      }
-
-      // Shift
-      else if (event.shiftKey)
-      {
-        if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234) // Left Arrow
-          this.expandSelectionLeft(event)
-        if (event.keyCode == Event.KEY_UP || event.keyCode == 63232) // Up Arrow
-          this.expandSelectionUp(event)
-        if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235) // Right Arrow
-          this.expandSelectionRight(event)
-        if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233) // Down Arrow
-          this.expandSelectionDown(event)
-        if (event.keyCode == 32) // Space
-          event.stop()
-        if (event.keyCode == Event.KEY_TAB) // Tab
-        {
-          if (this.selectedItems.size() > 0)
-            this.moveLeft(event)
-        }
-        return
-      }
-
-      if (event.keyCode == Event.KEY_RETURN) // Enter (Open Item)
-      {
-        if (this.selectedItems.size() == 1)
-          this.open(this.selectedItems.first())
-      }
-      if (event.keyCode == Event.KEY_BACKSPACE || event.keyCode == Event.KEY_DELETE || event.keyCode == 63272) // Delete/Backspace
-      {
-        this.destroy(this.selectedItems)
-        event.stop()
-      }
-      if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234) // Left Arrow
-        this.moveLeft(event)
-      if (event.keyCode == Event.KEY_UP || event.keyCode == 63232) // Up Arrow
-        this.moveUp(event)
-      if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235) // Right Arrow
-        this.moveRight(event)
-      if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233) // Down Arrow
-        this.moveDown(event)
-      if (event.keyCode == 32) // Space
-        event.stop()
-      if (event.keyCode == Event.KEY_TAB) // Tab
-      {
-        if (this.selectedItems.size() > 0)
-          this.moveRight(event)
-      }
-    }.bind(this));
-
-    // Double Click
-    this.get("element").observe("dblclick", function(event) {
-      element = event.element();
-      if (element.tagName != 'LI') element = element.up('li')
-      if (element)
-      {
-        this.deselectAll()
-        this.open(element)
-      }
-      event.preventDefault()
-    }.bind(this));
-
-    // Click / Mouse Down
-    this.get("element").observe("mousedown", function(event) {
-      var element = event.element();
-
-      // For Safari, since it passes thru clicks on the scrollbar, exclude 15 pixels from the click area
-      if (Prototype.Browser.WebKit) {
-        if (this.get("element").scrollHeight > this.get("element").getHeight()) {
-          if (Event.pointerX(event) > (this.get("element").getWidth() + Position.cumulativeOffset(this.get("element"))[0] - 15)) {
-            event.stop()
-            return
-          }
-        }
-      }
-
-      if (element.tagName != 'LI') element = element.up('li')
-      if (element)
-        this.select(element, event);
-      else
-        this.deselectAll();
-
-      window.dragging = true
-      window.originX = event.pointerX()
-      window.originY = event.pointerY()
-      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px', left:event.pointerX() - this.element.cumulativeOffset()[0], top:event.pointerY() - this.element.cumulativeOffset()[1] })
-
-      event.preventDefault()
-    }.bind(this));
-
-    this.get("element").observe("mouseup", function(event) {
-      window.dragging = false
-      this.get("selectionOverlayElement").hide()
-      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' })
-      event.stop()
-      if (this.selectHandler != null)
-        this.selectHandler(this.selectedItems)
-    }.bind(this));
-
-    this.get("element").observe("mousemove", function(event) {
-      if (window.dragging)
-      {
-        var overlay = this.get("selectionOverlayElement");
-
-        if (!overlay.visible()) overlay.show();
-
-        var top, left
-        var width  = event.pointerX() - window.originX
-        var height = event.pointerY() - window.originY
-
-        if (width < 0)
-        {
-          width = -width
-          left = event.pointerX()
-        }
-        else
-        {
-          left = window.originX
-        }
-
-        if (height < 0)
-        {
-          height = -height
-          top = event.pointerY()
-        }
-        else
-        {
-          top = window.originY
-        }
-
-        left = left - this.element.cumulativeOffset()[0]
-        top  = top  - this.element.cumulativeOffset()[1]
-
-        overlay.setStyle({
-          left: left + 'px',
-          top: top + 'px',
-          width: width + 'px',
-          height: height + 'px'
-        })
-
-        this.get("element").select('li').each(function(element) {
-          offset = element.cumulativeOffset()
-          dimensions = element.getDimensions()
-          left = offset.left
-          top = offset.top
-          right = left + dimensions.width
-          bottom = top + dimensions.height
-          if (Position.within(overlay, left, top) ||
-              Position.within(overlay, right, top) ||
-              Position.within(overlay, left, bottom) ||
-              Position.within(overlay, right, bottom))
-          {
-            element.addClassName('selected')
-            if (this.selectedItems.indexOf(element) == -1)
-              this.selectedItems.push(element)
-          }
-          else
-          {
-            this.selectedItems[this.selectedItems.indexOf(element)] = null
-            element.removeClassName('selected')
-          }
-        }, this);
-
-      }
-    }.bind(this));
   },
 
   viewDidLoad: function($super)
@@ -596,6 +420,306 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       else if (Position.page(element)[1] <= 0)
         scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24
     }
+  },
+
+  // Event Handling ----------------------------------------------------------
+
+  _startObserving: function()
+  {
+    $L.info("_startObserving", this);
+
+    if (this._isObserving) return;
+
+    // Observe "Key Down" Events
+    this._handleKeyDownEventListener = this._handleKeyDownEvent.bindAsEventListener(this);
+    document.observe("keydown", this._handleKeyDownEventListener);
+
+    // Observe "Double-Click" Events
+    // TODO Only set up this observer if the delegate defines the open delegate or a subclass defines a callback
+    this._handleDoubleClickEventListener = this._handleDoubleClickEvent.bindAsEventListener(this);
+    this.get("element").observe("dblclick", this._handleDoubleClickEventListener);
+
+    // Observe "Mouse Down" Events
+    this._handleMouseDownEventListener = this._handleMouseDownEvent.bindAsEventListener(this);
+    this.get("element").observe("mousedown", this._handleMouseDownEventListener);
+
+    // Observe "Mouse Up" Events
+    this._handleMouseUpEventListener = this._handleMouseUpEvent.bindAsEventListener(this);
+    this.get("element").observe("mouseup", this._handleMouseUpEventListener);
+
+    // Observe "Mouse Move" Events
+    this._handleMouseMoveEventListener = this._handleMouseMoveEvent.bindAsEventListener(this);
+    this.get("element").observe("mousemove", this._handleMouseMoveEventListener);
+
+    this._isObserving = true;
+  },
+
+  _stopObserving: function()
+  {
+    $L.info("_stopObserving", this);
+
+    if (!this._isObserving) return;
+
+    // Stop Observing "Key Down" Events
+    document.stopObserving("keydown", this._handleKeyDownEventListener);
+    this._handleKeyDownEventListener = false;
+
+    // Stop Observing "Double-Click" Events
+    this.get("element").stopObserving("dblclick", this._handleDoubleClickEventListener);
+    this._handleDoubleClickEventListener = false;
+
+    // Stop Observing "Mouse Down" Events
+    this.get("element").stopObserving("mousedown", this._handleMouseDownEventListener);
+    this._handleMouseDownEventListener = false;
+
+    // Stop Observing "Mouse Up" Events
+    this.get("element").stopObserving("mouseup", this._handleMouseUpEventListener);
+    this._handleMouseUpEventListener = false;
+
+    // Stop Observing "Mouse Move" Events
+    this.get("element").stopObserving("mouseup", this._handleMouseMoveEventListener);
+    this._handleMouseMoveEventListener = false;
+
+    this._isObserving = false;
+  },
+
+  _handleKeyDownEvent: function(event)
+  {
+    $L.info("_handleKeyDownEvent", this);
+
+    // Meta/Control
+    if (event.metaKey)
+    {
+      // Shift-A (Select All)
+      if (event.keyCode == 97 || event.keyCode == 65)
+      {
+        this.selectAll();
+        event.stop();
+        return;
+      }
+      return;
+    }
+
+    // Shift
+    else if (event.shiftKey)
+    {
+      // Left Arrow
+      if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234)
+        this.expandSelectionLeft(event);
+
+        // Up Arrow
+      if (event.keyCode == Event.KEY_UP || event.keyCode == 63232)
+        this.expandSelectionUp(event);
+
+      // Right Arrow
+      if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235)
+        this.expandSelectionRight(event);
+
+      // Down Arrow
+      if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233)
+        this.expandSelectionDown(event);
+
+      // Space
+      if (event.keyCode == 32)
+        event.stop();
+
+      // Tab
+      if (event.keyCode == Event.KEY_TAB) 
+      {
+        if (this.selectedItems.size() > 0)
+          this.moveLeft(event);
+      }
+
+      return;
+    }
+
+    // Enter (Open Item)
+    // TODO Only handle this event if the delegate or callback for opening items is defined
+    if (event.keyCode == Event.KEY_RETURN)
+    {
+      if (this.selectedItems.size() == 1)
+        this.open(this.selectedItems.first());
+    }
+
+    // Delete/Backspace
+    // TODO Only handle this event if the delegate or callback for deleting items is defined
+    if (event.keyCode == Event.KEY_BACKSPACE || event.keyCode == Event.KEY_DELETE || event.keyCode == 63272)
+    {
+      this.destroy(this.selectedItems);
+      event.stop();
+    }
+
+    // Left Arrow
+    if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234)
+      this.moveLeft(event);
+
+    // Up Arrow
+    if (event.keyCode == Event.KEY_UP || event.keyCode == 63232)
+      this.moveUp(event);
+
+    // Right Arrow
+    if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235)
+      this.moveRight(event);
+
+    // Down Arrow
+    if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233)
+      this.moveDown(event);
+
+    // Space
+    if (event.keyCode == 32)
+      event.stop();
+
+    // Tab
+    if (event.keyCode == Event.KEY_TAB)
+    {
+      if (this.selectedItems.size() > 0)
+        this.moveRight(event);
+    }
+  },
+
+  _handleDoubleClickEvent: function(event)
+  {
+    $L.info("_handleDoubleClickEvent", this);
+
+    element = event.element();
+    if (element.tagName != 'LI') element = element.up('li');
+    if (element)
+    {
+      this.deselectAll();
+      this.open(element);
+    }
+    event.preventDefault();
+  },
+
+  _handleMouseDownEvent: function(event)
+  {
+    $L.info("_handleMouseDownEvent", this);
+
+    var element = event.element();
+
+    // For Safari, since it passes thru clicks on the scrollbar, exclude 15 pixels from the click area
+    if (Prototype.Browser.WebKit) {
+      if (this.get("element").scrollHeight > this.get("element").getHeight()) {
+        if (Event.pointerX(event) > (this.get("element").getWidth() + Position.cumulativeOffset(this.get("element"))[0] - 15)) {
+          event.stop();
+          return;
+        }
+      }
+    }
+
+    if (element.tagName != 'LI') element = element.up('li');
+    if (element)
+      this.select(element, event);
+    else
+      this.deselectAll();
+
+    this._isDragging = true;
+    window.originX = event.pointerX()
+    window.originY = event.pointerY()
+    this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px', left:event.pointerX() - this.element.cumulativeOffset()[0], top:event.pointerY() - this.element.cumulativeOffset()[1] })
+
+    event.preventDefault()
+  },
+
+  _handleMouseUpEvent: function(event)
+  {
+      this._isDragging = false;
+      this.get("selectionOverlayElement").hide()
+      this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' })
+      event.stop()
+      if (this.selectHandler != null)
+        this.selectHandler(this.selectedItems)
+  },
+
+  _handleMouseMoveEvent: function(event) {
+    if (this._isDragging)
+    {
+      var overlay = this.get("selectionOverlayElement");
+
+      if (!overlay.visible()) overlay.show();
+
+      var top, left
+      var width  = event.pointerX() - window.originX
+      var height = event.pointerY() - window.originY
+
+      if (width < 0)
+      {
+        width = -width
+        left = event.pointerX()
+      }
+      else
+      {
+        left = window.originX
+      }
+
+      if (height < 0)
+      {
+        height = -height
+        top = event.pointerY()
+      }
+      else
+      {
+        top = window.originY
+      }
+
+      left = left - this.element.cumulativeOffset()[0]
+      top  = top  - this.element.cumulativeOffset()[1]
+
+      overlay.setStyle({
+        left: left + 'px',
+        top: top + 'px',
+        width: width + 'px',
+        height: height + 'px'
+      })
+
+      this.get("element").select('li').each(function(element) {
+        offset = element.cumulativeOffset()
+        dimensions = element.getDimensions()
+        left = offset.left
+        top = offset.top
+        right = left + dimensions.width
+        bottom = top + dimensions.height
+        if (Position.within(overlay, left, top) ||
+            Position.within(overlay, right, top) ||
+            Position.within(overlay, left, bottom) ||
+            Position.within(overlay, right, bottom))
+        {
+          element.addClassName('selected')
+          if (this.selectedItems.indexOf(element) == -1)
+            this.selectedItems.push(element)
+        }
+        else
+        {
+          this.selectedItems[this.selectedItems.indexOf(element)] = null
+          element.removeClassName('selected')
+        }
+      }, this);
+
+    }
+  },
+
+  // View Callbacks ----------------------------------------------------------
+
+  viewWillAppear: function(animated)
+  {
+    $L.info("viewWillAppear", this);
+  },
+
+  viewDidAppear: function(animated)
+  {
+    this._startObserving();
+    $L.info("viewDidAppear", this);
+  },
+
+  viewWillDisappear: function(animated)
+  {
+    $L.info("viewWillDisappear", this);
+    this._stopObserving();
+  },
+
+  viewDidDisappear: function(animated)
+  {
+    $L.info("viewDidDisappear", this);
   }
 
 });

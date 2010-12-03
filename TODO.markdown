@@ -98,6 +98,8 @@
  * Implement MatrixViewItem for managing each item within a MatrixView
    instance, much like ListViewItems are handled by ListView instances.
 
+ * Change to using a focus model.
+
 ### Aphid.UI.SplitViewController
 
  * Formalize the support for specifying the "mode" of the split view (i.e.
