@@ -24,18 +24,7 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
   _overlayElement: false,
 
   /**
-   * Aphid.UI.Window#overlayVisible -> Boolean
-   *
-   * Returns true or false depending on whether or not the overlay is
-   * currently visible.
-  **/
-  overlayVisible: function()
-  {
-    return this.get("overlayElement").visible();
-  },
-
-  /**
-   * Aphid.UI.Window#overlayElement -> Element
+   * Aphid.UI.Window#overlayElement() -> Element
    *
    * Initializes (if necessary) and returns an element to be used as the
    * overlay.
@@ -49,6 +38,17 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
       Element.insert(document.body, { top: this._overlayElement });
     }
     return this._overlayElement;
+  },
+
+  /**
+   * Aphid.UI.Window#overlayVisible() -> Boolean
+   *
+   * Returns true or false depending on whether or not the overlay is
+   * currently visible.
+  **/
+  overlayVisible: function()
+  {
+    return this.get("overlayElement").visible();
   },
 
   /*
