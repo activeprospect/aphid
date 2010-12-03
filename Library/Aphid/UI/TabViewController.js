@@ -120,28 +120,32 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
       if (selectedTab)
       {
         $L.info('Restoring previously selected tab "' + selectedTab + '"', this);
-        this.selectTab(selectedTab);
+        this.selectTab(selectedTab, false);
         return;
       }
     }
 
     // ... or Default Tab
     $L.info('Selecting default tab "' + this.get("defaultTab") + '"', this);
-    this.selectDefaultTab();
+    this.selectDefaultTab(false);
   },
 
   // Tab Selection -----------------------------------------------------------
 
   /**
-   * Aphid.UI.TabViewController#selectTab(tab) -> null
+   * Aphid.UI.TabViewController#selectTab(tab[, animated = true]) -> null
    *
    * - tab (Element | String): the element of the tab that should be selected
    *   or the name of the tab, as specified in the tab's data-tab attribute.
+   * - animated (Boolean): specifies whether or not the tab should be switched
+   *   with animation (defaults to true).
    *
    * Selects the specified *tab*.
   **/
-  selectTab: function(tab)
+  selectTab: function(tab, animated)
   {
+    if (Object.isUndefined(animated)) animated = true;
+
     // Allow selectTab to be called with an Event or an Element
     if (!Object.isElement(tab))
     {
@@ -170,7 +174,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     this.set("selectedTab", tab);
 
     // Switch View
-    this._switchView(tab);
+    this._switchView(tab, animated);
 
     // Call the internal callback that will handle anything that needs to
     // happen after a tab has been selected, including notifying the delegate.
@@ -178,18 +182,22 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   },
 
   /**
-   * Aphid.UI.TabViewController#selectDefaultTab() -> null
+   * Aphid.UI.TabViewController#selectDefaultTab([animated = false]) -> null
+   *
+   * - animated (Boolean): specifies whether or not the tab should be selected
+   *   with animation (defaults to false).
    *
    * Selects the default tab, as defined by the
    * [[Aphid.UI.TabViewController#defaultTab]] property, or the first tab in
    * the tab view if a default tab has not been defined.
   **/
-  selectDefaultTab: function()
+  selectDefaultTab: function(animated)
   {
+    if (Object.isUndefined(animated)) animated = false;
     if (this.get("defaultTab"))
-      this.selectTab(this.get("defaultTab"));
+      this.selectTab(this.get("defaultTab"), animated);
     else
-      this.selectTab(this.get("tabs").first());
+      this.selectTab(this.get("tabs").first(), animated);
   },
 
   // Event Handling ----------------------------------------------------------
@@ -242,7 +250,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
    * Attempts to switch the content view based on the data-view and
    * data-view-class attributes on the tab Element.
    */
-  _switchView: function(tab)
+  _switchView: function(tab, animated)
   {
     // Instantiate & Switch to View
     var view      = tab.getData('view'),
@@ -257,7 +265,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
     }
 
     // Set the View as the Content View
-    this.contentView.setView(this[view]);
+    this.contentView.setViewAnimated(this[view], animated);
   },
 
   // Callbacks ---------------------------------------------------------------

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.TabViewController] Added support for animation when switching
+   between tabs.
+
  * [Aphid.UI.View] Completed the implementation of the viewWillAppear,
    viewDidAppear, viewWillDisappear and ViewDidDisappear callbacks (including
    tests).
