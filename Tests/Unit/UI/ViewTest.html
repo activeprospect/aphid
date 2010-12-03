@@ -55,19 +55,62 @@
       var TestView;
       var AnotherTestView;
       var TestViewWithProperties;
+      var TestViewWithCallbacks;
+      var TestViewWithSubviews;
 
       new Test.Unit.Runner({
 
         setup: function() { with(this) {
           $AppDelegate.baseViewPath = "../../Fixtures/Templates";
           TestView = Class.create(Aphid.UI.View, {
+            displayName: "TestView",
             testOutlet: false
           });
-          AnotherTestView = Class.create(Aphid.UI.View, {});
+          AnotherTestView = Class.create(Aphid.UI.View, {
+            displayName: "AnotherTestView"
+          });
           TestViewWithProperties = Class.create(Aphid.UI.View, {
+            displayName: "TestViewWithProperties",
             customProperty: false,
             trueProperty: false,
             falseProperty: false
+          });
+          TestViewWithCallbacks = Class.create(Aphid.UI.View, {
+            displayName: "TestViewWithCallbacks",
+
+            viewWillAppearCalled: false,
+            viewWillAppear: function(animated)
+            {
+              this.viewWillAppearCalled = true;
+            },
+
+            viewDidAppearCalled: false,
+            viewDidAppear: function(animated)
+            {
+              this.viewDidAppearCalled = true;
+            },
+
+            viewWillDisappearCalled: false,
+            viewWillDisappear: function(animated)
+            {
+              this.viewWillDisappearCalled = true;
+            },
+
+            viewDidDisappearCalled: false,
+            viewDidDisappear: function(animated)
+            {
+              this.viewDidDisappearCalled = true;
+            }
+
+          });
+          TestViewWithSubviews = Class.create(TestViewWithCallbacks, {
+            displayName: "TestViewWithSubviews",
+            viewDidLoad: function($super)
+            {
+              $super();
+              this.addSubview(new TestViewWithCallbacks());
+              this.addSubview(new TestViewWithCallbacks());
+            }
           });
         }},
 
@@ -295,9 +338,243 @@
 
         testShouldClearSubviews: function() { with(this) {
           assert(false, "Test not implemented...");
-        }}
+        }},
 
         // TODO Add tests for actions
+
+        // Callback Tests ----------------------------------------------------
+
+        testSetViewShouldCallViewWillAppearCallback: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setView(subview);
+          assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with setView");
+          subview.viewWillAppearCalled = false;
+        }},
+
+        testSetViewAnimatedShouldCallViewWillAppearCallback: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setViewAnimated(subview);
+          assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with setViewAnimated");
+          subview.viewWillAppearCalled = false;
+        }},
+
+        testAddSubviewShouldCallViewWillAppearCallback: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new TestViewWithCallbacks();
+
+          testView.addSubview(subview);
+          assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with addSubview");
+          subview.viewWillAppearCalled = false;
+        }},
+
+        testAddSubviewAnimatedShouldCallViewWillAppearCallback: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new TestViewWithCallbacks();
+
+          testView.addSubviewAnimated(subview);
+          assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with addSubviewAnimated");
+          subview.viewWillAppearCalled = false;
+        }},
+
+        testSetViewShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setView");
+          assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setViewAnimated(subview);
+          assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setViewAnimated");
+          assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setViewAnimated");
+        }},
+
+        testAddSubviewShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.addSubview(subview);
+          assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubview");
+          assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubview");
+        }},
+
+        testAddSubviewAnimatedShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.addSubviewAnimated(subview);
+          assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
+          assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
+        }},
+
+        testSetViewShouldCallViewDidAppearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setView(subview);
+          assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewDidAppearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setViewAnimated(subview);
+          wait(2000, function() { with(this) {
+            assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with setViewAnimated");
+          }});
+        }},
+
+        testAddSubviewShouldCallViewDidAppearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.addSubview(subview);
+          assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with addSubview");
+        }},
+
+        testAddSubviewAnimatedShouldCallViewDidAppearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.addSubviewAnimated(subview);
+          wait(2000, function() { with(this) {
+            assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with addSubviewAnimated");
+          }});
+        }},
+
+        testSetViewShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setView");
+          assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setViewAnimated(subview);
+          wait(2000, function() { with(this) {
+            assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
+            assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
+          }});
+        }},
+
+        testAddSubviewShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.addSubview(subview);
+          assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubview");
+          assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubview");
+        }},
+
+        testAddSubviewAnimatedShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.addSubviewAnimated(subview);
+          wait(2000, function() { with(this) {
+            assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
+            assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
+          }});
+        }},
+
+        testSetViewShouldCallViewWillDisappearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setView(subview);
+          testView.setView();
+          assert(subview.viewWillDisappearCalled, "viewWillDisappear should be called on the view when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewWillDisappearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setViewAnimated(subview);
+          testView.setViewAnimated();
+          wait(2000, function() { with(this) {
+            assert(subview.viewWillDisappearCalled, "viewWillDisappear should be called on the view when adding to another view with setViewAnimated");
+          }});
+        }},
+
+        testSetViewShouldCallViewWillDisappearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          testView.setView();
+          assert(subview.get("subviews")[0].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setView");
+          assert(subview.get("subviews")[1].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewWillDisappearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          testView.setViewAnimated();
+          wait(2000, function() { with(this) {
+            assert(subview.get("subviews")[0].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
+            assert(subview.get("subviews")[1].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
+          }});
+        }},
+
+        testSetViewShouldCallViewDidDisappearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setView(subview);
+          testView.setView();
+          assert(subview.viewDidDisappearCalled, "viewDidDisappear should be called on the view when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewDidDisappearCallback: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithCallbacks();
+
+          testView.setView(subview);
+          testView.setViewAnimated();
+          wait(2000, function() { with(this) {
+            assert(subview.viewDidDisappearCalled, "viewDidDisappear should be called on the view when adding to another view with setViewAnimated");
+          }});
+        }},
+
+        testSetViewShouldCallViewDidDisappearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          testView.setView();
+          assert(subview.get("subviews")[0].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setView");
+          assert(subview.get("subviews")[1].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setView");
+        }},
+
+        testSetViewAnimatedShouldCallViewDidDisappearCallbackOnSubviews: function() { with(this) {
+          var testView = new TestView({ element: $('testElement')}),
+              subview  = new TestViewWithSubviews();
+
+          testView.setView(subview);
+          testView.setViewAnimated();
+          wait(2000, function() { with(this) {
+            assert(subview.get("subviews")[0].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
+            assert(subview.get("subviews")[1].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
+          }});
+        }}
 
       }, { testLog: "logSection" });
 

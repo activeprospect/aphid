@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Completed the implementation of the viewWillAppear,
+   viewDidAppear, viewWillDisappear and ViewDidDisappear callbacks (including
+   tests).
+
  * [Aphid.UI.View] Fixed an issue where calling setView() with no value would
    throw an error instead of the desired result of simply removing the view.
 

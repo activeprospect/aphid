@@ -132,6 +132,7 @@ Aphid.UI.View = Class.create(
    *
    * An object that will receive calls for delegate methods of this class.
   **/
+  // TODO Move this to Aphid.Core.Object
   delegate: false,
 
   /**
@@ -415,19 +416,24 @@ Aphid.UI.View = Class.create(
     view.set("superview", this);
     this.get("subviews").push(view);
 
-    // "View Will Appear..."
-    if (view.viewWillAppear)
-      view.viewWillAppear();
+    // Call "View Will Appear" Callback
+    this._viewWillAppear(animated);
 
     // Insert the view into the DOM
     this.get("element").insert(view.get("element"));
 
     // Display the View
-    animated ? view.get("element").appear({ duration: 0.25, queue: "end" }) : view.get("element").show();
-
-    // "View Did Appear..."
-    if (view.viewDidAppear)
-      view.viewDidAppear();
+    if (animated)
+      view.get("element").appear({
+        duration: 0.25,
+        queue: "end",
+        afterFinish: this._viewDidAppear.bind(this, animated)
+      })
+    else
+    {
+      view.get("element").show();
+      this._viewDidAppear(animated);
+    }
   },
 
   /**
@@ -467,19 +473,40 @@ Aphid.UI.View = Class.create(
   _removeFromSuperview: function(animated)
   {
     if (Object.isUndefined(animated)) animated = false;
-    if (!this.get("superview"))
-      return;
+    if (!this.get("superview")) return;
 
-    // "View Will Disappear"
-    if (this.viewWillDisappear)
-      this.viewWillDisappear();
+    $L.debug("_removeFromSuperview (animated: " + animated + ")", this);
+
+    // Call "View Will Disappear" Callback
+    this._viewWillDisappear(animated);
 
     // Hide the View
-    animated ? this.get("element").fade({ duration: 0.25 }) : this.get("element").hide();
+    if (animated)
+    {
 
-    // Remove the View's element from the DOM
-    if (this.get("element").parentNode != null)
-      this.get("element").remove()
+      // Fade Out the View
+      this.get("element").fade({
+        duration: 0.25,
+        afterFinish: this._viewDidDisappear.bind(this, animated)
+      })
+
+      // Remove the View's element from the DOM
+      if (this.get("element").parentNode != null)
+        this.get("element").remove.delay.bind(this, 0.25);
+
+    }
+    else
+    {
+
+      // Hide the Element
+      this.get("element").hide();
+
+      // Remove the View's element from the DOM
+      if (this.get("element").parentNode != null)
+        this.get("element").remove();
+
+    }
+
 
     // Remove from superview's subviews
     this.get("superview.subviews").remove(this);
@@ -487,10 +514,8 @@ Aphid.UI.View = Class.create(
     // Remove reference to superview
     this.set("superview", false);
 
-    // "View Did Disappear"
-    // TODO if animated, this needs to be called when the animation has completed instead...
-    if (this.viewDidDisappear)
-      this.viewDidDisappear();
+    // Call "View Did Disappear" Callback
+    if (!animated) this._viewDidDisappear(animated);
   },
 
   /**
@@ -503,11 +528,10 @@ Aphid.UI.View = Class.create(
     if (Object.isUndefined(animated)) animated = false;
 
     // Remove existing views
-    // TODO Add viewWillDisappear/viewDidDisappear callbacks
-    this.subviews.invoke('removeFromSuperviewAnimated', animated);
+    this.get("subviews").invoke('removeFromSuperviewAnimated', animated);
 
     // Clear the Subviews
-    this.subviews = $A();
+    this.set("subviews", $A());
   },
 
   // View Loading ------------------------------------------------------------
@@ -852,6 +876,62 @@ Aphid.UI.View = Class.create(
   viewDidLoad: function()
   {
     // Abstract Method Definition
+  },
+
+  /*
+   * Aphid.UI.View#_viewWillAppear(animated) -> null
+   *
+   * Calls the viewWillAppear callback on the current view and all of the
+   * views subviews.
+   */
+  _viewWillAppear: function(animated)
+  {
+    $L.info("_viewWillAppear (animated: " + animated + ")", this);
+
+    if (this.viewWillAppear) this.viewWillAppear(animated);
+    this.get("subviews").invoke("_viewWillAppear", animated);
+  },
+
+  /*
+   * Aphid.UI.View#_viewDidAppear(animated) -> null
+   *
+   * Calls the viewDidAppear callback on the current view and all of the
+   * views subviews.
+   */
+  _viewDidAppear: function(animated)
+  {
+    $L.debug("_viewDidAppear (animated: " + animated + ")", this);
+
+    if (this.viewDidAppear) this.viewDidAppear(animated);
+    this.get("subviews").invoke("_viewDidAppear", animated);
+  },
+
+  /*
+   * Aphid.UI.View#_viewWillDisappear(animated) -> null
+   *
+   * Calls the viewWillDisappear callback on the current view and all of the
+   * views subviews.
+   */
+  _viewWillDisappear: function(animated)
+  {
+    $L.debug("_viewWillDisappear (animated: " + animated + ")", this);
+
+    if (this.viewWillDisappear) this.viewWillDisappear(animated);
+    this.get("subviews").invoke("_viewWillDisappear", animated);
+  },
+
+  /*
+   * Aphid.UI.View#_viewDidDisappear(animated) -> null
+   *
+   * Calls the viewDidDisappear callback on the current view and all of the
+   * views subviews.
+   */
+  _viewDidDisappear: function(animated)
+  {
+    $L.debug("_viewDidDisappear (animated: " + animated + ")", this);
+
+    if (this.viewDidDisappear) this.viewDidDisappear(animated);
+    this.get("subviews").invoke("_viewDidDisappear", animated);
   },
 
   // Delegate Methods --------------------------------------------------------
