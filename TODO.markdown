@@ -100,6 +100,9 @@
 
  * Change to using a focus model.
 
+ * Add an option for toggling multiple selection (and drag selection) support
+   on or off.
+
 ### Aphid.UI.SplitViewController
 
  * Formalize the support for specifying the "mode" of the split view (i.e.

@@ -74,9 +74,13 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   /**
    * Aphid.UI.MatrixView#select(element, event) -> Boolean
   **/
-  select: function(element, event)
+  selectItem: function(element, event)
   {
-    $L.info("select", this);
+    // Ensure that we can select the item...
+    if (!this._shouldSelectItem(element))
+      return false;
+
+    $L.info("selectItem", this);
 
     // Multiple Selection (Shift-Select)
     if (event && event.shiftKey)
@@ -94,7 +98,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       // was clicked on.
       if (firstSelectedElementIndex == -1)
       {
-        this.select(element);
+        this.selectItem(element);
         return;
       }
 
@@ -135,21 +139,19 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     // Single Selection (Single Click)
     else
     {
-      // TODO Should this be deselectAll?
+      // TODO Should this be clearSelection?
       this.get("element").select(".selected").invoke("removeClassName", "selected");
       this.selectedItems = $A(element);
       element.addClassName("selected");
     }
 
-    // If a custom select handler has been defined, call it
-    if (this.selectHandler != null)
-      this.selectHandler(element)
+    this._didSelectItem(element);
   },
 
   selectAll: function()
   {
     $L.info("selectAll", this);
-    this.deselectAll();
+    this.clearSelection();
     this.get("element").select("li").each(function(el) {
       el.addClassName('selected');
       this.selectedItems.push(el);
@@ -166,8 +168,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
     var element = this.get("element").down("li");
 
-    this.deselectAll();
-    this.select(element);
+    this.clearSelection();
+    this.selectItem(element);
 
     this.scrollIntoView(element, 'down');
 
@@ -182,8 +184,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
     var element = this.get("element").select("li").last();
 
-    this.deselectAll();
-    this.select(element);
+    this.clearSelection();
+    this.selectItem(element);
 
     this.scrollIntoView(element, 'down');
 
@@ -192,17 +194,17 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       this.selectHandler(element);
   },
 
-  deselectAll: function()
+  clearSelection: function()
   {
-    $L.info("deselectAll", this);
+    if (!this._shouldClearSelection())
+      return;
 
-    // TODO This should probably call deselectAll (or the private version)
+    $L.info("clearSelection", this);
+
     this.get("element").select('.selected').invoke("removeClassName", "selected");
     this.set("selectedItems", $A());
 
-    // If a custom deselect handler has been defined, call it
-    if (this.deselectHandler != null)
-      this.deselectHandler();
+    this._didClearSelection();
   },
 
   expandSelectionLeft: function(event)
@@ -291,22 +293,38 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   // Actions -----------------------------------------------------------------
 
-  open: function(element)
+  /**
+   * Aphid.UI.MatrixView#openItem(item) -> null
+   *
+   * - item ([[Aphid.UI.ListViewItem]]): the matrix view item to be opened
+   *
+   * Instructs the delegate or subclass that the specified item should be
+   * opened or otherwise acted upon. This functionality is implemented by the
+   * subclass or delegate and has no behavior by default.
+  **/
+  openItem: function(item)
   {
-    $L.info("open", this);
-    this.deselectAll();
-    element.addClassName('selected');
-    // If a custom open handler has been defined, call it
-    if (this.openHandler != null)
-      this.openHandler(element);
+    // Ensure that we can open the item...
+    if (!this._shouldOpenItem(item))
+      return;
+
+    $L.info("openItem", this);
+
+    this.clearSelection();
+    item.addClassName('selected');
+
+    this._didOpenItem(item);
   },
 
-  destroy: function(elements)
+  // TODO removeItems
+  removeItem: function(item)
   {
-    $L.info("destroy", this);
-    // If a custom open handler has been defined, call it
-    if (this.deleteHandler != null)
-      this.deleteHandler(elements);
+    if (!this._shouldRemoveItem(item))
+      return;
+
+    $L.info("removeItem", this);
+
+    this._didRemoveItem(item);
   },
 
   // Movement ----------------------------------------------------------------
@@ -321,7 +339,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     var previousElement = element ? element.previous() : false;
     if (!element || !previousElement) return this.selectFirst();
 
-    this.select(previousElement);
+    this.selectItem(previousElement);
     this.scrollIntoView(previousElement, 'up');
   },
 
@@ -337,7 +355,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     var nextElement = element.next();
     if (nextElement)
     {
-      this.select(nextElement);
+      this.selectItem(nextElement);
       this.scrollIntoView(nextElement, 'down');
     }
     else
@@ -363,7 +381,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       function(el) {
         if (Position.within(el, offset[0], y))
         {
-          this.select(el);
+          this.selectItem(el);
           this.scrollIntoView(el, 'up');
         }
       }.bind(this)
@@ -392,7 +410,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       function(el) {
         if (Position.within(el, offset[0], y))
         {
-          this.select(el);
+          this.selectItem(el);
           this.scrollIntoView(el, 'down');
           selected = true;
         }
@@ -542,14 +560,16 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (event.keyCode == Event.KEY_RETURN)
     {
       if (this.selectedItems.size() == 1)
-        this.open(this.selectedItems.first());
+        this.openItem(this.selectedItems.first());
     }
 
     // Delete/Backspace
     // TODO Only handle this event if the delegate or callback for deleting items is defined
     if (event.keyCode == Event.KEY_BACKSPACE || event.keyCode == Event.KEY_DELETE || event.keyCode == 63272)
     {
-      this.destroy(this.selectedItems);
+      this.selectedItems.each(function(item) {
+        this.removeItem(item);
+      }, this);
       event.stop();
     }
 
@@ -589,8 +609,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (element.tagName != 'LI') element = element.up('li');
     if (element)
     {
-      this.deselectAll();
-      this.open(element);
+      this.clearSelection();
+      this.openItem(element);
     }
     event.preventDefault();
   },
@@ -613,9 +633,9 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
     if (element.tagName != 'LI') element = element.up('li');
     if (element)
-      this.select(element, event);
+      this.selectItem(element, event);
     else
-      this.deselectAll();
+      this.clearSelection();
 
     this._isDragging = true;
     this._originX = event.pointerX();
@@ -730,6 +750,221 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   viewDidDisappear: function(animated)
   {
     $L.info("viewDidDisappear", this);
+  },
+
+  // Callbacks ---------------------------------------------------------------
+
+  /*
+   * Aphid.UI.MatrixView#_shouldSelectItem(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent item selection from
+   * occurring, such as the item already being selected. It also evaluates the
+   * `shouldSelectItem` callback and the `matrixViewShouldSelectItem` delegate
+   * method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the item should be
+   * selected.
+   */
+  _shouldSelectItem: function(item)
+  {
+    var shouldSelect = true;
+    if (this.shouldSelectItem)
+      shouldSelect = this.shouldSelectItem(item);
+    if (this.delegate && this.delegate.matrixViewShouldSelectItem)
+      shouldSelect = this.delegate.matrixViewShouldSelectItem(this, item);
+    return shouldSelect;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_didSelectItem(item) -> null
+   *
+   * Performs any internal actions after an item has been selected before
+   * calling the `didSelectItem` callback and the two delegate methods:
+   * `matrixViewSelectionDidChange` and `matrixViewDidSelectItem`.
+   */
+  _didSelectItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didSelectItem)
+      this.didSelectItem(item);
+
+    // Call the matrixViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewSelectionDidChange)
+      this.delegate.matrixViewSelectionDidChange(this);
+
+    // Call the matrixViewDidSelectItem method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewDidSelectItem)
+      this.delegate.matrixViewDidSelectItem(this, item);
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_shouldDeselectItem(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent item deselection from
+   * occurring, such as the item not being selected. It also evaluates the
+   * `shouldDeselectItem` callback and the `martrixViewShouldDeselectItem`
+   * delegate method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the item should be
+   * deselected.
+   */
+  _shouldDeselectItem: function(item)
+  {
+    var shouldDeselect = true;
+    if (this.shouldDeselectItem)
+      shouldDeselect = this.shouldDeselectItem(item);
+    if (this.delegate && this.delegate.matrixViewShouldDeselectItem)
+      shouldDeselect = this.delegate.matrixViewShouldDeselectItem(this, item);
+    return shouldDeselect;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_didDeselectItem(item) -> null
+   *
+   * Performs any internal actions after an item has been deselected before
+   * calling the `didDeselectItem` callback and the two delegate methods:
+   * `matrixViewSelectionDidChange` and `matrixViewDidDeselectItem`.
+   */
+  _didDeselectItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didDeselectItem)
+      this.didDeselectItem(item);
+
+    // Call the matrixViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewSelectionDidChange)
+      this.delegate.matrixViewSelectionDidChange(this);
+
+    // Call the matrixViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewDidDeselectItem)
+      this.delegate.matrixViewDidDeselectItem(this, item);
+  },
+
+  /*
+   * Aphid.UI.ListView#_shouldClearSelection(item) -> Boolean
+   *
+   * Checks for basic conditions that should prevent the selection from being
+   * cleared, such as when no items are currently selected. It also evaluates
+   * the `shouldClearSelection` callback and the `matrixViewShouldClearSelection`
+   * delegate method before returning *true* or *false*.
+   *
+   * Delegates have the final say in whether or not the list selection should
+   * be cleared.
+   */
+  _shouldClearSelection: function()
+  {
+    var shouldClearSelection = true;
+    if (this.shouldClearSelection)
+      shouldClearSelection = this.shouldClearSelection();
+    if (this.delegate && this.delegate.matrixViewShouldClearSelection)
+      shouldClearSelection = this.delegate.matrixViewShouldClearSelection(this);
+    return shouldClearSelection;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_didClearSelection(item) -> null
+   *
+   * Performs any internal actions after an item has been deselected before
+   * calling the `didClearSelection` callback and the two delegate methods:
+   * `matrixViewSelectionDidChange` and `matrixViewDidClearSelection`.
+   */
+  _didClearSelection: function()
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didDeselectItem)
+      this.didDeselectItem(item);
+
+    // Call the matrixViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewSelectionDidChange)
+      this.delegate.matrixViewSelectionDidChange(this);
+
+    // Call the matrixViewDidClearSelection method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.matrixViewDidClearSelection)
+      this.delegate.matrixViewDidClearSelection(this);
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_shouldOpenItem(item) -> Boolean
+   *
+   * Checks with the subclass and delegate to see if the item should be
+   * opened.
+   *
+   * Delegates have the final say in whether or not the item should be
+   * opened.
+   */
+  _shouldOpenItem: function(item)
+  {
+    var shouldOpen = true;
+    if (this.shouldOpenItem)
+      shouldOpen = this.shouldOpenItem(item);
+    if (this.delegate && this.delegate.matrixViewShouldOpenItem)
+      shouldOpen = this.delegate.matrixViewShouldOpenItem(this, item);
+    return shouldOpen;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_didOpenItem(item) -> null
+   *
+   * Performs any internal actions after an item has been opened before
+   * calling the `didOpenItem` callback and the `matrixViewViewDidOpenItem`
+   * delegate method.
+   */
+  _didOpenItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didOpenItem)
+      this.didOpenItem(item);
+
+    // Call the matrixViewDidOpenItem method on the delegate, if the delegate
+    // has defined it.
+    if (this.delegate && this.delegate.matrixViewDidOpenItem)
+      this.delegate.matrixViewDidOpenItem(this, item);
+  },
+
+
+  /*
+   * Aphid.UI.MatrixView#_shouldRemoveItem(item) -> Boolean
+   *
+   * Checks with the subclass and delegate to see if the item should be
+   * removed.
+   *
+   * Delegates have the final say in whether or not the item should be
+   * removed.
+   */
+  _shouldRemoveItem: function(item)
+  {
+    var shouldRemove = true;
+    if (this.shouldRemoveItem)
+      shouldRemove = this.shouldRemoveItem(item);
+    if (this.delegate && this.delegate.matrixViewShouldRemoveItem)
+      shouldRemove = this.delegate.matrixViewShouldRemoveItem(this, item);
+    return shouldRemove;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_didRemoveItem(item) -> null
+   *
+   * Performs any internal actions after an item has been removed before
+   * calling the `didRemoveItem` callback and the
+   * `matrixViewViewDidRemoveItem` delegate method.
+   */
+  _didRemoveItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didRemoveItem)
+      this.didRemoveItem(item);
+
+    // Call the matrixViewDidRemoveItem method on the delegate, if the delegate
+    // has defined it.
+    if (this.delegate && this.delegate.matrixViewDidRemoveItem)
+      this.delegate.matrixViewDidRemoveItem(this, item);
   }
+
 
 });
