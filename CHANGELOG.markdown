@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Object] Implemented Aphid.Support.Object for all Aphid
+   subclasses to extend that contains support for common features, such as
+   properties and delegates.
+
  * [Aphid.UI.SplitViewController] Implemented the allowsResize property for
    allowing or disallowing user resizing of the split view.
 

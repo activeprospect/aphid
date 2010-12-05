@@ -124,16 +124,7 @@
  *
 **/
 
-Aphid.UI.View = Class.create(
-{
-
-  /**
-   * Aphid.UI.View#delegate -> Object
-   *
-   * An object that will receive calls for delegate methods of this class.
-  **/
-  // TODO Move this to Aphid.Core.Object
-  delegate: false,
+Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
   /**
    * Aphid.UI.View#displayName -> String
@@ -950,10 +941,6 @@ Aphid.UI.View = Class.create(
   }
 
 });
-
-// Mixins --------------------------------------------------------------------
-
-Object.extend(Aphid.UI.View.prototype, Aphid.Support.Properties);
 
 // Method Name Mappings for Debugging ----------------------------------------
 

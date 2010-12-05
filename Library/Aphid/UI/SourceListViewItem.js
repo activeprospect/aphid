@@ -199,10 +199,6 @@ Aphid.UI.SourceListViewItem = Class.create(Aphid.UI.ListViewItem, {
 
 });
 
-// Mixins --------------------------------------------------------------------
-
-Object.extend(Aphid.UI.SourceListViewItem.prototype, Aphid.Support.Properties);
-
 // Method Name Mappings for Debugging ----------------------------------------
 
 // Aphid.UI.SourceListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";

@@ -64,9 +64,6 @@
    directly on a class (i.e. "constrained: true" in a SplitViewController
    subclass).
 
- * Implement Aphid.Core.Object that is automatically extended with
-   Aphid.Support.Properties.
-
 ### Aphid.UI.ListView
 
  * When clearing the selection, a callback should be called for subclasses so

@@ -153,16 +153,9 @@
  *
 **/
 
-Aphid.Model = Class.create({
+Aphid.Model = Class.create(Aphid.Support.Object, {
 
   displayName: "Aphid.Model",
-
-  /**
-   * Aphid.Model#delegate -> Object
-   *
-   * An object that will receive calls for delegate methods of this class.
-  **/
-  delegate: false,
 
   /**
    * Aphid.Model#url -> Object
@@ -831,9 +824,5 @@ Aphid.Model = Class.create({
   }
 
 });
-
-// Mixins --------------------------------------------------------------------
-
-Object.extend(Aphid.Model.prototype, Aphid.Support.Properties);
 
 //= require "Model/Error"

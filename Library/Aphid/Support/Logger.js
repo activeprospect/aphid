@@ -11,7 +11,8 @@
  *     // => "[AssetLoader] Loading assets from server" to the console
  *
 **/
-Aphid.Support.Logger = Class.create({
+
+Aphid.Support.Logger = Class.create(Aphid.Support.Object, {
 
   displayName: "Aphid.Support.Logger",
 
@@ -143,9 +144,6 @@ Aphid.Support.Logger = Class.create({
 
 });
 
-// Mixins --------------------------------------------------------------------
-
-Object.extend(Aphid.Support.Logger.prototype, Aphid.Support.Properties);
 
 // Constants -----------------------------------------------------------------
 

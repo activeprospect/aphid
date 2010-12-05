@@ -112,7 +112,6 @@ Aphid.Support.Properties = {
     return error;
   },
 
-
   /*
    * Aphid.Support.Properties#_readOnlyPropertyError(property) -> Error
    *
@@ -127,6 +126,5 @@ Aphid.Support.Properties = {
     error.name = "ReadOnlyPropertyError";
     return error;
   }
-
 
 };

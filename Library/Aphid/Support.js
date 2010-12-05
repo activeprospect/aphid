@@ -8,6 +8,7 @@
 Aphid.Support = {};
 
 //= require <Aphid/Support/Properties>
+//= require <Aphid/Support/Object>
 //= require <Aphid/Support/Compatibility>
 //= require <Aphid/Support/Extensions>
 //= require <Aphid/Support/Cookie>
