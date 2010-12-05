@@ -36,18 +36,33 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   // Selected Items
   selectedItems: false,
 
-  // -------------------------------------------------------------------------
+  // Initialization ----------------------------------------------------------
 
   initialize: function($super, options)
   {
     $super(options);
-
     this.selectedItems = $A();
   },
 
+  // View Callbacks ----------------------------------------------------------
+
   viewDidLoad: function($super)
   {
+    $L.debug("viewDidLoad", this);
     this.get("element").addClassName("MatrixView");
+    $super();
+  },
+
+  viewDidAppear: function(animated)
+  {
+    $L.debug("viewDidAppear", this);
+    this._startObserving();
+  },
+
+  viewWillDisappear: function(animated)
+  {
+    $L.debug("viewWillDisappear", this);
+    this._stopObserving();
   },
 
   // -------------------------------------------------------------------------
@@ -726,30 +741,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       }, this);
 
     }
-  },
-
-  // View Callbacks ----------------------------------------------------------
-
-  viewWillAppear: function(animated)
-  {
-    $L.info("viewWillAppear", this);
-  },
-
-  viewDidAppear: function(animated)
-  {
-    this._startObserving();
-    $L.info("viewDidAppear", this);
-  },
-
-  viewWillDisappear: function(animated)
-  {
-    $L.info("viewWillDisappear", this);
-    this._stopObserving();
-  },
-
-  viewDidDisappear: function(animated)
-  {
-    $L.info("viewDidDisappear", this);
   },
 
   // Callbacks ---------------------------------------------------------------
