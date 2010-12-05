@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Significant refactoring of the Split View
+   Controller which brought almost all of the code into
+   Aphid.UI.SplitViewController which greatly simplifies our integration with
+   Aphid and our subclass of Draggable from Scriptaculous.
+
  * [Vendor/Prototype] Updated to Prototype 1.7.
 
  * [Aphid.UI.SplitViewController] Fixed persistence support for restoring the

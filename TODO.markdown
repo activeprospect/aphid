@@ -25,6 +25,11 @@
    support vendorizing Aphid as a git submodule. This should initialize the
    new application with git and add the submodule automatically.
 
+ * Move from unittest.js to Evidence.js for testing Aphid (see
+   https://github.com/tobie/Evidence/blob/master/dist/evidence.js and
+   http://www.slideshare.net/tobielangel/unittesting-javascript-with-evidence
+   for more information).
+
 ## Library
 
 ### General
@@ -105,20 +110,12 @@
 
 ### Aphid.UI.SplitViewController
 
- * Formalize the support for specifying the "mode" of the split view (i.e.
-   horizontal or vertical) and unify those definitions (they are reversed in
-   some places).
-
  * Add support for setting the split view style (standard, padded or
    borderless) and document how to add new styles.
 
  * Give SplitViewController its own 2 views: firstView, secondView. Instead of
    assigning these views, we should say splitView.firstView.addSubview or
    splitView.firstView.setView.
-
- * Clean up and document `Aphid.UI.SplitViewController` and move more of the
-   logic from the `Draggable` subclass (`Aphid.UI.SplitViewController.Draggable`)
-   into delegates or callbacks on `Aphid.UI.SplitViewController`.
 
  * Allow min-width/max-width to be enforced on the second view. When resizing
    and the max-width or max-height of the first view has not been met but the

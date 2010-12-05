@@ -33,9 +33,9 @@
   }
 }
 
-/* Horizontal Split View Defaults ----------------------------------------- */
+/* Vertical Orientation --------------------------------------------------- */
 
-.SplitViewController.horizontal
+.SplitViewController.vertical
 {
 
   .firstView
@@ -73,9 +73,9 @@
 
 }
 
-/* Vertical Split View Defaults ------------------------------------------- */
+/* Horizontal Orientation ------------------------------------------------- */
 
-.SplitViewController.vertical
+.SplitViewController.horizontal
 {
 
   .firstView
@@ -113,7 +113,7 @@
 
 }
 
-/* "Padded" Style --------------------------------------------------------- */
+/* "Padded" Mode ---------------------------------------------------------- */
 
 @padded-width: 2em;
 
@@ -130,7 +130,7 @@
   }
 }
 
-.SplitViewController.padded.vertical
+.SplitViewController.padded.horizontal
 {
   .secondView
   {
@@ -145,7 +145,7 @@
   }
 }
 
-.SplitViewController.padded.horizontal
+.SplitViewController.padded.vertical
 {
   .secondView
   {
@@ -160,7 +160,7 @@
   }
 }
 
-/* "Borderless" Style ----------------------------------------------------- */
+/* "Borderless" Mode ------------------------------------------------------ */
 
 @borderless-drag-handle-width: 0.5;
 @borderless-drag-handle-height: 0.5;
@@ -174,7 +174,7 @@
   }    
 }
 
-.SplitViewController.borderless.vertical
+.SplitViewController.borderless.horizontal
 {
   .secondView
   {
@@ -188,7 +188,7 @@
   }
 }
 
-.SplitViewController.borderless.horizontal
+.SplitViewController.borderless.vertical
 {
   .secondView
   {
