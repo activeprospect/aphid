@@ -1,8 +1,8 @@
 
 /* Split Views (SplitViewController) -------------------------------------- */
 
-@first-view-height: 16em;
-@first-view-width: 16em;
+@first-view-height: 25em;
+@first-view-width: 25em;
 @drag-handle-height: 1em;
 @drag-handle-width: 1em;
 
@@ -46,7 +46,7 @@
     bottom: 0;
     width: @first-view-width;
     min-width: @first-view-width / 2;
-    max-width: @first-view-width * 3;
+    max-width: @first-view-width * 2;
   }
 
   .secondView
@@ -62,7 +62,6 @@
   {
     left: @first-view-width;
     width: @drag-handle-width - 0.2em;
-    cursor: col-resize;
     top: 0;
     bottom: 0;
     background-image: -webkit-gradient(linear, left top, right top, from(#f3f4f5), to(#d3d4d5));
@@ -71,6 +70,14 @@
     border-right: 0.1em solid #bbb;
   }
 
+}
+
+.SplitViewController.vertical.resizable
+{
+  .dragHandle
+  {
+    cursor: col-resize;
+  }
 }
 
 /* Horizontal Orientation ------------------------------------------------- */
@@ -102,7 +109,6 @@
   {
     top: @first-view-height;
     height: @drag-handle-height - 0.2em;
-    cursor: row-resize;
     left: 0;
     right: 0;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#d3d4d5));
@@ -111,6 +117,14 @@
     border-bottom: 0.1em solid #bbb;
   }
 
+}
+
+.SplitViewController.horizontal.resizable
+{
+  .dragHandle
+  {
+  cursor: row-resize;
+  }
 }
 
 /* "Padded" Mode ---------------------------------------------------------- */

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Implemented the allowsResize property for
+   allowing or disallowing user resizing of the split view.
+
  * [Aphid.UI.SplitViewController] Significant refactoring of the Split View
    Controller which brought almost all of the code into
    Aphid.UI.SplitViewController which greatly simplifies our integration with

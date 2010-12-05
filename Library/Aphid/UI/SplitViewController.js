@@ -60,14 +60,25 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   mode: false,
 
   /**
-   * Aphid.UI.SplitViewController#isResizable -> Boolean
+   * Aphid.UI.SplitViewController#allowsResize -> Boolean
+   *
+   * If true, the user is allowed to resize the split view using their mouse
+   * to drag the dragHandle.
+   *
+   * #### Example
+   *
+   *     splitViewController.set("allowsResizing", false);
+   *
   **/
-  isResizable: true,
+  allowsResize: true,
 
   /**
    * Aphid.UI.SplitViewController#draggableInstance -> Draggable | false
    *
-   * 
+   * An instance of our custom subclass of Scriptaculous' Draggable for this
+   * instance of [[Aphid.UI.SplitViewController]].
+   *
+   * **Note:** This property is read-only.
   **/
   draggableInstance: false,
 
@@ -91,13 +102,10 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   **/
   maxPosition: false,
 
-  /**
-   * Aphid.UI.SplitViewController#dragHandleClickOffset -> Integer | false
-  **/
-  dragHandleClickOffset: false,
-
-  // Split View Configuration
-  constraint: false, // "horizontal, vertical"
+  /*
+   * Aphid.UI.SplitViewController#_dragHandleClickOffset -> Integer | false
+   */
+  _dragHandleClickOffset: false,
 
   // Initialization ----------------------------------------------------------
 
@@ -105,11 +113,6 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   {
     $super(options);
     if (!this.get("orientation")) this.set("orientation", "vertical");
-  },
-
-  _initializeDraggableInstance: function()
-  {
-    this.get("draggableInstance");
   },
 
   // View Callbacks ----------------------------------------------------------
@@ -124,17 +127,19 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     if (this.get("mode") || !this.get("mode") == "default")
       this.get("element").addClassName(this.get("mode"));
 
-    this._restoreState();
-
     if (Prototype.Browser.IE)
       return; // Resizing is not supported by Internet Explorer, yet...
+
+    if (this.get("allowsResize"))
+    {
+      this.get("element").addClassName("resizable");
+      this.get("draggableInstance"); // Lazily Initialize
+      this._restoreState();
+    }
   },
 
   viewDidAppear: function(animated)
   {
-    if (!this.asynchronousLoadingEnabled)
-      this._initializeDraggableInstance();
-
     // Vertical Layout
     if (this.get("orientation") == "vertical")
     {
@@ -166,44 +171,39 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     $L.debug("draggableDidUpdatePosition", this);
 
     var offset      = this.get("firstView.element").cumulativeOffset(),
-        clickOffset = this.get("dragHandleClickOffset"),
+        clickOffset = this._dragHandleClickOffset,
         minPosition = this.get("minPosition"),
         maxPosition = this.get("maxPosition");
 
+    // Vertical Mode
     if (this.get("orientation") == "vertical")
     {
       if (event.clientX - clickOffset <= minPosition + offset[0])
       {
         this.resizeHorizontal(minPosition + offset[0]);
-        // event.stop(event);
-        this._resetDragHandlePosition();
         return;
       }
       else if (event.clientX - clickOffset >= maxPosition + offset[0])
       {
         this.resizeHorizontal(maxPosition + offset[0]);
-        // event.stop(event);
-        this._resetDragHandlePosition();
         return;
       }
 
-      var width = event.clientX - this.dragHandleClickOffset;
+      var width = event.clientX - clickOffset;
       this.resizeHorizontal(width);
     }
+
+    // Horizontal Mode
     else
     {
       if (event.clientY - clickOffset <= minPosition + offset[1])
       {
         this.resizeVertical(minPosition + offset[1]);
-        // event.stop();
-        this._resetDragHandlePosition();
         return;
       }
       else if (event.clientY - clickOffset >= maxPosition + offset[1])
       {
         this.resizeVertical(maxPosition + offset[1]);
-        // event.stop();
-        this._resetDragHandlePosition();
         return;
       }
 
@@ -329,18 +329,18 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     if (this.get("orientation") == 'horizontal')
     {
       var offset = (firstView.cumulativeOffset()[1] + firstView.getHeight() + dragHandle.getHeight()) - event.clientY;
-      this.set("dragHandleClickOffset", dragHandle.getHeight() - offset);
+      this._dragHandleClickOffset = dragHandle.getHeight() - offset;
     }
     else
     {
       var offset = (firstView.cumulativeOffset()[0] + firstView.getWidth() + dragHandle.getWidth()) - event.clientX;
-      this.set("dragHandleClickOffset", dragHandle.getWidth() - offset);
+      this._dragHandleClickOffset = dragHandle.getWidth() - offset;
     }
   },
 
   _handleMouseUpEvent: function(event)
   {
-    this.set("dragHandleClickOffset", false);
+    this._dragHandleClickOffset = false;
     this._resetDragHandlePosition();
   },
 
@@ -355,7 +355,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   validatePosition: function(position)
   {
     $L.debug("validatePosition (position: " + position + ")", this);
-    var minPosition = this.get("minPosition") + this.get("dragHandleClickOffset"),
+    var minPosition = this.get("minPosition") + this._dragHandleClickOffset;
         maxPosition = this.get("maxPosition");
     return (position > minPosition && position < maxPosition);
   },
