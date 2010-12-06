@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Prevented the same view from being set as the subview of a
+   view if the view is already a subview of that view.
+
  * [Aphid.UI.SourceListView] Implemented a source list view item that acts as
    a divider (Aphid.UI.DividerSourceListViewItem).
 

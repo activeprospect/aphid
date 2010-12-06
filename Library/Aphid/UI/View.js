@@ -329,6 +329,20 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   {
     if (Object.isUndefined(animated)) animated = false;
 
+    // Do not set the view if the view is already the only subview
+    if (this.get("subviews").length == 1 && this.get("subviews").include(view))
+    {
+      $L.warn("Not setting view as it is already a subview!", this);
+      return;
+    }
+
+    // If there are other subviews, we simply want to make the specified view
+    // the only subview, so disable animation and allow the operation to take
+    // place.
+    // TODO If the view is already in the subviews, don't remove it, just remove all others...
+    else if (this.get("subviews").length > 1 && this.get("subviews").include(view))
+      animated = false;
+
     // Clear the Subviews
     this.clearSubviews(animated);
 
@@ -381,7 +395,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   /*
    * Aphid.UI.View#_addSubview(view[, animated = false]) -> null
    *
-   * - view (View): the view that should be set
+   * - view ([[Aphid.UI.View]]): the view that should be added
    * - animated (Boolean): true if the view should be presented with animation
    *
    * Adds the specified *view* as a subview of the view instance and optionally
@@ -390,6 +404,15 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   _addSubview: function(view, animated)
   {
     if (Object.isUndefined(animated)) animated = false;
+
+    // Do not set the view if the view is already the only subview
+    // TODO Need to track down a bug with ListViews that add items twice
+    // if (this.get("subviews").include(view))
+    // {
+    //   window.console.log(this.get("subviews"))
+    //   $L.warn('"' + (view.displayName || "Unknown") + '" is already a subview of "' + (this.displayName || "unknown") + '"', this);
+    //   return;
+    // }
 
     // If the view has still not been loaded, delay this call again...
     if (!view.isLoaded)

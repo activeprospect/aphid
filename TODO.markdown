@@ -209,6 +209,9 @@
 
  * Replace _setupView with setElement.
 
+ * Add tests for adding, setting and removing subviews, including tests to
+   cover attempts to add or set a subview that is already a subview.
+
 ### Aphid.UI.ViewController
 
  * Fix modal view presentation with the new overlay support in Aphid.UI.Window.
