@@ -20,11 +20,8 @@
  *
  * #### Notifications
  *
- * - `SplitViewDidResizeNotification` — Posted after a resize operation on the
- *   split view has finished resizing.
- *
- * - `SplitViewWillResizeNotification` — Posted when a resize operation on the
- *   split view has started, but is not yet completed.
+ * - `SplitViewControllerResizedNotification` — Posted after a resize
+ *   operation on the split view has finished.
  *
 **/
 
@@ -243,38 +240,38 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   resizeHorizontal: function(x)
   {
-    if (!this._splitViewShouldResize())
+    if (!this._shouldResize())
       return;
 
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0],
         borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
         dragHandleWidth  = this.get("dragHandle").getWidth();
 
-    this._splitViewWillResize();
+    this._willResize();
 
     this.get("firstView.element").setStyle({ width: x - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ left: (x - cumulativeOffset + borderWidth + dragHandleWidth) + 'px' });
     this.get("dragHandle").setStyle({ left: (x - cumulativeOffset + borderWidth) + 'px' });
 
-    this._splitViewDidResize();
+    this._didResize();
   },
 
   resizeVertical: function(y)
   {
-    if (!this._splitViewShouldResize())
+    if (!this._shouldResize())
       return;
 
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[1],
         borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
         dragHandleHeight = this.get("dragHandle").getHeight();
 
-    this._splitViewWillResize();
+    this._willResize();
 
     this.get("firstView.element").setStyle({ height: y - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ top: (y - cumulativeOffset + borderHeight + dragHandleHeight) + 'px' });
     this.get("dragHandle").setStyle({ top: (y - cumulativeOffset + borderHeight) + 'px' });
 
-    this._splitViewDidResize();
+    this._didResize();
   },
 
   // State Management --------------------------------------------------------
@@ -298,6 +295,8 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
       this.resizeHorizontal(paneSize + offset[0]);
     else
       this.resizeVertical(paneSize + offset[1]);
+
+    this._didResize();
   },
 
   // Custom Accessors --------------------------------------------------------
@@ -397,30 +396,34 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   // Callbacks ---------------------------------------------------------------
 
-  _splitViewShouldResize: function()
+  _shouldResize: function()
   {
+    $L.debug("_shouldResize", this);
     var shouldResize = true;
-    if (this.splitViewShouldResize)
-      shouldResize = this.splitViewShouldResize(this);
+    if (this.shouldResize)
+      shouldResize = this.shouldResize(this);
     if (this.delegate && this.delegate.splitViewShouldResize)
       shouldResize = this.delegate.splitViewShouldResize(this);
     return shouldResize;
   },
 
-  _splitViewWillResize: function()
+  _willResize: function()
   {
-    if (this.splitViewWillResize)
-      this.splitViewWillResize(this);
+    $L.debug("_willResize", this);
+    if (this.willResize)
+      this.willResize(this);
     if (this.delegate && this.delegate.splitViewWillResize)
       this.delegate.splitViewWillResize(this);
   },
 
-  _splitViewDidResize: function(position)
+  _didResize: function()
   {
-    if (this.splitViewDidResize)
-      this.splitViewDidResize(this, position);
+    $L.debug("_didResize", this);
+    if (this.didResize)
+      this.didResize(this);
     if (this.delegate && this.delegate.splitViewDidResize)
-      this.delegate.splitViewDidResize(this, position);
+      this.delegate.splitViewDidResize(this);
+    $AppDelegate.notificationCenter.postNotification("SplitViewControllerResizedNotification");
   },
 
   // Draggable Subclass ------------------------------------------------------

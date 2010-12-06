@@ -133,6 +133,13 @@
  * Fix the problem where resizing a split view in borderless mode will add the
    width of the dragHandle to the secondView.
 
+ * Investigate the possibility of subclassing `Aphid.UI.ListView` for a
+   `Aphid.UI.TabView` subclass. A tab view is basically a list that requires
+   selection support, which is something that `Aphid.UI.ListView` already does,
+   therefore, the two classes are already very similar. Another option would
+   be to extract the list selection functionality into a mixin that can be
+   included in both classes.
+
 ### Aphid.UI.TabViewController
 
  * Add support for switching between content sets. The current implementation

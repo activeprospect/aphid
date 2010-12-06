@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Added a notification that is posted when
+   a split view has been resized (SplitViewControllerResizedNotification).
+
  * [Aphid.UI.SplitViewController] Added callback and delegate calls to the
    split view controller.
 
