@@ -8,6 +8,7 @@
 Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
 
   displayName: "Aphid.UI.ListViewItem",
+  tagName: "li",
 
   /**
    * Aphid.UI.ListViewItem#isSelected -> Boolean
@@ -44,17 +45,12 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     $super(options);
-    if (!this.get("element"))
-    {
-      $L.debug("Initializing default element...", this);
-      this.set("element", new Element('li').addClassName("ListViewItem"));
-      this.set("isLoaded", true);
-    }
   },
 
   viewDidLoad: function($super)
   {
     this.get("element").addClassName("ListViewItem");
+    $super();
   },
 
   // -------------------------------------------------------------------------

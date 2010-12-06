@@ -83,13 +83,6 @@ Aphid.UI.SourceListViewItem = Class.create(Aphid.UI.ListViewItem, {
 
   // -------------------------------------------------------------------------
 
-  getElement: function()
-  {
-    if (!this.element)
-      this.element = new Element("li");
-    return this.element;
-  },
-
   // TODO This should probably be handled in Aphid.UI.View so that it can wire up the HTML
   setElement: function(element)
   {
