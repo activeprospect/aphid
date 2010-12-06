@@ -88,6 +88,8 @@
    with Prototype 1.7 and issues with the dragged item not respecting the
    scroll offset when being scrolled.
 
+ * Add support for persisting the current selection.
+
 ### Aphid.UI.LoadingIndicator
 
  * Convert to a subclass of Aphid.UI.View.
@@ -214,6 +216,11 @@
 
  * Automatically add CSS class names for each view in the stack after the view
    has loaded based on the displayName property.
+
+ * Re-engineer _connectToOutlets so that it properly constructs the view stack.
+   Currently, the superview is always assigned to the view that owns the
+   template (where the outlet is connected) where that may not always be the
+   correct view hierarchy.
 
 ### Aphid.UI.ViewController
 
