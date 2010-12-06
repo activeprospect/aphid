@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added a tagName property (defaults to "section") that is
+   used to create an element for the View when a template or element is not
+   provided during initialization.
+
  * [Aphid.UI.View] Prevented the same view from being set as the subview of a
    view if the view is already a subview of that view.
 

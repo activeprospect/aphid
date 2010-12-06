@@ -123,8 +123,19 @@
           assertInstanceOf(Aphid.UI.View, view, "view should be an instance of Aphid.UI.View");
           assertInstanceOf(Array, view.subviews, "subviews should be an instance of Array");
           assertInstanceOf(Element, view.element, "element should be an instance of Element");
+          assertEqual("section", view.tagName, "tagName should be equal to &quot;section&quot;");
           assert(view.isLoaded, "isLoaded should be false");
           assert(!view.isLoading, "isLoading should be false");
+        }},
+
+        /*
+         * Ensures that an instance of Aphid.UI.View with an empty element
+         * can be initialized with a custom tag name.
+        **/
+        testShouldInitializeEmptyViewUsingTagName: function() { with(this) {
+          var view = new Aphid.UI.View({ tagName: "ul" });
+          assertInstanceOf(Element, view.element, "element should be an instance of Element");
+          assertEqual("ul", view.tagName, "tagName should be equal to &quot;ul&quot;");
         }},
 
         /*

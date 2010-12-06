@@ -212,6 +212,9 @@
  * Add tests for adding, setting and removing subviews, including tests to
    cover attempts to add or set a subview that is already a subview.
 
+ * Automatically add CSS class names for each view in the stack after the view
+   has loaded based on the displayName property.
+
 ### Aphid.UI.ViewController
 
  * Fix modal view presentation with the new overlay support in Aphid.UI.Window.

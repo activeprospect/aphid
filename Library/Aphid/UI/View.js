@@ -136,6 +136,13 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   displayName: "Aphid.UI.View",
 
   /**
+   * Aphid.UI.View#tagName -> String
+   *
+   * The default tag name to use for empty views.
+  **/
+  tagName: "section",
+
+  /**
    * Aphid.UI.View#template -> String
    *
    * The base filename of the view template that should be loaded for this
@@ -282,7 +289,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   _initializeEmptyView: function()
   {
     $L.debug("Initializing Empty View", this);
-    this.set("element", new Element("div"));
+    this.set("element", new Element(this.get("tagName")));
     this._setupView();
   },
 
@@ -601,14 +608,14 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
       // The old way... this.element = this.outlet.update(loadedTemplate);
     }
 
-    // // Otherwise, set the template directly on the object and let its delegate
-    // // deal with it.
+    // Otherwise, set the template directly on the object and let its delegate
+    // deal with it.
     else
     {
       if (Object.isElement(loadedTemplate))
         this.set("element", loadedTemplate);
       else
-        this.set("element", new Element("section", { className: "view" })).update(transport.responseText);
+        this.set("element", new Element(this.get("tagName")).update(transport.responseText));
     }
 
     // Process the template by connecting outlets and actions and calling any
