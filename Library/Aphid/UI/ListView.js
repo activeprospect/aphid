@@ -775,6 +775,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.didSelectItem)
       this.didSelectItem(item);
 
+    // Call the listViewDidSelectItem method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewDidSelectItem)
+      this.delegate.listViewDidSelectItem(this, item);
+
     // Call the listViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
     if (this.delegate && this.delegate.listViewSelectionDidChange)
