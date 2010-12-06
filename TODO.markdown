@@ -130,7 +130,8 @@
 
  * Add resizing support to Internet Explorer 7 thru 9.
 
- * Implement an allowsResize option to enable or disable resizing.
+ * Fix the problem where resizing a split view in borderless mode will add the
+   width of the dragHandle to the secondView.
 
 ### Aphid.UI.TabViewController
 
