@@ -2,7 +2,9 @@
 .SourceListView
 {
 
-  li
+  /* Standard Source List View Item --------------------------------------- */
+
+  li.SourceListViewItem
   {
     position: relative;
 
@@ -18,7 +20,7 @@
 
   }
 
-  li.icon
+  li.SourceListViewItem.icon
   {
     .iconView
     {
@@ -38,12 +40,12 @@
     }
   }
 
-  li[data-badge]
+  li.SourceListViewItem[data-badge]
   {
     
   }
 
-  li[data-badge]:after
+  li.SourceListViewItem[data-badge]:after
   {
     @badge-font-size: 0.85em;
 
@@ -68,5 +70,14 @@
     text-shadow: none;
     -webkit-box-shadow: inset 0px 1px 0px rgba(0, 0, 0, 0.25), inset 0px -1px 0px rgba(255, 255, 255, 0.5);
   }
-  
+
+  /* Divider Source List View Item ---------------------------------------- */
+
+  li.DividerSourceListViewItem
+  {
+    height: 0.1em !important;
+    background-color: #b4b4b4 !important;
+    -webkit-box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.8);
+  }
+
 }

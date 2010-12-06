@@ -125,6 +125,8 @@
  *
 **/
 
+//= require <Aphid/UI/MatrixViewItem>
+
 Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   displayName: "Aphid.UI.MatrixView",
@@ -138,20 +140,51 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   _selectionOverlayElement: false,
 
   _isObserving: false,
+
   _isDragging: false,
 
   _originX: false,
   _originY: false,
 
-  // Selected Items
+  /**
+   * Aphid.UI.MatrixView#items -> Array
+  **/
+  items: false,
+
+  /**
+   * Aphid.UI.MatrixView#selectedItems -> Array
+  **/
   selectedItems: false,
+
+  /**
+   * Aphid.UI.MatrixView#selectedItem -> Array
+  **/
+  selectedItem: false,
 
   // Initialization ----------------------------------------------------------
 
   initialize: function($super, options)
   {
     $super(options);
+    this.items = $A();
     this.selectedItems = $A();
+  },
+
+  _initializeStaticItems: function()
+  {
+    var items = this.get("element").select('>li').collect(this._initializeStaticItem, this);
+    this.set("items", items);
+  },
+
+  _initializeStaticItem: function(element)
+  {
+    var viewClass = element.getData("view-class");
+    if (!viewClass) viewClass = "Aphid.UI.MatrixViewItem";
+
+    $L.info("Initializing Item as " + viewClass, this);
+
+    var viewClassImplementation = eval(viewClass);
+    return new viewClassImplementation({ element: element });
   },
 
   // View Callbacks ----------------------------------------------------------
@@ -160,6 +193,10 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.debug("viewDidLoad", this);
     this.get("element").addClassName("MatrixView");
+    this._initializeStaticItems();
+    window.console.log("----")
+    window.console.log(this.get("items"))
+    window.console.log("----")
     $super();
   },
 
@@ -212,8 +249,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     {
       // Find first selected item
       var firstSelectedElement      = this.get("element").down("li.selected");
-      var firstSelectedElementIndex = this.items().indexOf(firstSelectedElement);
-      var selectedElementIndex      = this.items().indexOf(element);
+      var firstSelectedElementIndex = this.get("items").indexOf(firstSelectedElement);
+      var selectedElementIndex      = this.get("items").indexOf(element);
 
       // If the first selected element is the element that was clicked on
       // then there's nothing for us to do.
@@ -421,7 +458,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   /**
    * Aphid.UI.MatrixView#openItem(item) -> null
    *
-   * - item ([[Aphid.UI.ListViewItem]]): the matrix view item to be opened
+   * - item ([[Aphid.UI.MatrixViewItem]]): the matrix view item to be opened
    *
    * Instructs the delegate or subclass that the specified item should be
    * opened or otherwise acted upon. This functionality is implemented by the
@@ -435,6 +472,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
     $L.info("openItem", this);
 
+    this._willOpenItem(item);
+
     this.clearSelection();
     item.addClassName('selected');
 
@@ -446,6 +485,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     if (!this._shouldRemoveItem(item))
       return;
+
+    this._willRemoveItem(item);
 
     $L.info("removeItem", this);
 
@@ -543,11 +584,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     )
 
     if (!selected) this.selectLast();
-  },
-
-  items: function()
-  {
-    return this.get("element").select("li");
   },
 
   scrollIntoView: function(element, direction)

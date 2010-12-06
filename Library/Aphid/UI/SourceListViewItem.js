@@ -75,20 +75,18 @@ Aphid.UI.SourceListViewItem = Class.create(Aphid.UI.ListViewItem, {
     $super(options);
   },
 
-  // viewDidLoad: function($super)
-  // {
-  //   $super();
-  // },
+  viewDidLoad: function($super)
+  {
+    this.element.addClassName("SourceListViewItem");
+    $super();
+  },
 
   // -------------------------------------------------------------------------
 
   getElement: function()
   {
     if (!this.element)
-    {
       this.element = new Element("li");
-      this.element.addClassName("SourceListViewItem");
-    }
     return this.element;
   },
 

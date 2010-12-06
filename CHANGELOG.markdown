@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SourceListView] Implemented a source list view item that acts as
+   a divider (Aphid.UI.DividerSourceListViewItem).
+
  * [Aphid.UI.SplitViewController] Added a notification that is posted when
    a split view has been resized (SplitViewControllerResizedNotification).
 

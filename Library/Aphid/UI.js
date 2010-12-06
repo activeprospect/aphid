@@ -24,8 +24,19 @@ Aphid.UI = {};
 
 //= require "UI/LoadingIndicator"
 //= require "UI/AlertView"
+
+// List View -----------------------------------------------------------------
+
 //= require "UI/ListView"
 //= require "UI/ListViewItem"
+
+// Source List View ----------------------------------------------------------
+
 //= require "UI/SourceListView"
 //= require "UI/SourceListViewItem"
+//= require "UI/DividerSourceListViewItem"
+
+// Matrix View ---------------------------------------------------------------
+
 //= require "UI/MatrixView"
+//= require "UI/MatrixViewItem"
