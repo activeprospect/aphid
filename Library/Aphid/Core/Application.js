@@ -158,7 +158,6 @@ Aphid.Core.Application = Class.create(Aphid.Support.Object, {
       }.bind(this),
       onFailure: function(transport)
       {
-        window.console.log(transport)
         $L.error("Could not retrieve build stamp (Error: " + transport.status + " " + transport.statusText + ")", this);
       }.bind(this)
     });

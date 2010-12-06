@@ -480,7 +480,15 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     this._didOpenItem(item);
   },
 
-  // TODO removeItems
+  /**
+   * Aphid.UI.MatrixView#removeItem(item) -> null
+   *
+   * - item ([[Aphid.UI.MatrixViewItem]]): the matrix view item to be removed
+   *
+   * Instructs the delegate or subclass that the specified item should be
+   * removed. This functionality is implemented by the subclass or delegate
+   * and has no behavior by default.
+  **/
   removeItem: function(item)
   {
     if (!this._shouldRemoveItem(item))
@@ -609,7 +617,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _startObserving: function()
   {
-    $L.info("_startObserving", this);
+    $L.debug("_startObserving", this);
 
     if (this._isObserving) return;
 
@@ -639,7 +647,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _stopObserving: function()
   {
-    $L.info("_stopObserving", this);
+    $L.debug("_stopObserving", this);
 
     if (!this._isObserving) return;
 
@@ -668,7 +676,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _handleKeyDownEvent: function(event)
   {
-    $L.info("_handleKeyDownEvent", this);
+    $L.debug("_handleKeyDownEvent", this);
 
     // Meta/Control
     if (event.metaKey)
@@ -690,7 +698,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234)
         this.expandSelectionLeft(event);
 
-        // Up Arrow
+      // Up Arrow
       if (event.keyCode == Event.KEY_UP || event.keyCode == 63232)
         this.expandSelectionUp(event);
 
@@ -764,7 +772,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _handleDoubleClickEvent: function(event)
   {
-    $L.info("_handleDoubleClickEvent", this);
+    $L.debug("_handleDoubleClickEvent", this);
 
     var element = event.element();
     if (element.tagName != 'LI') element = element.up('li');
@@ -778,7 +786,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _handleMouseDownEvent: function(event)
   {
-    $L.info("_handleMouseDownEvent", this);
+    $L.debug("_handleMouseDownEvent", this);
 
     var element = event.element();
 
@@ -813,6 +821,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _handleMouseUpEvent: function(event)
   {
+    $L.debug("_handleMouseUpEvent", this);
+
     this._isDragging = false;
     this.get("selectionOverlayElement").hide();
     this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' });
@@ -823,6 +833,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
   _handleMouseMoveEvent: function(event)
   {
+    $L.debug("_handleMouseMoveEvent", this);
+
     if (this._isDragging)
     {
       var overlay = this.get("selectionOverlayElement");
