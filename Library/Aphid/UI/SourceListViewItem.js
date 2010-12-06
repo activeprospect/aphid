@@ -78,6 +78,8 @@ Aphid.UI.SourceListViewItem = Class.create(Aphid.UI.ListViewItem, {
   viewDidLoad: function($super)
   {
     this.element.addClassName("SourceListViewItem");
+    this.title = this.get("contentView.element").innerHTML;
+    // this.icon = this.get("iconView.element").down("img").readAttribute("src");
     $super();
   },
 
