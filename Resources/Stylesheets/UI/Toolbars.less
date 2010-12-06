@@ -1,21 +1,80 @@
 
 /* Standard Toolbar (in Footers) ------------------------------------------ */
 
-footer.toolbar
+.toolbar
 {
   background-color: #f3f4f5;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#e3e4e5));
-  background-image: -moz-linear-gradient(top, #f3f4f5, #e3e4e5);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#d3d4d5));
+  background-image: -moz-linear-gradient(top, #f3f4f5, #d3d4d5);
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
   height: 2.5em;
   line-height: 2.5em;
-  border-top: 0.1em solid #ddd;
-  color: #666;
+  color: #555;
   -webkit-user-select: none;
   -moz-user-select: none;
+}
+
+header.toolbar
+{
+  top: 0;
+  border-bottom: 0.1em solid #bbb;
+
+  h1
+  {
+    position: absolute;
+    top: 0;
+    left: 6em;
+    right: 4em;
+    bottom: 0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.8);
+  }
+
+  button.backButton
+  {
+    position: absolute;
+    left: 0.5em;
+    top: 0.3em;
+
+    border: 0.1em solid #222;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#666), to(#333));
+    background-image: -moz-linear-gradient(top, #666, #333);
+    color: white;
+    font-size: 0.9em;
+    width: 5.5em;
+    -webkit-border-radius: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0.2em 0 0.3em 0;
+
+    :before
+    {
+      content: "◀ ";
+      font-size: 0.7em !important;
+    }
+    
+    :hover 
+    {
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#777), to(#444));
+      background-image: -moz-linear-gradient(top, #777, #444);
+    }
+
+    :active
+    {
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#444), to(#777));
+      background-image: -moz-linear-gradient(top, #444, #777);
+    }
+  }
+}
+
+footer.toolbar
+{
+  bottom: 0;
+  border-top: 0.1em solid #ccc;
 
   /* Action Buttons ------------------------------------------------------- */
 
