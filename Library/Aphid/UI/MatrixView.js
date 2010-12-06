@@ -1,17 +1,127 @@
 /**
  * class Aphid.UI.MatrixView < Aphid.UI.View
  *
- * ### Delegate Methods
+ * #### Subclassing Notes
  *
- * - `matrixViewShouldSelectItem`
- * - `matrixViewDidSelectItem`
- * - `matrixViewShouldDeselectItem`
- * - `matrixViewDidDeselectItem`
- * - `matrixViewSelectionDidChange`
- * - `matrixViewShouldOpenItem`
- * - `matrixViewWillOpenItem`
- * - `matrixViewShouldDeleteItem`
- * - `matrixViewWillDeleteItem`
+ * - `shouldSelectItem(item)` — Called before the specified item is to be
+ *   selected. Returning false from this method will prevent the operation
+ *   from taking place.
+ *
+ * - `willSelectItem(item)` — Called just before the specified item will be
+ *   selected.
+ *
+ * - `didSelectItem(item)` — Called after the specified item has been selected.
+ *   You might implement your application logic to select the item in this
+ *   callback method.
+ *
+ * - `shouldDeselectItem(item)` — Called before the specified item is to be
+ *   de-selected. Returning false from this method will prevent the operation
+ *   from taking place.
+ *
+ * - `willDeselectItem(item)` — Called just before the specified item will be
+ *   selected.
+ *
+ * - `didDeselectItem(item)` — Called after the specified item has been
+ *   de-selected. You might implement your application logic to deselect the
+ *   item in this callback method.
+ *
+ * - `shouldClearSelection()` — Called before the selection is to be cleared.
+ *   returning false from this method will prevent the operation from taking
+ *   place.
+ *
+ * - `willClearSelection()` — Called just before the selection is cleared.
+ *
+ * - `didClearSelection()` — Called after the selection has been cleared.
+ *
+ * - `selectionDidChange()` — Called when the selection of the matrix view
+ *   instance has changed. Be aware that this callback method will be called
+ *   in addition to other callback methods when a new selection or
+ *   de-selection has occurred, multiple items have been selected or
+ *   de-selected or the selection has been cleared.
+ *
+ * - `shouldOpenItem(item)` — Called before the specified item is to be
+ *   opened. Returning false from this method will prevent the operation from
+ *   taking place.
+ *
+ * - `willOpenItem(item)` — Called just before the specified item will be
+ *   opened.
+ *
+ * - `didOpenItem(item)` — Called after the specified item has been opened.
+ *   You might implement your application logic to open the item in this
+ *   callback method.
+ *
+ * - `shouldRemoveItem(item)` — Called before the specified item is to be
+ *   removed. Returning false from this method will prevent the operation from
+ *   taking place.
+ *
+ * - `willRemoveItem(item)` — Called just before the specified item will be
+ *   removed.
+ *
+ * - `didRemoveItem(item)` — Called after the specified item has been removed.
+ *   You might implement your application logic to remove the item in this
+ *   callback method.
+ *
+ * #### Delegate Methods
+ *
+ * - `matrixViewShouldSelectItem(matrixView, item)` — Called before the
+ *   specified item is to be selected. Returning false from this method will
+ *   prevent the selection from taking place.
+ *
+ * - `matrixViewWillSelectItem(matrixView, item)` — Called just before the
+ *   specified item will be selected.
+ *
+ * - `matrixViewDidSelectItem(matrixView, item)` — Called after the specified
+ *   item has been selected. You might implement your application logic to
+ *   select the item in this delegate method.
+ *
+ * - `matrixViewShouldDeselectItem(matrixView, item)` — Called before the
+ *   specified item is to be de-selected. Returning false from this method
+ *   will prevent the operation from taking place.
+ *
+ * - `matrixViewWillDeselectItem(matrixView, item)` — Called just before the
+ *   specified item will be selected.
+ *
+ * - `matrixViewDidDeselectItem(matrixView, item)` — Called after the
+ *   specified item has been de-selected. You might implement your
+ *   application logic to deselect the item in this delegate method.
+ *
+ * - `matrixViewSelectionShouldClear(matrixView)` — Called before the
+ *   selection is to be cleared. Returning false from this method will prevent
+ *   the operation from taking place.
+ *
+ * - `matrixViewSelectionWillClear(matrixView)` — Called just before the
+ *   selection is cleared.
+ *
+ * - `matrixViewSelectionDidClear(matrixView)` — Called after the selection
+ *   has been cleared.
+ *
+ * - `matrixViewSelectionDidChange(matrixView)` — Called when the selection of
+ *   the specified matrix view instance has changed. Be aware that this
+ *   delegate method will be called in addition to other delegate methods when
+ *   a new selection or de-selection has occurred, multiple items have been
+ *   selected or de-selected or the selection has been cleared.
+ *
+ * - `matrixViewShouldOpenItem(matrixView, item)` — Called before the
+ *   specified item is to be opened. Returning false from this method will
+ *   prevent the operation from taking place.
+ *
+ * - `matrixViewWillOpenItem(matrixView, item)` — Called just before the
+ *   specified item will be opened.
+ *
+ * - `matrixViewDidOpenItem(matrixView, item)` — Called after the specified
+ *   item has been opened. You might implement your application logic to
+ *   open the item in this delegate method.
+ *
+ * - `matrixViewShouldRemoveItem(matrixView, item)` — Called before the
+ *   specified item is to be removed. Returning false from this method will
+ *   prevent the operation from taking place.
+ *
+ * - `matrixViewWillRemoveItem(matrixView, item)` — Called just before the
+ *   specified item will be removed.
+ *
+ * - `matrixViewDidRemoveItem(matrixView, item)` — Called after the specified
+ *   item has been removed. You might implement your application logic to
+ *   remove the item in this delegate method.
  *
 **/
 
@@ -77,7 +187,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     if (!this._selectionOverlayElement)
     {
-      this._selectionOverlayElement = new Element("div", { className: 'selectionOverlay' });
+      this._selectionOverlayElement = new Element("div", { className: "selectionOverlay" });
       this._selectionOverlayElement.hide();
       this.get("element").insert({ top: this._selectionOverlayElement });
     }
@@ -87,7 +197,7 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   // Selection ---------------------------------------------------------------
 
   /**
-   * Aphid.UI.MatrixView#select(element, event) -> Boolean
+   * Aphid.UI.MatrixView#selectItem(element, event) -> Boolean
   **/
   selectItem: function(element, event)
   {
@@ -767,6 +877,27 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.MatrixView#_willSelectItem(item) -> null
+   *
+   * This method is called just before the item is to be selected. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willSelectItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `matrixViewWillSelectItem(matrixView, item)` delegate
+   *    method, if it has been implemented by the delegate.
+   *
+   */
+  _willSelectItem: function(item)
+  {
+    if (this.willSelectItem)
+      this.willSelectItem(item);
+    if (this.delegate && this.delegate.matrixViewWillSelectItem)
+      this.delegate.matrixViewWillSelectItem(this, item);
+  },
+
+  /*
    * Aphid.UI.MatrixView#_didSelectItem(item) -> null
    *
    * Performs any internal actions after an item has been selected before
@@ -809,6 +940,27 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (this.delegate && this.delegate.matrixViewShouldDeselectItem)
       shouldDeselect = this.delegate.matrixViewShouldDeselectItem(this, item);
     return shouldDeselect;
+  },
+
+  /*
+   * Aphid.UI.MatrixView#_willDeselectItem(item) -> null
+   *
+   * This method is called just before the item is to be de-selected. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willDeselectItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `matrixViewWillDeselectItem(matrixView, item)` delegate
+   *    method, if it has been implemented by the delegate.
+   *
+   */
+  _willDeselectItem: function(item)
+  {
+    if (this.willDeselectItem)
+      this.willDeselectItem(item);
+    if (this.delegate && this.delegate.matrixViewWillDeselectItem)
+      this.delegate.matrixViewWillDeselectItem(this, item);
   },
 
   /*
@@ -857,6 +1009,27 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.MatrixView#_willClearSelection() -> null
+   *
+   * This method is called just before the selection is cleared. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willClearSelection()` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `matrixViewWillClearSelection(matrixView)` delegate method,
+   *    if it has been implemented by the delegate.
+   *
+   */
+  _willClearSelection: function()
+  {
+    if (this.willClearSelection)
+      this.willClearSelection(item);
+    if (this.delegate && this.delegate.matrixViewWillClearSelection)
+      this.delegate.matrixViewWillClearSelection(this);
+  },
+
+  /*
    * Aphid.UI.MatrixView#_didClearSelection(item) -> null
    *
    * Performs any internal actions after an item has been deselected before
@@ -900,6 +1073,27 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.MatrixView#_willOpenItem(item) -> null
+   *
+   * This method is called just before the item is opened. It will perform the
+   * following actions when called, in order:
+   *
+   *  - Calls the `willOpenItem(item)` callback, if the instance is a subclass
+   *    that has implemented the method.
+   *
+   *  - Calls the `matrixViewWillOpenItem(matrixView, item)` delegate method,
+   *    if it has been implemented by the delegate.
+   *
+   */
+  _willOpenItem: function()
+  {
+    if (this.willOpenItem)
+      this.willOpenItem(item);
+    if (this.delegate && this.delegate.matrixViewWillOpenItem)
+      this.delegate.matrixViewWillOpenItem(this, item);
+  },
+
+  /*
    * Aphid.UI.MatrixView#_didOpenItem(item) -> null
    *
    * Performs any internal actions after an item has been opened before
@@ -939,6 +1133,27 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.MatrixView#_willRemoveItem(item) -> null
+   *
+   * This method is called just before the item is removed. It will perform
+   * the following actions when called, in order:
+   *
+   *  - Calls the `willRemoveItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `matrixViewWillRemoveItem(matrixView, item)` delegate
+   *    method, if it has been implemented by the delegate.
+   *
+   */
+  _willRemoveItem: function()
+  {
+    if (this.willRemoveItem)
+      this.willRemoveItem(item);
+    if (this.delegate && this.delegate.matrixViewWillRemoveItem)
+      this.delegate.matrixViewWillRemoveItem(this, item);
+  },
+
+  /*
    * Aphid.UI.MatrixView#_didRemoveItem(item) -> null
    *
    * Performs any internal actions after an item has been removed before
@@ -956,6 +1171,5 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (this.delegate && this.delegate.matrixViewDidRemoveItem)
       this.delegate.matrixViewDidRemoveItem(this, item);
   }
-
 
 });
