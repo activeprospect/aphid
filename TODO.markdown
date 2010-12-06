@@ -64,6 +64,10 @@
    directly on a class (i.e. "constrained: true" in a SplitViewController
    subclass).
 
+ * Formalize support for persisting class properties. You should be able to
+   mark certain properties as persist-able and calling persistProperties() or
+   some other method signature should persist those properties to the session.
+
 ### Aphid.UI.ListView
 
  * When clearing the selection, a callback should be called for subclasses so
@@ -104,6 +108,8 @@
 
  * Add an option for toggling multiple selection (and drag selection) support
    on or off.
+
+ * Drag selection needs to honor the scrolling offset of its containing view.
 
 ### Aphid.UI.SplitViewController
 
