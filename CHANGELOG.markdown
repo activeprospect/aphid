@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Added callback and delegate calls to the
+   split view controller.
+
  * [Aphid.Support.Object] Implemented Aphid.Support.Object for all Aphid
    subclasses to extend that contains support for common features, such as
    properties and delegates.

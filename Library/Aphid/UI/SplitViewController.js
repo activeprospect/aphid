@@ -7,6 +7,25 @@
  * Minimum and maximum widths as described in the min-width and max-width
  * properties of the left pane will be enforced.
  *
+ * #### Subclassing Notes
+ *
+ * - `splitViewShouldResize(splitView)` — Called before a resize operation
+ *   begins on the split view.
+ *
+ * - `splitViewWillResize(splitView)` — Called when the split view has started
+ *   a resize operation, but has not completed.
+ *
+ * - `splitViewDidResize(splitView, position)` — Called after a resize
+ *   operation on the split view has finished.
+ *
+ * #### Notifications
+ *
+ * - `SplitViewDidResizeNotification` — Posted after a resize operation on the
+ *   split view has finished resizing.
+ *
+ * - `SplitViewWillResizeNotification` — Posted when a resize operation on the
+ *   split view has started, but is not yet completed.
+ *
 **/
 
 Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
@@ -224,22 +243,38 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   resizeHorizontal: function(x)
   {
+    if (!this._splitViewShouldResize())
+      return;
+
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0],
         borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
         dragHandleWidth  = this.get("dragHandle").getWidth();
+
+    this._splitViewWillResize();
+
     this.get("firstView.element").setStyle({ width: x - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ left: (x - cumulativeOffset + borderWidth + dragHandleWidth) + 'px' });
     this.get("dragHandle").setStyle({ left: (x - cumulativeOffset + borderWidth) + 'px' });
+
+    this._splitViewDidResize();
   },
 
   resizeVertical: function(y)
   {
+    if (!this._splitViewShouldResize())
+      return;
+
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[1],
         borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
         dragHandleHeight = this.get("dragHandle").getHeight();
+
+    this._splitViewWillResize();
+
     this.get("firstView.element").setStyle({ height: y - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ top: (y - cumulativeOffset + borderHeight + dragHandleHeight) + 'px' });
     this.get("dragHandle").setStyle({ top: (y - cumulativeOffset + borderHeight) + 'px' });
+
+    this._splitViewDidResize();
   },
 
   // State Management --------------------------------------------------------
@@ -358,6 +393,34 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     var minPosition = this.get("minPosition") + this._dragHandleClickOffset;
         maxPosition = this.get("maxPosition");
     return (position > minPosition && position < maxPosition);
+  },
+
+  // Callbacks ---------------------------------------------------------------
+
+  _splitViewShouldResize: function()
+  {
+    var shouldResize = true;
+    if (this.splitViewShouldResize)
+      shouldResize = this.splitViewShouldResize(this);
+    if (this.delegate && this.delegate.splitViewShouldResize)
+      shouldResize = this.delegate.splitViewShouldResize(this);
+    return shouldResize;
+  },
+
+  _splitViewWillResize: function()
+  {
+    if (this.splitViewWillResize)
+      this.splitViewWillResize(this);
+    if (this.delegate && this.delegate.splitViewWillResize)
+      this.delegate.splitViewWillResize(this);
+  },
+
+  _splitViewDidResize: function(position)
+  {
+    if (this.splitViewDidResize)
+      this.splitViewDidResize(this, position);
+    if (this.delegate && this.delegate.splitViewDidResize)
+      this.delegate.splitViewDidResize(this, position);
   },
 
   // Draggable Subclass ------------------------------------------------------
