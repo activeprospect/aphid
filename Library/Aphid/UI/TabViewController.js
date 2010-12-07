@@ -107,8 +107,6 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   {
     $super();
 
-    this.get("element").addClassName("TabViewController");
-
     var tabElements = this.get("element").select('li');
     this.set("tabs", tabElements);
     this._setupObservers();

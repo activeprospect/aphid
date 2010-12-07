@@ -597,7 +597,6 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
     }
 
-
     // Remove from superview's subviews
     this.get("superview.subviews").remove(this);
 
@@ -727,8 +726,8 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     this.isLoaded  = true;
     this.isLoading = false;
 
-    // Add "View" CSS Class
-    this.get("element").addClassName("View");
+    // Add CSS Class Names
+    this._addClassNames();
 
     // Determine Enabled State
     if (this.get("element").hasClassName("disabled"))
@@ -743,6 +742,24 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     if (this.asynchronousLoadingEnabled)
       if (this.delegate && this.delegate.viewDidLoadAsynchronously)
         this.delegate.viewDidLoadAsynchronously(this);
+  },
+
+  /*
+   * Aphid.UI.View#_addClassNames() -> null
+   *
+   * Traverses the view stack, adding a CSS class to the view for each of its
+   * superclasses. The CSS class name used is the last component of the
+   * displayName property of each superclass (i.e. "View" for "Aphid.UI.View").
+   */
+  _addClassNames: function()
+  {
+    var klass = this;
+    while (!Object.isUndefined(klass.displayName))
+    {
+      var className = klass.displayName.split(".").last();
+      this.get("element").addClassName(className);
+      klass = klass.constructor.superclass.prototype;
+    }
   },
 
   // View "Enabled" State ----------------------------------------------------

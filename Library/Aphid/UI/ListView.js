@@ -224,7 +224,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     $super();
     if (this._validateContainer())
     {
-      this.get("element").addClassName("ListView");
       this.get("element").observe("click", this.clearSelection.bind(this));
       this._initializeStaticListViewItems();
     }

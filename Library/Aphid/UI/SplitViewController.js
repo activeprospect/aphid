@@ -137,8 +137,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
   {
     $super();
 
-    // Add CSS Classes
-    this.get("element").addClassName("SplitViewController");
+    // Add CSS Classes for Orientation and Mode
     this.get("element").addClassName(this.get("orientation"));
     if (this.get("mode") || !this.get("mode") == "default")
       this.get("element").addClassName(this.get("mode"));

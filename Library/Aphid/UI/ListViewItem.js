@@ -38,19 +38,14 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   /**
    * new Aphid.UI.ListViewItem([options])
    *
-   * - options (Hash): Initial property values to be set on the View instance
+   * - options (Hash): Initial property values to be set on the ListViewItem
+   *   instance
    *
-   * Initializes a new View instance.
+   * Initializes a new ListViewItem instance.
   **/
   initialize: function($super, options)
   {
     $super(options);
-  },
-
-  viewDidLoad: function($super)
-  {
-    this.get("element").addClassName("ListViewItem");
-    $super();
   },
 
   // -------------------------------------------------------------------------

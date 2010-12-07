@@ -98,12 +98,6 @@
 Aphid.UI.SourceListView = Class.create(Aphid.UI.ListView, {
 
   displayName: "Aphid.UI.SourceListView",
-  tagName: "ul",
-
-  viewDidLoad: function($super)
-  {
-    this.get("element").addClassName("SourceListView");
-    $super();
-  }
+  tagName: "ul"
 
 });

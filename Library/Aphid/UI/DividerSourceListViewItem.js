@@ -12,31 +12,16 @@ Aphid.UI.DividerSourceListViewItem = Class.create(Aphid.UI.SourceListViewItem, {
   // Initialization ----------------------------------------------------------
 
   /**
-   * new Aphid.UI.SourceListViewItem([options])
+   * new Aphid.UI.DividerSourceListViewItem([options])
    *
    * - options (Hash): Initial property values to be set on the
-   *   SourceListViewItem instance
+   *   DividerSourceListViewItem instance
    *
-   * Initializes a new SourceListViewItem instance.
+   * Initializes a new DividerSourceListViewItem instance.
   **/
   initialize: function($super, options)
   {
     $super(options);
-  },
-
-  viewDidLoad: function($super)
-  {
-    this.element.addClassName("DividerSourceListViewItem");
-    $super();
-  },
-
-  // -------------------------------------------------------------------------
-
-  
+  }
 
 });
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-// Aphid.UI.SourceListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";
-// Aphid.UI.SourceListViewItem.prototype.deselect.displayName = "Aphid.UI.ListViewItem.deselect";

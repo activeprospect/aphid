@@ -192,7 +192,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   viewDidLoad: function($super)
   {
     $L.debug("viewDidLoad", this);
-    this.get("element").addClassName("MatrixView");
     this._initializeStaticItems();
     window.console.log("----")
     window.console.log(this.get("items"))

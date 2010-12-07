@@ -36,17 +36,6 @@ Aphid.UI.MatrixViewItem = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     $super(options);
-    if (!this.get("element"))
-    {
-      $L.debug("Initializing default element...", this);
-      this.set("element", new Element('li').addClassName("MatrixViewItem"));
-      this.set("isLoaded", true);
-    }
-  },
-
-  viewDidLoad: function($super)
-  {
-    this.get("element").addClassName("MatrixViewItem");
   },
 
   // -------------------------------------------------------------------------

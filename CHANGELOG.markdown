@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Views are automatically assigned CSS class names for itself
+   and all of its superclasses, based on the displayName property of each
+   class in the view stack.
+
  * [Aphid.UI.View] Added support for transitions when setting, adding or
    removing views.
 
