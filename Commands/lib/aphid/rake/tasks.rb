@@ -12,7 +12,7 @@ task :default => :build
 desc "Clean up the built project"
 task :clean do
   header "Cleaning Project" do
-    rm_rf "#{ROOT_PATH}/Build/*"
+    rm_rf Dir.glob("#{ROOT_PATH}/Build/*")
   end
 end
 
