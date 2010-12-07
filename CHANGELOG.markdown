@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added support for transitions when setting, adding or
+   removing views.
+
  * [Aphid.UI.View] Added a tagName property (defaults to "section") that is
    used to create an element for the View when a template or element is not
    provided during initialization.

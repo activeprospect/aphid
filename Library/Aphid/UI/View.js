@@ -113,6 +113,18 @@
  *  - [[Aphid.UI.View#viewDidLoad]]
  *    Called once the view has been loaded and initialized.
  *
+ *  - [[Aphid.UI.View#viewWillAppear]]
+ *    Called before the view is displayed.
+ *
+ *  - [[Aphid.UI.View#viewDidAppear]]
+ *    Called after the view has been displayed.
+ *
+ *  - [[Aphid.UI.View#viewWillDisappear]]
+ *    Called before the view will be removed from display.
+ *
+ *  - [[Aphid.UI.View#viewDidDisappear]]
+ *    Called after the view has been displayed.
+ *
  * ### Delegate Methods
  *
  * The following methods may be implemented by your class that serves as the
@@ -298,7 +310,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   /**
    * Aphid.UI.View#setView(view) -> null
    *
-   * - view (View): the view that should be set
+   * - view ([[Aphid.UI.View]]): the view that should be set
    *
    * Clears all subviews of the current view and sets the specified *view* as
    * the current view's only subview.
@@ -309,32 +321,36 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   },
 
   /**
-   * Aphid.UI.View#setViewAnimated(view[, animated = true]) -> null
+   * Aphid.UI.View#setViewAnimated(view[, animated = true[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
-   * - view (View): the view that should be set
+   * - view ([[Aphid.UI.View]]): the view that should be set
    * - animated (Boolean): true if the view should be presented with animation
+   * - transition (Integer): A transition that should be used if animated is
+   *   enabled (defaults to [[Aphid.UI.View.FadeTransition]])
    *
    * Clears all subviews of the current view and presents the specified *view*
    * with an animated effect (currently this effect is *appear*).
   **/
-  setViewAnimated: function(view, animated)
+  setViewAnimated: function(view, animated, transition)
   {
     if (Object.isUndefined(animated)) animated = true;
-    this._setView(view, animated);
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
+    this._setView(view, animated, transition);
   },
 
   /*
    * Aphid.UI.View#_setView(view[, animated = false]) -> null
    *
-   * - view (View): the view that should be set
+   * - view ([[Aphid.UI.View]]): the view that should be set
    * - animated (Boolean): true if the view should be presented with animation
    *
    * Clears all subviews of the current view and presents the specified *view*
    * with an animated effect (currently this effect is *appear*).
    */
-  _setView: function(view, animated)
+  _setView: function(view, animated, transition)
   {
     if (Object.isUndefined(animated)) animated = false;
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
     // Do not set the view if the view is already the only subview
     if (this.get("subviews").length == 1 && this.get("subviews").include(view))
@@ -351,10 +367,10 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
       animated = false;
 
     // Clear the Subviews
-    this.clearSubviews(animated);
+    this.clearSubviews(animated, transition);
 
     // Add the specified view as the view's only subview
-    if (view) this.addSubviewAnimated(view, animated);
+    if (view) this.addSubviewAnimated(view, animated, transition);
   },
 
   /**
@@ -377,40 +393,46 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   },
 
   /**
-   * Aphid.UI.View#addSubviewAnimated(view[, animated = true]) -> null
+   * Aphid.UI.View#addSubviewAnimated(view[, animated = true[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
-   * - view (View): the view that should be set
+   * - view ([[Aphid.UI.View]]): the view that should be set
    * - animated (Boolean): true if the view should be presented with animation
+   * - transition (Integer): A transition that should be used if animated is
+   *   enabled (defaults to [[Aphid.UI.View.FadeTransition]])
    *
    * Adds the specified *view* as a subview of the view instance and presents
    * it with an animated effect, by default.
   **/
-  addSubviewAnimated: function(view, animated)
+  addSubviewAnimated: function(view, animated, transition)
   {
     if (Object.isUndefined(animated)) animated = true;
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
     // If the view is loading, we need to wait for it to finish loading before
     // we can add it to the DOM.
     if (view.isLoading)
-      this._addSubview.bind(this).delay(0.1, view, animated);
+      this._addSubview.bind(this).delay(0.1, view, animated, transition);
 
     // Otherwise, we can add it immediately.
     else
-      this._addSubview(view, animated);
+      this._addSubview(view, animated, transition);
   },
 
   /*
-   * Aphid.UI.View#_addSubview(view[, animated = false]) -> null
+   * Aphid.UI.View#_addSubview(view[, animated = false[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
    * - view ([[Aphid.UI.View]]): the view that should be added
    * - animated (Boolean): true if the view should be presented with animation
+   * - transition (Integer): A transition that should be used if animated is
+   *   enabled (defaults to [[Aphid.UI.View.FadeTransition]])
    *
    * Adds the specified *view* as a subview of the view instance and optionally
    * presents it with an animated effect.
    */
-  _addSubview: function(view, animated)
+  _addSubview: function(view, animated, transition)
   {
     if (Object.isUndefined(animated)) animated = false;
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
     // Do not set the view if the view is already the only subview
     // TODO Need to track down a bug with ListViews that add items twice
@@ -426,11 +448,11 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     {
       // TODO We need to add a counter to this so that we don't wait longer
       // a few seconds before giving up and raising a warning...
-      this._addSubview.bind(this).delay(0.1, view, animated);
+      this._addSubview.bind(this).delay(0.1, view, animated, transition);
       return;
     }
 
-    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
+    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
 
     // Setup the View
     view.get("element").hide();
@@ -445,11 +467,34 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
     // Display the View
     if (animated)
-      view.get("element").appear({
-        duration: 0.25,
-        queue: "end",
-        afterFinish: this._viewDidAppear.bind(this, animated)
-      })
+    {
+      switch (transition)
+      {
+        case Aphid.UI.View.SlideLeftTransition:
+          view.get("element").setStyle({ "left": this.get("element").getWidth() + "px" });
+          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          view.get("element").appear({
+            duration: 0.35,
+            afterFinish: this._viewDidAppear.bind(this, animated)
+          });
+          break;
+        case Aphid.UI.View.SlideRightTransition:
+          view.get("element").setStyle({ "left": -this.get("element").getWidth() + "px" });
+          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          view.get("element").appear({
+            duration: 0.35,
+            afterFinish: this._viewDidAppear.bind(this, animated)
+          });
+          break;
+        default:
+          view.get("element").appear({
+            duration: 0.25,
+            queue: "end",
+            afterFinish: this._viewDidAppear.bind(this, animated)
+          });
+          break;
+      }
+    }
     else
     {
       view.get("element").show();
@@ -468,35 +513,42 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   },
 
   /**
-   * Aphid.UI.View#removeFromSuperviewAnimated([animated = true]) -> null
+   * Aphid.UI.View#removeFromSuperviewAnimated([animated = true[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
    * - animated (Boolean): true if the view should be dismissed with animation
+   * - transition (Integer): A transition that should be used if animated is
+   *   enabled (defaults to [[Aphid.UI.View.FadeTransition]])
    *
    * Removes the view from its superview, with an optional animated effect.
    * This method will return immediately if the view does not belong to a
    * superview.
   **/
-  removeFromSuperviewAnimated: function(animated)
+  removeFromSuperviewAnimated: function(animated, transition)
   {
     if (Object.isUndefined(animated)) animated = true;
-    this._removeFromSuperview(animated);
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
+    this._removeFromSuperview(animated, transition);
   },
 
   /*
-   * Aphid.UI.View#_removeFromSuperview([animated = false]) -> null
+   * Aphid.UI.View#_removeFromSuperview([animated = false[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
    * - animated (Boolean): true if the view should be dismissed with animation
+   * - transition (Integer): A transition that should be used if animated is
+   *   enabled (defaults to [[Aphid.UI.View.FadeTransition]])
    *
    * Removes the view from its superview, with an optional animated effect.
    * This method will return immediately if the view does not belong to a
    * superview.
    */
-  _removeFromSuperview: function(animated)
+  _removeFromSuperview: function(animated, transition)
   {
     if (Object.isUndefined(animated)) animated = false;
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
+
     if (!this.get("superview")) return;
 
-    $L.info('Removing "' + (this.displayName || "Unknown") + '" from superview to "' + (this.get("superview").displayName || "unknown") + '" (animated: ' + animated + ')', this);
+    $L.info('Removing "' + (this.displayName || "Unknown") + '" from superview to "' + (this.get("superview").displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
 
     // Call "View Will Disappear" Callback
     this._viewWillDisappear(animated);
@@ -504,12 +556,29 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Hide the View
     if (animated)
     {
-
-      // Fade Out the View
-      this.get("element").fade({
-        duration: 0.25,
-        afterFinish: this._viewDidDisappear.bind(this, animated)
-      })
+      switch(transition)
+      {
+        case Aphid.UI.View.SlideLeftTransition:
+          new Effect.Move(this.get("element"), { x: -(this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          this.get("element").fade({
+            duration: 0.35,
+            afterFinish: this._viewDidDisappear.bind(this, animated)
+          });
+          break;
+        case Aphid.UI.View.SlideRightTransition:
+          new Effect.Move(this.get("element"), { x: (this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          this.get("element").fade({
+            duration: 0.35,
+            afterFinish: this._viewDidDisappear.bind(this, animated)
+          });
+          break;
+        default:
+          this.get("element").fade({
+            duration: 0.25,
+            afterFinish: this._viewDidDisappear.bind(this, animated)
+          })
+          break;
+      }
 
       // Remove the View's element from the DOM
       if (this.get("element").parentNode != null)
@@ -540,16 +609,17 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   },
 
   /**
-   * Aphid.UI.View#clearSubviews([animated = false]) -> null
+   * Aphid.UI.View#clearSubviews([animated = false[, transition = Aphid.UI.View.FadeTransition]]) -> null
    *
    * Removes all subviews from the view.
   **/
-  clearSubviews: function(animated)
+  clearSubviews: function(animated, transition)
   {
     if (Object.isUndefined(animated)) animated = false;
+    if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
     // Remove existing views
-    this.get("subviews").invoke('removeFromSuperviewAnimated', animated);
+    this.get("subviews").invoke('removeFromSuperviewAnimated', animated, transition);
 
     // Clear the Subviews
     this.set("subviews", $A());
@@ -721,9 +791,6 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
    * ... your view instance will automatically have the `someView` property
    * reference a View instance that wraps the DOM element.
    *
-   * * TODO This is still a little early in its implementation and needs to be
-   *      thought out better on how to handle different event types or
-   *      different element types.
    */
   _connectToOutlets: function()
   {
@@ -971,6 +1038,34 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   }
 
 });
+
+// Transitions ---------------------------------------------------------------
+
+/**
+ * Aphid.UI.View.FadeTransition -> 0
+ *
+ * The fade transition will fade out the view being removed (if present) and
+ * fade in the view being added or set.
+**/
+Aphid.UI.View.FadeTransition = 0;
+
+/**
+ * Aphid.UI.View.SlideLeftTransition -> 1
+ *
+ * The slide left transition will slide the view to be removed out of the
+ * viewable area to the left while simultaneously sliding the view to be added
+ * in from the right.
+**/
+Aphid.UI.View.SlideLeftTransition = 1;
+
+/**
+* Aphid.UI.View.SlideRightTransition -> 2
+*
+* The slide right transition will slide the view to be removed out of the
+* viewable area to the right while simultaneously sliding the view to be added
+* in from the left.
+**/
+Aphid.UI.View.SlideRightTransition = 2;
 
 // Method Name Mappings for Debugging ----------------------------------------
 
