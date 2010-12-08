@@ -58,7 +58,7 @@ Aphid.Support.Cookie = {
       date.setTime(date.getTime() + (86400000 * parseFloat(daysToExpire)));
       expire = '; expires=' + date.toGMTString();
     }
-    return (document.cookie = escape(name) + '=' + (value || '') + expire);
+    return (document.cookie = name + '=' + (value || '') + expire);
   },
 
   /**
@@ -72,7 +72,8 @@ Aphid.Support.Cookie = {
   **/
   get: function(name)
   {
-    var cookie = document.cookie.match(new RegExp('(^|;)\\s*' + escape(name) + '=([^;\\s]*)'));
+    var cookieName = name.gsub("[", "\\\[").gsub("]", "\\\]");
+    var cookie = document.cookie.match(new RegExp('(^|;)\\s*' + cookieName + '=([^;\\s]*)'));
     return (cookie ? cookie[2] : false);
   },
 

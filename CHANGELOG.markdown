@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Cookie] Added support for cookies with names that include
+   square brackets (i.e. "ViewController[identity].property").
+
  * [Aphid.UI.View] Views are automatically assigned CSS class names for itself
    and all of its superclasses, based on the displayName property of each
    class in the view stack.
