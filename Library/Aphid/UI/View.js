@@ -582,7 +582,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
       // Remove the View's element from the DOM
       if (this.get("element").parentNode != null)
-        this.get("element").remove.delay.bind(this, 0.25);
+        this.get("element").remove.delay.bind(this, 0.35);
 
     }
     else
