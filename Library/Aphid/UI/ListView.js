@@ -156,19 +156,13 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   sortingEnabled: false,
 
   /**
-   * Aphid.UI.ListView#sortableOptions -> Object
+   * Aphid.UI.ListView#persistSelectedItem -> Boolean
    *
-   * Options to be passed to the Sortable instance when sorting is enabled.
-   * For a list of options, consule the [Sortable documentation](http://wiki.github.com/madrobby/scriptaculous/sortable-create)
-   * in the script.aculo.us library. Defaults:
-   *
-   *     {
-   *       onChange: this._listViewOrderDidChange.bind(this),
-   *       onUpdate: this._listViewOrderDidUpdate.bind(this)
-   *     }
-   *
+   * If persistSelectedItem is *true* the selected item will be persisted as a
+   * cookie and the persisted selection will be re-applied on page reloads.
+   * The default value is *false*.
   **/
-  sortableOptions: false,
+  persistSelectedItem: false,
 
   // Initialization ----------------------------------------------------------
 
@@ -180,10 +174,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     this.items = $A();
-    this.sortableOptions = {
-      onChange: this._listViewOrderDidChange.bind(this),
-      onUpdate: this._listViewOrderDidUpdate.bind(this)
-    };
     $super(options);
     if (this.multipleSelectionEnabled)
     {
@@ -195,8 +185,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.selectedItems = false;
       this.selectedItemIndex = false;
     }
-    if (this.dataSource)
-      this.reloadData();
   },
 
   /*
@@ -204,7 +192,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _initializeStaticListViewItems: function()
   {
-    var items = this.get("element").select('>li').collect(this._initializeStaticListViewItem, this);
+    var items = this.get("element").select(">li").collect(this._initializeStaticListViewItem, this);
     this.set("items", items);
   },
 
@@ -221,12 +209,17 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   viewDidLoad: function($super)
   {
-    $super();
     if (this._validateContainer())
     {
       this.get("element").observe("click", this.clearSelection.bind(this));
-      this._initializeStaticListViewItems();
+      if (this.dataSource && this.dataSource.listViewItemCount && this.dataSource.listViewItemForIndex)
+        this.reloadData();
+      else
+        this._initializeStaticListViewItems();
+      if (this.get("persistSelectedItem"))
+        this._restoreSelection();
     }
+    $super();
   },
 
   // Items -------------------------------------------------------------------
@@ -454,6 +447,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
     this._didSelectItem(item);
 
+    if (this.get("persistSelectedItem"))
+      this._persistSelection();
+
     return true;
   },
 
@@ -569,6 +565,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.set("selectedItems", false);
       this.set("selectedItemIndexes", false);
     }
+    this._persistSelection();
   },
 
   /**
@@ -658,7 +655,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     else
       this.get("element").addClassName('sortable');
     this._addOrderedIdentitiesToItems();
-    Sortable.create(this.get("element"), this.get("sortableOptions"));
+    Sortable.create(this.get("element"), {
+      onChange: this._listViewOrderDidChange.bind(this),
+      onUpdate: this._listViewOrderDidUpdate.bind(this)
+    });
   },
 
   _addOrderedIdentitiesToItems: function()
@@ -921,6 +921,48 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _validateItem: function(item)
   {
     return (item instanceof Aphid.UI.ListViewItem);
+  },
+
+  // Selection Persistence ---------------------------------------------------
+
+  _persistSelection: function()
+  {
+    var identity   = this.get("element").readAttribute("id"),
+        cookieName = this.displayName + "[" + identity + "].selectedItemIndex";
+
+    if (!identity)
+    {
+      $L.warn("Unable to persist selection because the list view element is lacking a unique id", this);
+      return false;
+    }
+
+    $L.info("Persisting selected item (index: " + this.get("selectedItemIndex") + ") in cookie \"" + cookieName + "\"", this);
+
+    if (this.get("selectedItemIndex") >= 0)
+      $C.set(cookieName, this.get("selectedItemIndex").toString());
+    else
+      $C.erase(cookieName);
+
+    return true;
+  },
+
+  _restoreSelection: function()
+  {
+    var identity   = this.get("element").readAttribute("id"),
+        cookieName = this.displayName + "[" + identity + "].selectedItemIndex",
+        itemIndex  = $C.get(cookieName);
+
+    if (!itemIndex)
+    {
+      $L.warn("Not restoring selection as no persisted selection was found", this);
+      return false;
+    }
+
+    $L.info("Restoring selection to item at index \"" + itemIndex + "\" from cookie \"" + cookieName + "\"", this);
+
+    this.selectItemAtIndex(parseInt(itemIndex));
+
+    return true;
   }
 
 });

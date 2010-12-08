@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Added support for persisting the selected item index in
+   a session cookie and restoring that selection when reloading the browser or
+   view.
+
  * [Aphid.Support.Cookie] Added support for cookies with names that include
    square brackets (i.e. "ViewController[identity].property").
 

@@ -88,7 +88,7 @@
    with Prototype 1.7 and issues with the dragged item not respecting the
    scroll offset when being scrolled.
 
- * Add support for persisting the current selection.
+ * Add tests and documentation for persisted item support.
 
 ### Aphid.UI.LoadingIndicator
 

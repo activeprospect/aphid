@@ -60,7 +60,7 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
   select: function()
   {
     $L.debug("Selected...", this);
-    this.get("element").addClassName('selected');
+    this.get("element").addClassName("selected");
     this.set("isSelected", true);
     return this;
   },
