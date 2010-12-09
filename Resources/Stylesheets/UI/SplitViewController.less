@@ -15,8 +15,11 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
 
-  .dragHandle
+.SplitViewController.resizable
+{
+  > .dragHandle
   {
     position: absolute !important;
     z-index: 1000;
@@ -37,8 +40,7 @@
 
 .SplitViewController.vertical
 {
-
-  .firstView
+  > .firstView
   {
     position: absolute;
     top: 0;
@@ -49,7 +51,7 @@
     max-width: @first-view-width * 2;
   }
 
-  .secondView
+  > .secondView
   {
     position: absolute;
     top: 0;
@@ -57,8 +59,11 @@
     left: @first-view-width + @drag-handle-width;
     right: 0;
   }
+}
 
-  .dragHandle
+.SplitViewController.vertical.resizable
+{
+  > .dragHandle
   {
     left: @first-view-width;
     width: @drag-handle-width - 0.2em;
@@ -68,14 +73,6 @@
     background-image: -moz-linear-gradient(left, #f3f4f5, #d3d4d5);
     border-left: 0.1em solid #ccc;
     border-right: 0.1em solid #bbb;
-  }
-
-}
-
-.SplitViewController.vertical.resizable
-{
-  .dragHandle
-  {
     cursor: col-resize;
   }
 }
@@ -84,8 +81,7 @@
 
 .SplitViewController.horizontal
 {
-
-  .firstView
+  > .firstView
   {
     position: absolute;
     top: 0;
@@ -96,7 +92,7 @@
     max-height: @first-view-height * 3;
   }
 
-  .secondView
+  > .secondView
   {
     position: absolute;
     top: @first-view-height + @drag-handle-height;
@@ -104,8 +100,11 @@
     left: 0;
     right: 0;
   }
+}
 
-  .dragHandle
+.SplitViewController.horizontal.resizable
+{
+  > .dragHandle
   {
     top: @first-view-height;
     height: @drag-handle-height - 0.2em;
@@ -115,15 +114,7 @@
     background-image: -moz-linear-gradient(top, #f3f4f5, #d3d4d5);
     border-top: 0.1em solid #ccc;
     border-bottom: 0.1em solid #bbb;
-  }
-
-}
-
-.SplitViewController.horizontal.resizable
-{
-  .dragHandle
-  {
-  cursor: row-resize;
+    cursor: row-resize;
   }
 }
 
@@ -137,8 +128,8 @@
   left: @padded-width;
   right: @padded-width;
   bottom: @padded-width;
-  
-  .dragHandle
+
+  > .dragHandle
   {
     opacity: 0.5;
   }
@@ -146,12 +137,12 @@
 
 .SplitViewController.padded.horizontal
 {
-  .secondView
+  > .secondView
   {
     top: @first-view-height + @padded-width;
   }
-    
-  .dragHandle
+
+  > .dragHandle
   {
     background-image: url('../Images/UI/SplitViewController/DragHandle.horizontal.png');
     border: none;
@@ -161,12 +152,12 @@
 
 .SplitViewController.padded.vertical
 {
-  .secondView
+  > .secondView
   {
     left: @first-view-width + @padded-width;
   }
 
-  .dragHandle
+  > .dragHandle
   {
     background-image: url('../Images/UI/SplitViewController/DragHandle.vertical.png');
     border: none;
@@ -181,7 +172,7 @@
 
 .SplitViewController.borderless
 {
-  .dragHandle
+  > .dragHandle
   {
     border: none;
     background-image: none;
@@ -190,13 +181,15 @@
 
 .SplitViewController.borderless.horizontal
 {
-  .secondView
+  > .secondView
   {
     top: @first-view-height;
   }
-    
-  .dragHandle
+
+  > .dragHandle
   {
+    border: none;
+    background-image: none;
     top: @first-view-height - (@borderless-drag-handle-height / 2);
     height: @borderless-drag-handle-height;
   }
@@ -204,13 +197,15 @@
 
 .SplitViewController.borderless.vertical
 {
-  .secondView
+  > .secondView
   {
     left: @first-view-width;
   }
 
-  .dragHandle
+  > .dragHandle
   {
+    border: none;
+    background-image: none;
     left: @first-view-width - (@borderless-drag-handle-width / 2);
     width: @borderless-drag-handle-width;
   }
