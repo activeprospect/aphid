@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] The willClearSelection and didClearSelection callback
+   methods as well as the listViewWillClearSelection and
+   listViewDidClearSelection delegate methods are now called when clearing the
+   selection of a list view.
+
  * [Aphid.UI.ListView] Added support for persisting the selected item index in
    a session cookie and restoring that selection when reloading the browser or
    view.

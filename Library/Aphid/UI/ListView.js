@@ -538,12 +538,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (!this._shouldClearSelection())
       return;
 
+    this._willClearSelection();
     this._clearSelection();
-
-    // Call the listViewSelectionDidChange method on the delegate, if the
-    // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, false);
+    this._didClearSelection();
   },
 
   _clearSelection: function()
@@ -852,6 +849,47 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.delegate && this.delegate.listViewShouldClearSelection)
       shouldClearSelection = this.delegate.listViewShouldClearSelection(this);
     return shouldClearSelection;
+  },
+
+  /*
+   * Aphid.UI.ListView#_willClearSelection() -> null
+   *
+   * This method is called just before the selection is cleared. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willClearSelection()` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `listViewWillClearSelection(listView)` delegate method,
+   *    if it has been implemented by the delegate.
+   *
+   */
+  _willClearSelection: function()
+  {
+    if (this.willClearSelection)
+      this.willClearSelection(item);
+    if (this.delegate && this.delegate.listViewWillClearSelection)
+      this.delegate.listViewWillClearSelection(this);
+  },
+
+  /*
+   * Aphid.UI.ListView#_didClearSelection(item) -> Boolean
+   *
+   * Performs any internal actions after an item has been deselected before
+   * calling the `didClearSelection` callback and the two delegate methods:
+   * `listViewSelectionDidChange` and `listViewDidClearSelection`.
+   */
+  _didClearSelection: function()
+  {
+    // Call the listViewSelectionDidChange method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewSelectionDidChange)
+      this.delegate.listViewSelectionDidChange(this);
+
+    // Call the listViewDidClearSelection method on the delegate, if the
+    // delegate has defined it.
+    if (this.delegate && this.delegate.listViewDidClearSelection)
+      this.delegate.listViewDidClearSelection(this);
   },
 
   /*
