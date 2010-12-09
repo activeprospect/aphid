@@ -455,19 +455,20 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
 
     // Setup the View
-    view.get("element").hide();
+    view.get("element").setStyle({ "visibility": "hidden" }).show();
     view.set("superview", this);
     this.get("subviews").push(view);
-
-    // Call "View Will Appear" Callback
-    this._viewWillAppear(animated);
 
     // Insert the view into the DOM
     this.get("element").insert(view.get("element"));
 
+    // Call "View Will Appear" Callback
+    this._viewWillAppear(animated);
+
     // Display the View
     if (animated)
     {
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 0})
       switch (transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
@@ -497,7 +498,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     }
     else
     {
-      view.get("element").show();
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 1 });
       this._viewDidAppear(animated);
     }
   },

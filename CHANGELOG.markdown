@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Changed the behavior of _addSubview so that we add the
+   element to the DOM and hide it with the visibility and opacity properties
+   before calling viewWillAppear so that the viewWillAppear callback can
+   calculate the added view's position before it appears.
+
  * [Aphid.UI.TabViewController] Disabled animation by default for new
    TabViewController instances.
 
