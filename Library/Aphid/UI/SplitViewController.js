@@ -328,6 +328,109 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     return this._draggableInstance;
   },
 
+  setPosition: function(position)
+  {
+    if (!this._shouldResize())
+      return;
+
+    $L.info("Setting Position to " + position + "px", this);
+
+    if (this.get("orientation") == "vertical")
+    {
+      var borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
+          dragHandleWidth  = this.get("dragHandle").getWidth();
+
+      this._willResize();
+
+      this.get("firstView.element").setStyle({ width: position + 'px' });
+      this.get("secondView.element").setStyle({ left: (position + borderWidth + dragHandleWidth) + 'px' });
+      this.get("dragHandle").setStyle({ left: (position + borderWidth) + 'px' });
+    }
+    else
+    {
+      var borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
+          dragHandleHeight = this.get("dragHandle").getHeight();
+
+      this._willResize();
+      
+      var bottom = this.get("element").getHeight() - position;
+
+      this.get("firstView.element").setStyle({ bottom: bottom + 'px' });
+      this.get("secondView.element").setStyle({
+        bottom: '0px',
+        height: bottom + "px"
+      });
+      // this.get("secondView.element").setStyle({ top: (position + borderHeight + dragHandleHeight) + 'px' });
+      this.get("dragHandle").setStyle({ top: (position + borderHeight) + 'px' });
+    }
+
+    this._didResize();
+  },
+
+  setPositionAnimated: function(position)
+  {
+    if (!this._shouldResize())
+      return;
+
+    $L.info("Setting Position to " + position + "px", this);
+
+    if (this.get("orientation") == "vertical")
+    {
+      var borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
+          dragHandleWidth  = this.get("dragHandle").getWidth();
+
+      this._willResize();
+
+      new Effect.Morph(this.get("firstView.element"), {
+        width: position + 'px'
+      });
+      new Effect.Morph(this.get("secondView.element"), {
+        left: (position + borderWidth + dragHandleWidth) + 'px'
+      });
+      new Effect.Morph(this.get("dragHandle"), {
+        left: (position + borderWidth) + 'px'
+      });
+    }
+    else
+    {
+      var borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
+          dragHandleHeight = this.get("dragHandle").getHeight();
+
+      this._willResize();
+
+      var bottom = this.get("element").getHeight() - position;
+
+      new Effect.Parallel(
+        [
+          new Effect.Morph(this.get("firstView.element"), {
+            style: {
+              bottom: bottom + "px"
+              // height: position + 'px'
+            }
+          }),
+          new Effect.Morph(this.get("secondView.element"), {
+            style: {
+              bottom: "0px",
+              height: bottom + "px"
+              // top: (position + borderHeight + dragHandleHeight) + 'px'
+            }
+          }),
+          new Effect.Morph(this.get("dragHandle"), {
+            style: {
+              top: (position + borderHeight) + 'px'
+            }
+          })
+        ],
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal
+        }
+      );
+    }
+
+    this._didResize();
+  },
+
   // Event Handling ----------------------------------------------------------
 
   _startObserving: function()

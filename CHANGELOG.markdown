@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Added support for setting the position of
+   the split view divider programmatically through the methods setPosition and
+   setPositionAnimated.
+
  * [Aphid.UI.ListView] The willClearSelection and didClearSelection callback
    methods as well as the listViewWillClearSelection and
    listViewDidClearSelection delegate methods are now called when clearing the
