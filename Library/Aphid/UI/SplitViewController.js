@@ -358,8 +358,8 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _handleMouseDownEvent: function(event)
   {
-    var dragHandle  = this.get("dragHandle"),
-        firstView   = this.get("firstView.element");
+    var dragHandle = this.get("dragHandle"),
+        firstView  = this.get("firstView.element");
 
     if (this.get("orientation") == 'horizontal')
     {
@@ -381,21 +381,24 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _resetDragHandlePosition: function()
   {
-    var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0];
+    var firstViewElement = this.get("firstView.element"),
+        cumulativeOffset = firstViewElement.cumulativeOffset();
 
-    if (this.get("orientation") == 'horizontal')
+    if (this.get("orientation") == "horizontal")
     {
       var offset           = cumulativeOffset[1],
-          borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+          borderHeight     = isNaN(firstViewElement.getBorderHeight()) ? 0 : firstViewElement.getBorderHeight();
 
-      this.get("dragHandle").setStyle({ top: (this.get("firstView.element").getHeight() + offset + borderHeight) + 'px' });
+      // this.get("dragHandle").setStyle({ top: (firstViewElement.getHeight() + offset + borderHeight) + "px" });
+      this.get("dragHandle").setStyle({ top: (firstViewElement.getHeight() + borderHeight) + "px" });
     }
     else
     {
       var offset          = cumulativeOffset[0],
-          borderWidth     = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth();
+          borderWidth     = isNaN(firstViewElement.getBorderWidth()) ? 0 : firstViewElement.getBorderWidth();
 
-      this.get("dragHandle").setStyle({ left: (this.get("firstView.element").getWidth() + offset + borderWidth) + 'px' });
+      // this.get("dragHandle").setStyle({ left: (firstViewElement.getWidth() + offset + borderWidth) + "px" });
+      this.get("dragHandle").setStyle({ left: (firstViewElement.getWidth() + borderWidth) + "px" });
     }
   },
 
