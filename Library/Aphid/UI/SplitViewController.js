@@ -277,15 +277,17 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _persistState: function()
   {
+    $L.debug("_persistState", this);
+
     if (this.get("orientation") == "vertical")
       $C.set(this.displayName + ".position", this.get("firstView.element").getWidth());
     else
-    $C.set(this.displayName + ".position", this.get("firstView.element").getHeight());
+      $C.set(this.displayName + ".position", this.get("firstView.element").getHeight());
   },
 
   _restoreState: function()
   {
-    $L.info("_restoreState", "Blah");
+    $L.debug("_restoreState", this);
 
     var paneSize = parseInt($C.get(this.displayName + ".position"));
     var offset   = this.get("firstView.element").cumulativeOffset();
@@ -379,10 +381,22 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _resetDragHandlePosition: function()
   {
-    var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0],
-        borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
-        dragHandleWidth  = this.get("dragHandle").getWidth();
-    this.get("dragHandle").setStyle({ left: (this.get("firstView.element").getWidth() + cumulativeOffset + borderWidth) + 'px' });
+    var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0];
+
+    if (this.get("orientation") == 'horizontal')
+    {
+      var offset           = cumulativeOffset[1],
+          borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+
+      this.get("dragHandle").setStyle({ top: (this.get("firstView.element").getHeight() + offset + borderHeight) + 'px' });
+    }
+    else
+    {
+      var offset          = cumulativeOffset[0],
+          borderWidth     = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth();
+
+      this.get("dragHandle").setStyle({ left: (this.get("firstView.element").getWidth() + offset + borderWidth) + 'px' });
+    }
   },
 
   validatePosition: function(position)
