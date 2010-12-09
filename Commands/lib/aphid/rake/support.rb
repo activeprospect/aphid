@@ -86,7 +86,13 @@ module Aphid
 
         $WATCHING = true
         header "Waiting for Change(s)"
-        watched_files = Dir["Application/**/*.js"] + Dir["Library/**/*.js"] + Dir["Resources/Stylesheets/**/*.less"] + Dir["Resources/Templates/**/*.html"] + Dir["Resources/Images/**/*"] + [ "Vendor/Aphid/Build/.buildstamp" ]
+        watched_files = Dir["Application/**/*.js"] \
+                      + Dir["Library/**/*.js"] \
+                      + Dir["Resources/Stylesheets/**/*.less"] \
+                      + Dir["Resources/Templates/**/*.html"] \
+                      + Dir["Resources/Images/**/*"] \
+                      + Dir["Public/**/*"] \
+                      + [ "Vendor/Aphid/Build/.buildstamp" ]
         FileWatcher.new(watched_files).watch do |filename|
           puts filename + " was changed. Rebuilding project...\n"
           tasks.each { |task| Rake::Task[task].reenable }
