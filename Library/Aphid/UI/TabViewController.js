@@ -142,7 +142,7 @@ Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
   **/
   selectTab: function(tab, animated)
   {
-    if (Object.isUndefined(animated)) animated = true;
+    if (Object.isUndefined(animated)) animated = false;
 
     // Allow selectTab to be called with an Event or an Element
     if (!Object.isElement(tab))

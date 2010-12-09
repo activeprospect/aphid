@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.TabViewController] Disabled animation by default for new
+   TabViewController instances.
+
  * [Aphid.UI.SplitViewController] Added support for setting the position of
    the split view divider programmatically through the methods setPosition and
    setPositionAnimated.
