@@ -93,15 +93,16 @@
     top: 0;
     left: 0;
     right: 0;
-    height: @first-view-height;
+    bottom: 0;
+/*    height: @first-view-height;
     min-height: @first-view-height / 2;
     max-height: @first-view-height * 3;
-  }
+*/  }
 
   > .secondView
   {
     position: absolute;
-    top: @first-view-height + @drag-handle-height;
+    height: @first-view-height + @drag-handle-height;
     bottom: 0;
     left: 0;
     right: 0;
@@ -189,8 +190,8 @@
 {
   > .secondView
   {
-    top: @first-view-height;
-  }
+/*    top: @first-view-height;
+*/  }
 
   > .dragHandle
   {
