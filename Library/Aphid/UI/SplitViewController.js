@@ -195,17 +195,17 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     {
       if (event.clientX - clickOffset <= minPosition + offset[0])
       {
-        this.resizeHorizontal(minPosition + offset[0]);
+        this.resizeVertical(minPosition + offset[0]);
         return;
       }
       else if (event.clientX - clickOffset >= maxPosition + offset[0])
       {
-        this.resizeHorizontal(maxPosition + offset[0]);
+        this.resizeVertical(maxPosition + offset[0]);
         return;
       }
 
       var width = event.clientX - clickOffset;
-      this.resizeHorizontal(width);
+      this.resizeVertical(width);
     }
 
     // Horizontal Mode
@@ -213,17 +213,17 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     {
       if (event.clientY - clickOffset <= minPosition + offset[1])
       {
-        this.resizeVertical(minPosition + offset[1]);
+        this.resizeHorizontal(minPosition + offset[1]);
         return;
       }
       else if (event.clientY - clickOffset >= maxPosition + offset[1])
       {
-        this.resizeVertical(maxPosition + offset[1]);
+        this.resizeHorizontal(maxPosition + offset[1]);
         return;
       }
 
       var height = event.clientY - clickOffset;
-      this.resizeVertical(height);
+      this.resizeHorizontal(height);
     }
     
   },
@@ -237,7 +237,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   // Resize ------------------------------------------------------------------
 
-  resizeHorizontal: function(x)
+  resizeVertical: function(x)
   {
     if (!this._shouldResize())
       return;
@@ -255,7 +255,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     this._didResize();
   },
 
-  resizeVertical: function(y)
+  resizeHorizontal: function(y)
   {
     if (!this._shouldResize())
       return;
@@ -293,9 +293,9 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     var offset   = this.get("firstView.element").cumulativeOffset();
 
     if (this.get("orientation") == "vertical")
-      this.resizeHorizontal(paneSize + offset[0]);
+      this.resizeVertical(paneSize + offset[0]);
     else
-      this.resizeVertical(paneSize + offset[1]);
+      this.resizeHorizontal(paneSize + offset[1]);
 
     this._didResize();
   },
@@ -317,7 +317,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     if (!this._draggableInstance)
     {
       var draggableOptions = {
-        constraint: this.get("orientation") == "vertical" ? "horizontal" : "vertical",
+        constraint: this.get("orientation") == "vertical" ? "horizontal" : "vertical", // Invert
         onDrag: this.draggableDidUpdatePosition.bind(this),
         onEnd: this.draggableDidFinishDragging.bind(this),
         splitViewController: this
