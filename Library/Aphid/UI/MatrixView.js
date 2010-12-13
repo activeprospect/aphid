@@ -193,9 +193,9 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.debug("viewDidLoad", this);
     this._initializeStaticItems();
-    window.console.log("----")
-    window.console.log(this.get("items"))
-    window.console.log("----")
+    // window.console.log("----")
+    // window.console.log(this.get("items"))
+    // window.console.log("----")
     $super();
   },
 
@@ -237,9 +237,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   **/
   selectItem: function(element, event)
   {
-    // Ensure that we can select the item...
-    if (!this._shouldSelectItem(element))
-      return false;
+    if (!this._shouldSelectItem(element)) return false;
+    this._willSelectItem(element);
 
     $L.info("selectItem", this);
 
@@ -1085,10 +1084,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
    */
   _didClearSelection: function()
   {
-    // Call the public callback, that may have been implemented by a subclass.
-    if (this.didDeselectItem)
-      this.didDeselectItem(item);
-
     // Call the matrixViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
     if (this.delegate && this.delegate.matrixViewSelectionDidChange)
@@ -1158,7 +1153,6 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     if (this.delegate && this.delegate.matrixViewDidOpenItem)
       this.delegate.matrixViewDidOpenItem(this, item);
   },
-
 
   /*
    * Aphid.UI.MatrixView#_shouldRemoveItem(item) -> Boolean
