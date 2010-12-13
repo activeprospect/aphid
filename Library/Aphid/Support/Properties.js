@@ -28,7 +28,11 @@ Aphid.Support.Properties = {
       var chainedProperties   = property.split("."),
           thisProperty        = chainedProperties.first(),
           remainingProperties = chainedProperties.slice(1).join(".");
-      return this.get(thisProperty).get(remainingProperties);
+
+      if (this.get(thisProperty).get)
+        return this.get(thisProperty).get(remainingProperties);
+      else
+        throw this._objectWithoutPropertiesError(thisProperty);
     }
 
     // Ensure that the property is defined
@@ -66,7 +70,11 @@ Aphid.Support.Properties = {
       var chainedProperties   = property.split("."),
           thisProperty        = chainedProperties.first(),
           remainingProperties = chainedProperties.slice(1).join(".");
-      return this.get(thisProperty).set(remainingProperties, value);
+
+      if (this.get(thisProperty).get)
+        return this.get(thisProperty).set(remainingProperties, value);
+      else
+        throw this._objectWithoutPropertiesError(thisProperty);
     }
 
     if (!this.hasProperty(property))
@@ -124,6 +132,21 @@ Aphid.Support.Properties = {
   {
     var error  = new Error("Property '" + property + "' is read-only (or computed) on " + this.displayName);
     error.name = "ReadOnlyPropertyError";
+    return error;
+  },
+
+  /*
+   * Aphid.Support.Properties#_objectWithoutPropertiesError(property) -> Error
+   *
+   * - property (String): the property that is not extended by Aphid.Support.Properties
+   *
+   * Returns an Error object stating that the specified +property+ has not
+   * been extended with [[Aphid.Support.Properties]].
+   */
+  _objectWithoutPropertiesError: function(property)
+  {
+    var error  = new Error("Property '" + property + "' instance has not been extended by Aphid.Support.Properties on " + this.displayName);
+    error.name = "ObjectWithoutPropertiesError";
     return error;
   }
 

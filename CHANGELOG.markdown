@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Added detection for uninitialized properties
+   when getting or setting properties with chaining (i.e. "foo.bar.baz").
+
  * [Aphid.UI.View] Changed the behavior of _addSubview so that we add the
    element to the DOM and hide it with the visibility and opacity properties
    before calling viewWillAppear so that the viewWillAppear callback can
