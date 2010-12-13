@@ -353,6 +353,7 @@ Aphid.Model = Class.create(Aphid.Support.Object, {
     // Request Options
     var options = {
       method: 'get',
+      asynchronous: false,
       contentType: 'application/json',
       onSuccess: function(transport)
       {

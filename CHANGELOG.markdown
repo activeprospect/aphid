@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] Disabled asynchronous loading by default, for now.
+
  * [Aphid.Support.Properties] Added detection for uninitialized properties
    when getting or setting properties with chaining (i.e. "foo.bar.baz").
 
