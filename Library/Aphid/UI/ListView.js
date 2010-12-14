@@ -562,7 +562,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       this.set("selectedItems", false);
       this.set("selectedItemIndexes", false);
     }
-    this._persistSelection();
+    if (this.get("persistSelectedItem"))
+      this._persistSelection();
   },
 
   /**
