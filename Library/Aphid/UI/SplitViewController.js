@@ -149,8 +149,12 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
     {
       this.get("element").addClassName("resizable");
       this.get("draggableInstance"); // Lazily Initialize
-      this._restoreState();
     }
+  },
+
+  viewWillAppear: function()
+  {
+    if (this.get("allowsResize")) this._restoreState();
   },
 
   viewDidAppear: function(animated)
@@ -243,14 +247,26 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
       return;
 
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[0],
-        borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
-        dragHandleWidth  = this.get("dragHandle").getWidth();
+        borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth();
+
+    var dragHandleWidth, dragHandlePosition;
+    switch (this.get("mode"))
+    {
+      case "borderless":
+        dragHandleWidth = 0;
+        dragHandlePosition = (x - cumulativeOffset + borderWidth) - (this.get("dragHandle").getWidth() / 2);
+        break;
+      default:
+        dragHandleWidth = this.get("dragHandle").getWidth();
+        dragHandlePosition = x - cumulativeOffset + borderWidth;
+        break;
+    }
 
     this._willResize();
 
     this.get("firstView.element").setStyle({ width: x - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ left: (x - cumulativeOffset + borderWidth + dragHandleWidth) + 'px' });
-    this.get("dragHandle").setStyle({ left: (x - cumulativeOffset + borderWidth) + 'px' });
+    this.get("dragHandle").setStyle({ left: dragHandlePosition + 'px' });
 
     this._didResize();
   },
@@ -261,14 +277,26 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
       return;
 
     var cumulativeOffset = this.get("firstView.element").cumulativeOffset()[1],
-        borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
+        borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+
+    var dragHandleHeight, dragHandlePosition;
+    switch (this.get("mode"))
+    {
+      case "borderless":
+        dragHandleHeight = 0;
+        dragHandlePosition = (y - cumulativeOffset + borderHeight) - (this.get("dragHandle").getHeight() / 2);
+        break;
+      default:
         dragHandleHeight = this.get("dragHandle").getHeight();
+        dragHandlePosition = y - cumulativeOffset + borderHeight;
+        break;
+    }
 
     this._willResize();
 
     this.get("firstView.element").setStyle({ height: y - cumulativeOffset + 'px' });
     this.get("secondView.element").setStyle({ top: (y - cumulativeOffset + borderHeight + dragHandleHeight) + 'px' });
-    this.get("dragHandle").setStyle({ top: (y - cumulativeOffset + borderHeight) + 'px' });
+    this.get("dragHandle").setStyle({ top: dragHandlePosition + 'px' });
 
     this._didResize();
   },
@@ -277,27 +305,48 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
   _persistState: function()
   {
-    $L.debug("_persistState", this);
+    var identity   = this.get("element").readAttribute("id"),
+        cookieName = this.displayName + "[" + identity + "].position",
+        position;
+
+    if (!identity)
+    {
+      $L.warn("Unable to persist position because the split view element is lacking a unique id", this);
+      return false;
+    }
 
     if (this.get("orientation") == "vertical")
-      $C.set(this.displayName + ".position", this.get("firstView.element").getWidth());
+      position = this.get("firstView.element").getWidth();
     else
-      $C.set(this.displayName + ".position", this.get("firstView.element").getHeight());
+      position = this.get("firstView.element").getHeight();
+
+    $L.info("Persisting position (" + position + ") in cookie \"" + cookieName + "\"", this);
+
+    if (position >= 0)
+      $C.set(cookieName, position.toString());
+    else
+      $C.erase(cookieName);
+
+    return true;
   },
 
   _restoreState: function()
   {
-    $L.debug("_restoreState", this);
+    var identity   = this.get("element").readAttribute("id"),
+        cookieName = this.displayName + "[" + identity + "].position",
+        position   = $C.get(cookieName);
 
-    var paneSize = parseInt($C.get(this.displayName + ".position"));
-    var offset   = this.get("firstView.element").cumulativeOffset();
+    if (!position)
+    {
+      $L.debug("Not restoring position as no persisted position was found", this);
+      return false;
+    }
 
-    if (this.get("orientation") == "vertical")
-      this.resizeVertical(paneSize + offset[0]);
-    else
-      this.resizeHorizontal(paneSize + offset[1]);
+    $L.info("Restoring position to \"" + position + "px\" from cookie \"" + cookieName + "\"", this);
 
-    this._didResize();
+    this.setPosition(parseInt(position));
+
+    return true;
   },
 
   // Custom Accessors --------------------------------------------------------
@@ -337,19 +386,43 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
     if (this.get("orientation") == "vertical")
     {
-      var borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
-          dragHandleWidth  = this.get("dragHandle").getWidth();
+      var borderWidth = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth();
+
+      var dragHandleWidth, dragHandlePosition;
+      switch (this.get("mode"))
+      {
+        case "borderless":
+          dragHandleWidth = 0;
+          dragHandlePosition = position - (this.get("dragHandle").getWidth() / 2);
+          break;
+        default:
+          dragHandleWidth = this.get("dragHandle").getWidth();
+          dragHandlePosition = position + borderWidth;
+          break;
+      }
 
       this._willResize();
 
       this.get("firstView.element").setStyle({ width: position + 'px' });
       this.get("secondView.element").setStyle({ left: (position + borderWidth + dragHandleWidth) + 'px' });
-      this.get("dragHandle").setStyle({ left: (position + borderWidth) + 'px' });
+      this.get("dragHandle").setStyle({ left: dragHandlePosition + 'px' });
     }
     else
     {
-      var borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
+      var borderHeight = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+
+      var dragHandleHeight, dragHandlePosition;
+      switch (this.get("mode"))
+      {
+        case "borderless":
+          dragHandleHeight = 0;
+          dragHandlePosition = position - (this.get("dragHandle").getHeight() / 2);
+          break;
+        default:
           dragHandleHeight = this.get("dragHandle").getHeight();
+          dragHandlePosition = position + borderHeight;
+          break;
+      }
 
       this._willResize();
       
@@ -361,7 +434,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
         height: bottom + "px"
       });
       // this.get("secondView.element").setStyle({ top: (position + borderHeight + dragHandleHeight) + 'px' });
-      this.get("dragHandle").setStyle({ top: (position + borderHeight) + 'px' });
+      this.get("dragHandle").setStyle({ top: dragHandlePosition + 'px' });
     }
 
     this._didResize();
@@ -376,8 +449,20 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
 
     if (this.get("orientation") == "vertical")
     {
-      var borderWidth      = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth(),
-          dragHandleWidth  = this.get("dragHandle").getWidth();
+      var borderWidth = isNaN(this.get("firstView.element").getBorderWidth()) ? 0 : this.get("firstView.element").getBorderWidth();
+
+      var dragHandleWidth, dragHandlePosition;
+      switch (this.get("mode"))
+      {
+        case "borderless":
+          dragHandleWidth = 0;
+          dragHandlePosition = position - (this.get("dragHandle").getWidth() / 2);
+          break;
+        default:
+          dragHandleWidth = this.get("dragHandle").getWidth();
+          dragHandlePosition = position + borderWidth;
+          break;
+      }
 
       this._willResize();
 
@@ -388,13 +473,25 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
         left: (position + borderWidth + dragHandleWidth) + 'px'
       });
       new Effect.Morph(this.get("dragHandle"), {
-        left: (position + borderWidth) + 'px'
+        left: dragHandlePosition + 'px'
       });
     }
     else
     {
-      var borderHeight     = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight(),
-          dragHandleHeight = this.get("dragHandle").getHeight();
+      var borderHeight = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+
+      var dragHandleHeight, dragHandlePosition;
+       switch (this.get("mode"))
+       {
+         case "borderless":
+           dragHandleHeight = 0;
+           dragHandlePosition = position - (this.get("dragHandle").getHeight() / 2);
+           break;
+         default:
+           dragHandleHeight = this.get("dragHandle").getHeight();
+           dragHandlePosition = position + borderHeight;
+           break;
+       }
 
       this._willResize();
 
@@ -417,7 +514,7 @@ Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
           }),
           new Effect.Morph(this.get("dragHandle"), {
             style: {
-              top: (position + borderHeight) + 'px'
+              top: dragHandlePosition + 'px'
             }
           })
         ],

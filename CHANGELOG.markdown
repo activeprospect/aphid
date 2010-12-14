@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.SplitViewController] Made the split view aware of the differences
+   between modes and fixed initialization so that it sets the correct
+   secondView position regardless of mode.
+
  * [Aphid.Model] Disabled asynchronous loading by default, for now.
 
  * [Aphid.Support.Properties] Added detection for uninitialized properties
