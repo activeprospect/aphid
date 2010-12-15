@@ -33,7 +33,7 @@ Aphid.Support.Extensions.Object = {
       var property = pair.key,
           value    = pair.value;
 
-      if (instance.hasProperty && instance.hasProperty(property))
+      if (instance.has && instance.has(property))
         instance.set(property, value);
       else if (!Object.isUndefined(instance[property]))
         instance[property] = value;

@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Renamed "hasProperty" method to simply "has".
+
  * [Aphid.UI.SplitViewController] Made the split view aware of the differences
    between modes and fixed initialization so that it sets the correct
    secondView position regardless of mode.

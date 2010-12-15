@@ -36,7 +36,7 @@ Aphid.Support.Properties = {
     }
 
     // Ensure that the property is defined
-    if (!this.hasProperty(property))
+    if (!this.has(property))
       throw this._undefinedPropertyError(property);
 
     // Check for Computed Property
@@ -77,7 +77,7 @@ Aphid.Support.Properties = {
         throw this._objectWithoutPropertiesError(thisProperty);
     }
 
-    if (!this.hasProperty(property))
+    if (!this.has(property))
       throw this._undefinedPropertyError(property);
 
     // Check for Computed Property
@@ -93,12 +93,12 @@ Aphid.Support.Properties = {
   },
 
   /**
-   * Aphid.Support.Properties#hasProperty(property) -> Boolean
+   * Aphid.Support.Properties#has(property) -> Boolean
    *
    * Returns true or false depending on whether or not the object has the
    * specified +property+ defined.
   **/
-  hasProperty: function(property)
+  has: function(property)
   {
     return !Object.isUndefined(this[property]);
   },
