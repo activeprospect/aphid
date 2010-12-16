@@ -1,0 +1,30 @@
+
+@import "../Configuration";
+
+/* Modal Views ------------------------------------------------------------ */
+
+section.ModalView
+{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  height: 400px;
+  width: 600px;
+
+  margin-top: -200px;
+  margin-left: -300px;
+
+  background-color: white;
+  outline: 0.1em solid black;
+
+  z-index: @modal-z-index;
+
+  -webkit-box-shadow: 0 0 3em rgba(0, 0, 0, 1);
+}
+
+section.ModalView.dialog
+{
+  height: 300px;
+  width: 500px;
+}

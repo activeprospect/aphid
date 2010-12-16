@@ -24,12 +24,25 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   _modalViewContainer: false,
 
   /**
-   * Aphid.UI.ViewController#modalViewController -> ViewController | false
+   * Aphid.UI.ViewController#modalViewController -> Aphid.UI.ViewController | false
    *
    * The currently presented modal view controller whose parent is this view
    * controller, or false if no view controller is currently modal.
   **/
   modalViewController: false,
+
+  /**
+   * Aphid.UI.ViewController#modalView -> Aphid.UI.ModalView
+   *
+   * The currently presented modal view controller whose parent is this view
+   * controller, or false if no view controller is currently modal.
+  **/
+  modalView: function()
+  {
+    if (!this._modalView)
+      this._modalView = new Aphid.UI.ModalView();
+    return this._modalView;
+  },
 
   // -------------------------------------------------------------------------
 
@@ -111,36 +124,15 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     // Display the Overlay
     $AppDelegate.mainWindow.displayOverlayAnimated(animated);
 
-    // Display the Modal View Container
-    if (!this._modalViewContainer)
-    {
-      this._modalViewContainer = new Element("div", { className: 'modalView' });
-      this._modalViewContainer.hide();
-      document.body.insert(this._modalViewContainer);
-    }
-    animated ? this._modalViewContainer.appear({ duration: 0.5 }).morph({ top: "10%", bottom: "10%" }, { duration: 0.25 }) : this._modalViewContainer.show();
+    // Add the Modal View Controller to the Modal View
+    this.get("modalView").setView(viewController);
 
-    // Setup the View
-    viewController.element.hide();
-    viewController.superview = this;
+    // Display the Modal View
+    animated ? $AppDelegate.mainWindow.addSubviewAnimated(this.get("modalView")) : $AppDelegate.mainWindow.addSubview(this.get("modalView"));
 
-    this.modalViewController = viewController;
+    this.set("modalViewController", viewController);
     // TODO This should be parentViewController
-    this.subviews.push(this.modalViewController);
-
-    // "View Will Appear..."
-    if (this.modalViewController.viewWillAppear)
-      this.modalViewController.viewWillAppear();
-
-    // Insert the view into the DOM
-    this._modalViewContainer.insert(this.modalViewController.element);
-
-    // Display the View
-    animated ? this.modalViewController.element.appear({ duration: 0.25 }) : this.modalViewController.element.show();
-
-    // "View Did Appear..."
-    if (this.modalViewController.viewDidAppear)
-      this.modalViewController.viewDidAppear();
+    // this.subviews.push(this.modalViewController);
   },
 
   /**
@@ -171,11 +163,11 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     $AppDelegate.mainWindow.dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
-    animated ? this._modalViewContainer.fade({ duration: 0.25 }) : this._modalViewContainer.hide();
-    animated ? this._modalViewContainer.update.delay(0.25) : this._modalViewContainer.update();
+    animated ? this.get("modalView").removeFromSuperviewAnimated() : this.get("modalView").removeFromSuperview();
+    animated ? this.get("modalViewController").removeFromSuperviewAnimated() : this.get("modalViewController").removeFromSuperview();
 
     // Unset the Modal View Controller
-    this.modalViewController = false;
+    this.set("modalViewController", false);
   }
 
 });

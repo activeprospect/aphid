@@ -16,6 +16,7 @@ Aphid.UI = {};
 
 // Controllers ---------------------------------------------------------------
 
+//= require "UI/ModalView"
 //= require "UI/ViewController"
 //= require "UI/TabViewController"
 //= require "UI/SplitViewController"

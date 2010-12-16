@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ModalView] Added a modal view class and migrated ViewController's
+   presentModalViewController to using the new modal view class.
+
  * [Aphid.Support.Properties] Renamed "hasProperty" method to simply "has".
 
  * [Aphid.UI.SplitViewController] Made the split view aware of the differences
