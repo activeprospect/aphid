@@ -51,7 +51,7 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
     // Replace the Original <select> Element
     this.selectElement.insert({ after: this.element });
-    // this.selectElement.hide();
+    this.selectElement.hide();
 
     // Observe <select> and relay events to the Aphid.UI.Controls.SelectView
     this.selectElement.observe("change", function(event) {
