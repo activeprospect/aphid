@@ -37,6 +37,10 @@ Aphid.UI = {};
 //= require "UI/SourceListViewItem"
 //= require "UI/DividerSourceListViewItem"
 
+// Token List View -----------------------------------------------------------
+
+//= require "UI/TokenListView"
+
 // Matrix View ---------------------------------------------------------------
 
 //= require "UI/MatrixView"

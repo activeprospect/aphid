@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.TokenListView] Added a new list view subclass for listing tokens,
+   such as filters or recipients.
+
  * [Aphid.UI.ModalView] Added a modal view class and migrated ViewController's
    presentModalViewController to using the new modal view class.
 

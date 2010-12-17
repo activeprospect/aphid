@@ -1,0 +1,45 @@
+
+ul.TokenListView
+{
+  position: absolute;
+  top: auto;
+  left: 1em;
+  right: 1em;
+  height: 6em;
+  bottom: 3em;
+
+  background-color: white;
+  border: 0.1em solid rgba(0, 0, 0, 0.2);
+
+  li
+  {
+    float: left;
+    padding: 0.5em;
+    line-height: normal;
+    height: auto;
+    margin: 0.5em 0 0 0.5em;
+    
+    background-color: #eff2f7 !important;
+    border: 0.1em solid #ccd5e4;
+
+    -webkit-border-radius: 0.25em;
+    -moz-border-radius: 0.5em;
+
+    :after
+    {
+      content: "✖";
+      padding: 0.5em 0 0.5em 0.5em;
+      margin-left: 0.5em;
+      color: #a9b6d0;
+      border-left: 0.1em solid #ccd5e4;
+      height: 100%;
+    }
+  }
+
+  li.selected
+  {
+    background-color: #ccd5e4 !important;
+    background-image: none;
+  }
+
+}
