@@ -65,8 +65,9 @@
   color: rgba(0, 0, 0, 0.85);
 }
 
-.SelectView ul
+ul.SelectView
 {
+  z-index: 10000;
   padding: 0.2em;
   position: absolute;
   border: 0.1em solid rgba(0, 0, 0, 0.3);
@@ -77,28 +78,28 @@
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   cursor: default !important;
-}
 
-.SelectView li
-{
-  padding: 0.1em 0.5em;
-  padding-left: 2em;
-  text-align: left;
-  cursor: default !important;
-}
+  li
+  {
+    padding: 0.1em 0.5em;
+    padding-left: 2em;
+    text-align: left;
+    cursor: default !important;
+  }
 
-.SelectView li.hover
-{
-  color: white;
-  background-color: #336699;
-  text-shadow: none;
-}
+  li.hover
+  {
+    color: white;
+    background-color: #336699;
+    text-shadow: none;
+  }
 
-.SelectView li.selected:before
-{
-  content: "\2713";
-  margin-left: -2em;
-  width: 2em;
-  display: inline-block;
-  text-align: center;
+  li.selected:before
+  {
+    content: "\2713";
+    margin-left: -2em;
+    width: 2em;
+    display: inline-block;
+    text-align: center;
+  }
 }

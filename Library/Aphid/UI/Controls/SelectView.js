@@ -42,8 +42,9 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
     // List Element
     this.listElement = new Element("ul");
+    this.listElement.addClassName("SelectView");
     this.listElement.hide();
-    this.element.insert(this.listElement);
+    Element.insert(document.body, this.listElement);
 
     // Initialize Items from Select Element
     this._initializeItemsFromSelectElement();
@@ -139,8 +140,8 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
     this._updateHoverElement(this.selectedItem);
     
-    this.listElement.style.top = (this.widgetElement.positionedOffset().top - this.selectedItem.positionedOffset().top) + "px";
-    this.listElement.style.left = this.widgetElement.positionedOffset().left - 10 + "px";
+    this.listElement.style.top = (this.element.cumulativeOffset().top - this.selectedItem.positionedOffset().top) + "px";
+    this.listElement.style.left = this.element.cumulativeOffset().left + "px";
     this.listElement.style.minWidth = this.widgetElement.getWidth() + "px";
 
     this.listElement.hide();
