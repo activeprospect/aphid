@@ -1,6 +1,20 @@
 /**
  * class Aphid.UI.Controls.SelectView < Aphid.UI.View
  *
+ * #### Delegate Methods
+ *
+ *  * `selectViewSelectionDidChange(selectView, option)` - Called when the
+ *    current selection has changed.
+ *
+ * #### Subclassing Notes
+ *
+ * If you wish to subclass [[Aphid.UI.Controls.SelectView]] instead of
+ * wrapping an instance and implementing the delegate pattern, you may also
+ * override the following methods:
+ *
+ *  * `didSelectOption(option)` - Called when the specified option has been
+ *    selected.
+ *
 **/
 
 //= require "SelectViewOption"
@@ -217,6 +231,8 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
       }
       this.get("widgetElement").focus();
     }
+
+    this._didSelectOption(selectedOption);
   },
 
   /**
@@ -554,8 +570,22 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
   // -------------------------------------------------------------------------
 
   /*
+   * Aphid.UI.Controls.SelectView#_didSelectOption(option) -> null
    *
+   * Performs any internal actions after an option has been selected before
+   * calling the `didSelectOption` callback and the `selectViewSelectionDidChange`
+   * delegate method.
+   */
+  _didSelectOption: function(option)
   {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didSelectOption)
+      this.didSelectOption(option);
+
+    // Call the selectViewSelectionDidChange method on the delegate, if the
+    // delegate has implemented it.
+    if (this.delegate && this.delegate.selectViewSelectionDidChange)
+      this.delegate.selectViewSelectionDidChange(this, option);
   },
 
   // -------------------------------------------------------------------------

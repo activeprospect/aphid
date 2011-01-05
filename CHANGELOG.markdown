@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Controls.SelectView] Implemented support for a `didSelectOption`
+   callback and a `selectViewSelectionDidChange` delegate method that are
+   called when the selection changes.
+
  * [Aphid.UI.Window] Implemented preventTextSelection() and
    allowTextSelection() (from Aphid.UI.Controls.SelectView) for preventing
    and allowing text selection on the document. This is currently only
