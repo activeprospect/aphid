@@ -120,6 +120,40 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
     $L.debug("Dismissing Overlay (Animated: " + (animated ? "Yes" : "No") + ")", this);
     var overlayElement = this.get("overlayElement");
     animated ? overlayElement.fade({ duration: 0.25 }) : overlayElement.hide();
+  },
+
+  // Document Text Selection -------------------------------------------------
+
+  /*
+   * Aphid.UI.Window#preventTextSelection() -> null
+   *
+   * Disables any text selection from occurring on the document. Text
+   * selection can be re-enabled by calling [[Aphid.UI.Window#allowTextSelection]].
+  **/
+  preventTextSelection: function()
+  {
+    // document.onselectstart = function() { return false; }
+    // this.element.observe('selectstart', function() { window.console.log("Foo"); return false; });
+    document.body.setStyle({
+      "-webkit-user-select": "none",
+      "-moz-user-select": "none"
+    });
+  },
+
+  /*
+   * Aphid.UI.Window#allowTextSelection() -> null
+   *
+   * Allows text selection to occur on the document. This is normally called
+   * after text selection has been suspended with a previous call to
+   * [[Aphid.UI.Window#preventTextSelection]].
+  **/
+  allowTextSelection: function()
+  {
+    // document.onselectstart = null;
+    document.body.setStyle({
+      "-webkit-user-select": "auto",
+      "-moz-user-select": "auto"
+    });
   }
 
 });

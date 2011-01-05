@@ -370,7 +370,7 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
     if (!this.listElement.visible())
       this.displayOptions();
 
-    this._preventTextSelection();
+    $AppDelegate.mainWindow.preventTextSelection();
 
     this._handleMouseUpEventOnDocumentCached = this._handleMouseUpEventOnDocument.bindAsEventListener(this);
     document.body.observe("mouseup", this._handleMouseUpEventOnDocumentCached);
@@ -402,7 +402,7 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
         this.dismissOptions();
     }
 
-    this._allowTextSelection();
+    $AppDelegate.mainWindow.allowTextSelection();
     document.body.stopObserving("mouseup", this._handleMouseUpEventOnDocumentCached);
 
     this._isDragging = false;
@@ -554,35 +554,8 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
   // -------------------------------------------------------------------------
 
   /*
-   * Aphid.UI.Controls.SelectView#_preventTextSelection() -> null
    *
-   * Disables any text selection from occurring on the document. Text
-   * selection can be re-enabled by calling [[Aphid.UI.Controls.SelectView#_allowTextSelection]].
-  **/
-  _preventTextSelection: function()
   {
-    // document.onselectstart = function() { return false; }
-    // this.element.observe('selectstart', function() { window.console.log("Foo"); return false; });
-    document.body.setStyle({
-      "-webkit-user-select": "none",
-      "-moz-user-select": "none"
-    });
-  },
-
-  /*
-   * Aphid.UI.Controls.SelectView#_allowTextSelection() -> null
-   *
-   * Allows text selection to occur on the document. This is normally called
-   * after text selection has been suspended with a previous call to
-   * [[Aphid.UI.Controls.SelectView#_preventTextSelection]].
-  **/
-  _allowTextSelection: function()
-  {
-    // document.onselectstart = null;
-    document.body.setStyle({
-      "-webkit-user-select": "auto",
-      "-moz-user-select": "auto"
-    });
   },
 
   // -------------------------------------------------------------------------

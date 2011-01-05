@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Window] Implemented preventTextSelection() and
+   allowTextSelection() (from Aphid.UI.Controls.SelectView) for preventing
+   and allowing text selection on the document. This is currently only
+   supported by WebKit and Gecko-based browsers.
+
  * [Aphid.UI.Controls.SelectView] Added a SelectViewOption class for managing
    options in the SelectView. All items in a SelectView must now be an
    instance of SelectViewOption (this is similar to the requirements of
