@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Controls.SelectView] Added a SelectViewOption class for managing
+   options in the SelectView. All items in a SelectView must now be an
+   instance of SelectViewOption (this is similar to the requirements of
+   Aphid.UI.ListView).
+
  * [Aphid.UI.TokenListView] Added a new list view subclass for listing tokens,
    such as filters or recipients.
 

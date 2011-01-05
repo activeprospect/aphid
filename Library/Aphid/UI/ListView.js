@@ -196,6 +196,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.set("items", items);
   },
 
+  /*
+   * Aphid.UI.ListView#_initializeStaticListViewItem(element) -> null
+   */
   _initializeStaticListViewItem: function(element)
   {
     var viewClass = element.getData("view-class");
@@ -273,7 +276,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   /*
-   * Aphid.UI.ListView#addItem(item) -> Aphid.UI.ListViewItem
+   * Aphid.UI.ListView#_addItem(item) -> Aphid.UI.ListViewItem
    *
    * - item (Element): The item to be added to the list
    *

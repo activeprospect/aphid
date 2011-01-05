@@ -3,6 +3,8 @@
  *
 **/
 
+//= require "SelectViewOption"
+
 Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
   displayName: "Aphid.UI.Controls.SelectView",
@@ -16,6 +18,30 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
   // Private Properties
   _isDragging: false,
 
+  /**
+   * Aphid.UI.Controls.SelectView#options -> Array
+   *
+   * An array of [[Aphid.UI.Controls.SelectViewOption]] instances for each
+   * option available for selection.
+  **/
+  options: false,
+
+  /**
+   * Aphid.UI.Controls.SelectView#selectedOption -> [[Aphid.UI.Controls.SelectViewOption]] | false
+   *
+   * An instance of [[Aphid.UI.Controls.SelectViewOption]] that denotes the
+   * currently selected option.
+  **/
+  selectedOption: false,
+
+  /**
+   * Aphid.UI.Controls.SelectView#placeholder -> String | false
+   *
+   * A string that will be used as the placeholder when no item has been
+   * selected.
+  **/
+  placeholder: false,
+
   // Initialization ----------------------------------------------------------
 
   viewDidLoad: function()
@@ -27,27 +53,32 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
       return;
 
     // Set the <select> element as the selectElement property
-    this.selectElement = this.element;
+    this.set("selectElement", this.element);
 
     // Overwrite the element property with our new control element
-    this.element = new Element("div").addClassName("SelectView");
-    this.element.observe('mousedown', this._handleMouseDownEvent.bind(this));
+    var element = new Element("div").addClassName("SelectView");
+    element.observe('mousedown', this._handleMouseDownEvent.bind(this));
+    this.set("element", element);
 
     // Widget Element
-    this.widgetElement = new Element("div").addClassName("widget");
-    this.widgetElement.setAttribute("tabindex", 0);
-    this.widgetElement.observe("focus", this._handleFocusEvent.bind(this));
-    this.widgetElement.observe("blur", this._handleBlurEvent.bind(this));
-    this.element.insert(this.widgetElement);
+    var widgetElement = new Element("div").addClassName("widget");
+    widgetElement.setAttribute("tabindex", 0);
+    widgetElement.observe("focus", this._handleFocusEvent.bind(this));
+    widgetElement.observe("blur", this._handleBlurEvent.bind(this));
+    widgetElement.update(this.get("placeholder"));
+    this.set("widgetElement", widgetElement);
+    this.element.insert(this.get("widgetElement"));
 
     // List Element
-    this.listElement = new Element("ul");
-    this.listElement.addClassName("SelectView");
-    this.listElement.hide();
-    Element.insert(document.body, this.listElement);
+    var listElement = new Element("ul");
+    listElement.addClassName("SelectView");
+    listElement.hide();
+    this.set("listElement", listElement);
+    Element.insert(document.body, this.get("listElement"));
 
     // Initialize Items from Select Element
-    this._initializeItemsFromSelectElement();
+    // this._initializeItemsFromSelectElement();
+    this._initializeStaticSelectViewOptions();
 
     // Replace the Original <select> Element
     this.selectElement.insert({ after: this.element });
@@ -61,10 +92,8 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
     // Select Item
     var selectedOption = this.selectElement.down("[selected]");
-    if (selectedOption)
+    if (selectedOption && selectedOption.readAttribute("value"))
       this.select(selectedOption.readAttribute("value"));
-    else
-      this.selectIndex(0);
 
     // Prevent Text Selection (in Internet Explorer)
     if (Prototype.Browser.IE)
@@ -77,51 +106,28 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
 
   // Original Select Box -----------------------------------------------------
 
-  _initializeItemsFromSelectElement: function()
+  /*
+   * Aphid.UI.Controls.SelectView#_initializeStaticListViewItems() -> null
+   */
+  _initializeStaticSelectViewOptions: function()
   {
-
-    // Parse Options
-    this._options = this.selectElement.childElements().collect(this._parseOptionElement, this);
-
-    // Add Items to Options List Element
-    this._listItems = this._options.collect(this._listItemForOption, this);
-    this.listElement.insert(this._listItems);
-
+    var options = this.get("selectElement").childElements().collect(this._initializeStaticSelectViewOption, this);
+    this.set("options", options);
   },
 
-  _parseOptionElement: function(element)
+  /*
+   * Aphid.UI.Controls.SelectView#_initializeStaticSelectViewOption(element) -> null
+   */
+  _initializeStaticSelectViewOption: function(element)
   {
-    return {
-      label: element.innerHTML,
-      value: element.readAttribute("value")
-    };
-  },
+    var viewClass = element.getData("view-class");
+    if (!viewClass) viewClass = "Aphid.UI.Controls.SelectViewOption";
 
-  _listItemForOption: function(option)
-  {
-    var listItemElement = new Element("li");
-    listItemElement.update(option.label);
-    listItemElement.setData("value", option.value);
-    listItemElement.observe('click', this._handleClickEventOnListItem.bind(this));
-    listItemElement.observe("mousemove", this._handleMouseMoveEventOnListItem.bind(this));
-    listItemElement.observe("mouseout", this._handleMouseOutEventOnListItem.bind(this));
-    return listItemElement;
-  },
+    $L.info("Initializing Option as " + viewClass, this);
 
-  // _validateElement: function()
-  // {
-  //   if (this.element.tagName != "SELECT")
-  //   {
-  //     $L.error("Must be initialized with a <select> element", this.displayName);
-  //     return false;
-  //   }
-  //   else if (!Object.isUndefined(this.element.getAttribute("multiple")))
-  //   {
-  //     $L.error("Select boxes with multiple selection enabled are not supported", this.displayName);
-  //     return false;
-  //   }
-  //   return true;
-  // },
+    var viewClassImplementation = eval(viewClass);
+    return new viewClassImplementation({ element: element });
+  },
 
   // Options View ------------------------------------------------------------
 
@@ -133,16 +139,29 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
     this.listElement.show();
 
     this.listElement.select(".selected").invoke("removeClassName", "selected");
-    this.selectedItem = this.listElement.down("[data-value='" + this.selectedOption["value"] + "']");
-    this.selectedItem.addClassName("selected");
 
-    var offset = (this.selectedItem.getHeight() / 2) + this.selectedItem.positionedOffset().top;
+    var selectedItem = this.listElement.down("[data-value='" + this.selectedOption["value"] + "']");
+    var top, left;
 
-    this._updateHoverElement(this.selectedItem);
-    
-    this.listElement.style.top = (this.element.cumulativeOffset().top - this.selectedItem.positionedOffset().top) + "px";
-    this.listElement.style.left = this.element.cumulativeOffset().left + "px";
-    this.listElement.style.minWidth = this.widgetElement.getWidth() + "px";
+    if (selectedItem)
+    {
+      selectedItem.addClassName("selected");
+      this._updateHoverElement(this.selectedItem);
+
+      var offset = (selectedItem.getHeight() / 2) + selectedItem.positionedOffset().top;
+      top = (this.get("element").cumulativeOffset().top - selectedItem.positionedOffset().top) + "px";
+      left = this.get("element").cumulativeOffset().left + "px";
+    }
+
+    else
+    {
+      top = this.get("element").cumulativeOffset().top + "px";
+      left = this.get("element").cumulativeOffset().left + "px";
+    }
+
+    this.listElement.style.top = top;
+    this.listElement.style.left = left;
+    this.listElement.style.minWidth = this.get("widgetElement").getWidth() + "px";
 
     this.listElement.hide();
     this.listElement.style.visibility = "visible";
@@ -172,17 +191,14 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
   **/
   select: function(value)
   {
-    var selectedOption = this._options.find(
-      function(option)
-      {
-        return option["value"] == value;
-      }
-    );
-    this.widgetElement.update(selectedOption["label"]);
-    this.selectedOption = selectedOption;
+    var selectedOption = this._findOptionWithValue(value);
+    if (!selectedOption) return false;
 
-    // Update <select> Box
-    var originalOption = this.selectElement.select("[value='" + value + "']");
+    this.set("selectedOption", selectedOption);
+    this.get("widgetElement").update(selectedOption.get("label"));
+
+    // Update Original <select> Box
+    var originalOption = this.get("selectElement").select("[value='" + value + "']");
     if (originalOption.length == 1)
     {
       originalOptionElement = originalOption.first();
@@ -190,27 +206,148 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
     }
 
     // Hide listElement (if visible)
-    if (this.listElement.visible())
+    var listElement = this.get("listElement");
+    if (listElement.visible())
     {
-      var selectedElement = this.listElement.down("[data-value='" + selectedOption["value"] + "']");
+      var selectedElement = listElement.down("[data-value='" + selectedOption.get("value") + "']");
       if (selectedElement)
       {
         new Effect.Pulsate(selectedElement, { duration: 0.1, pulses: 1 });
         this.dismissOptions();
       }
-      this.widgetElement.focus();
+      this.get("widgetElement").focus();
     }
   },
 
+  /**
+   * Aphid.UI.Controls.SelectView#selectIndex(value) -> Boolean
+   *
+   * - index (Number): the index of the option to be selected
+   *
+   * Selects the option at the specified index in the list view. Returns true
+   * if the selection took place or false if the index was not found.
+  **/
   selectIndex: function(index)
   {
-    var selectedOption = this._options[index];
-    this.widgetElement.update(selectedOption["label"]);
-    this.selectedOption = selectedOption;
+    var selectedOption = this.get("options")[index];
+    if (Object.isUndefined(selectedOption)) return false;
+
+    $L.info("Selecting option at index " + index + " (" + selectedOption.get("label") + ")", this);
+
+    this.set("selectedOption", selectedOption);
+    this.get("widgetElement").update(selectedOption.get("label"));
 
     // Hide listElement (if visible)
-    if (this.listElement.visible())
+    if (this.get("listElement").visible())
       this.dismissOptions();
+  },
+
+  // Select Items ------------------------------------------------------------
+
+  /**
+   * Aphid.UI.Controls.SelectView#setOptions(options) -> null
+   *
+   *  - options (Array): Array of [[Aphid.UI.Controls.SelectViewOption]]
+   *    instances
+   *
+   * Sets the specified options as the options on the SelectView, removing any
+   * existing options in the process.
+  **/
+  setOptions: function(options)
+  {
+    options = $A(options);
+
+    // Replace Placeholder
+    this.get("widgetElement").update(this.get("placeholder"));
+
+    // Clear Selection
+    this.set("selectedOption", false);
+
+    $L.info("Setting options to: " + options, this);
+
+    // Ensure that we are only passed instances of Aphid.UI.ListViewItem...
+    if (!options.all(this._validateOption))
+    {
+      $L.error("All options must be instances of Aphid.UI.Controls.SelectViewOption!", this);
+      return;
+    }
+
+    // Reset Selection, Element and Items
+    // this.clearSelection();
+    this.get("listElement").update();
+    this.options = $A();
+
+    // Add each item to the list
+    options.each(this._addOption, this);
+
+    // Setup sorting
+    // if (this.items.length > 0 && this.sortingEnabled)
+    //   this._setupSorting();
+
+    return options;
+  },
+
+  /**
+   * Aphid.UI.Controls.SelectView#addOption(option) -> Aphid.UI.Controls.SelectViewOption
+   *
+   * - option ([[Aphid.UI.Controls.SelectViewOption]]): The option to be added
+   *   to the selection list
+   *
+   * Adds the specified option to the end of the select view.
+  **/
+  addOption: function(option)
+  {
+    return this._addOption(option);
+  },
+
+  /*
+   * Aphid.UI.Controls.SelectView#_addOption(item) -> Aphid.UI.Controls.SelectViewOption
+   *
+   * - item (Element): The item to be added to the list
+   *
+   * Internal implementation for adding an item to the list view that bypasses
+   * any delegate or callback methods.
+   */
+  _addOption: function(option)
+  {
+    // Add Item to items Property
+    this.get("options").push(option);
+
+    // Select Item
+    // if (item.get("isSelected"))
+    // {
+    //   var itemIndex = this.get("items").indexOf(item);
+    //   if (!this.get("multipleSelectionEnabled"))
+    //   {
+    //     if (this.get("selectedItem"))
+    //       this._deselectItem(this.get("selectedItem"));
+    //     this.set("selectedItem", item);
+    //     this.set("selectedItemIndex", itemIndex);
+    //   }
+    //   else
+    //   {
+    //     this.get("selectedItems").push(item);
+    //     this.get("selectedItemIndexes").push(itemIndex);
+    //   }
+    // }
+
+    // Set listView on Item
+    option.set("selectView", this);
+
+    // Set the sortIndex property on the item to its index in the items array
+    // if (this.get("sortingEnabled"))
+    //   item.set("sortIndex", this.get("items").indexOf(item));
+
+    // Add Item View to Subviews
+    var listItemElement = option.toListItemElement();
+    this.get("listElement").insert(listItemElement);
+
+    // Observe Item
+    listItemElement.observe("click", this._handleClickEventOnListItem.bind(this));
+    listItemElement.observe("mousemove", this._handleMouseMoveEventOnListItem.bind(this));
+    listItemElement.observe("mouseout", this._handleMouseOutEventOnListItem.bind(this));
+
+    return option;
   },
 
   // Event Handlers ----------------------------------------------------------
@@ -446,6 +583,36 @@ Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
       "-webkit-user-select": "auto",
       "-moz-user-select": "auto"
     });
+  },
+
+  // -------------------------------------------------------------------------
+
+  /*
+   * Aphid.UI.Controls.SelectView#_validateOption(option) -> Boolean
+   *
+   * - option (Object): the object to be validated
+   *
+   * Evaluates the passed option and ensures that it meets the requirements
+   * for use within a select view.
+   */
+  _validateOption: function(option)
+  {
+    return (option instanceof Aphid.UI.Controls.SelectViewOption);
+  },
+
+  /*
+   * Aphid.UI.Controls.SelectView#_findOptionWithValue(value) -> [[Aphid.UI.Controls.SelectViewOption]]
+   *
+   * - value (String): the value to be searched for
+   *
+   * Iterates all options and returns the first that matches the specified
+   * value. If no option was found to match the value, false will be returned.
+   */
+  _findOptionWithValue: function(value)
+  {
+    return (this.get("options").find(function(option) {
+      return option.get("value") == value;
+    }) || false);
   }
 
 });
