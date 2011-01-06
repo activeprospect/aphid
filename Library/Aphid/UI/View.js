@@ -792,6 +792,38 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     this.get("element").addClassName("disabled");
   },
 
+  // View "Visible" State ----------------------------------------------------
+
+  /**
+   * Aphid.UI.View#hide() -> [[Aphid.UI.View]]
+   *
+   * Sets the view to a hidden state by setting [[Aphid.UI.View#isHidden]]
+   * to `true` and hiding the [[Aphid.UI.View#elament]]. Returns the view that
+   * was hidden.
+  **/
+  hide: function()
+  {
+    this.isHidden = true;
+    if (!this.isLoaded) return;
+    this.get("element").hide();
+    return this;
+  },
+
+  /**
+   * Aphid.UI.View#show() -> [[Aphid.UI.View]]
+   *
+   * Sets the view to a visibile state by [[Aphid.UI.View#isEnabled]] to
+   * `false` and showing the [[Aphid.UI.View#elament]]. Returns the view that
+   * was displayed.
+  **/
+  show: function()
+  {
+    this.isHidden = false;
+    if (!this.isLoaded) return;
+    this.get("element").show();
+    return this;
+  },
+
   // View Outlets ------------------------------------------------------------
 
   /*

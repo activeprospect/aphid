@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added hide() and show() for hiding or showing a view.
+
  * [Aphid.UI.Controls.SelectView] Implemented support for a `didSelectOption`
    callback and a `selectViewSelectionDidChange` delegate method that are
    called when the selection changes.
