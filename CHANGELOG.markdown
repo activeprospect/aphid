@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Return the view from enable() and disable() so that method
+   calls may be chained (i.e. someView.hide().disable()).
+
  * [Aphid.UI.View] Added hide() and show() for hiding or showing a view.
 
  * [Aphid.UI.Controls.SelectView] Implemented support for a `didSelectOption`

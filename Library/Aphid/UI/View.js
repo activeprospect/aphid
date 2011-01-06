@@ -766,30 +766,33 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   // View "Enabled" State ----------------------------------------------------
 
   /**
-   * Aphid.UI.View#enable() -> null
+   * Aphid.UI.View#enable() -> [[Aphid.UI.View]]
    *
    * Sets the view to a enabled state by setting [[Aphid.UI.View#isEnabled]]
    * to `true` and removing the `disabled` CSS class from [[Aphid.UI.View#elament]],
-   * if present.
+   * if present. Returns the view that was enabled.
   **/
   enable: function()
   {
     this.isEnabled = true;
     if (!this.isLoaded) return;
     this.get("element").removeClassName("disabled");
+    return this;
   },
 
   /**
-   * Aphid.UI.View#disable() -> null
+   * Aphid.UI.View#disable() -> [[Aphid.UI.View]]
    *
    * Sets the view to a disabled state by setting [[Aphid.UI.View#isEnabled]]
    * to `false` and adding the `disabled` CSS class to [[Aphid.UI.View#elament]].
+   * Returns the view that was disabled.
   **/
   disable: function()
   {
     this.isEnabled = false;
     if (!this.isLoaded) return;
     this.get("element").addClassName("disabled");
+    return this;
   },
 
   // View "Visible" State ----------------------------------------------------
