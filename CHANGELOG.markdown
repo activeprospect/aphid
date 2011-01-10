@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.MatrixView] Added two new configuration parameters for
+   controlling multiple selection and drag selection support. Drag selection
+   requires multiple selection to be enabled.
+
  * [Aphid.UI.View] Return the view from enable() and disable() so that method
    calls may be chained (i.e. someView.hide().disable()).
 

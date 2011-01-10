@@ -161,6 +161,16 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   **/
   selectedItem: false,
 
+  /**
+   * Aphid.UI.MatrixView#multipleSelectionEnabled -> Boolean
+  **/
+  multipleSelectionEnabled: true,
+
+  /**
+   * Aphid.UI.MatrixView#dragSelectionEnabled -> Boolean
+  **/
+  dragSelectionEnabled: true,
+
   // Initialization ----------------------------------------------------------
 
   initialize: function($super, options)
@@ -242,68 +252,73 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
 
     $L.info("selectItem", this);
 
-    // Multiple Selection (Shift-Select)
-    if (event && event.shiftKey)
+    // Multiple Selection
+    if (event && this.get("multipleSelectionEnabled"))
     {
-      // Find first selected item
-      var firstSelectedElement      = this.get("element").down("li.selected");
-      var firstSelectedElementIndex = this.get("items").indexOf(firstSelectedElement);
-      var selectedElementIndex      = this.get("items").indexOf(element);
 
-      // If the first selected element is the element that was clicked on
-      // then there's nothing for us to do.
-      if (firstSelectedElement == element) return;
-
-      // If no elements are selected already, just select the element that
-      // was clicked on.
-      if (firstSelectedElementIndex == -1)
+      // Multiple Selection (Shift-Select)
+      if (event.shiftKey)
       {
-        this.selectItem(element);
+        // Find first selected item
+        var firstSelectedElement      = this.get("element").down("li.selected");
+        var firstSelectedElementIndex = this.get("items").indexOf(firstSelectedElement);
+        var selectedElementIndex      = this.get("items").indexOf(element);
+
+        // If the first selected element is the element that was clicked on
+        // then there's nothing for us to do.
+        if (firstSelectedElement == element) return;
+
+        // If no elements are selected already, just select the element that
+        // was clicked on.
+        if (firstSelectedElementIndex == -1)
+        {
+          this.selectItem(element);
+          return;
+        }
+
+        var siblings = null
+        if (firstSelectedElementIndex < selectedElementIndex)
+          siblings = firstSelectedElement.nextSiblings();
+        else
+          siblings = firstSelectedElement.previousSiblings();
+        var done = false;
+        siblings.each(function(el) {
+          if (done == false)
+          {
+            el.addClassName('selected');
+            this.get("selectedItems").push(el);
+          }
+          if (element == el) done = true;
+        }, this);
+
         return;
       }
 
-      var siblings = null
-      if (firstSelectedElementIndex < selectedElementIndex)
-        siblings = firstSelectedElement.nextSiblings();
-      else
-        siblings = firstSelectedElement.previousSiblings();
-      var done = false;
-      siblings.each(function(el) {
-        if (done == false)
+      // Multiple Selection (Meta-Select)
+      else if (event.metaKey && this.get("multipleSelectionEnabled"))
+      {
+        // If the element is already selected, deselect it
+        if (element.hasClassName('selected'))
         {
-          el.addClassName('selected')
-          this.selectedItems.push(el)
+          this.selectedItems = this.selectedItems.without(element)
+          element.removeClassName('selected')
         }
-        if (element == el) done = true;
-      }, this);
-    }
 
-    // Multiple Selection (Meta-Select)
-    else if (event && event.metaKey)
-    {
-      // If the element is already selected, deselect it
-      if (element.hasClassName('selected'))
-      {
-        this.selectedItems = this.selectedItems.without(element)
-        element.removeClassName('selected')
-      }
+        // Otherwise, select it
+        else
+        {
+          this.selectedItems.push(element)
+          element.addClassName('selected')
+        }
 
-      // Otherwise, select it
-      else
-      {
-        this.selectedItems.push(element)
-        element.addClassName('selected')
+        return;
       }
     }
 
     // Single Selection (Single Click)
-    else
-    {
-      // TODO Should this be clearSelection?
-      this.get("element").select(".selected").invoke("removeClassName", "selected");
-      this.selectedItems = $A(element);
-      element.addClassName("selected");
-    }
+    this.get("element").select(".selected").invoke("removeClassName", "selected");
+    this.set("selectedItems", $A());
+    element.addClassName("selected");
 
     this._didSelectItem(element);
   },
@@ -367,9 +382,11 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     this._didClearSelection();
   },
 
-  expandSelectionLeft: function(event)
+  _expandSelectionLeft: function(event)
   {
-    $L.info("expandSelectionLeft", this);
+    if (!this.get("multipleSelectionEnabled")) return;
+
+    $L.info("_expandSelectionLeft", this);
     var element = this.element.down('li.selected');
     var otherElement = element.previous();
     otherElement.addClassName('selected');
@@ -382,9 +399,12 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       this.selectHandler(element);
   },
 
-  expandSelectionRight: function(event)
+  _expandSelectionRight: function(event)
   {
+    if (!this.get("multipleSelectionEnabled")) return;
+
     $L.info("expandSelectionRight", this);
+
     var element = this.element.getElementsBySelector('li.selected').last();
     var otherElement = element.next();
     otherElement.addClassName('selected');
@@ -397,9 +417,12 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       this.selectHandler(element);
   },
 
-  expandSelectionUp: function(event)
+  _expandSelectionUp: function(event)
   {
-    $L.info("expandSelectionUp", this);
+    if (!this.get("multipleSelectionEnabled")) return;
+
+    $L.info("_expandSelectionUp", this);
+
     event.stop();
     var element = this.element.down("li.selected");
     var itemWidth = element.getWidth();
@@ -423,9 +446,12 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
       this.selectHandler(element);
   },
 
-  expandSelectionDown: function(event)
+  _expandSelectionDown: function(event)
   {
-    $L.info("expandSelectionDown", this);
+    if (!this.get("multipleSelectionEnabled")) return;
+
+    $L.info("_expandSelectionDown", this);
+
     event.stop();
     var element = this.get("element").select(".selected").last();
 
@@ -676,47 +702,50 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
   {
     $L.debug("_handleKeyDownEvent", this);
 
-    // Meta/Control
-    if (event.metaKey)
+    // Multiple Selection
+    if (this.get("multipleSelectionEnabled"))
     {
-      // Shift-A (Select All)
-      if (event.keyCode == 97 || event.keyCode == 65)
+      // Meta/Control
+      if (event.metaKey)
       {
-        this.selectAll();
-        event.stop();
-        return;
+        // Shift-A (Select All)
+        if (event.keyCode == 97 || event.keyCode == 65)
+        {
+          event.stop();
+          this.selectAll();
+          return;
+        }
       }
-      return;
-    }
 
-    // Shift
-    else if (event.shiftKey)
-    {
-      // Left Arrow
-      if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234)
-        this.expandSelectionLeft(event);
-
-      // Up Arrow
-      if (event.keyCode == Event.KEY_UP || event.keyCode == 63232)
-        this.expandSelectionUp(event);
-
-      // Right Arrow
-      if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235)
-        this.expandSelectionRight(event);
-
-      // Down Arrow
-      if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233)
-        this.expandSelectionDown(event);
-
-      // Space
-      if (event.keyCode == 32)
-        event.stop();
-
-      // Tab
-      if (event.keyCode == Event.KEY_TAB) 
+      // Shift
+      else if (event.shiftKey && this.get("multipleSelectionEnabled"))
       {
-        if (this.selectedItems.size() > 0)
-          this.moveLeft(event);
+        // Left Arrow
+        if (event.keyCode == Event.KEY_LEFT || event.keyCode == 63234)
+          this._expandSelectionLeft(event);
+
+        // Up Arrow
+        if (event.keyCode == Event.KEY_UP || event.keyCode == 63232)
+          this._expandSelectionUp(event);
+
+        // Right Arrow
+        if (event.keyCode == Event.KEY_RIGHT || event.keyCode == 63235)
+          this._expandSelectionRight(event);
+
+        // Down Arrow
+        if (event.keyCode == Event.KEY_DOWN || event.keyCode == 63233)
+          this._expandSelectionDown(event);
+
+        // Space
+        if (event.keyCode == 32)
+          event.stop();
+
+        // Tab
+        if (event.keyCode == Event.KEY_TAB) 
+        {
+          if (this.selectedItems.size() > 0)
+            this.moveLeft(event);
+        }
       }
 
       return;
@@ -804,15 +833,19 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.View, {
     else
       this.clearSelection();
 
-    this._isDragging = true;
-    this._originX = event.pointerX();
-    this._originY = event.pointerY();
-    this.get("selectionOverlayElement").setStyle({
-      width: '0px',
-      height: '0px',
-      left: event.pointerX() - this.element.cumulativeOffset()[0],
-      top: event.pointerY() - this.element.cumulativeOffset()[1]
-    });
+    // Start Drag-Select Operation (if allowed)
+    if (this.get("multipleSelectionEnabled") && this.get("dragSelectionEnabled"))
+    {
+      this._isDragging = true;
+      this._originX = event.pointerX();
+      this._originY = event.pointerY();
+      this.get("selectionOverlayElement").setStyle({
+        width: '0px',
+        height: '0px',
+        left: event.pointerX() - this.element.cumulativeOffset()[0],
+        top: event.pointerY() - this.element.cumulativeOffset()[1]
+      });
+    }
 
     event.preventDefault();
   },
