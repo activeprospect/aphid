@@ -78,6 +78,29 @@ Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
     this.get("element").removeClassName('selected');
     this.set("isSelected", false);
     return this;
+  },
+
+  // Event Handlers ----------------------------------------------------------
+
+  handleMouseDownEvent: function(event)
+  {
+    var listView = this.get("listView");
+
+    event.stop();
+
+    if (listView.get("multipleSelectionEnabled") && this.get("isSelected"))
+      listView.deselectItem(this);
+    else
+      listView.selectItem(this);
+  },
+
+  handleDoubleClickEvent: function(event)
+  {
+    var listView = this.get("listView");
+
+    event.stop();
+
+    listView.openItem(this);
   }
 
 });

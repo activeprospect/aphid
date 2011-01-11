@@ -926,6 +926,207 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     );
   },
 
+  // Events ------------------------------------------------------------------
+
+  _startObserving: function()
+  {
+
+    // Click Events
+    if (this.handleClickEvent && !this._handleClickEventListener)
+    {
+      $L.info("Observing for Click Events", this);
+      this._handleClickEventListener = this._handleClickEvent.bindAsEventListener(this);
+      this.get("element").observe("click", this._handleClickEventListener);
+    }
+
+    // Double-Click Events
+    if (this.handleDoubleClickEvent && !this._handleDoubleClickEventListener)
+    {
+      $L.info("Observing for Double-Click Events", this);
+      this._handleDoubleClickEventListener = this._handleDoubleClickEvent.bindAsEventListener(this);
+      this.get("element").observe("dblclick", this._handleDoubleClickEventListener);
+    }
+
+    // Mouse Down Events
+    if (this.handleMouseDownEvent && !this._handleMouseDownEventListener)
+    {
+      $L.info("Observing for Mouse Down Events", this);
+      this._handleMouseDownEventListener = this._handleMouseDownEvent.bindAsEventListener(this);
+      this.get("element").observe("mousedown", this._handleMouseDownEventListener);
+    }
+
+    // Mouse Up Events
+    if (this.handleMouseUpEvent && !this._handleMouseUpEventListener)
+    {
+      $L.info("Observing for Mouse Up Events", this);
+      this._handleMouseUpEventListener = this._handleMouseUpEvent.bindAsEventListener(this);
+      this.get("element").observe("mouseup", this._handleMouseUpEventListener);
+    }
+
+    // Mouse Move Events
+    if (this.handleMouseMoveEvent && !this._handleMouseMoveEventListener)
+    {
+      $L.info("Observing for Mouse Move Events", this);
+      this._handleMouseMoveEventListener = this._handleMouseMoveEvent.bindAsEventListener(this);
+      this.get("element").observe("mousemove", this._handleMouseMoveEventListener);
+    }
+
+    // Mouse Over Events
+    if (this.handleMouseOverEvent && !this._handleMouseOverEventListener)
+    {
+      $L.info("Observing for Mouse Over Events", this);
+      this._handleMouseOverEventListener = this._handleMouseOverEvent.bindAsEventListener(this);
+      this.get("element").observe("mouseover", this._handleMouseOverEventListener);
+    }
+
+    // Mouse Out Events
+    if (this.handleMouseOutEvent && !this._handleMouseOutEventListener)
+    {
+      $L.info("Observing for Mouse Out Events", this);
+      this._handleMouseOutEventListener = this._handleMouseOutEvent.bindAsEventListener(this);
+      this.get("element").observe("mouseout", this._handleMouseOutEventListener);
+    }
+
+  },
+
+  _stopObserving: function()
+  {
+
+    // Click Events
+    if (this._handleClickEventListener)
+    {
+      this.get("element").stopObserving("click", this._handleClickEventListener);
+      this._handleClickEventListener = false;
+    }
+
+    // Double-Click Events
+    if (this._handleDoubleClickEventListener)
+    {
+      this.get("element").stopObserving("dblclick", this._handleDoubleClickEventListener);
+      this._handleDoubleClickEventListener = false;
+    }
+
+    // Mouse Down Events
+    if (this._handleMouseDownEventListener)
+    {
+      this.get("element").stopObserving("mousedown", this._handleMouseDownEventListener);
+      this._handleMouseDownEventListener = false;
+    }
+
+    // Mouse Up Events
+    if (this._handleMouseUpEventListener)
+    {
+      this.get("element").stopObserving("mouseup", this._handleMouseUpEventListener);
+      this._handleMouseUpEventListener = false;
+    }
+
+    // Mouse Move Events
+    if (this._handleMouseMoveEventListener)
+    {
+      this.get("element").stopObserving("mousemove", this._handleMouseMoveEventListener);
+      this._handleMouseMoveEventListener = false;
+    }
+
+    // Mouse Over Events
+    if (this._handleMouseOverEventListener)
+    {
+      this.get("element").stopObserving("mouseover", this._handleMouseOverEventListener);
+      this._handleMouseOverEventListener = false;
+    }
+
+    // Mouse Out Events
+    if (this._handleMouseOutEventListener)
+    {
+      this.get("element").stopObserving("mouseout", this._handleMouseOutEventListener);
+      this._handleMouseOutEventListener = false;
+    }
+
+  },
+
+  _handleClickEvent: function(event)
+  {
+    if (!this.handleClickEvent)
+    {
+      $L.warn("Missing handleClickEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleClickEvent(event, element);
+  },
+
+  _handleDoubleClickEvent: function(event)
+  {
+    if (!this.handleDoubleClickEvent)
+    {
+      $L.warn("Missing handleDoubleClickEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleDoubleClickEvent(event, element);
+  },
+
+  _handleMouseDownEvent: function(event)
+  {
+    if (!this.handleMouseDownEvent)
+    {
+      $L.warn("Missing handleMouseDownEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseDownEvent(event, element);
+  },
+
+  _handleMouseUpEvent: function(event)
+  {
+    if (!this.handleMouseUpEvent)
+    {
+      $L.warn("Missing handleMouseUpEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseUpEvent(event, element);
+  },
+
+  _handleMouseMoveEvent: function(event)
+  {
+    if (!this.handleMouseMoveEvent)
+    {
+      $L.warn("Missing handleMouseMoveEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseMoveEvent(event, element);
+  },
+
+  _handleMouseOverEvent: function(event)
+  {
+    if (!this.handleMouseOverEvent)
+    {
+      $L.warn("Missing handleMouseOverEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseOverEvent(event, element);
+  },
+
+  _handleMouseOutEvent: function(event)
+  {
+    if (!this.handleMouseOutEvent)
+    {
+      $L.warn("Missing handleMouseOutEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseOutEvent(event, element);
+  },
+
   // View Actions ------------------------------------------------------------
 
   /*
@@ -1029,6 +1230,9 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   {
     $L.debug("_viewWillAppear (animated: " + animated + ")", this);
 
+    // Start Observing for Events
+    this._startObserving();
+
     if (this.viewWillAppear) this.viewWillAppear(animated);
     this.get("subviews").invoke("_viewWillAppear", animated);
   },
@@ -1056,6 +1260,9 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   _viewWillDisappear: function(animated)
   {
     $L.debug("_viewWillDisappear (animated: " + animated + ")", this);
+
+    // Stop Observing for Events
+    this._stopObserving();
 
     if (this.viewWillDisappear) this.viewWillDisappear(animated);
     this.get("subviews").invoke("_viewWillDisappear", animated);

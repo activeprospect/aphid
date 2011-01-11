@@ -214,7 +214,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     if (this._validateContainer())
     {
-      this.get("element").observe("click", this.clearSelection.bind(this));
       if (this.dataSource && this.dataSource.listViewItemCount && this.dataSource.listViewItemForIndex)
         this.reloadData();
       else
@@ -316,9 +315,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // Add Item View to Subviews
     this.addSubview(item);
 
-    // Observe Item
-    this._observeItem(item);
-
     return item;
   },
 
@@ -332,29 +328,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this.deselectItem(item);
     item.removeFromSuperview();
     this.get("items").remove(item);
-  },
-
-  /*
-   * Aphid.UI.ListView#_observeItems() -> null
-   *
-   * Calls [[Aphid.UI.ListView#_observeItem]] for each item.
-   */
-  _observeItems: function()
-  {
-    this.get("items").each(this._observeItem, this);
-  },
-
-  /*
-   * Aphid.UI.ListView#_observeItem(item) -> null
-   *
-   * - item (Element): the item to be initialized
-   *
-   * Observes the list view item's element for click events.
-   */
-  _observeItem: function(item)
-  {
-    item.get("element").observe('click', this._handleClickEvent.bindAsEventListener(this, item));
-    item.get("element").observe('dblclick', this._handleDoubleClickEvent.bindAsEventListener(this, item));
   },
 
   // Data Source -------------------------------------------------------------
@@ -710,31 +683,13 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   // Event Handling ----------------------------------------------------------
 
-  /*
-   * Aphid.UI.ListView#_handleClickEvent() -> null
-   *
-   * Handles "click" events that are triggered by the observer on each item.
-   */
-  _handleClickEvent: function(event, item)
+  handleClickEvent: function(event)
   {
-    event.stop();
-
-    if (this.get("multipleSelectionEnabled") && item.get("isSelected"))
-      this.deselectItem(item);
-    else
-      this.selectItem(item);
-  },
-
-  /*
-   * Aphid.UI.ListView#_handleDoubleClickEvent() -> null
-   *
-   * Handles "dblclick" events that are triggered by the observer on each item.
-   */
-  _handleDoubleClickEvent: function(event, item)
-  {
-    event.stop();
-    this.selectItem(item);
-    this.openItem(item);
+    var element = event.element();
+    if (element.tagName != "LI")
+      element = element.up("li");
+    if (!element || !element.descendantOf(this.get("element")))
+      this.clearSelection();
   },
 
   // Callbacks ---------------------------------------------------------------
@@ -1020,14 +975,10 @@ Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.desele
 Aphid.UI.ListView.prototype.deselectItemAtIndex.displayName = "Aphid.UI.ListView.deselectItemAtIndex";
 Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
 Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
-Aphid.UI.ListView.prototype._observeItems.displayName = "Aphid.UI.ListView._observeItems";
-Aphid.UI.ListView.prototype._observeItem.displayName = "Aphid.UI.ListView._observeItem";
 Aphid.UI.ListView.prototype._setupSorting.displayName = "Aphid.UI.ListView._setupSorting";
 Aphid.UI.ListView.prototype._addOrderedIdentitiesToItems.displayName = "Aphid.UI.ListView._addOrderedIdentitiesToItems";
 Aphid.UI.ListView.prototype._listViewOrderDidChange.displayName = "Aphid.UI.ListView._listViewOrderDidChange";
 Aphid.UI.ListView.prototype._listViewOrderDidUpdate.displayName = "Aphid.UI.ListView._listViewOrderDidUpdate";
-Aphid.UI.ListView.prototype._handleClickEvent.displayName = "Aphid.UI.ListView._handleClickEvent";
-Aphid.UI.ListView.prototype._handleDoubleClickEvent.displayName = "Aphid.UI.ListView.prototype._handleDoubleClickEvent"
 Aphid.UI.ListView.prototype._shouldSelectItem.displayName = "Aphid.UI.ListView._shouldSelectItem";
 Aphid.UI.ListView.prototype._didSelectItem.displayName = "Aphid.UI.ListView._didSelectItem";
 Aphid.UI.ListView.prototype._shouldDeselectItem.displayName = "Aphid.UI.ListView._shouldDeselectItem";
