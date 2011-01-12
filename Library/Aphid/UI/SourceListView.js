@@ -97,7 +97,6 @@
 
 Aphid.UI.SourceListView = Class.create(Aphid.UI.ListView, {
 
-  displayName: "Aphid.UI.SourceListView",
-  tagName: "ul"
+  displayName: "Aphid.UI.SourceListView"
 
 });

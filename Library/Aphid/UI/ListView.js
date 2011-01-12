@@ -31,9 +31,15 @@
  *    selection process begins. Returning false will prevent the selection
  *    from happening.
  *
+ *  * `listViewWillSelectItem(listView, item)` — Called just before the
+ *    specified item will be selected.
+ *
  *  * `listViewShouldDeselectItem(listView, item)` - Called just before the
  *    item deselection process begins. Returning false will prevent the
  *    deselection from happening.
+ *
+ *  * `listViewWillDeselectItem(listView, item)` — Called just before the
+ *    specified item will be selected.
  *
  *  * `listViewSelectionDidChange(listView, item)` - Called when the current
  *    selection has changed.
@@ -42,12 +48,28 @@
  *    selection clearing process begins. Returning false will prevent the
  *    list selection from being cleared.
  *
+ *  * `listViewWillClearSelection(listView)` — Called just before the
+ *    selection is cleared.
+ *
  *  * `listViewShouldOpenItem(listView, item)` - Called just before the
  *    item opening process begins. Returning false will prevent the item from
  *    being opened.
  *
- *  * `listViewDidOpenItem(listView, openedItem)` - Called when the user has
+ *  * `listViewWillOpenItem(listView, item)` — Called just before the
+ *    specified item will be opened.
+ *
+ *  * `listViewDidOpenItem(listView, item)` - Called when the user has
  *    requested to open an item, usually by double-clicking on the item.
+ *
+ *  * `listViewShouldRemoveItem(listView, item)` — Called just before the
+ *    item removal process begins. Returning false will prevent the item from
+ *    being removed.
+ *
+ *  * `listViewWillRemoveItem(listView, item)` — Called just before the
+ *    specified item will be removed.
+ *
+ *  * `listViewDidRemoveItem(listView, item)` - Called when the item has been
+ *    removed.
  *
  *  * `listViewOrderDidChange(listView)` - Called when the sort order has
  *    changed, but not necessarily before the user has finished dragging the
@@ -55,6 +77,7 @@
  *
  *  * `listViewOrderDidUpdate(listView)` - Called after the user
  *    has finished dragging.
+ *
  *
  * #### Subclassing Notes
  *
@@ -65,11 +88,17 @@
  *  * `shouldSelectItem(item)` - Called just before the item selection process
  *    begins. Returning false will prevent the item from being selected.
  *
+ *  * `willSelectItem(item)` — Called just before the specified item will be
+ *    selected.
+ *
  *  * `didSelectItem(item)` - Called when the specified item has been
  *    selected.
  *
  *  * `shouldDeselectItem(item)` - Called just before the item deselection
  *    process begins. Returning false will prevent the item from being
+ *    deselected.
+ *
+ *  * `willDeselectItem(item)` — Called just before the specified item will be
  *    deselected.
  *
  *  * `didDeselectItem(item)` - Called when the specified item has been
@@ -79,16 +108,49 @@
  *    clearing process begins. Returning false will prevent the list selection
  *    from being cleared.
  *
+ *  * `willClearSelection()` — Called just before the selection will be
+ *    cleared.
+ *
+ *  * `didClearSelection()` — Called when the selection has been cleared.
+ *
  *  * `shouldOpenItem(item)` - Called just before the item opening process
  *    begins. Returning false will prevent the item from being opened.
  *
- *  * `didOpenItem(item)` - Called when the specifeid item has been opened.
+ *  * `willOpenItem(item)` — Called just before the specified item will be
+ *    opened.
+ *
+ *  * `didOpenItem(item)` - Called when the specified item has been opened.
+ *
+ *  * `shouldRemoveItem(item)` — Called before the specified item is to be
+ *    removed. Returning false from this method will prevent the operation
+ *    from taking place.
+ *
+ *  * `willRemoveItem(item)` — Called just before the specified item will be
+ *    removed.
+ *
+ *  * `didRemoveItem(item)` — Called after the specified item has been removed.
+ *    You might implement your application logic to remove the item in this
+ *    callback method.
  *
 **/
 
 Aphid.UI.ListView = Class.create(Aphid.UI.View, {
 
   displayName: "Aphid.UI.ListView",
+
+  /**
+   * Aphid.UI.ListView#tagName -> String
+   *
+   * The required element tag name.
+  **/
+  tagName: "ul",
+
+  /**
+   * Aphid.UI.ListView#itemViewClass -> String
+   *
+   * The default base class.
+  **/
+  itemViewClass: "Aphid.UI.ListViewItem",
 
   /**
    * Aphid.UI.ListView#dataSource -> Object | false
@@ -174,8 +236,10 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   initialize: function($super, options)
   {
     this.items = $A();
+
     $super(options);
-    if (this.multipleSelectionEnabled)
+
+    if (this.get("multipleSelectionEnabled"))
     {
       this.selectedItems = $A();
       this.selectedItemIndexes = $A();
@@ -202,7 +266,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   _initializeStaticListViewItem: function(element)
   {
     var viewClass = element.getData("view-class");
-    if (!viewClass) viewClass = "Aphid.UI.ListViewItem";
+    if (!viewClass) viewClass = this.get("itemViewClass");
 
     $L.info("Initializing Item as " + viewClass, this);
 
@@ -237,9 +301,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   setItems: function(items)
   {
     // Ensure that we are only passed instances of Aphid.UI.ListViewItem...
-    if (!items.all(this._validateItem))
+    if (!items.all(this._validateItem, this))
     {
-      $L.error("All items must be instances of Aphid.UI.ListViewItem!", this);
+      $L.error("All items must be instances of " + this.get("itemViewClass") + "!", this);
       return;
     }
 
@@ -399,9 +463,8 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   **/
   selectItem: function(item)
   {
-    // Ensure that we can select the item...
-    if (!this._shouldSelectItem(item))
-      return false;
+    if (!this._shouldSelectItem(item)) return false;
+    this._willSelectItem(item);
 
     // Get the index of the selected item
     var index = this.get("items").indexOf(item);
@@ -519,17 +582,23 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     this._didClearSelection();
   },
 
+  /*
+   * Aphid.UI.ListView#_clearSelection() -> null
+   *
+   * Internal implementation of [[Aphid.UI.ListView#clearSelection]] that
+   * handles the core logic of clearing the selection.
+   */
   _clearSelection: function()
   {
-    if (this.get("items"))
-      this.get("items").invoke('deselect');
     if (this.get("selectedItem"))
     {
+      this.get("selectedItem").deselect();
       this.set("selectedItem", false);
       this.set("selectedItemIndex", false);
     }
     if (this.get("multipleSelectionEnabled"))
     {
+      this.get("selectedItems").invoke("deselect");
       this.set("selectedItems", $A());
       this.set("selectedItemIndexes", $A());
     }
@@ -557,6 +626,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (!this._shouldOpenItem(item))
       return;
 
+    this._willOpenItem(item);
     this._didOpenItem(item);
   },
 
@@ -573,6 +643,24 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   {
     var item = this.get("items")[itemIndex];
     return this.openItem(item);
+  },
+
+  /**
+   * Aphid.UI.ListView#removeItem(item) -> null
+   *
+   * - item ([[Aphid.UI.ListViewItem]]): the list view item to be removed
+   *
+   * Instructs the delegate or subclass that the specified item should be
+   * removed. This functionality is implemented by the subclass or delegate
+   * and has no behavior by default.
+  **/
+  removeItem: function(item)
+  {
+    if (!this._shouldRemoveItem(item))
+      return;
+
+    this._willRemoveItem(item);
+    this._didRemoveItem(item);
   },
 
   /**
@@ -718,6 +806,27 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.ListView#_willSelectItem(item) -> null
+   *
+   * This method is called just before the item is to be selected. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willSelectItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `listViewWillSelectItem(listView, item)` delegate
+   *    method, if it has been implemented by the delegate.
+   *
+   */
+  _willSelectItem: function(item)
+  {
+    if (this.willSelectItem)
+      this.willSelectItem(item);
+    if (this.delegate && this.delegate.listViewWillSelectItem)
+      this.delegate.listViewWillSelectItem(this, item);
+  },
+
+  /*
    * Aphid.UI.ListView#_didSelectItem(item) -> null
    *
    * Performs any internal actions after an item has been selected before
@@ -764,6 +873,27 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.delegate && this.delegate.listViewShouldDeselectItem)
       shouldDeselect = this.delegate.listViewShouldDeselectItem(this, item);
     return shouldDeselect;
+  },
+
+  /*
+   * Aphid.UI.ListView#_willDeselectItem(item) -> null
+   *
+   * This method is called just before the item is to be de-selected. It will
+   * perform the following actions when called, in order:
+   *
+   *  - Calls the `willDeselectItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `listViewWillDeselectItem(listView, item)` delegate
+   *    method, if it has been implemented by the delegate.
+   *
+   */
+  _willDeselectItem: function(item)
+  {
+    if (this.willDeselectItem)
+      this.willDeselectItem(item);
+    if (this.delegate && this.delegate.listViewWillDeselectItem)
+      this.delegate.listViewWillDeselectItem(this, item);
   },
 
   /*
@@ -871,6 +1001,27 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
   },
 
   /*
+   * Aphid.UI.ListView#_willOpenItem(item) -> null
+   *
+   * This method is called just before the item is opened. It will perform the
+   * following actions when called, in order:
+   *
+   *  - Calls the `willOpenItem(item)` callback, if the instance is a subclass
+   *    that has implemented the method.
+   *
+   *  - Calls the `listViewWillOpenItem(listView, item)` delegate method,
+   *    if it has been implemented by the delegate.
+   *
+   */
+  _willOpenItem: function()
+  {
+    if (this.willOpenItem)
+      this.willOpenItem(item);
+    if (this.delegate && this.delegate.listViewWillOpenItem)
+      this.delegate.listViewWillOpenItem(this, item);
+  },
+
+  /*
    * Aphid.UI.ListView#_didOpenItem(item) -> null
    *
    * Performs any internal actions after an item has been opened before
@@ -917,7 +1068,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
    */
   _validateItem: function(item)
   {
-    return (item instanceof Aphid.UI.ListViewItem);
+    return (item instanceof eval(this.get("itemViewClass")));
   },
 
   // Selection Persistence ---------------------------------------------------

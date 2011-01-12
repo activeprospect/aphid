@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.MatrixView] Rebased the MatrixView class on top of
+   Aphid.UI.ListView, as to not duplicate a lot of logic and to clean
+   up the implementation so that it better matches Aphid best practices.
+
  * [Aphid.UI.View] Implemented automatic Event observer registration (and
    de-registration) for any View class that implements a method to handle the
    event (i.e. "handleClickEvent", "handleMouseMoveEvent", etc). Events will
