@@ -882,7 +882,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
         if (!Object.isUndefined(this[outlet]))
         {
           var instance;
-          $L.info('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', this);
+          $L.debug('Connecting outlet "' + outlet + '" to view (class: ' + viewClass + ')...', this);
           try {
 
             // Set options from data-* attributes...
@@ -934,7 +934,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Focus Events
     if (this.handleFocusEvent && !this._handleFocusEventListener)
     {
-      $L.info("Observing for Focus Events", this);
+      $L.debug("Observing for Focus Events", this);
       this._handleFocusEventListener = this._handleFocusEvent.bindAsEventListener(this);
       this.get("element").observe("focus", this._handleFocusEventListener);
     }
@@ -942,7 +942,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Blur Events
     if (this.handleBlurEvent && !this._handleBlurEventListener)
     {
-      $L.info("Observing for Blur Events", this);
+      $L.debug("Observing for Blur Events", this);
       this._handleBlurEventListener = this._handleBlurEvent.bindAsEventListener(this);
       this.get("element").observe("blur", this._handleBlurEventListener);
     }
@@ -950,7 +950,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Click Events
     if (this.handleClickEvent && !this._handleClickEventListener)
     {
-      $L.info("Observing for Click Events", this);
+      $L.debug("Observing for Click Events", this);
       this._handleClickEventListener = this._handleClickEvent.bindAsEventListener(this);
       this.get("element").observe("click", this._handleClickEventListener);
     }
@@ -958,7 +958,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Double-Click Events
     if (this.handleDoubleClickEvent && !this._handleDoubleClickEventListener)
     {
-      $L.info("Observing for Double-Click Events", this);
+      $L.debug("Observing for Double-Click Events", this);
       this._handleDoubleClickEventListener = this._handleDoubleClickEvent.bindAsEventListener(this);
       this.get("element").observe("dblclick", this._handleDoubleClickEventListener);
     }
@@ -966,7 +966,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Mouse Down Events
     if (this.handleMouseDownEvent && !this._handleMouseDownEventListener)
     {
-      $L.info("Observing for Mouse Down Events", this);
+      $L.debug("Observing for Mouse Down Events", this);
       this._handleMouseDownEventListener = this._handleMouseDownEvent.bindAsEventListener(this);
       this.get("element").observe("mousedown", this._handleMouseDownEventListener);
     }
@@ -974,7 +974,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Mouse Up Events
     if (this.handleMouseUpEvent && !this._handleMouseUpEventListener)
     {
-      $L.info("Observing for Mouse Up Events", this);
+      $L.debug("Observing for Mouse Up Events", this);
       this._handleMouseUpEventListener = this._handleMouseUpEvent.bindAsEventListener(this);
       this.get("element").observe("mouseup", this._handleMouseUpEventListener);
     }
@@ -982,7 +982,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Mouse Move Events
     if (this.handleMouseMoveEvent && !this._handleMouseMoveEventListener)
     {
-      $L.info("Observing for Mouse Move Events", this);
+      $L.debug("Observing for Mouse Move Events", this);
       this._handleMouseMoveEventListener = this._handleMouseMoveEvent.bindAsEventListener(this);
       this.get("element").observe("mousemove", this._handleMouseMoveEventListener);
     }
@@ -990,7 +990,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Mouse Over Events
     if (this.handleMouseOverEvent && !this._handleMouseOverEventListener)
     {
-      $L.info("Observing for Mouse Over Events", this);
+      $L.debug("Observing for Mouse Over Events", this);
       this._handleMouseOverEventListener = this._handleMouseOverEvent.bindAsEventListener(this);
       this.get("element").observe("mouseover", this._handleMouseOverEventListener);
     }
@@ -998,7 +998,7 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     // Mouse Out Events
     if (this.handleMouseOutEvent && !this._handleMouseOutEventListener)
     {
-      $L.info("Observing for Mouse Out Events", this);
+      $L.debug("Observing for Mouse Out Events", this);
       this._handleMouseOutEventListener = this._handleMouseOutEvent.bindAsEventListener(this);
       this.get("element").observe("mouseout", this._handleMouseOutEventListener);
     }

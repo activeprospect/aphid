@@ -563,7 +563,7 @@ Aphid.Model = Class.create(Aphid.Support.Object, {
     if (Object.isString(klass))
       klass = eval(klass);
 
-    $L.info("Instantiating proxy " + property + " ...", this);
+    $L.debug("Instantiating proxy " + property + " ...", this);
 
     // Do not instantiate proxies that are null or undefined
     if (Object.isUndefined(this[property]) || this[property] == null)
