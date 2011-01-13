@@ -931,6 +931,22 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   _startObserving: function()
   {
 
+    // Focus Events
+    if (this.handleFocusEvent && !this._handleFocusEventListener)
+    {
+      $L.info("Observing for Focus Events", this);
+      this._handleFocusEventListener = this._handleFocusEvent.bindAsEventListener(this);
+      this.get("element").observe("focus", this._handleFocusEventListener);
+    }
+
+    // Blur Events
+    if (this.handleBlurEvent && !this._handleBlurEventListener)
+    {
+      $L.info("Observing for Blur Events", this);
+      this._handleBlurEventListener = this._handleBlurEvent.bindAsEventListener(this);
+      this.get("element").observe("blur", this._handleBlurEventListener);
+    }
+
     // Click Events
     if (this.handleClickEvent && !this._handleClickEventListener)
     {
@@ -992,6 +1008,20 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   _stopObserving: function()
   {
 
+    // Focus Events
+    if (this._handleFocusEventListener)
+    {
+      this.get("element").stopObserving("focus", this._handleFocusEventListener);
+      this._handleFocusEventListener = false;
+    }
+
+    // Blur Events
+    if (this._handleBlurEventListener)
+    {
+      this.get("element").stopObserving("focus", this._handleBlurEventListener);
+      this._handleBlurEventListener = false;
+    }
+
     // Click Events
     if (this._handleClickEventListener)
     {
@@ -1041,6 +1071,30 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
       this._handleMouseOutEventListener = false;
     }
 
+  },
+
+  _handleFocusEvent: function(event)
+  {
+    if (!this.handleFocusEvent)
+    {
+      $L.warn("Missing handleFocusEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleFocusEvent(event, element);
+  },
+
+  _handleBlurEvent: function(event)
+  {
+    if (!this.handleBlurEvent)
+    {
+      $L.warn("Missing handleBlurEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleBlurEvent(event, element);
   },
 
   _handleClickEvent: function(event)

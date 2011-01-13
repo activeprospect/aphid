@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added support for observing focus and blur events on Views
+   that implement handleFocusEvent and handleBlurEvent methods.
+
  * [Aphid.UI.MatrixView] Rebased the MatrixView class on top of
    Aphid.UI.ListView, as to not duplicate a lot of logic and to clean
    up the implementation so that it better matches Aphid best practices.
