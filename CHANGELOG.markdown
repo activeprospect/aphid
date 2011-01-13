@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions.Date] Added date#daysInMonth() and
+   Date.daysInMonth(month, year) for getting the number of days in the given
+   month and year.
+
  * [Aphid.Support.Extensions.Date] Added date#isSameDate(date) for comparing
    just the date (not the time) to a date instance.
 

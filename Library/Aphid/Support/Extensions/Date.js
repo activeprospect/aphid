@@ -102,11 +102,21 @@ Aphid.Support.Extensions.Date = {
     return (this.getFullYear() == date.getFullYear() &&
             this.getMonth() == date.getMonth() &&
             this.getDate() == date.getDate());
+  },
+
+  daysInMonth: function()
+  {
+    return Date.daysInMonth(this.getMonth(), this.getFullYear());
   }
 
 }
 
 Object.extend(Date.prototype, Aphid.Support.Extensions.Date);
+
+Date.daysInMonth = function(month, year)
+{
+  return 32 - new Date(year, month, 32).getDate();
+}
 
 Date.monthNames = [
   'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
