@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.CalendarView] Added a calendar view to the core UI library.
+
  * [Aphid.Support.Extensions.Date] Added date#daysInMonth() and
    Date.daysInMonth(month, year) for getting the number of days in the given
    month and year.

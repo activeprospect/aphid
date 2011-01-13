@@ -46,3 +46,7 @@ Aphid.UI = {};
 
 //= require "UI/MatrixView"
 //= require "UI/MatrixViewItem"
+
+// Calendar View -------------------------------------------------------------
+
+//= require "UI/CalendarView"

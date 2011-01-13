@@ -1,0 +1,112 @@
+
+section.CalendarView
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 1;
+
+  table
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 200px;
+
+    td, th
+    {
+      line-height: 2em;
+      width: 2em;
+      text-align: center;
+    }
+
+    thead
+    {
+      font-weight: bold;
+      text-shadow: 0 1px 0 white;
+
+      td.title
+      {
+        font-weight: bold;
+        font-size: 1.2em;
+        line-height: 2em;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f4f5));
+      }
+
+      tr.navigation
+      {
+        color: #555;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f3f4), to(#e3e4e5));
+
+        th
+        {
+          :hover
+          {
+            background-color: #34ABFA;
+            cursor: pointer;
+            -webkit-border-radius: 3px;
+            color: white;
+          }
+          :active
+          {
+            background-color: #cde;
+          }
+        }
+      }
+
+      tr.weekdays
+      {
+        color: #555;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#e2e3e4), to(#d3d4d5));
+
+        th
+        {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        }
+      }
+    }
+
+    tbody
+    {
+      td
+      {
+        color: #555;
+        text-align: center;
+        cursor: pointer;
+
+        :hover
+        {
+          background-color: #34ABFA;
+          cursor: pointer;
+          -webkit-border-radius: 3px;
+          color: white;
+        }
+        :active
+        {
+          background-color: #cde;
+        }
+      }
+      td.selected
+      {
+        font-weight: bold;
+        background-color: #fff;
+        color: #000;
+      }
+      td.today
+      {
+        font-weight: bold;
+        color: #D50000;
+      }
+      td.otherDay
+      {
+        color: #bbb;
+      }
+    }
+  }
+}
