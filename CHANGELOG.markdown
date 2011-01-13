@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Controls.DateView] Added a date view control that will display
+   an instance of Aphid.UI.CalendarView in a PopoverView when the field is
+   focused.
+
  * [Aphid.UI.CalendarView] Added a calendar view to the core UI library.
 
  * [Aphid.Support.Extensions.Date] Added date#daysInMonth() and
