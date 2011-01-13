@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions.Date] Added date#isSameDate(date) for comparing
+   just the date (not the time) to a date instance.
+
  * [Aphid.Support.Extensions.Date] Added shortMonthNames and shortDayNames to
    Date.
 

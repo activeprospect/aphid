@@ -95,6 +95,13 @@ Aphid.Support.Extensions.Date = {
     if (formatted.indexOf("%z") >= 0)
       formatted = formatted.replace("%z", (this.getTimezoneOffset() / 60) > 0 ? (this.getTimezoneOffset() / 60) * -1 : "+" + (this.getTimezoneOffset() / 60));
     return formatted;
+  },
+
+  isSameDate: function(date)
+  {
+    return (this.getFullYear() == date.getFullYear() &&
+            this.getMonth() == date.getMonth() &&
+            this.getDate() == date.getDate());
   }
 
 }
