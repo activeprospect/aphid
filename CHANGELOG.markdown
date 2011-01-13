@@ -1,7 +1,10 @@
 
 # Aphid Release History
 
+
 ## Version 0.9.2 - November 10th, 2010
+ * [Aphid.Support.Extensions.Date] Added shortMonthNames and shortDayNames to
+   Date.
 
  * [Aphid.Support.Extensions] Added support to String#toDate() for parsing
    strings in the ISO 8601 format.

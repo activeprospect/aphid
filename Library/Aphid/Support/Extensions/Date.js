@@ -60,9 +60,9 @@ Aphid.Support.Extensions.Date = {
         ordinals   = $H({ 1: "st", 2: "nd", 3: "rd", 4: "th", 5: "th", 6: "th", 7: "th", 8: "th", 9: "th", 0: "th" }),
         syntax     = /(^|.|\r|\n)(%([A-Za-z]{1,2}))/,
         components = {
-          a:  Date.dayNames[this.getDay()].substring(0, 3),
+          a:  Date.shortDayNames[this.getDay()],
           A:  Date.dayNames[this.getDay()],
-          b:  Date.monthNames[this.getMonth()].substring(0, 3),
+          b:  Date.shortMonthNames[this.getMonth()],
           B:  Date.monthNames[this.getMonth()],
           d:  this.getDate(),
           dd: this.getDate().toPaddedString(2),
@@ -101,6 +101,15 @@ Date.monthNames = [
   'September', 'October', 'November', 'December'
 ];
 
+Date.shortMonthNames = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+  'Dec'
+];
+
 Date.dayNames = [
   'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
 ];
+
+Date.shortDayNames = [
+  'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+]
