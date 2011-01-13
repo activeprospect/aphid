@@ -23,6 +23,7 @@ Aphid.UI = {};
 
 // Views ---------------------------------------------------------------------
 
+//= require "UI/PopoverView"
 //= require "UI/LoadingIndicator"
 //= require "UI/AlertView"
 

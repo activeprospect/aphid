@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.PopoverView] Implemented a "pop-over" view that allows you to
+   display a view relative to another view in a tooltip-like pop-up.
+
  * [Aphid.UI.View] Added support for observing focus and blur events on Views
    that implement handleFocusEvent and handleBlurEvent methods.
 
