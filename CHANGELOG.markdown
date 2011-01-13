@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions.Date] Added shortMonthNames and shortDayNames to
+   Date.
+
  * [Aphid.UI.PopoverView] Implemented a "pop-over" view that allows you to
    display a view relative to another view in a tooltip-like pop-up.
 
