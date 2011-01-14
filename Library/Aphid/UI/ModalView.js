@@ -12,6 +12,7 @@ Aphid.UI.ModalView = Class.create(Aphid.UI.View,
   /**
    * Aphid.UI.ModalView#viewController -> Aphid.UI.ViewController | false
   **/
+  viewController: false,
 
   // -------------------------------------------------------------------------
 
@@ -24,8 +25,6 @@ Aphid.UI.ModalView = Class.create(Aphid.UI.View,
   **/
   initialize: function($super, options)
   {
-    // options = $H(options);
-    // options.set("element", this._element());
     $super(options);
   },
 

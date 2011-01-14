@@ -40,7 +40,10 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   modalView: function()
   {
     if (!this._modalView)
-      this._modalView = new Aphid.UI.ModalView();
+      this._modalView = new Aphid.UI.ModalView({
+        viewController: this,
+        delegate: this
+      });
     return this._modalView;
   },
 
@@ -167,10 +170,10 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
   dismissModalViewControllerAnimated: function(animated)
   {
     if (Object.isUndefined(animated)) animated = true;
-    if (!this.modalViewController) return;
+    if (!this.get("modalViewController")) return;
 
     // Hide the Overlay
-    $AppDelegate.mainWindow.dismissOverlayAnimated(animated);
+    $AppDelegate.get("mainWindow").dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
     animated ? this.get("modalView").removeFromSuperviewAnimated() : this.get("modalView").removeFromSuperview();
