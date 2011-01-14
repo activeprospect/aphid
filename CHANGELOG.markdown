@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ViewController] Added support for stacking view controllers with
+   pushViewController/pushViewControllerAnimated and
+   popViewController/popViewControllerAnimated.
+
  * [Aphid.UI.Controls.DateView] Added a date view control that will display
    an instance of Aphid.UI.CalendarView in a PopoverView when the field is
    focused.

@@ -44,6 +44,16 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
     return this._modalView;
   },
 
+  /**
+   * Aphid.UI.ViewController#viewControllers -> Array | false
+  **/
+  viewControllers: false,
+
+  /**
+   * Aphid.UI.ViewController#parentViewController -> Aphid.UI.ViewController | false
+  **/
+  parentViewController: false,
+
   // -------------------------------------------------------------------------
 
   /**
@@ -168,6 +178,73 @@ Aphid.UI.ViewController = Class.create(Aphid.UI.View,
 
     // Unset the Modal View Controller
     this.set("modalViewController", false);
+  },
+
+  // Stacked View Controllers ------------------------------------------------
+
+  /**
+   * Aphid.UI.ViewController#pushViewController(viewController) -> null
+  **/
+  pushViewController: function(viewController)
+  {
+    this._pushViewController(viewController, false);
+  },
+
+  /**
+   * Aphid.UI.ViewController#pushViewControllerAnimated(viewController, transition) -> null
+  **/
+  pushViewControllerAnimated: function(viewController, transition)
+  {
+    if (Object.isUndefined(transition))
+      transition = Aphid.UI.View.SlideLeftTransition;
+
+    this._pushViewController(viewController, true, transition);
+  },
+
+  /*
+   * Aphid.UI.ViewController#_pushViewController(viewController, animated, transition) -> null
+   */
+  _pushViewController: function(viewController, animated, transition)
+  {
+    viewController.set("parentViewController", this);
+    if (animated)
+      this.get("superview").setViewAnimated(viewController, true, transition);
+    else
+      this.get("superview").setView(viewController);
+  },
+
+  /**
+   * Aphid.UI.ViewController#popViewController() -> null
+  **/
+  popViewController: function()
+  {
+    var parentViewController = this.get("parentViewController");
+
+    this._popViewController(parentViewController, false);
+  },
+
+  /**
+   * Aphid.UI.ViewController#popViewControllerAnimated(transition) -> null
+  **/
+  popViewControllerAnimated: function(transition)
+  {
+    if (Object.isUndefined(transition))
+      transition = Aphid.UI.View.SlideRightTransition;
+
+    var parentViewController = this.get("parentViewController");
+
+    this._popViewController(parentViewController, true, transition);
+  },
+
+  /**
+   * Aphid.UI.ViewController#_popViewController(viewController, animated, transitoin) -> null
+  **/
+  _popViewController: function(viewController, animated, transition)
+  {
+    if (animated)
+      this.get("superview").setViewAnimated(viewController, true, transition);
+    else
+      this.get("superview").setView(viewController);
   }
 
 });
