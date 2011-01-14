@@ -7,6 +7,11 @@ section.CalendarView
   bottom: 0;
   left: 0;
 
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#838485));
+  background-image: -moz-linear-gradient(top, #fff, #838485);
+
+  -webkit-border-radius: 3px;
+
   z-index: 1;
 
   table
@@ -36,13 +41,11 @@ section.CalendarView
         font-weight: bold;
         font-size: 1.2em;
         line-height: 2em;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f4f5));
       }
 
       tr.navigation
       {
         color: #555;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f3f4), to(#e3e4e5));
 
         th
         {
@@ -63,7 +66,6 @@ section.CalendarView
       tr.weekdays
       {
         color: #555;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#e2e3e4), to(#d3d4d5));
 
         th
         {
@@ -74,6 +76,8 @@ section.CalendarView
 
     tbody
     {
+      background-color: white;
+
       td
       {
         color: #555;
