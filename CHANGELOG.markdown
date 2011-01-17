@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Fixed the implementation of removeItem.
+
  * [Aphid.UI.Controls.SegmentedControl] Implemented a basic segmented button
    control.
 

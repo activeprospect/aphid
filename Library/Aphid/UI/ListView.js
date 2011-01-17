@@ -382,18 +382,6 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     return item;
   },
 
-  removeItem: function(item)
-  {
-    if (!this.get("items").include(item))
-    {
-      $L.error("Attempted to remove item that is not a part of the list", this);
-      return;
-    }
-    this.deselectItem(item);
-    item.removeFromSuperview();
-    this.get("items").remove(item);
-  },
-
   // Data Source -------------------------------------------------------------
 
   /**
@@ -660,6 +648,11 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
       return;
 
     this._willRemoveItem(item);
+
+    this.deselectItem(item);
+    item.removeFromSuperview();
+    this.get("items").remove(item);
+
     this._didRemoveItem(item);
   },
 
@@ -996,7 +989,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     if (this.shouldOpenItem)
       shouldOpen = this.shouldOpenItem(item);
     if (this.delegate && this.delegate.listViewShouldOpenItem)
-      shouldDeselect = this.delegate.listViewShouldOpenItem(this, item);
+      shouldOpen = this.delegate.listViewShouldOpenItem(this, item);
     return shouldOpen;
   },
 
@@ -1038,6 +1031,70 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     // has defined it.
     if (this.delegate && this.delegate.listViewDidOpenItem)
       this.delegate.listViewDidOpenItem(this, item);
+  },
+
+  /*
+   * Aphid.UI.ListView#_shouldRemoveItem(item) -> Boolean
+   *
+   * Checks with the subclass and delegate to see if the item should be
+   * removed.
+   *
+   * Delegates have the final say in whether or not the item should be
+   * removed.
+   */
+  _shouldRemoveItem: function(item)
+  {
+    var shouldRemove = true;
+    if (!this.get("items").include(item))
+    {
+      $L.error("Attempted to remove item that is not a part of the list", this);
+      return false;
+    }
+    if (this.shouldRemoveItem)
+      shouldOpen = this.shouldRemoveItem(item);
+    if (this.delegate && this.delegate.listViewShouldRemoveItem)
+      shouldRemove = this.delegate.listViewShouldRemoveItem(this, item);
+    return shouldRemove;
+  },
+
+  /*
+   * Aphid.UI.ListView#_willRemoveItem(item) -> null
+   *
+   * This method is called just before the item is removed. It will perform the
+   * following actions when called, in order:
+   *
+   *  - Calls the `willRemoveItem(item)` callback, if the instance is a
+   *    subclass that has implemented the method.
+   *
+   *  - Calls the `listViewWillRemoveItem(listView, item)` delegate method,
+   *    if it has been implemented by the delegate.
+   *
+   */
+  _willRemoveItem: function()
+  {
+    if (this.willRemoveItem)
+      this.willRemoveItem(item);
+    if (this.delegate && this.delegate.listViewWillRemoveItem)
+      this.delegate.listViewWillRemoveItem(this, item);
+  },
+
+  /*
+   * Aphid.UI.ListView#_didRemoveItem(item) -> null
+   *
+   * Performs any internal actions after an item has been removed before
+   * calling the `didRemoveItem` callback and the `listViewDidRemoveItem`
+   * delegate method.
+   */
+  _didRemoveItem: function(item)
+  {
+    // Call the public callback, that may have been implemented by a subclass.
+    if (this.didRemoveItem)
+      this.didRemoveItem(item);
+
+    // Call the listViewDidRemoveItem method on the delegate, if the delegate
+    // has defined it.
+    if (this.delegate && this.delegate.listViewDidRemoveItem)
+      this.delegate.listViewDidRemoveItem(this, item);
   },
 
   // -------------------------------------------------------------------------
