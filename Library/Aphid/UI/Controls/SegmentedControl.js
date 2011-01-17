@@ -37,12 +37,18 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
   segments: false,
 
   /**
-   * Aphid.UI.Controls.SelectView#selectedSegment -> [[Aphid.UI.Controls.SelectViewOption]] | false
+   * Aphid.UI.Controls.SelectView#selectedSegment -> Hash | false
    *
-   * An instance of [[Aphid.UI.Controls.SelectViewOption]] that denotes the
-   * currently selected option.
+   * The currently selected segment.
   **/
   selectedSegment: false,
+
+  /**
+   * Aphid.UI.Controls.SelectView#selectedSegmentIndex -> Number
+   *
+   * The index of the currently selected segment.
+  **/
+  selectedSegmentIndex: -1,
 
   // Initialization ----------------------------------------------------------
 
@@ -74,9 +80,6 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
   {
     var segments = this.get("element").childElements().collect(this._initializeStaticSegment, this);
     this.set("segments", segments);
-    window.console.log("Segments ====")
-    window.console.log(this.get("segments").first())
-    window.console.log("=============")
   },
 
   /*
@@ -93,6 +96,12 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
     element.store("segment", segment);
 
     $L.info("Initializing Segment: " + segment.toString(), this);
+
+    if (element.hasClassName("selected"))
+    {
+      this.selectedSegment = segment;
+      this.selectedSegmentIndex = this.get("segments").length + 1;
+    }
 
     return segment;
   },
@@ -111,13 +120,14 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
   selectSegment: function(segment)
   {
     var segment = this.set("selectedSegment", segment);
+    this.set("selectedSegmentIndex", this.get("segments").indexOf(segment));
 
     // Clear Selection
     this.get("element").select(".selected").invoke("removeClassName", "selected");
 
     // Select Segment Element
     segment.get("element").addClassName("selected");
-    
+
     this._didSelectSegment(segment);
   },
 
@@ -249,7 +259,7 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
 
   // Event Handlers ----------------------------------------------------------
 
-  handleMouseDownEvent: function(event, element)
+  handleMouseUpEvent: function(event, element)
   {
     var segment = element.getStorage().get("segment");
     if (segment)

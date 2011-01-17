@@ -1,69 +1,70 @@
+
 /* Segmented Control ------------------------------------------------------ */
 
-ul.segmented
+ul.SegmentedControl
 {
-  display: inline-block;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  line-height: 2em;
-}
 
-ul.segmented li
-{
-  display: inline-block;
-  float: left;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: white;
   font-weight: bold;
-  color: #555;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-}
+  -webkit-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+  background-color: #90c130;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#bbb), to(#888));
+  background-image: -moz-linear-gradient(top, #90c130, #618e0c);
 
-ul.segmented li:hover
-{
-  color: #222;
-}
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 
-ul.segmented li a
-{
-  text-decoration: none;
-  color: inherit;
-}
+  li
+  {
+    display: inline-block;
+    float: left;
+    line-height: 2em;
+    height: 2em;
+    text-align: center;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.5) !important;
+    padding-right: 1em;
+    padding-left: 1em;
 
-ul.segmented li label
-{
-  display: block;
-  background-color: #eee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-  background-image: -moz-linear-gradient(top, #fff, #ddd);
-  border: 0.1em solid #cdcdcd;
-  padding: 0 1em;
-  font-size: 0.9em;
-}
+    border-left: 0.1em solid rgba(255, 255, 255, 0.3);
+    border-right: 0.1em solid rgba(0, 0, 0, 0.2);
 
+    :first-of-type
+    {
+      -webkit-border-top-left-radius: 2px;
+      -webkit-border-bottom-left-radius: 2px;
+      border-left: none;
+      border-right: 0.1em solid rgba(0, 0, 0, 0.2);
+    }
+    :last-of-type
+    {
+      -webkit-border-top-right-radius: 2px;
+      -webkit-border-bottom-right-radius: 2px;
+      border-left: 0.1em solid rgba(255, 255, 255, 0.3);
+      border-right: none;
+    }
 
-ul.segmented li:first-of-type label
-{
-  -webkit-border-top-left-radius: 0.5em;
-  -webkit-border-bottom-left-radius: 0.5em;
-  border-right-width: 0;
-}
-
-ul.segmented li:last-of-type label
-{
-  -webkit-border-top-right-radius: 0.5em;
-  -webkit-border-bottom-right-radius: 0.5em;
-}
-
-ul.segmented li input[type=radio]
-{
-  display: none;
-}
-
-ul.segmented li input[type=radio]:checked + label,
-ul.segmented li.current label
-{
-  color: #222;
-  background-color: #eee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
-  background-image: -moz-linear-gradient(top, #ddd, #fff);
+    :hover
+    {
+      -webkit-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+      -moz-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+      box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 1px rgba(0, 0, 0, 0.1);
+      background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.1)), to(rgba(255, 255, 255, 0.05))),
+                        -webkit-gradient(linear, left top, left bottom, from(#90c130), to(#618e0c));
+      background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
+                        -moz-linear-gradient(top, #90c130, #618e0c);
+    }
+  }
+  li.selected,
+  li:active
+  {
+    background-color: #618e0c;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.1)), to(rgba(255, 255, 255, 0.05))),
+                      -webkit-gradient(linear, left top, left bottom, from(#618e0c), to(#90c130));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
+                      -moz-linear-gradient(top, #618e0c, #90c130);
+  }
 }
