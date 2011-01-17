@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Controls.SegmentedControl] Implemented a basic segmented button
+   control.
+
  * [Aphid.UI.ViewController] Added support for stacking view controllers with
    pushViewController/pushViewControllerAnimated and
    popViewController/popViewControllerAnimated.
