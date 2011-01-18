@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Controls] Added ButtonControl for managing a <button/> with an
+   optional toggle state (on/off).
+
  * [Aphid.Support.Extensions.Element] Added Element#clearData() for removing
    a data attribute and changed all data methods to use readAttribute and
    writeAttribute from Prototype.
