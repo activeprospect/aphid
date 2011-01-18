@@ -227,7 +227,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   **/
   getData: function(element, attribute)
   {
-    var value = element.getAttribute("data-" + attribute);
+    var value = element.readAttribute("data-" + attribute);
     if (!value) return false;
     return value;
   },
@@ -244,7 +244,23 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   **/
   setData: function(element, attribute, value)
   {
-    element.setAttribute("data-" + attribute, value);
+    element.writeAttribute("data-" + attribute, value);
+    return element;
+  },
+
+
+  /**
+   * Aphid.Support.Extensions.Vendor.Prototype.Element.Methods#clearData(element, attribute) -> Element
+   *
+   * - element (Element): The element to clear the data attribute on
+   * - attribute (String): The name of the data attribute to clear (without the "data-" prefix)
+   *
+   * Convenience method for clearing an HTML5 data attribute on an Element.
+   * This method returns the element so that you may chain calls.
+  **/
+  clearData: function(element, attribute)
+  {
+    element.writeAttribute("data-" + attribute, false);
     return element;
   }
 

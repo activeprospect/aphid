@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions.Element] Added Element#clearData() for removing
+   a data attribute and changed all data methods to use readAttribute and
+   writeAttribute from Prototype.
+
  * [Aphid.UI.ListView] Fixed the implementation of removeItem.
 
  * [Aphid.UI.Controls.SegmentedControl] Implemented a basic segmented button
