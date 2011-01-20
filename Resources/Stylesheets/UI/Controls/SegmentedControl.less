@@ -18,12 +18,15 @@ ul.SegmentedControl
   -moz-border-radius: 3px;
   border-radius: 3px;
 
+  display: block;
+  height: 2em;
+  line-height: 2em;
+
   li
   {
-    display: inline-block;
     float: left;
-    line-height: 2em;
-    height: 2em;
+    line-height: inherit;
+    height: inherit;
     text-align: center;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.5) !important;
     padding-right: 1em;
@@ -66,5 +69,10 @@ ul.SegmentedControl
                       -webkit-gradient(linear, left top, left bottom, from(#618e0c), to(#90c130));
     background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
                       -moz-linear-gradient(top, #618e0c, #90c130);
+  }
+
+  :after
+  {
+    clear: both;
   }
 }
