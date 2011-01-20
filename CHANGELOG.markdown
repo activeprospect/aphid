@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Reset absolutely positioned elements to 0, 0, 0, 0 when
+   calling setView.
+
  * [Aphid.UI.Controls] Added ButtonControl for managing a <button/> with an
    optional toggle state (on/off).
 
