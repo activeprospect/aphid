@@ -261,6 +261,8 @@ Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
 
   handleMouseUpEvent: function(event, element)
   {
+    if (element.tagName != "LI")
+      element = event.findElement("li");
     var segment = element.getStorage().get("segment");
     if (segment)
     {
