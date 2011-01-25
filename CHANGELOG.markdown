@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Object] Added addObserver, removeObservers, removeObserver
+   and postNotification methods to our core Object extensions so that you can
+   simply call this.postNotification() without providing a sender (this will
+   be inferred).
+
  * [Aphid.UI.View] Reset absolutely positioned elements to 0, 0, 0, 0 when
    calling setView.
 
