@@ -154,6 +154,39 @@ Aphid.UI.Window = Class.create(Aphid.UI.View, {
       "-webkit-user-select": "auto",
       "-moz-user-select": "auto"
     });
+  },
+
+  // Custom Event Observers --------------------------------------------------
+
+  _startObserving: function($super)
+  {
+    $super();
+
+    // Window Resize Events
+    if (this._handleResizeEvent && !this._handleResizeEventListener)
+    {
+      $L.debug("Observing for Resize Events", this);
+      this._handleResizeEventListener = this._handleResizeEvent.bindAsEventListener(this);
+      Event.observe(document.onresize ? document : window, "resize", this._handleResizeEventListener);
+    }
+
+  },
+
+  _stopObserving: function($super)
+  {
+    $super();
+
+    // Window Resize Events
+    if (this._handleResizeEventListener)
+    {
+      Event.stopObserving(document.onresize ? document : window, "resize", this._handleResizeEventListener);
+      this._handleResizeEventListener = false;
+    }
+  },
+
+  _handleResizeEvent: function(event)
+  {
+    this._layoutSubviews();
   }
 
 });

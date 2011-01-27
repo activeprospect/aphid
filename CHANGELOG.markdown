@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added support for a layoutSubviews callback that, if
+   implemented by a View instance, will be called after viewWillAppear and any
+   time that the browser window is resized. This allows you to do complex
+   layouts that need recalculation when its container dimensions change.
+
  * [Aphid.Support.Object] Added addObserver, removeObservers, removeObserver
    and postNotification methods to our core Object extensions so that you can
    simply call this.postNotification() without providing a sender (this will

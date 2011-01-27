@@ -116,6 +116,10 @@
  *  - [[Aphid.UI.View#viewWillAppear]]
  *    Called before the view is displayed.
  *
+ *  - [[Aphid.UI.View#layoutSubviews]]
+ *    Called before the view is displayed or any time the view is resized or
+ *    otherwise changes.
+ *
  *  - [[Aphid.UI.View#viewDidAppear]]
  *    Called after the view has been displayed.
  *
@@ -1293,6 +1297,9 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
     if (this.viewWillAppear) this.viewWillAppear(animated);
     this.get("subviews").invoke("_viewWillAppear", animated);
+
+    // Allow View to Layout its Subviews
+    this._layoutSubviews();
   },
 
   /*
@@ -1353,6 +1360,21 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
   viewDidLoadAsynchronously: function(view)
   {
     // Delegate Method Definition
+  },
+
+  /*
+   * Aphid.UI.View#_layoutSubviews(animated) -> null
+   *
+   * Calls the layoutSubviews callback on the current view and all of its
+   * subviews. This is automatically called when the window resizes or when
+   * any view resizes.
+   */
+  _layoutSubviews: function()
+  {
+    $L.debug("_layoutSubviews", this);
+
+    if (this.layoutSubviews) this.layoutSubviews();
+    this.get("subviews").invoke("_layoutSubviews");
   }
 
 });
