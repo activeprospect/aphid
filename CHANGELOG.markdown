@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added support for handling mouseenter and mouseleave events
+   with the handleMouseEnterEvent and handleMouseLeaveEvent callbacks.
+
  * [Aphid.UI.View] Added support for a layoutSubviews callback that, if
    implemented by a View instance, will be called after viewWillAppear and any
    time that the browser window is resized. This allows you to do complex

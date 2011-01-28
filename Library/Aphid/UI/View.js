@@ -1011,6 +1011,22 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
       this.get("element").observe("mouseout", this._handleMouseOutEventListener);
     }
 
+    // Mouse Enter Events
+    if (this.handleMouseEnterEvent && !this._handleMouseEnterEventListener)
+    {
+      $L.debug("Observing for Mouse Enter Events", this);
+      this._handleMouseEnterEventListener = this._handleMouseEnterEvent.bindAsEventListener(this);
+      this.get("element").observe("mouseenter", this._handleMouseEnterEventListener);
+    }
+
+    // Mouse Leave Events
+    if (this.handleMouseLeaveEvent && !this._handleMouseLeaveEventListener)
+    {
+      $L.debug("Observing for Mouse Leave Events", this);
+      this._handleMouseLeaveEventListener = this._handleMouseLeaveEvent.bindAsEventListener(this);
+      this.get("element").observe("mouseleave", this._handleMouseLeaveEventListener);
+    }
+
   },
 
   _stopObserving: function()
@@ -1077,6 +1093,20 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
     {
       this.get("element").stopObserving("mouseout", this._handleMouseOutEventListener);
       this._handleMouseOutEventListener = false;
+    }
+
+    // Mouse Enter Events
+    if (this._handleMouseEnterEventListener)
+    {
+      this.get("element").stopObserving("mouseenter", this._handleMouseEnterEventListener);
+      this._handleMouseEnterEventListener = false;
+    }
+
+    // Mouse Leave Events
+    if (this._handleMouseLeaveEventListener)
+    {
+      this.get("element").stopObserving("mouseleave", this._handleMouseLeaveEventListener);
+      this._handleMouseLeaveEventListener = false;
     }
 
   },
@@ -1187,6 +1217,30 @@ Aphid.UI.View = Class.create(Aphid.Support.Object, {
 
     var element = event.element();
     this.handleMouseOutEvent(event, element);
+  },
+
+  _handleMouseEnterEvent: function(event)
+  {
+    if (!this.handleMouseEnterEvent)
+    {
+      $L.warn("Missing handleMouseEnterEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseEnterEvent(event, element);
+  },
+
+  _handleMouseLeaveEvent: function(event)
+  {
+    if (!this.handleMouseLeaveEvent)
+    {
+      $L.warn("Missing handleMouseLeaveEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleMouseLeaveEvent(event, element);
   },
 
   // View Actions ------------------------------------------------------------
