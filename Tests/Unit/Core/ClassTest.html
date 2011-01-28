@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid Test — Aphid.Class</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Class Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+        Ensures that new classes may be defined using Aphid.Class, a wrapper
+        for Prototype's Class. It also ensures that the resulting class is
+        correctly initialized with Aphid's extensions and conventions.
+      </p>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+        },
+
+        testShouldCreateAphidClass: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass");
+          assert(Object.isFunction(TestClass));
+        }},
+
+        testShouldCreateAphidClassWithMethods: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass", { testMethod: Prototype.emptyFunction });
+          assert(Object.isFunction(TestClass.prototype.testMethod));
+        }},
+
+        testShouldCreateAphidClassWithParent: function() { with(this) {
+          var TestClass    = Aphid.Class.create("TestClass"),
+              TestSubclass = Aphid.Class.create("TestSubclass", TestClass);
+
+          assert(Object.isFunction(TestSubclass));
+          assert(TestClass.subclasses.include(TestSubclass))
+        }},
+
+        testShouldCreateAphidClassWithParentAndMethods: function() { with(this) {
+          var TestClass    = Aphid.Class.create("TestClass"),
+              TestSubclass = Aphid.Class.create("TestSubclass", TestClass, { testMethod: Prototype.emptyFunction });
+
+          assert(Object.isFunction(TestSubclass));
+          assert(TestClass.subclasses.include(TestSubclass))
+        }},
+
+        testShouldSetClassNameProperty: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass");
+          assertEqual("TestClass", TestClass.prototype.className);
+        }},
+
+        testShouldSetDisplayNamePropertyToClassName: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass");
+          assertEqual("TestClass", TestClass.prototype.displayName);
+        }},
+
+        testShouldExtendAphidClassWithPropertiesSupport: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass", { testMethod: Prototype.emptyFunction });
+          assertEqual(Aphid.Support.Properties.get, TestClass.prototype.get);
+          assertEqual(Aphid.Support.Properties.set, TestClass.prototype.set);
+          assertEqual(Aphid.Support.Properties.has, TestClass.prototype.has);
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

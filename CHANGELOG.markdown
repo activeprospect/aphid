@@ -3,6 +3,13 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Core] Added Aphid.Class.create() as a wrapper for Prototype's
+   Class.create() method. The Aphid version of this method automatically
+   extends the resulting class with Aphid.Support.Properties, sets the
+   displayName and className properties to the defined class name and adds a
+   hook to call the "inherited(subclass)" class method on a parent class in
+   the case of inheritance.
+
  * [Aphid.UI.View] Added support for handling mouseenter and mouseleave events
    with the handleMouseEnterEvent and handleMouseLeaveEvent callbacks.
 
