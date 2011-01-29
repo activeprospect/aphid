@@ -142,10 +142,11 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
   {
     $L.info("selectFirst", this);
 
-    var element = this.get("element").down("li");
+    var element = this.get("element").down("li"),
+        item    = element.getStorage().get("item");
 
     this.clearSelection();
-    this.selectItem(element);
+    this.selectItem(item);
 
     this.scrollIntoView(element, 'down');
   },
@@ -154,10 +155,11 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
   {
     $L.info("selectLast", this);
 
-    var element = this.get("element").select("li").last();
+    var element = this.get("element").down("li").last(),
+        item    = element.getStorage().get("item");
 
     this.clearSelection();
-    this.selectItem(element);
+    this.selectItem(item);
 
     this.scrollIntoView(element, 'down');
   },
@@ -253,7 +255,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
     var previousElement = element ? element.previous() : false;
     if (!element || !previousElement) return this.selectFirst();
 
-    this.selectItem(previousElement);
+    var item = previousElement.getStorage().get("item");
+    this.selectItem(item);
     this.scrollIntoView(previousElement, 'up');
   },
 
@@ -269,7 +272,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
     var nextElement = element.next();
     if (nextElement)
     {
-      this.selectItem(nextElement);
+      var item = nextElement.getStorage().get("item");
+      this.selectItem(item);
       this.scrollIntoView(nextElement, 'down');
     }
     else
@@ -295,7 +299,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
       function(el) {
         if (Position.within(el, offset[0], y))
         {
-          this.selectItem(el);
+          var item = el.getStorage().get("item");
+          this.selectItem(item);
           this.scrollIntoView(el, 'up');
         }
       }.bind(this)
@@ -324,7 +329,8 @@ Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
       function(el) {
         if (Position.within(el, offset[0], y))
         {
-          this.selectItem(el);
+          var item = el.getStorage().get("item");
+          this.selectItem(item);
           this.scrollIntoView(el, 'down');
           selected = true;
         }
