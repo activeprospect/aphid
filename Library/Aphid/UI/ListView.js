@@ -271,6 +271,7 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
     $L.info("Initializing Item as " + viewClass, this);
 
     var viewClassImplementation = eval(viewClass);
+    viewClassImplementation.get("element").setData("item", viewClassImplementation);
     return new viewClassImplementation({ element: element });
   },
 
@@ -368,6 +369,9 @@ Aphid.UI.ListView = Class.create(Aphid.UI.View, {
         this.get("selectedItemIndexes").push(itemIndex);
       }
     }
+
+    // Reference Item on Element
+    item.get("element").getStorage().set("item", item);
 
     // Set listView on Item
     item.set("listView", this);
