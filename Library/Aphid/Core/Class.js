@@ -36,6 +36,7 @@ Aphid.Class.create = function(name)
   // Set className and displayName Properties
   klass.prototype.displayName = name;
   klass.prototype.className   = name;
+  klass.className             = name;
 
   // Extend Class w/Object Mixin
   // TODO Object.extend(klass.prototype, Aphid.Support.Object);

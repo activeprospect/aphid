@@ -68,6 +68,11 @@
           assertEqual("TestClass", TestClass.prototype.className);
         }},
 
+        testShouldSetClassNameClassProperty: function() { with(this) {
+          var TestClass = Aphid.Class.create("TestClass");
+          assertEqual("TestClass", TestClass.className);
+        }},
+
         testShouldSetDisplayNamePropertyToClassName: function() { with(this) {
           var TestClass = Aphid.Class.create("TestClass");
           assertEqual("TestClass", TestClass.prototype.displayName);
