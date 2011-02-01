@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Added better support for parsing the various ISO
+   8601 date formats in String#toDate(), deferring to native browser support
+   when available.
+
  * [Aphid.Core] Added Aphid.Class.create() as a wrapper for Prototype's
    Class.create() method. The Aphid version of this method automatically
    extends the resulting class with Aphid.Support.Properties, sets the
