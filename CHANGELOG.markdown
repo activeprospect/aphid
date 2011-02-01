@@ -1,6 +1,269 @@
 
 # Aphid Release History
 
+<<<<<<< HEAD
+=======
+## Version 0.9.3 - *Not Yet Released*
+
+ * [Aphid.Support.Extensions] Added better support for parsing the various ISO
+   8601 date formats in String#toDate(), deferring to native browser support
+   when available.
+
+ * [Aphid.Core] Added Aphid.Class.create() as a wrapper for Prototype's
+   Class.create() method. The Aphid version of this method automatically
+   extends the resulting class with Aphid.Support.Properties, sets the
+   displayName and className properties to the defined class name and adds a
+   hook to call the "inherited(subclass)" class method on a parent class in
+   the case of inheritance.
+
+ * [Aphid.UI.View] Added support for handling mouseenter and mouseleave events
+   with the handleMouseEnterEvent and handleMouseLeaveEvent callbacks.
+
+ * [Aphid.UI.View] Added support for a layoutSubviews callback that, if
+   implemented by a View instance, will be called after viewWillAppear and any
+   time that the browser window is resized. This allows you to do complex
+   layouts that need recalculation when its container dimensions change.
+
+ * [Aphid.Support.Object] Added addObserver, removeObservers, removeObserver
+   and postNotification methods to our core Object extensions so that you can
+   simply call this.postNotification() without providing a sender (this will
+   be inferred).
+
+ * [Aphid.UI.View] Reset absolutely positioned elements to 0, 0, 0, 0 when
+   calling setView.
+
+ * [Aphid.UI.Controls] Added ButtonControl for managing a <button/> with an
+   optional toggle state (on/off).
+
+ * [Aphid.Support.Extensions.Element] Added Element#clearData() for removing
+   a data attribute and changed all data methods to use readAttribute and
+   writeAttribute from Prototype.
+
+ * [Aphid.UI.ListView] Fixed the implementation of removeItem.
+
+ * [Aphid.UI.Controls.SegmentedControl] Implemented a basic segmented button
+   control.
+
+ * [Aphid.UI.ViewController] Added support for stacking view controllers with
+   pushViewController/pushViewControllerAnimated and
+   popViewController/popViewControllerAnimated.
+
+ * [Aphid.UI.Controls.DateView] Added a date view control that will display
+   an instance of Aphid.UI.CalendarView in a PopoverView when the field is
+   focused.
+
+ * [Aphid.UI.CalendarView] Added a calendar view to the core UI library.
+
+ * [Aphid.Support.Extensions.Date] Added date#daysInMonth() and
+   Date.daysInMonth(month, year) for getting the number of days in the given
+   month and year.
+
+ * [Aphid.Support.Extensions.Date] Added date#isSameDate(date) for comparing
+   just the date (not the time) to a date instance.
+
+ * [Aphid.Support.Extensions.Date] Added shortMonthNames and shortDayNames to
+   Date.
+
+ * [Aphid.UI.PopoverView] Implemented a "pop-over" view that allows you to
+   display a view relative to another view in a tooltip-like pop-up.
+
+ * [Aphid.UI.View] Added support for observing focus and blur events on Views
+   that implement handleFocusEvent and handleBlurEvent methods.
+
+ * [Aphid.UI.MatrixView] Rebased the MatrixView class on top of
+   Aphid.UI.ListView, as to not duplicate a lot of logic and to clean
+   up the implementation so that it better matches Aphid best practices.
+
+ * [Aphid.UI.View] Implemented automatic Event observer registration (and
+   de-registration) for any View class that implements a method to handle the
+   event (i.e. "handleClickEvent", "handleMouseMoveEvent", etc). Events will
+   be observed when the View appears and observers will be removed when the
+   View disappears.
+
+ * [Aphid.UI.MatrixView] Added two new configuration parameters for
+   controlling multiple selection and drag selection support. Drag selection
+   requires multiple selection to be enabled.
+
+ * [Aphid.UI.View] Return the view from enable() and disable() so that method
+   calls may be chained (i.e. someView.hide().disable()).
+
+ * [Aphid.UI.View] Added hide() and show() for hiding or showing a view.
+
+ * [Aphid.UI.Controls.SelectView] Implemented support for a `didSelectOption`
+   callback and a `selectViewSelectionDidChange` delegate method that are
+   called when the selection changes.
+
+ * [Aphid.UI.Window] Implemented preventTextSelection() and
+   allowTextSelection() (from Aphid.UI.Controls.SelectView) for preventing
+   and allowing text selection on the document. This is currently only
+   supported by WebKit and Gecko-based browsers.
+
+ * [Aphid.UI.Controls.SelectView] Added a SelectViewOption class for managing
+   options in the SelectView. All items in a SelectView must now be an
+   instance of SelectViewOption (this is similar to the requirements of
+   Aphid.UI.ListView).
+
+ * [Aphid.UI.TokenListView] Added a new list view subclass for listing tokens,
+   such as filters or recipients.
+
+ * [Aphid.UI.ModalView] Added a modal view class and migrated ViewController's
+   presentModalViewController to using the new modal view class.
+
+ * [Aphid.Support.Properties] Renamed "hasProperty" method to simply "has".
+
+ * [Aphid.UI.SplitViewController] Made the split view aware of the differences
+   between modes and fixed initialization so that it sets the correct
+   secondView position regardless of mode.
+
+ * [Aphid.Model] Disabled asynchronous loading by default, for now.
+
+ * [Aphid.Support.Properties] Added detection for uninitialized properties
+   when getting or setting properties with chaining (i.e. "foo.bar.baz").
+
+ * [Aphid.UI.View] Changed the behavior of _addSubview so that we add the
+   element to the DOM and hide it with the visibility and opacity properties
+   before calling viewWillAppear so that the viewWillAppear callback can
+   calculate the added view's position before it appears.
+
+ * [Aphid.UI.TabViewController] Disabled animation by default for new
+   TabViewController instances.
+
+ * [Aphid.UI.SplitViewController] Added support for setting the position of
+   the split view divider programmatically through the methods setPosition and
+   setPositionAnimated.
+
+ * [Aphid.UI.ListView] The willClearSelection and didClearSelection callback
+   methods as well as the listViewWillClearSelection and
+   listViewDidClearSelection delegate methods are now called when clearing the
+   selection of a list view.
+
+ * [Aphid.UI.ListView] Added support for persisting the selected item index in
+   a session cookie and restoring that selection when reloading the browser or
+   view.
+
+ * [Aphid.Support.Cookie] Added support for cookies with names that include
+   square brackets (i.e. "ViewController[identity].property").
+
+ * [Aphid.UI.View] Views are automatically assigned CSS class names for itself
+   and all of its superclasses, based on the displayName property of each
+   class in the view stack.
+
+ * [Aphid.UI.View] Added support for transitions when setting, adding or
+   removing views.
+
+ * [Aphid.UI.View] Added a tagName property (defaults to "section") that is
+   used to create an element for the View when a template or element is not
+   provided during initialization.
+
+ * [Aphid.UI.View] Prevented the same view from being set as the subview of a
+   view if the view is already a subview of that view.
+
+ * [Aphid.UI.SourceListView] Implemented a source list view item that acts as
+   a divider (Aphid.UI.DividerSourceListViewItem).
+
+ * [Aphid.UI.SplitViewController] Added a notification that is posted when
+   a split view has been resized (SplitViewControllerResizedNotification).
+
+ * [Aphid.UI.SplitViewController] Added callback and delegate calls to the
+   split view controller.
+
+ * [Aphid.Support.Object] Implemented Aphid.Support.Object for all Aphid
+   subclasses to extend that contains support for common features, such as
+   properties and delegates.
+
+ * [Aphid.UI.SplitViewController] Implemented the allowsResize property for
+   allowing or disallowing user resizing of the split view.
+
+ * [Aphid.UI.SplitViewController] Significant refactoring of the Split View
+   Controller which brought almost all of the code into
+   Aphid.UI.SplitViewController which greatly simplifies our integration with
+   Aphid and our subclass of Draggable from Scriptaculous.
+
+ * [Vendor/Prototype] Updated to Prototype 1.7.
+
+ * [Aphid.UI.SplitViewController] Fixed persistence support for restoring the
+   position of the split view divider upon subsequent reloads.
+
+ * [Aphid.UI.TabViewController] Added support for animation when switching
+   between tabs.
+
+ * [Aphid.UI.View] Completed the implementation of the viewWillAppear,
+   viewDidAppear, viewWillDisappear and ViewDidDisappear callbacks (including
+   tests).
+
+ * [Aphid.UI.View] Fixed an issue where calling setView() with no value would
+   throw an error instead of the desired result of simply removing the view.
+
+ * [Aphid.UI.MatrixView] Initial port of MatrixView to Aphid (see
+   matrixview.org for more details on the class).
+
+ * [Aphid.UI.SourceListView] Implemented SourceListView and SourceListViewItem
+   classes.
+
+ * [Aphid.UI.ListView] Initializing list views from static HTML will now
+   honor the data-view-class attribute on <li/> elements for instantiating
+   described ListViewItem subclasses.
+
+ * [Aphid.UI.ListView] List views will fall back to operating on the items
+   property when either the listViewItemCount or listViewItemForIndex delegate
+   methods are not implemented.
+
+ * [Aphid.UI.View] Views will no longer attempt to connect outlets to the view
+   when those outlets belong to another view (as determined by a parent
+   element with the data-view-class attribute set).
+
+ * [Aphid.Support.Logger] Added persistence to the Aphid.Support.Logger#level
+   property so that changing this property manually will persist the level for
+   your entire session.
+
+ * [Aphid.UI.View] Set default property values before applying the options
+   hash to the View so that property setters may add subviews during
+   initialization.
+
+ * [Aphid.UI.View] Initialize views with an empty element when an element,
+   template or outlet is not set.
+
+ * [Aphid.UI.ListView] Changed list views to be positioned absolutely within
+   their container view.
+
+ * [Aphid.UI.SplitViewController] Added default styles for controllers that
+   inherit from split views, as well as 2 additional styles: padded and
+   borderless. The additional styles can be set by adding the padded or
+   borderless class to the split view.
+
+ * [Aphid.UI.TabViewController] Added support for lazily initializing views
+   by specifying the data-view-class attribute on the tab Elements that make
+   up the tab view.
+
+ * [Aphid.UI.AlertView] Fixes to animation preferences when displaying and
+   dismissing alerts as well as other minor bug fixes, improvements and tests.
+
+ * [Aphid.UI.Window] Added a new property to Window (overlayVisible) for
+   determining whether or not the overlay is currently visible as well as
+   tests for the overlay functionality.
+
+ * [Aphid.Model] Added a modelDidFailToLoad delegate method for notifying
+   delegates of problems that arise during asynchronous loading of models.
+
+ * [Aphid.UI.View] Implemented custom scrollbars for WebKit-based browsers.
+
+ * [Aphid.Support.Extensions] Fixed ordinal suffix output in Date#strftime.
+
+ * [Tools] Added support for compressing JavaScript and CSS build output using
+   the YUI Compressor at build time.
+
+ * Added a sample Apache configuration file that that is configured with the
+   appropriate caching and compression options for serving Aphid-based
+   applications efficiently.
+
+ * [Tools] Added support for appending asset timestamps to any references
+   found in templates or stylesheets in order to bust browser caches upon
+   publishing new releases.
+
+ * [Tools] Added support for pre-processing the new project skeleton files
+   with Erb.
+
+>>>>>>> c1f3734... [Aphid.Support.Extensions] Added better support for parsing the various ISO 8601 date formats in String#toDate(), deferring to native browser support when available.
 ## Version 0.9.2 - November 10th, 2010
 
  * [Aphid.Support.Properties] Added support for getting or setting chained

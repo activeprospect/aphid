@@ -55,10 +55,21 @@
         }},
 
         testStringToDateShouldCastISO8601FormattedStringAsDate: function() { with(this) {
-          var testString = "2010-10-21T01:05:55.074Z";
+          var testString = "2010-10-21T06:05:55.074Z";
           var date       = testString.toDate();
+          assert(!isNaN(date));
           assertNotEqual(date, "Invalid Date");
           assertInstanceOf(Date, date);
+          assertEqual("Thu, 21 Oct 2010 06:05:55 GMT", date.toUTCString());
+        }},
+
+        testStringToDateShouldCastISO8601FormattedStringWithTimeZoneAsDate: function() { with(this) {
+          var testString = "2010-10-21T01:05:55-05:00";
+          var date       = testString.toDate();
+          assert(!isNaN(date));
+          assertNotEqual(date, "Invalid Date");
+          assertInstanceOf(Date, date);
+          assertEqual("Thu, 21 Oct 2010 06:05:55 GMT", date.toUTCString());
         }},
 
         testStringPluralizeShouldPluralizeSimpleSingularForms: function() { with(this) {
