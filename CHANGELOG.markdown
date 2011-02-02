@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Skeleton] Updated the default Rakefile so that it attempts to load the
+   Aphid Rake tasks from the vendored Aphid, if present, before attempting to
+   load a gem-based install. If neither can be loaded, a friendly error
+   message explaining that Aphid is missing will be displayed to the user.
+
  * [Aphid.Support.Extensions] Added better support for parsing the various ISO
    8601 date formats in String#toDate(), deferring to native browser support
    when available.

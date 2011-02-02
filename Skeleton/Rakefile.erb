@@ -1,8 +1,27 @@
 
-require 'aphid/rake'
+# Basic Configuration
+
+ROOT_PATH = File.expand_path(File.dirname(__FILE__))
+
+# Require Aphid
+
+begin
+  if File.exists? "#{ROOT_PATH}/Vendor/Aphid"
+    require "#{ROOT_PATH}/Vendor/Aphid/Commands/lib/aphid/rake"
+  else
+    require "aphid/rake"
+  end
+rescue LoadError
+  puts
+  puts "Aphid was not found! Please either ensure that the Aphid gem is installed"
+  puts "or that Aphid has been properly installed in Vendor/Aphid."
+  puts
+  exit
+end
+
+# Project Configuration
 
 PROJECT_NAME         = "<%= @project_name %>"
-ROOT_PATH            = File.expand_path(File.dirname(__FILE__))
 DEFAULT_TASKS        = [ :build ]
 WATCH_TASKS          = DEFAULT_TASKS
 WATCH_SOURCE_TASKS   = DEFAULT_TASKS
