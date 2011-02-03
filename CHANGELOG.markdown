@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Made Array#compare return false if the array
+   being compared is undefined or null.
+
  * [Skeleton] Updated the default Rakefile so that it attempts to load the
    Aphid Rake tasks from the vendored Aphid, if present, before attempting to
    load a gem-based install. If neither can be loaded, a friendly error
