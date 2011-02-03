@@ -17,7 +17,6 @@ Aphid.Support.Extensions.Array = {
   compare: function(otherArray)
   {
     if (Object.isUndefined(otherArray)) return false;
-    if (otherArray == null) return false;
     if (this.length != otherArray.length) return false;
     for (var i = 0; i < otherArray.length; i++)
     {
