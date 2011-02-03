@@ -37,6 +37,16 @@
           var otherArray = [ "A", "B", "C" ];
           assert(testArray.compare(otherArray));
         }},
+        
+        testArrayCompareShouldReturnFalseForUndefined: function() { with(this) {
+          var testArray  = [ "A", "B", "C" ];
+          assert(!testArray.compare(undefined));
+        }},
+        
+        testArrayCompareShouldReturnFalseForNull: function() { with(this) {
+          var testArray  = [ "A", "B", "C" ];
+          assert(!testArray.compare(null));
+        }},
 
         testArrayCompareShouldReturnFalseForDifferentArrays: function() { with(this) {
           var testArray  = [ "A", "B", 1 ];
