@@ -348,9 +348,7 @@ Aphid.Model = Class.create({
   {
     $L.info("Initializing from Record Identifier...", this);
 
-    // Assemble URL
-    var urlTemplate = new Template(this.url);
-    var url = urlTemplate.evaluate({ identifier: this.identifier });
+    var url = this.assembleUrl();
 
     // TODO Error handling for when the string did not have any variables
 
@@ -377,7 +375,7 @@ Aphid.Model = Class.create({
     };
 
     // Make Request
-    new Ajax.Request(url, options);
+    this.makeRequest(options);
   },
 
   /*
@@ -418,6 +416,7 @@ Aphid.Model = Class.create({
   _initializeFromObject: function()
   {
     $L.info("Initializing from Object...", this);
+
     this.properties.each(
       function(pair)
       {
@@ -530,7 +529,7 @@ Aphid.Model = Class.create({
 
     return isDirty;
   },
-
+  
   // Proxies -----------------------------------------------------------------
 
   /*
@@ -629,6 +628,24 @@ Aphid.Model = Class.create({
 
     return properties;
   },
+  
+  /**
+   * Aphid.Model#assembleUrl() -> String
+   * 
+   * Returns the resource URL for this model instance.
+   **/
+  assembleUrl: function() {
+    return new Template(this.url).evaluate({ identifier: this.identifier });
+  },
+  
+  /**
+   * Aphid.Model#assembleUrl() -> null
+   * 
+   * Make an XHR request for this model instance
+   **/
+  makeRequest: function(options) {
+    new Ajax.Request(this.assembleUrl(), options);
+  },
 
   /**
    * Aphid.Model#save() -> null
@@ -654,11 +671,6 @@ Aphid.Model = Class.create({
       return false;
     }
 
-    // Assemble URL
-    var urlTemplate = new Template(this.url);
-    // TODO Make the identifier field configurable
-    var url = urlTemplate.evaluate({ identifier: this.key });
-
     // TODO Error handling for when the string did not have any variables
 
     // Request Options
@@ -669,23 +681,27 @@ Aphid.Model = Class.create({
       postBody: Object.toJSON(this.serialize()),
       onSuccess: function(transport)
       {
-        this.object = transport.responseJSON;
-        this._initializeFromObject();
-        this._afterSave();
+        if (!this.identifier) {
+          this.object = transport.responseJSON;
+          this._initializeFromObject();
+          this._afterSave();
+        } else {
+          this.reload();
+        }
       }.bind(this),
       onFailure: function(transport)
       {
         var alertView = new Aphid.UI.AlertView();
         alertView.title = "Error Saving Resource";
-        alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.key + "</strong>";
-        alertView.status = "Error " + transport.status + " - " + transport.statusText;
+        alertView.message = "Failed to save <strong>" + this.displayName + "</strong> with identifier: <strong>" + this.identifier + "</strong>";
+        alertView.status = "Error " + transport.status;
         alertView.showAnimated();
       }.bind(this),
       onException: function(transport, exception) { throw exception }
     };
 
     // Make Request
-    new Ajax.Request(url, options);
+    this.makeRequest(options);
   },
 
   /**
@@ -696,10 +712,6 @@ Aphid.Model = Class.create({
     $L.info("Reloading " + this.displayName + " with identifier " + this.identifier, this);
 
     // TODO Make the loading logic common between initialization and reloading
-
-    // Assemble URL
-    var urlTemplate = new Template(this.url);
-    var url = urlTemplate.evaluate({ identifier: this.identifier });
 
     // Request Options
     var options = {
@@ -724,7 +736,7 @@ Aphid.Model = Class.create({
     };
 
     // Make Request
-    new Ajax.Request(url, options);
+    this.makeRequest(options);
   },
 
   // Validation --------------------------------------------------------------
