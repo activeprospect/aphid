@@ -6,7 +6,7 @@
 
 // TODO Make this a subclass of Aphid.UI.View...
 
-Aphid.UI.LoadingIndicator = Class.create({
+Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
 
   displayName: "Aphid.UI.LoadingIndicator",
 
@@ -18,14 +18,14 @@ Aphid.UI.LoadingIndicator = Class.create({
   _canvas: false,
 
   /*
-   * Aphid.UI.LoadingIndicator#_canvas -> Element
+   * Aphid.UI.LoadingIndicator#_canvasContext -> Element
    *
    * The canvas context for the loading indicator.
-  **/
-  _context: false,
+   */
+  _canvasContext: false,
 
   /**
-   * Aphid.UI.LoadingIndicator#barCount -> Integer
+   * Aphid.UI.LoadingIndicator#barCount -> Number
    *
    * The number of bars that should be drawn in the spinner. Defaults to 10.
   **/
@@ -53,7 +53,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   centerPosition: false,
 
   /**
-   * Aphid.UI.LoadingIndicator#innerRadius -> Integer
+   * Aphid.UI.LoadingIndicator#innerRadius -> Number
    *
    * The inner radius of the spinning indicator. Each bar will be drawn from
    * this point, outward.
@@ -68,11 +68,31 @@ Aphid.UI.LoadingIndicator = Class.create({
   isAnimating: false,
 
   /*
-   * Aphid.UI.LoadingIndicator#_currentOffset -> Integer
+   * Aphid.UI.LoadingIndicator#_currentOffset -> Number
    *
    * Whether or not the loading indicator is currently animating.
    */
   _currentOffset: 0,
+
+  /**
+   * Aphid.UI.LoadingIndicator#minimumDisplayTime -> Number
+   *
+   * The minimum display time for the loading indicator, as to prevent
+   * animation flicker.
+  **/
+  minimumDisplayTime: 0.5,
+
+  /*
+   * Aphid.UI.LoadingIndicator#_displayedAt -> Number
+   *
+   * The timestamp, in seconds (with microseconds), at which the loading
+   * indicator was displayed with Aphid.UI.LoadingIndicator#show(). This is
+   * used to calculate the delay to use when hiding the indicator, with
+   * Aphid.UI.LoadingIndicator#minimumDisplayTime taken into account.
+   */
+  _displayedAt: false,
+
+  // -------------------------------------------------------------------------
 
   /**
    * new Aphid.UI.LoadingIndicator()
@@ -104,7 +124,7 @@ Aphid.UI.LoadingIndicator = Class.create({
     if (!(typeof G_vmlCanvasManager == 'undefined'))
       G_vmlCanvasManager.initElement(this._canvas);
 
-    this._context = this._canvas.getContext("2d")
+    this._canvasContext = this._canvas.getContext("2d")
     Element.insert(document.body, this._canvas);
     this._canvas.hide();
 
@@ -131,6 +151,8 @@ Aphid.UI.LoadingIndicator = Class.create({
 
     $L.info('Showing the loading indicator...', this);
 
+    this._displayedAt = Date.now();
+
     this._startAnimation();
     var opacity = $(this._canvas).getStyle('opacity');
     this._canvas.appear({ duration: 0.2, to: opacity });
@@ -143,9 +165,15 @@ Aphid.UI.LoadingIndicator = Class.create({
   **/
   hide: function()
   {
+    var delay = 0, now = Date.now();
+
     $L.info('Hiding the loading indicator...', this);
-    this._canvas.fade({ duration: 0.2 });
-    this._stopAnimation.bind(this).delay(0.2);
+
+    if ((this._displayedAt + this.get("minimumDisplayTime")) > now)
+      delay = ((this._displayedAt + this.get("minimumDisplayTime")) - now) / 1000;
+
+    this._canvas.fade({ delay: delay, duration: 0.2 });
+    this._stopAnimation.bind(this).delay(0.2 + (delay));
   },
 
   /*
@@ -167,7 +195,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   _stopAnimation: function()
   {
     this.isAnimating = false;
-    this._clearFrame(this._context);
+    this._clearFrame(this._canvasContext);
   },
 
   /*
@@ -185,7 +213,7 @@ Aphid.UI.LoadingIndicator = Class.create({
       context.save();
       context.translate(pos.x, pos.y);
       context.rotate(pos.angle);
-      this._drawBlock(this._context, i);
+      this._drawBlock(this._canvasContext, i);
       context.restore();
     }
     context.restore();
@@ -207,7 +235,7 @@ Aphid.UI.LoadingIndicator = Class.create({
   {
     if (!this.isAnimating) return;
     this._currentOffset = (this._currentOffset + 1) % this.barCount;
-    this._draw(this._context, this._currentOffset);
+    this._draw(this._canvasContext, this._currentOffset);
     this._animateNextFrame.bind(this).delay(0.05);
   },
 
@@ -244,6 +272,13 @@ Aphid.UI.LoadingIndicator = Class.create({
   _makeRGBA: function()
   {
     return "rgba(" + [].slice.call(arguments, 0).join(",") + ")";
+  },
+
+  getMinimumDisplayTime: function()
+  {
+    if (this.minimumDisplayTime > 0)
+      return this.minimumDisplayTime * 1000;
+    return this.minimumDisplayTime;
   }
 
 });

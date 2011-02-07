@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.Model.Base Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Model.Base Tests</h1>
+    </header>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestContact = Aphid.Class.create("TestContact", Aphid.Model.Base, {
+
+        siteUrl: "../../Fixtures",
+        instancePath: "/Contacts/#{identifier}.json",
+        collectionPath: "/Contacts.json"
+
+      });
+
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+        },
+
+        testShouldInitializeModel: function() { with(this) {
+          var testContact = new TestContact();
+          assertInstanceOf(Aphid.Model.Base, testContact);
+        }},
+
+        /*
+         * Ensures that model classes are automatically extended with the
+         * class methods defined in Aphid.Model.Base.ClassMethods (such as
+         * finders).
+         */
+        testShouldExtendModelWithClassMethods: function() { with(this) {
+          assert(Object.isFunction(TestContact.load));
+          assertEqual(Aphid.Model.Base.ClassMethods.load, TestContact.load);
+          assert(Object.isFunction(TestContact.loadCollection));
+          assertEqual(Aphid.Model.Base.ClassMethods.loadCollection, TestContact.loadCollection);
+        }},
+
+        testShouldLoadWithIdentifier: function() { with(this) {
+          var testContact = TestContact.load(1);
+          // wait(1000, function() {
+          //   assert(testContact.isLoaded);
+          //   assertEqual("John Doe", testContact.name);
+          //   assertEqual("jdoe@example.com", testContact.email);
+          // });
+        }},
+        
+        // testShouldInitializeEmptyModel: function() { with(this) {
+        //   var testContact = new TestContact();
+        //   assert(!Object.isUndefined(testContact.name));
+        //   assert(!Object.isUndefined(testContact.email));
+        // }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

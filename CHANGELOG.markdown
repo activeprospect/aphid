@@ -3,6 +3,12 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.LoadingIndicator] Added minimumDisplayTime property for defining
+   the minimum amount of time that the loading indicator should be visible
+   (in seconds). This is used to prevent the indicator from being shown and
+   then hidden before the animations have a chance to complete, and by default
+   is set to 0.5s.
+
  * [Aphid.Support.Extensions] Made Array#compare return false if the array
    being compared is null.
 
