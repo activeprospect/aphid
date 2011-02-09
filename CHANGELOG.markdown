@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Allow for previously undefined properties to be
+   set with set().
+
  * [Aphid.UI.LoadingIndicator] Added minimumDisplayTime property for defining
    the minimum amount of time that the loading indicator should be visible
    (in seconds). This is used to prevent the indicator from being shown and

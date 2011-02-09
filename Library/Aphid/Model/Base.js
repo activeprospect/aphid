@@ -82,6 +82,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       this._initializeFromObject(values);
     else
       this._initializeEmptyObject();
+    this._afterInitialize();
   },
 
   /*
@@ -139,7 +140,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     //   this.identifier = this[this.identifierAttribute];
     // }
     // this._instantiateProxies();
-    this._afterInitialize();
   },
 
   /*
@@ -150,17 +150,10 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   _initializeEmptyObject: function()
   {
     $L.info("Initializing empty object...", this);
-    // this.properties.keys().each(
-    //   function(property)
-    //   {
-    //     this[property] = null;
-    //     this["_" + property] = null;
-    //   }.bind(this)
-    // );
 
     // Initialize Empty Associations
-    $H(this.get("hasMany")).keys().each(function(association) { this[association] = $A(); }, this);
-    $H(this.get("belongsTo")).keys().each(function(association) { this[association] = false }, this);
+    // $H(this.get("hasMany")).keys().each(function(association) { this[association] = $A(); }, this);
+    // $H(this.get("belongsTo")).keys().each(function(association) { this[association] = false }, this);
   },
 
   // Associations ------------------------------------------------------------
@@ -174,6 +167,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   _initializeHasManyAssociation: function(association)
   {
     $L.info("Initializing Association \"" + association + "\" Property ...", this);
+
     if (Object.isArray(this[association]))
     {
       this[association].each(function(object) {
@@ -182,15 +176,50 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
         window.console.log("----------------")
       });
     }
+
+    else
+    {
+      // Setup up a proxy function to lazily load the association when accessed
+      // TODO Formalize this into Aphid.Support.Properties.LazyProperty?
+      this[association] = function() {
+        var instance = this["_" + association];
+        if (!instance)
+        {
+          var options = $H();
+
+          // If the owning model does not have a value for the association
+          // foreign key, simply return false.
+          if (!this.has(foreignKeyProperty) || !this.get(foreignKeyProperty))
+            return false;
+
+          // Pass the ID of the owning model to the association model, in case
+          // it is required to load the model.
+          if (this.has("id"))
+            options.set(this.get("foreignKey"), this.get("id"));
+
+          // Initialize Association Instance
+          instance = klass.load(this.get(foreignKeyProperty), options);
+
+          // Set Inverse Association, if configured...
+          if (instance.get("belongsTo") && $H(instance.get("belongsTo")).get(this.get("className").lowerCaseFirst()))
+          {
+            if (!instance["_" + this.get("className").lowerCaseFirst()])
+              instance["_" + this.get("className").lowerCaseFirst()] = this;
+          }
+        }
+        return instance;
+      }.bind(this);
+    }
   },
 
   _initializeBelongsToAssociation: function(association)
   {
     $L.info("Initializing Association \"" + association + "\" Property ...", this);
 
-    var assn      = $H(this.get("belongsTo")).get(association),
-        className = $H(assn).get("className"),
-        klass     = eval(className);
+    var assn               = $H(this.get("belongsTo")).get(association),
+        className          = $H(assn).get("className"),
+        klass              = eval(className),
+        foreignKeyProperty = association + "Id";
 
     // If the associated model was included during initialization, simply
     // assign it without fetching it from the server.
@@ -206,30 +235,35 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       // Setup up a proxy function to lazily load the association when accessed
       // TODO Formalize this into Aphid.Support.Properties.LazyProperty?
       this[association] = function() {
-        if (!this["_" + association])
-          this["_" + association] = this.adapter.loadAssociation(this, association);
-        return this["_" + association];
+        var instance = this["_" + association];
+        if (!instance)
+        {
+          var options = $H();
+
+          // If the owning model does not have a value for the association
+          // foreign key, simply return false.
+          if (!this.has(foreignKeyProperty) || !this.get(foreignKeyProperty))
+            return false;
+
+          // Pass the ID of the owning model to the association model, in case
+          // it is required to load the model.
+          if (this.has("id"))
+            options.set(this.get("foreignKey"), this.get("id"));
+
+          // Initialize Association Instance
+          instance = klass.load(this.get(foreignKeyProperty), options);
+
+          // Set Inverse Association, if configured...
+          if (instance.get("belongsTo") && $H(instance.get("belongsTo")).get(this.get("className").lowerCaseFirst()))
+          {
+            if (!instance["_" + this.get("className").lowerCaseFirst()])
+              instance["_" + this.get("className").lowerCaseFirst()] = this;
+          }
+        }
+        return instance;
       }.bind(this);
     }
   },
-
-  /*
-
-  var klass                = instance.constructor,
-      url                  = this.site + instance[association + "BasePath"] + ".json",
-      associations         = $H(instance.get("belongsTo")).merge($H(instance.get("hasMany"))),
-      associationClassName = $H(associations.get(association)).get("className"),
-      associationClass     = eval(associationClassName);
-
-  if (instance[association + "BasePath"])
-  {
-    $L.info("Loading Association " + association + " on instance of " + instance.get("className"), this);
-    // instance.set(association, this.load(associationClass, url));
-    instance[association] = this.load(associationClass, url);
-    return instance[association];
-  }
-
-  */
 
   // // Dirty State Tracking ----------------------------------------------------
   // 
@@ -419,6 +453,15 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
         path     = template.evaluate(data);
 
     return path;
+  },
+
+  // TODO Allow primary key name to be configured (instead of assuming id)
+  foreignKey: false,
+  getForeignKey: function()
+  {
+    if (!this.foreignKey)
+      this.set("foreignKey", this.get("className").concat("Id").lowerCaseFirst());
+    return this.foreignKey;
   }
 
 });
@@ -546,24 +589,24 @@ Aphid.Model.Base.ClassMethods = {
       method: 'get',
       asynchronous: false,
       contentType: 'application/json',
-      onSuccess: this.handleLoadResponse.bind(instance),
-//      onFailure: this.handleFailureResponse.bind(instance),
+      onSuccess: this._handleLoadResponse.bind(this, instance),
+      onFailure: this._handleFailureResponse.bind(this, instance),
       onException: function(transport, exception) { throw exception }
     };
 
     // Make Request
     new Ajax.Request(url, requestOptions);
 
-    return instance;
+    return instance.get("isLoaded") ? instance : false;
   },
 
   // TODO Move this to a method in the prototype
-  handleLoadResponse: function(transport)
+  _handleLoadResponse: function(instance, transport)
   {
     var object = transport.responseJSON;
-    this._initializeFromObject(object);
-    this.isLoaded = true;
-    this._afterLoad();
+    instance._initializeFromObject(object);
+    instance.isLoaded = true;
+    instance._afterLoad();
   },
 
   /**
@@ -582,9 +625,71 @@ Aphid.Model.Base.ClassMethods = {
   **/
   loadCollection: function(url, options)
   {
+    var url        = false,
+        options    = false,
+        modelKlass = this;
+
+    // Parse Arguments
+    if (Object.isString(arguments[0]))
+    {
+      url     = arguments[0];
+      options = $H(arguments[1]);
+    }
+    else options = $H(arguments[0]);
+
+    // Set URL
+    if (!url)
+      url = modelKlass.prototype.get("siteUrl").concat(modelKlass.prototype.get("collectionPath"));
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g)
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!options.get(property)) return property;
+      }).compact();
+      if (missingProperties.length > 0)
+      {
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this.className);
+        return;
+      }
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(options);
+
+    $L.info("Loading record at URL: " + url + " ...", this.className);
+
+    var instance = new modelKlass();
+
+    // Request Options
+    var requestOptions ={
+      method: 'get',
+      asynchronous: false,
+      contentType: 'application/json',
+      onSuccess: this._handleLoadResponse.bind(this, instance),
+      onFailure: this._handleFailureResponse.bind(this, instance),
+      onException: function(transport, exception) { throw exception }
+    };
+
+    // Make Request
+    new Ajax.Request(url, requestOptions);
+
+    return instance.get("isLoaded") ? instance : false;
+  },
+
+  _handleLoadCollectionResponse: function(collection, transport)
+  {
     
-  }
-  
+  },
+
+  _handleFailureResponse: function(instance, transport)
+  {
+    // window.console.log(transport)
+  },
+
 }
 
 // "Inherited" Class Callback ------------------------------------------------

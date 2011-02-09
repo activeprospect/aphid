@@ -1,1 +1,9 @@
-[{"id":1,"name":"John Doe","email":"jdoe@example.com"}]
+[
+  {
+    "id":1,
+    "name":"John Doe",
+    "email":"jdoe@example.com",
+    "phone_number":"207-555-1212",
+    "latest_test_note_id":1
+  }
+]

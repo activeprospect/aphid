@@ -81,8 +81,8 @@ Aphid.Support.Properties = {
       throw this._undefinedPropertyError(property);
 
     // Check for Computed Property
-    if (Object.isFunction(this[property]))
-      throw this._readOnlyPropertyError(property);
+    // if (Object.isFunction(this[property]))
+    //   throw this._readOnlyPropertyError(property);
 
     // Check for a Custom Setter
     var customSetterName = "set" + property.upperCaseFirst();
