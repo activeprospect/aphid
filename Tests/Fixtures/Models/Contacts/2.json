@@ -9,7 +9,7 @@
     "test_contact_id":2,
     "body":"Test note 3..."
   },
-  "notes":[
+  "testNotes":[
     {
       "id":2,
       "test_contact_id":2,

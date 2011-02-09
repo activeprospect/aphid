@@ -5,5 +5,17 @@
     "email":"jdoe@example.com",
     "phone_number":"207-555-1212",
     "latest_test_note_id":1
+  },
+  {
+    "id":2,
+    "name":"Jane Doe",
+    "email":"jane.doe@example.com",
+    "phone_number":"207-555-1213",
+    "latest_test_note_id":3,
+    "latest_test_note":{
+      "id":3,
+      "test_contact_id":2,
+      "body":"Test note 3..."
+    }
   }
 ]

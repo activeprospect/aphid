@@ -827,3 +827,4 @@ Aphid.Model = Class.create(Aphid.Support.Object, {
 });
 
 //= require "Model/Error"
+//= require "Model/Base"

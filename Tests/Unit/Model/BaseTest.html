@@ -58,6 +58,7 @@
 
         siteUrl: "../../Fixtures/Models",
         instancePath: "/Contacts/#{testContactId}/Notes/#{identifier}.json",
+        collectionPath: "/Contacts/#{testContactId}/Notes.json",
 
         belongsTo: {
           testContact: {
@@ -95,7 +96,7 @@
           assertEqual(Aphid.Model.Base.ClassMethods.loadCollection, TestContact.loadCollection);
         }},
 
-        // Loading -----------------------------------------------------------
+        // Loading (Single Resource) -----------------------------------------
 
         // 
         // Ensures that a model may be loaded by identifier, as specified in
@@ -158,6 +159,39 @@
           assert(errorLogged);
         }},
 
+        // Loading (Collections) ---------------------------------------------
+
+        // 
+        // Ensures that singleton records can be fetched without providing an
+        // identifier, URL or any options.
+        // 
+        testShouldLoadCollection: function() { with(this) {
+          var testCollection = TestContact.loadCollection();
+          assertInstanceOf(Array, testCollection);
+          assert(testCollection.length > 1);
+        }},
+
+        // 
+        // Ensures that a model may be loaded by URL, overriding the
+        // configured URL on the model class itself.
+        // 
+        testShouldLoadCollectionWithURL: function() { with(this) {
+          var url = window.location.href.gsub(/Unit\/Model\/BaseTest\.html.*/, "Fixtures/Models/Contacts.json");
+          var testCollection = TestContact.loadCollection(url);
+          assertInstanceOf(Array, testCollection);
+          assert(testCollection.length > 1);
+        }},
+
+        // 
+        // Ensures that loading with additional options that are replaced in
+        // the URL template is possible.
+        // 
+        testShouldLoadCollectionWithOptions: function() { with(this) {
+          var testCollection = TestNote.loadCollection({ testContactId: 2 });
+          assertInstanceOf(Array, testCollection);
+          assert(testCollection.length > 1);
+        }},
+
         // Properties --------------------------------------------------------
 
         // 
@@ -178,7 +212,7 @@
         // 
         testShouldDefineLazyInitializerOnBelongsToAssociations: function() { with(this) {
           var testNote = new TestNote();
-          assert(Object.isFunction(testNote.testContact));
+          assert(Object.isFunction(testNote.getTestContact));
         }},
 
         // 
@@ -187,7 +221,7 @@
         // 
         testShouldDefineLazyInitializerOnHasManyAssociations: function() { with(this) {
           var testContact = new TestContact();
-          assert(Object.isFunction(testContact.notes));
+          assert(Object.isFunction(testContact.getTestNotes));
         }},
 
         testShouldReturnFalseOnNullForeignKeyOnBelongsToAssociations: function() { with(this) {
@@ -196,32 +230,59 @@
         }},
 
         testShouldReturnEmptyArrayOnEmptyHasManyAssociations: function() { with(this) {
-          var testContact = new TestContact();
-          assertEqual($A(), testContact.get("testNotes"));
+          var testContact = new TestContact(),
+              testNotes   = testContact.get("testNotes");
+          assert(Object.isArray(testNotes));
+          assertEqual(0, testNotes.length);
         }},
 
-        testShouldInitializeAndReturnBelongsToAssociation: function() { with(this) {
+        testShouldLoadAndReturnBelongsToAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNote    = testContact.get("latestTestNote");
           assertInstanceOf(TestNote, testNote);
         }},
 
-        testShouldInitializeAndReturnHasManyAssociation: function() { with(this) {
-          assert(false, "Not implemented...");
+        testShouldLoadAndReturnHasManyAssociation: function() { with(this) {
+          var testContact = TestContact.load(1),
+              testNotes   = testContact.get("testNotes");
+          assert(Object.isArray(testNotes), "Should return an Array.");
+          assert(testNotes.length > 0, "Array should have more than 0 items.");
+          testNotes.each(function(testNote) {
+            assertInstanceOf(TestNote, testNote);
+          });
         }},
 
-        testShouldSetInverseAssociationOnModelsWithInverseBelongsToAssociation: function() { with(this) {
+        testShouldSetInverseAssociationOnBelongsToModelsWithInverseBelongsToAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNote    = testContact.get("latestTestNote");
+          assertInstanceOf(TestContact, testNote.testContact);
+        }},
+
+        testShouldSetInverseAssociationOnHasManyModelsWithInverseBelongsToAssociation: function() { with(this) {
+          var testContact = TestContact.load(1),
+              testNotes   = testContact.get("testNotes");
+
+          window.console.log("---");
+          window.console.log(testContact)
+          window.console.log(testNotes)
+          window.console.log("---");
+          testNotes.each(function(testNote) {
+            assertInstanceOf(TestContact, testNote.testContact);
+          });
         }},
 
         testShouldInitializeIncludedBelongsToAssociations: function() { with(this) {
           var testContact = TestContact.load(2);
-          assertInstanceOf(TestNote, testContact.latestTestNote);
+          assertInstanceOf(TestNote, testContact.latestTestNote, "testContact.latestTestNote should be an instance of TestNote");
         }},
 
         testShouldInitializeIncludedHasManyAssociations: function() { with(this) {
-          assert(false, "Not implemented...");
+          var testContact = TestContact.load(2);
+          assert(Object.isArray(testContact.testNotes), "testNotse should be an instance of Array");
+          assert(testContact.testNotes.length > 0, "testNotes array should have more than 0 items");
+          testContact.testNotes.each(function(testNote) {
+            assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
+          });
         }}
 
       }, { testLog: "logSection" });

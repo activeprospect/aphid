@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] New implementation of the model layer (only loading is
+   supported at the moment) that fully utilizes properties and replaces
+   proxy support with full has many and belongs to association support.
+
  * [Aphid.Support.Properties] Allow for previously undefined properties to be
    set with set().
 
