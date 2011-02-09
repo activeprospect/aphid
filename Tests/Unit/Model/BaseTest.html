@@ -63,9 +63,32 @@
         belongsTo: {
           testContact: {
             className: "TestContact"
+          },
+          previousTestNote: {
+            className: "TestNote"
+          }
+        },
+
+        hasMany: {
+          testRevisions: {
+            className: "TestRevision"
           }
         }
 
+      });
+
+      var TestRevision = Aphid.Class.create("TestRevision", Aphid.Model.Base, {
+
+        siteUrl: "../../Fixtures/Models",
+        instancePath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions/#{identifier}.json",
+        collectionPath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions.json",
+
+        belongsTo: {
+          testNote: {
+            className: "TestNote"
+          }
+        }
+        
       });
 
       new Test.Unit.Runner({
@@ -245,29 +268,24 @@
         testShouldLoadAndReturnHasManyAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNotes   = testContact.get("testNotes");
-          assert(Object.isArray(testNotes), "Should return an Array.");
-          assert(testNotes.length > 0, "Array should have more than 0 items.");
+          assert(Object.isArray(testNotes), "Should return an Array");
+          assert(testNotes.length > 0, "testNotes array should have more than 0 items");
           testNotes.each(function(testNote) {
-            assertInstanceOf(TestNote, testNote);
+            assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
           });
         }},
 
         testShouldSetInverseAssociationOnBelongsToModelsWithInverseBelongsToAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNote    = testContact.get("latestTestNote");
-          assertInstanceOf(TestContact, testNote.testContact);
+          assertInstanceOf(TestContact, testNote.testContact, "testNote.testContact should be an instance of TestContact");
         }},
 
         testShouldSetInverseAssociationOnHasManyModelsWithInverseBelongsToAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNotes   = testContact.get("testNotes");
-
-          window.console.log("---");
-          window.console.log(testContact)
-          window.console.log(testNotes)
-          window.console.log("---");
           testNotes.each(function(testNote) {
-            assertInstanceOf(TestContact, testNote.testContact);
+            assertInstanceOf(TestContact, testNote.testContact, "testNote.testContact should be an instance of TestContact");
           });
         }},
 
@@ -278,11 +296,35 @@
 
         testShouldInitializeIncludedHasManyAssociations: function() { with(this) {
           var testContact = TestContact.load(2);
-          assert(Object.isArray(testContact.testNotes), "testNotse should be an instance of Array");
+          assert(Object.isArray(testContact.testNotes), "testNotes should be an instance of Array");
           assert(testContact.testNotes.length > 0, "testNotes array should have more than 0 items");
           testContact.testNotes.each(function(testNote) {
             assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
           });
+        }},
+
+        //
+        // Ensures that associations are provided the foreign keys in their
+        // configured URL template, if they are present on the model that is
+        // loading the association.
+        //
+        testShouldUseForeignKeyPropertiesOnBelongsToAssociation: function() { with(this) {
+          var testNote         = TestNote.load(3, { testContactId: 2 }),
+              previousTestNote = testNote.get("previousTestNote");
+          assertInstanceOf(TestNote, previousTestNote);
+        }},
+
+        //
+        // Ensures that associations are provided the foreign keys in their
+        // configured URL template, if they are present on the model that is
+        // loading the association.
+        //
+        testShouldUseForeignKeyPropertiesOnHasManyAssociation: function() { with(this) {
+          var testNote      = TestNote.load(3, { testContactId: 2 }),
+              testRevisions = testNote.get("testRevisions");
+          window.console.log(testNote)
+          window.console.log(testRevisions)
+          assertInstanceOf(TestRevision, testRevisions.first());
         }}
 
       }, { testLog: "logSection" });

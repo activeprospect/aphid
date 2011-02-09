@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] Any properties that are part of an association's URL template
+   will now be passed automatically when initializing the association if any
+   of those matching properties are present on the model instance that is
+   initializing the association.
+
  * [Aphid.Model] New implementation of the model layer (only loading is
    supported at the moment) that fully utilizes properties and replaces
    proxy support with full has many and belongs to association support.

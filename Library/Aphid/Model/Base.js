@@ -80,8 +80,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   {
     if (values)
       this._initializeFromObject(values);
-    else
-      this._initializeEmptyObject();
     this._afterInitialize();
   },
 
@@ -93,8 +91,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
    */
   _initializeFromObject: function(object)
   {
-    $L.info("Initializing from Object...", this);
-
     $H(object).each(this._initializeProperty, this);
 
     // this.properties.each(
@@ -127,16 +123,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     // this._instantiateProxies();
   },
 
-  /*
-   * Aphid.Model#_initializeEmptyObject() -> null
-   *
-   * Initializes an empty instance with each attribute set to null.
-   */
-  _initializeEmptyObject: function()
-  {
-    $L.info("Initializing empty object...", this);
-  },
-
   _initializeProperty: function(property)
   {
     var propertyName         = property.key.dasherize().camelize(),
@@ -144,7 +130,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
         belongsToAssociation = $H(this.get("belongsTo")).get(propertyName),
         hasManyAssociation   = $H(this.get("hasMany")).get(propertyName);
 
-    $L.info("Initializing Property \"" + propertyName + "\" w/Value: " + propertyValue, this);
+    $L.debug("Initializing Property \"" + propertyName + "\" w/Value: " + propertyValue, this);
 
     // Cast Date Properties ...
     if (property.key.match(/(_at|_on)$/) && propertyValue)
@@ -211,6 +197,12 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       else
         options.set(this.get("foreignKey"), this.get("id"));
 
+      // Set known properties as options to be passed to the association.
+      this.get("collectionPathVariables").each(function(property) {
+        if (this.has(property))
+          options.set(property, this.get(property));
+      }, this);
+
       // Initialize Association Instance
       collection = klass.loadCollection(options);
 
@@ -249,6 +241,12 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       if (this.has("id"))
         options.set(this.get("foreignKey"), this.get("id"));
 
+      // Set known properties as options to be passed to the association.
+      this.get("instancePathVariables").each(function(property) {
+        if (this.has(property))
+          options.set(property, this.get(property));
+      }, this);
+
       // Initialize Association Instance
       instance = klass.load(this.get(foreignKeyProperty), options);
 
@@ -261,6 +259,40 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     }
 
     return instance;
+  },
+
+  instancePathVariables: false,
+  instancePathVariables: function()
+  {
+    var url = this.get("siteUrl").concat(this.get("instancePath"));
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    var instancePathVariables = $A();
+
+    if (requiredProperties)
+    {
+      instancePathVariables = requiredProperties.collect(function(requiredProperty) {
+        return requiredProperty.gsub(/[^a-zA-Z]/, "");
+      }).compact();
+    }
+
+    return instancePathVariables;
+  },
+
+  collectionPathVariables: false,
+  collectionPathVariables: function()
+  {
+    var url = this.get("siteUrl").concat(this.get("collectionPath"));
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    var collectionPathVariables = $A();
+
+    if (requiredProperties)
+    {
+      collectionPathVariables = requiredProperties.collect(function(requiredProperty) {
+        return requiredProperty.gsub(/[^a-zA-Z]/, "");
+      }).compact();
+    }
+
+    return collectionPathVariables;
   },
 
   // // Dirty State Tracking ----------------------------------------------------
@@ -480,51 +512,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
  * These methods are automatically added to subclasses of Aphid.Model.Base.
 **/
 Aphid.Model.Base.ClassMethods = {
-
-  // /**
-  //  * Aphid.Model.Base.find(ids[, options]) -> Object | false
-  //  *
-  //  *  - ids (Number | Array):
-  //  *  - options (Hash):
-  //  *
-  //  * This method proxies to the find method on the adapter defined by the
-  //  * model instance.
-  // **/
-  // find: function(ids, options)
-  // {
-  //   if (Object.isUndefined(options)) options = $H();
-  //   var adapter = this.prototype.adapter;
-  // 
-  //   if (!Object.isFunction(adapter.find))
-  //   {
-  //     $L.error("Adapter defined on " + this.prototype.displayName + " does not implement find support!", this);
-  //     return false;
-  //   }
-  // 
-  //   return adapter.find(this, ids, options);
-  // },
-  // 
-  // /**
-  //  * Aphid.Model.Base.all([options]) -> Array | false
-  //  *
-  //  *  - options (Hash):
-  //  *
-  //  * This method proxies to the find method on the adapter defined by the
-  //  * model instance.
-  // **/
-  // all: function(options)
-  // {
-  //   if (Object.isUndefined(options)) options = $H();
-  //   var adapter = this.prototype.adapter;
-  // 
-  //   if (!Object.isFunction(adapter.find))
-  //   {
-  //     $L.error("Adapter defined on " + this.prototype.displayName + " does not implement find support!", this);
-  //     return false;
-  //   }
-  // 
-  //   return adapter.loadCollection(this, options);
-  // },
 
   /**
    * Aphid.Model.Base.load(identifier | url[, options]) -> Object | false

@@ -1,5 +1,6 @@
 {
   "id":3,
   "test_contact_id":2,
+  "previous_test_note_id":2,
   "body":"Test note 3..."
 }
