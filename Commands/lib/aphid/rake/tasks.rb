@@ -119,9 +119,10 @@ namespace :publish do
   desc "Prepares each configured host for publishing"
   task :setup do
     begin
-      hosts = read_environment_variable(:hosts)
+      hosts       = read_environment_variable(:hosts)
+      environment = (Publish.current_environment = read_environment_variable(:environment)) || Publish.current_environment
 
-      header "Preparing Hosts for Publishing" do
+      header "Preparing Hosts for Publishing in the \"#{environment.to_s.capitalize}\" Environment" do
         Publish.setup hosts
       end
     ensure
@@ -132,10 +133,11 @@ namespace :publish do
   desc "Lists all published releases"
   task :releases do
     begin
-      header "Published Releases" do
-        hosts    = read_environment_variable(:hosts)
-        releases = Publish.releases(hosts)
+      hosts       = read_environment_variable(:hosts)
+      environment = (Publish.current_environment = read_environment_variable(:environment)) || Publish.current_environment
 
+      header "Published Releases in the \"#{environment.to_s.capitalize}\" Environment" do
+        releases = Publish.releases(hosts)
         if releases.length == 0
           puts "Error: There are no published releases.\n\n"
           exit
@@ -163,10 +165,11 @@ namespace :publish do
   desc "Rollback to the published release specified as RELEASE=YYYYMMDDHHMM.SS"
   task :rollback do
     begin
-      release = read_environment_variable(:release)
-      hosts   = read_environment_variable(:hosts)
+      release     = read_environment_variable(:release)
+      hosts       = read_environment_variable(:hosts)
+      environment = (Publish.current_environment = read_environment_variable(:environment)) || Publish.current_environment
 
-      header "Rolling Back" do
+      header "Rolling Back the \"#{environment.to_s.capitalize}\" Environment" do
 
         # Allow the release to be specified as an environment variable...
         unless release.nil? or release =~ /^[0-9]{12}\.[0-9]{2}$/
@@ -206,10 +209,11 @@ namespace :publish do
   desc "Cleans up old releases (retains the last 3 by default, override with RETAIN=n)"
   task :cleanup do
     begin
-      retain = read_environment_variable(:retain, 3)
-      hosts  = read_environment_variable(:hosts)
+      retain      = read_environment_variable(:retain, 3)
+      hosts       = read_environment_variable(:hosts)
+      environment = (Publish.current_environment = read_environment_variable(:environment)) || Publish.current_environment
 
-      header "Cleaning Up Published Releases" do
+      header "Cleaning Up Published Releases in the \"#{environment.to_s.capitalize}\" Environment" do
         if !Publish.cleanup(retain, hosts)
           puts "No releases to clean up!"
         end
@@ -224,10 +228,14 @@ end
 desc "Publishes the project to the configured hosts"
 task :publish do
   begin
-    hosts   = read_environment_variable(:hosts)
-    release = nil
+    hosts       = read_environment_variable(:hosts)
+    environment = (Publish.current_environment = read_environment_variable(:environment)) || Publish.current_environment
+    release     = nil
 
-    header "Publishing Project" do
+    header "Publishing Project in the \"#{environment.to_s.capitalize}\" Environment" do
+
+      # Set Environment
+      Publish.current_environment = environment
 
       # Publish Release
       release = Publish.publish "Build", hosts

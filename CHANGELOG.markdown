@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Added multiple-environment support to the publish functionality.
+
  * [Tools] Added retry support on closed connections when publishing.
 
  * [Aphid.Model] Any properties that are part of an association's URL template

@@ -1,9 +1,53 @@
 #
-# Aphid "Publish" Configuration (<%= @project_name %>)
+# Publish Configuration for <%= @project_name %>
 #
 
 {
-  # :hosts => [ "web1.example.com", "web2.example.com" ],
-  # :path  => "/srv/application",
-  # :user  => "jdoe"
+
+  #
+  # Specify each of the hosts that you would like to publish to. You must
+  # provide at least one host.
+  #
+  :hosts => [
+    "web1.example.com",
+    "web2.example.com"
+  ],
+
+  #
+  # Specify the base path that the application will be published to. This path
+  # will be created by the "publish:setup" Rake task and will also contain a
+  # "releases" folder and a "current" symlink to the published release.
+  #
+  :path  => "/srv/application",
+
+  #
+  # Specify the user that you wish to use to connect to the hosts specified
+  # above. If you do not specify a user, your login user will be used.
+  #
+  # :user => "jdoe",
+
+  #
+  # You may optionally specify multiple environments to publish to. The
+  # settings provided for each environment below will override any of the
+  # settings specified above. You may publish to a specific environment by
+  # providing the PUBLISH= environment variable to the "rake publish" command
+  # (i.e. "rake publish environment=production").
+  #
+  # :environments => {
+  #   :staging => {
+  #     :path => "/srv/application/staging",
+  #     :hosts => [ "staging1.example.com" ]
+  #   },
+  #   :production => {
+  #     :user => "production"
+  #   }
+  # },
+
+  #
+  # If you have defined multiple environments, it is recommended that you set
+  # a default environment so that you don't have to specify the environment
+  # with each rake task you invoke.
+  #
+  # :default_environment => :staging
+
 }

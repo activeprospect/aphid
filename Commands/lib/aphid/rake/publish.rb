@@ -21,6 +21,33 @@ module Aphid
       class InvalidReleaseError       < StandardError; end
       class AtomicHostStateError      < StandardError; end
 
+      # Environments ---------------------------------------------------------
+
+      @@current_environment = nil
+
+      #
+      # Set the current environment.
+      #
+      def self.current_environment=(environment)
+        @@current_environment = environment.to_sym unless environment.nil?
+      end
+
+      #
+      # Retrieve the current environment, either as set by the user or the
+      # default.
+      #
+      def self.current_environment
+        if @@current_environment.nil?
+          @config = eval(File.read("Publish.rb"))
+          if @config.has_key? :environments and @config.has_key? :default_environment
+            @@current_environment = @config[:default_environment]
+          end
+        end
+        @@current_environment
+      rescue Errno::ENOENT
+        puts "Error: Missing configuration file (Publish.rb)!"
+      end
+
       # Configuration --------------------------------------------------------
 
       #
@@ -28,7 +55,12 @@ module Aphid
       # application.
       #
       def self.config
-        @@config ||= eval(File.read("Publish.rb"))
+        @@config ||= begin
+          @config = eval(File.read("Publish.rb"))
+          if @config.has_key? :environments
+            @config.merge! @config[:environments][self.current_environment]
+          end
+        end
       rescue Errno::ENOENT
         puts "Error: Missing configuration file (Publish.rb)!"
       end
@@ -140,7 +172,7 @@ module Aphid
         retain        = (retain.nil? or !(retain =~ /^[0-9]+$/)) ? 3 : retain.to_i
         hosts         = parse_hosts(hosts)
         release_times = releases.keys.sort
-        active_index  = release_times.index(active_release)
+        active_index  = release_times.index(atomic_release)
         old_releases  = release_times[0, active_index - retain]
 
         # Return if there are no old releases to clean up
@@ -172,8 +204,9 @@ module Aphid
           active_releases = {}
           config[:hosts].collect do |host|
             connection(host) do |ssh|
-              current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
+              current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\"").split(" ").last
               release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
+              puts release_match
               active_releases[host] = release_match ? release_match[1] : false
             end
           end
@@ -190,7 +223,7 @@ module Aphid
         @@active_release ||= {}
         @@active_release[host] ||= begin
           connection(host) do |ssh|
-            current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
+            current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\"").split(" ").last
             release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
             release_match ? release_match[1] : false
           end
