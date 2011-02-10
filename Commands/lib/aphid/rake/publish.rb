@@ -40,10 +40,29 @@ module Aphid
       #
       # Establishes (and caches) an SSH connection to the specified
       # host. Subsequent calls to this method will return the already
-      # initialized connection.
+      # initialized connection. If the connection has closed since the last
+      # attempt to access it, this method will attempt to reconnect before
+      # raising an exception.
       #
       def self.connection(host)
-        @@connections[host] ||= Net::SSH.start(host, config[:user])
+        @@connections[host] ||= Net::SSH.start(host, config[:user], :compression => "none")
+        if block_given?
+          retried = false
+          begin
+            yield @@connections[host]
+          rescue IOError
+            puts "  * [#{host}] Lost connection to host. Retrying..."
+            @@connections[host] = Net::SSH.start(host, config[:user], :compression => "none")
+            unless retried
+              retried = true
+              retry
+            else
+              raise $!
+            end
+          end
+        else
+          @@connections[host]
+        end
       end
 
       #
@@ -66,10 +85,11 @@ module Aphid
       def self.setup(hosts = nil)
         hosts = parse_hosts(hosts)
         hosts.each do |host|
-          connection = connection(host)
-          connection.exec! "mkdir -p \"#{config[:path]}\""
-          connection.exec! "mkdir -p \"#{config[:path]}/releases\""
-          puts "  * [#{host}] Preparing \"#{config[:path]}\" for publishing ..."
+          connection(host) do |ssh|
+            ssh.exec! "mkdir -p \"#{config[:path]}\""
+            ssh.exec! "mkdir -p \"#{config[:path]}/releases\""
+            puts "  * [#{host}] Preparing \"#{config[:path]}\" for publishing ..."
+          end
         end
       end
 
@@ -88,19 +108,21 @@ module Aphid
 
         # Sanity Check Publish Paths
         hosts.each do |host|
-          connection = connection(host)
-          puts "  * [#{host}] Sanity checking publish path \"#{remote_path}\" ..."
-          unless connection.exec!("test -d \"#{config[:path]}/releases\" && echo 'exists'") =~ /exists/
-            raise HostStateError, "Host #{host} is missing the configured publish path: #{config[:path]}."
+          connection(host) do |ssh|
+            puts "  * [#{host}] Sanity checking publish path \"#{remote_path}\" ..."
+            unless ssh.exec!("test -d \"#{config[:path]}/releases\" && echo 'exists'") =~ /exists/
+              raise HostStateError, "Host #{host} is missing the configured publish path: #{config[:path]}."
+            end
           end
         end
 
         # Publish
         hosts.each do |host|
-          connection = connection(host)
-          puts "  * [#{host}] Publishing release #{release} to \"#{remote_path}\" ..."
-          connection.scp.upload! local_path, remote_path, :recursive => true
-          connection.exec! "echo \"#{revision}\" > \"#{remote_path}/.revision\""
+          connection = connection(host) do |ssh|
+            puts "  * [#{host}] Publishing release #{release} to \"#{remote_path}\" ..."
+            ssh.scp.upload! local_path, remote_path, :recursive => true
+            ssh.exec! "echo \"#{revision}\" > \"#{remote_path}/.revision\""
+          end
         end
 
         reset_cached_attributes!
@@ -130,9 +152,10 @@ module Aphid
           release_path = "#{config[:path]}/releases/#{release}"
           releases[release][:hosts].each do |host|
             next unless hosts.include? host
-            connection = connection(host)
-            connection.exec! "rm -rf \"#{release_path}\""
-            puts "  * [#{host}] Removing release #{release} from \"#{release_path}\" ..."
+            connection(host) do |ssh|
+              ssh.exec! "rm -rf \"#{release_path}\""
+              puts "  * [#{host}] Removing release #{release} from \"#{release_path}\" ..."
+            end
           end
         end
         reset_cached_attributes!
@@ -148,10 +171,11 @@ module Aphid
         @@active_releases ||= begin
           active_releases = {}
           config[:hosts].collect do |host|
-            connection    = connection(host)
-            current_link  = connection.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
-            release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
-            active_releases[host] = release_match ? release_match[1] : false
+            connection(host) do |ssh|
+              current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
+              release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
+              active_releases[host] = release_match ? release_match[1] : false
+            end
           end
           active_releases
         end
@@ -165,10 +189,11 @@ module Aphid
       def self.active_release(host)
         @@active_release ||= {}
         @@active_release[host] ||= begin
-          connection    = connection(host)
-          current_link  = connection.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
-          release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
-          release_match ? release_match[1] : false
+          connection(host) do |ssh|
+            current_link  = ssh.exec!("ls -l \"#{config[:path]}/current\" | awk '{print $11}'")
+            release_match = current_link.match(/([0-9]{12}\.[0-9]{2})/)
+            release_match ? release_match[1] : false
+          end
         end
       rescue
         false
@@ -189,12 +214,13 @@ module Aphid
       end
 
       def self.has_release?(release, host)
-        connection = connection(host)
-        if folders = connection.exec!("ls \"#{config[:path]}/releases\"")
-          folders = folders.split(/\s+/)
-          folders.include? release
-        else
-          false
+        connection(host) do |ssh|
+          if folders = ssh.exec!("ls \"#{config[:path]}/releases\"")
+            folders = folders.split(/\s+/)
+            folders.include? release
+          else
+            false
+          end
         end
       end
 
@@ -257,30 +283,30 @@ module Aphid
         @@releases[hosts.to_s] ||= begin
           releases = {}
           hosts.each do |host|
-            connection = connection(host)
-
-            if folders = connection.exec!("ls \"#{config[:path]}/releases\"")
-              folders = folders.split(/\s+/)
-            else
-              return releases
-            end
-
-            folders.each do |folder|
-              revision = connection.exec!("cat \"#{config[:path]}/releases/#{folder}/.revision\"").chop
-              revision = false unless revision =~ /^([A-Za-z0-9]{40})(-dirty)?$/
-
-              if releases[folder]
-                releases[folder][:hosts] << host
-                releases[folder][:active] = true if (folder == active_release(host))
+            connection(host) do |ssh|
+              if folders = ssh.exec!("ls \"#{config[:path]}/releases\"")
+                folders = folders.split(/\s+/)
               else
-                releases[folder] = {
-                  :revision  => revision,
-                  :dirty     => (revision =~ /dirty/),
-                  :timestamp => parse_release_time(folder),
-                  :hosts     => [ host ],
-                  :active    => (folder == active_release(host)),
-                  :atomic    => (atomic? and active_release(host) == atomic_release)
-                }
+                return releases
+              end
+
+              folders.each do |folder|
+                revision = ssh.exec!("cat \"#{config[:path]}/releases/#{folder}/.revision\"").chop
+                revision = false unless revision =~ /^([A-Za-z0-9]{40})(-dirty)?$/
+
+                if releases[folder]
+                  releases[folder][:hosts] << host
+                  releases[folder][:active] = true if (folder == active_release(host))
+                else
+                  releases[folder] = {
+                    :revision  => revision,
+                    :dirty     => (revision =~ /dirty/),
+                    :timestamp => parse_release_time(folder),
+                    :hosts     => [ host ],
+                    :active    => (folder == active_release(host)),
+                    :atomic    => (atomic? and active_release(host) == atomic_release)
+                  }
+                end
               end
             end
           end
@@ -313,10 +339,11 @@ module Aphid
 
         # Update the "current" symlink to point to the requested release...
         hosts.each do |host|
-          connection = connection(host)
-          connection.exec! "rm \"#{config[:path]}/current\""
-          connection.exec! "ln -sf \"#{config[:path]}/releases/#{release}\" \"#{config[:path]}/current\""
-          puts "  * [#{host}] Activating release #{release} ..."
+          connection(host) do |ssh|
+            ssh.exec! "rm \"#{config[:path]}/current\""
+            ssh.exec! "ln -sf \"#{config[:path]}/releases/#{release}\" \"#{config[:path]}/current\""
+            puts "  * [#{host}] Activating release #{release} ..."
+          end
         end
       end
 
