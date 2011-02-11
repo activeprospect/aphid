@@ -74,7 +74,7 @@ task :build => [ :clean, :prepare ] do
 
     # Copy Images
     if File.exist? "Resources/Images"
-      Dir.clone! "Resources/Images", "Build/Resources/Images", [ "\.psd", "\.pxm", "\.ai", "\.eps" ]
+      Dir.clone! "Resources/Images", "Build/Resources/Images", [ "\.psd$", "\.pxm$", "\.ai$", "\.eps$" ]
     end
 
     # Copy Public Assets
