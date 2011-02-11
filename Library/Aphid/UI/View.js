@@ -1451,20 +1451,3 @@ Aphid.UI.View.SlideLeftTransition = 1;
 * in from the left.
 **/
 Aphid.UI.View.SlideRightTransition = 2;
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-Aphid.UI.View.prototype.setView.displayName = "Aphid.UI.View.setView";
-Aphid.UI.View.prototype.setViewAnimated.displayName = "Aphid.UI.View.setViewAnimated";
-Aphid.UI.View.prototype._setView.displayName = "Aphid.UI.View._setView";
-Aphid.UI.View.prototype.addSubview.displayName = "Aphid.UI.View.addSubview";
-Aphid.UI.View.prototype.addSubviewAnimated.displayName = "Aphid.UI.View.addSubviewAnimated";
-Aphid.UI.View.prototype._addSubview.displayName = "Aphid.UI.View._addSubview";
-Aphid.UI.View.prototype.removeFromSuperview.displayName = "Aphid.UI.View.removeFromSuperview";
-Aphid.UI.View.prototype.removeFromSuperviewAnimated.displayName = "Aphid.UI.View.removeFromSuperviewAnimated";
-Aphid.UI.View.prototype._removeFromSuperview.displayName = "Aphid.UI.View._removeFromSuperview";
-Aphid.UI.View.prototype.clearSubviews.displayName = "Aphid.UI.View.clearSubviews";
-Aphid.UI.View.prototype._loadTemplate.displayName = "Aphid.UI.View._loadTemplate";
-Aphid.UI.View.prototype._templateDidFinishLoading.displayName = "Aphid.UI.View._templateDidFinishLoading";
-Aphid.UI.View.prototype._connectToOutlets.displayName = "Aphid.UI.View._connectToOutlets";
-Aphid.UI.View.prototype._wireActionsToInstance.displayName = "Aphid.UI.View._wireActionsToInstance";

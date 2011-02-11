@@ -188,8 +188,3 @@ Aphid.UI.SourceListViewItem = Aphid.Class.create("Aphid.UI.SourceListViewItem", 
   }
 
 });
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-// Aphid.UI.SourceListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";
-// Aphid.UI.SourceListViewItem.prototype.deselect.displayName = "Aphid.UI.ListViewItem.deselect";

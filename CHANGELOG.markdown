@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Class] Initializing classes with Aphid.Class will now automatically
+   set the displayName property on each Class prototype function defined, for
+   an improved debugging experience.
+
  * [Tools] Resources/Images will now be copied to the Build output folder,
    excluding any image source files (i.e. PSD, AI, etc).
 

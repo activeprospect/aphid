@@ -103,8 +103,3 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   }
 
 });
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-Aphid.UI.ListViewItem.prototype.select.displayName = "Aphid.UI.ListViewItem.select";
-Aphid.UI.ListViewItem.prototype.deselect.displayName = "Aphid.UI.ListViewItem.deselect";

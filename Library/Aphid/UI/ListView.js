@@ -1173,28 +1173,3 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   }
 
 });
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-Aphid.UI.ListView.prototype.initialize.displayName = "Aphid.UI.ListView.initialize";
-Aphid.UI.ListView.prototype.setItems.displayName = "Aphid.UI.ListView.setItems";
-Aphid.UI.ListView.prototype.addItem.displayName = "Aphid.UI.ListView.addItem";
-Aphid.UI.ListView.prototype.selectItem.displayName = "Aphid.UI.ListView.selectItem";
-Aphid.UI.ListView.prototype.selectItemAtIndex.displayName = "Aphid.UI.ListView.selectItemAtIndex";
-Aphid.UI.ListView.prototype.deselectItem.displayName = "Aphid.UI.ListView.deselectItem";
-Aphid.UI.ListView.prototype.deselectItemAtIndex.displayName = "Aphid.UI.ListView.deselectItemAtIndex";
-Aphid.UI.ListView.prototype.clearSelection.displayName = "Aphid.UI.ListView.clearSelection";
-Aphid.UI.ListView.prototype.openItem.displayName = "Aphid.UI.ListView.clearSelection";
-Aphid.UI.ListView.prototype._setupSorting.displayName = "Aphid.UI.ListView._setupSorting";
-Aphid.UI.ListView.prototype._addOrderedIdentitiesToItems.displayName = "Aphid.UI.ListView._addOrderedIdentitiesToItems";
-Aphid.UI.ListView.prototype._listViewOrderDidChange.displayName = "Aphid.UI.ListView._listViewOrderDidChange";
-Aphid.UI.ListView.prototype._listViewOrderDidUpdate.displayName = "Aphid.UI.ListView._listViewOrderDidUpdate";
-Aphid.UI.ListView.prototype._shouldSelectItem.displayName = "Aphid.UI.ListView._shouldSelectItem";
-Aphid.UI.ListView.prototype._didSelectItem.displayName = "Aphid.UI.ListView._didSelectItem";
-Aphid.UI.ListView.prototype._shouldDeselectItem.displayName = "Aphid.UI.ListView._shouldDeselectItem";
-Aphid.UI.ListView.prototype._didDeselectItem.displayName = "Aphid.UI.ListView._didDeselectItem";
-Aphid.UI.ListView.prototype._shouldClearSelection.displayName = "Aphid.UI.ListView._shouldClearSelection"
-Aphid.UI.ListView.prototype._shouldOpenItem.displayName = "Aphid.UI.ListView._shouldOpenItem";
-Aphid.UI.ListView.prototype._didOpenItem.displayName = "Aphid.UI.ListView._didOpenItem";
-Aphid.UI.ListView.prototype._validateContainer.displayName = "Aphid.UI.ListView._validateContainer";
-Aphid.UI.ListView.prototype._validateItem.displayName = "Aphid.UI.ListView._validateItem";

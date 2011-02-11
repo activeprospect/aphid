@@ -155,8 +155,3 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
   }
 
 });
-
-// Method Name Mappings for Debugging ----------------------------------------
-
-Aphid.UI.MatrixViewItem.prototype.select.displayName = "Aphid.UI.MatrixViewItem.select";
-Aphid.UI.MatrixViewItem.prototype.deselect.displayName = "Aphid.UI.MatrixViewItem.deselect";

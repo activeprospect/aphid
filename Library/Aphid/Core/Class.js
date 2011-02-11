@@ -5,7 +5,7 @@
 Aphid.Class = {};
 
 /**
- * Aphid.Class.create(name, [parent][, methods...]) -> Class
+ * Aphid.Class.create(name, [parent[, methods...]]) -> Class
 **/
 Aphid.Class.create = function(name)
 {
@@ -37,6 +37,12 @@ Aphid.Class.create = function(name)
   klass.prototype.displayName = name;
   klass.prototype.className   = name;
   klass.className             = name;
+
+  // Add Debugging Information
+  $H(klass.prototype).keys().each(function(key) {
+    if (Object.isFunction(klass.prototype[key]) && !klass.prototype[key].displayName)
+      klass.prototype[key].displayName = name + "#" + key;
+  });
 
   // Extend Class w/Object Mixin
   // TODO Object.extend(klass.prototype, Aphid.Support.Object);
