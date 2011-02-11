@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Resources/Images will now be copied to the Build output folder,
+   excluding any image source files (i.e. PSD, AI, etc).
+
  * [Tools] Added multiple-environment support to the publish functionality.
 
  * [Tools] Added retry support on closed connections when publishing.
