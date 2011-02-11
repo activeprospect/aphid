@@ -82,9 +82,7 @@
  * the latest known "Last Access" timestamp of the User.
 **/
 
-Aphid.Core.NotificationCenter = Class.create({
-
-  displayName: "Aphid.Core.NotificationCenter",
+Aphid.Core.NotificationCenter = Aphid.Class.create("Aphid.Core.NotificationCenter", {
 
   /**
    * Aphid.Core.NotificationCenter#observers -> Hash

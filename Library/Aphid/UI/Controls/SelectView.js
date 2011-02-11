@@ -19,9 +19,7 @@
 
 //= require "SelectViewOption"
 
-Aphid.UI.Controls.SelectView = Class.create(Aphid.UI.View, {
-
-  displayName: "Aphid.UI.Controls.SelectView",
+Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView", Aphid.UI.View, {
 
   // Properties
   selectElement: false,

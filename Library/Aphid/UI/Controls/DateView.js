@@ -3,9 +3,7 @@
  *
 **/
 
-Aphid.UI.Controls.DateView = Class.create(Aphid.UI.View, {
-
-  displayName: "Aphid.UI.Controls.DateView",
+Aphid.UI.Controls.DateView = Aphid.Class.create("Aphid.UI.Controls.DateView", Aphid.UI.View, {
 
   // Properties
   popoverView: false,

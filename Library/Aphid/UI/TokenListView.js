@@ -95,9 +95,8 @@
  *
 **/
 
-Aphid.UI.TokenListView = Class.create(Aphid.UI.ListView, {
+Aphid.UI.TokenListView = Aphid.Class.create("Aphid.UI.TokenListView", Aphid.UI.ListView, {
 
-  displayName: "Aphid.UI.TokenListView",
   tagName: "ul"
 
 });

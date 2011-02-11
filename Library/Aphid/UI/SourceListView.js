@@ -95,8 +95,6 @@
  *
 **/
 
-Aphid.UI.SourceListView = Class.create(Aphid.UI.ListView, {
-
-  displayName: "Aphid.UI.SourceListView"
+Aphid.UI.SourceListView = Aphid.Class.create("Aphid.UI.SourceListView", Aphid.UI.ListView, {
 
 });

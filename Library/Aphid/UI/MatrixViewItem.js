@@ -5,9 +5,7 @@
  * required to be instances of this class, [[Aphid.UI.MatrixViewItem]].
 **/
 
-Aphid.UI.MatrixViewItem = Class.create(Aphid.UI.ListViewItem, {
-
-  displayName: "Aphid.UI.MatrixViewItem",
+Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI.ListViewItem, {
 
   /**
    * Aphid.UI.MatrixViewItem#isSelected -> Boolean

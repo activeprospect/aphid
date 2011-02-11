@@ -134,9 +134,7 @@
  *
 **/
 
-Aphid.UI.ListView = Class.create(Aphid.UI.View, {
-
-  displayName: "Aphid.UI.ListView",
+Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
   /**
    * Aphid.UI.ListView#tagName -> String

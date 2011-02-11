@@ -5,9 +5,8 @@
  * required to be instances of this class, [[Aphid.UI.ListViewItem]].
 **/
 
-Aphid.UI.ListViewItem = Class.create(Aphid.UI.View, {
+Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.View, {
 
-  displayName: "Aphid.UI.ListViewItem",
   tagName: "li",
 
   /**

@@ -6,9 +6,7 @@
 
 //= require <Aphid/UI/MatrixViewItem>
 
-Aphid.UI.MatrixView = Class.create(Aphid.UI.ListView, {
-
-  displayName: "Aphid.UI.MatrixView",
+Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListView, {
 
   /**
    * Aphid.UI.ListView#itemViewClass -> String

@@ -48,9 +48,7 @@
  *
 **/
 
-Aphid.UI.TabViewController = Class.create(Aphid.UI.ViewController, {
-
-  displayName: "Aphid.UI.TabViewController",
+Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Aphid.UI.ViewController, {
 
   /**
    * Aphid.UI.TabViewController#persistSelectedTab -> Boolean

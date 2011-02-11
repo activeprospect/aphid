@@ -1,7 +1,9 @@
+/**
+ * class Aphid.UI.PopoverView < Aphid.UI.View
+**/
 
-Aphid.UI.PopoverView = Class.create(Aphid.UI.View, {
+Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View, {
 
-  displayName: "PopoverView",
   attachedView: false,
 
   getElement: function()

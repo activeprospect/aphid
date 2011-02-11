@@ -25,9 +25,7 @@
  *
 **/
 
-Aphid.UI.Controls.SegmentedControl = Class.create(Aphid.UI.Control, {
-
-  displayName: "Aphid.UI.Controls.SegmentedControl",
+Aphid.UI.Controls.SegmentedControl = Aphid.Class.create("Aphid.UI.Controls.SegmentedControl", Aphid.UI.Control, {
 
   /**
    * Aphid.UI.Controls.SegmentedControl#segments -> Array

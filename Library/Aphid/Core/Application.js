@@ -1,5 +1,5 @@
 /**
- * class Aphid.Core.Application
+ * class Aphid.Core.Application < Aphid.Support.Object
  * 
  * Abstract class that should be subclassed by an application that wishes to
  * be managed by the Aphid framework.
@@ -27,9 +27,7 @@
 
 var Application;
 
-Aphid.Core.Application = Class.create(Aphid.Support.Object, {
-
-  displayName: "Aphid.Core.Application",
+Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Support.Object, {
 
   /**
    * Aphid.Core.Application#logger -> Aphid.Support.Logger | false
@@ -185,17 +183,18 @@ Aphid.Core.Application.bootstrap = function()
   if (Prototype.Browser.IE6)
   {
     window.location.href = "Vendor/Aphid/Resources/Templates/Unsupported.html";
-    return
+    return;
   }
 
   if (Object.isUndefined(Application))
   {
     $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
-    Application = Class.create(Aphid.Core.Application);
+    Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Core.Application);
   }
   Application.sharedInstance = new Application();
   $AppDelegate = Application.sharedInstance;
   if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
     $AppDelegate.applicationDidFinishInitialization();
 }
-document.observe('dom:loaded', Aphid.Core.Application.bootstrap);
+
+document.observe("dom:loaded", Aphid.Core.Application.bootstrap);

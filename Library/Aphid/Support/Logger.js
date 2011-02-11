@@ -1,5 +1,5 @@
 /**
- * class Aphid.Support.Logger
+ * class Aphid.Support.Logger < Aphid.Support.Object
  * 
  * Logging utility class for Aphid with support for multiple levels of
  * verbosity.

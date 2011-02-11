@@ -25,9 +25,7 @@
  *
 **/
 
-Aphid.UI.SplitViewController = Class.create(Aphid.UI.ViewController, {
-
-  displayName: "Aphid.UI.SplitViewController",
+Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController", Aphid.UI.ViewController, {
 
   /**
    * Aphid.UI.SplitViewController#firstView -> Aphid.UI.View | false

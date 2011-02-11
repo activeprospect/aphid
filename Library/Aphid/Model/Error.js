@@ -2,7 +2,7 @@
  * class Aphid.Model.Error
 **/
 
-Aphid.Model.Error = Class.create({
+Aphid.Model.Error = Aphid.Class.create("Aphid.Model.Error", {
 
   field: false,
   message: false,

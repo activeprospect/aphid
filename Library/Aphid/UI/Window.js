@@ -11,9 +11,7 @@
  * automatically initialize a shared instance of [[Aphid.UI.Window]] as
  * [[Aphid.Core.Application#mainWindow]].
 **/
-Aphid.UI.Window = Class.create(Aphid.UI.View, {
-
-  displayName: "Aphid.UI.Window",
+Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
 
   /*
    * Aphid.UI.Window#_overlayElement -> Element | false

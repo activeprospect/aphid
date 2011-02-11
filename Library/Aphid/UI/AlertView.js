@@ -14,8 +14,7 @@
  *     alertView.showAnimated();
  *
 **/
-Aphid.UI.AlertView = Class.create(Aphid.UI.View,
-{
+Aphid.UI.AlertView = Aphid.Class.create("Aphid.UI.AlertView", Aphid.UI.View, {
 
   /**
    * Aphid.UI.AlertView#title -> String | false

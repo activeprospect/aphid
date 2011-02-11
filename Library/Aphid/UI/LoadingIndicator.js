@@ -8,8 +8,6 @@
 
 Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
 
-  displayName: "Aphid.UI.LoadingIndicator",
-
   /*
    * Aphid.UI.LoadingIndicator#_canvas -> Element
    *

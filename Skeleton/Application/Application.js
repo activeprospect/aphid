@@ -7,9 +7,7 @@
 
 //= require "Controllers/MainViewController"
 
-var Application = Class.create(Aphid.Core.Application, {
-
-  displayName: "Application",
+var Application = Aphid.Class.create("Application", Aphid.Core.Application, {
 
   mainViewController: false,
 

@@ -3,9 +3,8 @@
  *
 **/
 
-Aphid.UI.Controls.SelectViewOption = Class.create(Aphid.UI.View, {
+Aphid.UI.Controls.SelectViewOption = Aphid.Class.create("Aphid.UI.Controls.SelectViewOption", Aphid.UI.View, {
 
-  displayName: "Aphid.UI.Controls.SelectViewOption",
   tagName: "option",
 
   /**

@@ -9,9 +9,7 @@
  *
 **/
 
-Aphid.UI.Controls.ButtonControl = Class.create(Aphid.UI.Control, {
-
-  displayName: "Aphid.UI.Controls.ButtonControl",
+Aphid.UI.Controls.ButtonControl = Aphid.Class.create("Aphid.UI.Controls.ButtonControl", Aphid.UI.Control, {
 
   /**
    * Aphid.UI.Controls.ButtonControl#isToggle -> Array

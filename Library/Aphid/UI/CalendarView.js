@@ -11,7 +11,7 @@
  *
 **/
 
-Aphid.UI.CalendarView = Class.create(Aphid.UI.View, {
+Aphid.UI.CalendarView = Aphid.Class.create("Aphid.UI.CalendarView", Aphid.UI.View, {
 
   /**
    * Aphid.UI.CalendarView#date -> Date | false

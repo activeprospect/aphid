@@ -11,10 +11,8 @@
  * notifying that the view will be displayed or hidden, etc.
  *
 **/
-Aphid.UI.ViewController = Class.create(Aphid.UI.View,
+Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI.View,
 {
-
-  displayName: "Aphid.UI.ViewController",
 
   /*
    * Aphid.UI.ViewController#_modalViewContainer -> Element | false

@@ -1,5 +1,5 @@
 /**
- * class Aphid.UI.View
+ * class Aphid.UI.View < Aphid.Support.Object
  *
  * This class serves as a lightweight wrapper for a DOM element and as a
  * scaffold on which to build functionality on top of the wrapped HTML.
@@ -140,16 +140,7 @@
  *
 **/
 
-Aphid.UI.View = Class.create(Aphid.Support.Object, {
-
-  /**
-   * Aphid.UI.View#displayName -> String
-   *
-   * A friendly displayName for the view. Defining this property can help
-   * track down issues as it will be used when logging errors and warnings or
-   * other informational messages.
-  **/
-  displayName: "Aphid.UI.View",
+Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
   /**
    * Aphid.UI.View#tagName -> String

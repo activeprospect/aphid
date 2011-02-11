@@ -5,9 +5,7 @@
  * accessory view that is suitable for use with an [[Aphid.UI.SourceListView]].
 **/
 
-Aphid.UI.SourceListViewItem = Class.create(Aphid.UI.ListViewItem, {
-
-  displayName: "Aphid.UI.SourceListViewItem",
+Aphid.UI.SourceListViewItem = Aphid.Class.create("Aphid.UI.SourceListViewItem", Aphid.UI.ListViewItem, {
 
   /**
    * Aphid.UI.SourceListViewItem#contentView -> Aphid.UI.View | false

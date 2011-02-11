@@ -5,9 +5,7 @@
  * for use with an [[Aphid.UI.SourceListView]].
 **/
 
-Aphid.UI.DividerSourceListViewItem = Class.create(Aphid.UI.SourceListViewItem, {
-
-  displayName: "Aphid.UI.DividerSourceListViewItem",
+Aphid.UI.DividerSourceListViewItem = Aphid.Class.create("Aphid.UI.DividerSourceListViewItem", Aphid.UI.SourceListViewItem, {
 
   // Initialization ----------------------------------------------------------
 

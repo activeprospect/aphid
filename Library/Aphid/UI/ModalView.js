@@ -4,10 +4,7 @@
  * Supports the display of modal view controllers.
  *
 **/
-Aphid.UI.ModalView = Class.create(Aphid.UI.View,
-{
-
-  displayName: "Aphid.UI.ModalView",
+Aphid.UI.ModalView = Aphid.Class.create("Aphid.UI.ModalView", Aphid.UI.View, {
 
   /**
    * Aphid.UI.ModalView#viewController -> Aphid.UI.ViewController | false
