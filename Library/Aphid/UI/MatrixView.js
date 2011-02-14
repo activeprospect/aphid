@@ -69,14 +69,14 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   // Selection ---------------------------------------------------------------
 
   /**
-   * Aphid.UI.ListView#selectItem(item) -> Boolean
+   * Aphid.UI.MatrixView#selectItem(item) -> Boolean
    *
    * - item ([[Aphid.UI.ListViewItem]]): the list view item to select
    *
    * Selects the specified list item. Returns true if the item was selected or
    * false if no action was performed.
   **/
-  selectItem: function(item)
+  selectItem: function($super, item)
   {
     if (!this._shouldSelectItem(item)) return false;
     this._willSelectItem(item);
@@ -107,20 +107,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     return true;
   },
 
-  /**
-   * Aphid.UI.MatrixView#selectItem(item) -> Boolean
-  **/
-  // selectItem: function($super, item)
-  // {
-  //   if (!this._shouldSelectItem(item)) return false;
-  // 
-  //   $L.info("selectItem", this);
-  // 
-  //   $super(item);
-  // 
-  //   this._didSelectItem(item);
-  // },
-
   addItemToSelection: function($super, item)
   {
     alert('add item to selection')
@@ -146,7 +132,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     this.clearSelection();
     this.selectItem(item);
 
-    this.scrollIntoView(element, 'down');
+    this.scrollToSelectedItem();
   },
 
   selectLast: function()
@@ -159,7 +145,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     this.clearSelection();
     this.selectItem(item);
 
-    this.scrollIntoView(element, 'down');
+    this.scrollToSelectedItem();
   },
 
   _expandSelectionLeft: function(event)
@@ -172,7 +158,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     otherElement.addClassName('selected');
     this.get("selectedItems").push(otherElement);
 
-    this.scrollIntoView(element, 'up');
+    this.scrollToSelectedItem();
   },
 
   _expandSelectionRight: function(event)
@@ -186,7 +172,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     otherElement.addClassName('selected');
     this.get("selectedItems").push(otherElement);
 
-    this.scrollIntoView(element, 'down');
+    this.scrollToSelectedItem();
   },
 
   _expandSelectionUp: function(event)
@@ -209,7 +195,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
       if (Position.within(el, itemOffset[0], itemOffset[1] - element.getHeight()))
       {
         done = true;
-        this.scrollIntoView(el, 'up');
+        this.scrollToSelectedItem();
       }
     }, this);
   },
@@ -236,7 +222,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
       if (Position.within(el, offset[0], y))
       {
         done = true;
-        this.scrollIntoView(el, 'down');
+        this.scrollToSelectedItem();
       }
     }, this);
   },
@@ -255,7 +241,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
     var item = previousElement.getStorage().get("item");
     this.selectItem(item);
-    this.scrollIntoView(previousElement, 'up');
+    this.scrollToSelectedItem();
   },
 
   moveRight: function(event)
@@ -272,7 +258,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     {
       var item = nextElement.getStorage().get("item");
       this.selectItem(item);
-      this.scrollIntoView(nextElement, 'down');
+      this.scrollToSelectedItem();
     }
     else
       this.selectLast();
@@ -299,7 +285,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         {
           var item = el.getStorage().get("item");
           this.selectItem(item);
-          this.scrollIntoView(el, 'up');
+          this.scrollToSelectedItem();
         }
       }.bind(this)
     )
@@ -329,36 +315,13 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         {
           var item = el.getStorage().get("item");
           this.selectItem(item);
-          this.scrollIntoView(el, 'down');
+          this.scrollToSelectedItem();
           selected = true;
         }
       }.bind(this)
     )
 
     if (!selected) this.selectLast();
-  },
-
-  /**
-   * Aphid.UI.MatrixView#scrollIntoView -> null
-  **/
-  // TODO Merge this with Aphid.UI.ListView's scrollToSelectedItem, or possibly into View itself...
-  scrollIntoView: function(element, direction)
-  {
-    var scrollingView = this.get("element");
-    if (direction == "down" || direction == "right")
-    {
-      if ((Position.page(element)[1] + element.getHeight()) >= (scrollingView.getHeight() + Position.cumulativeOffset(scrollingView)[1]))
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight());
-      else if (Position.page(element)[1] <= 0)
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - scrollingView.getHeight() + element.getHeight());
-    }
-    else if (direction == "up" || direction == "left")
-    {
-      if ((Position.page(element)[1] + element.getHeight()) >= (scrollingView.getHeight() + Position.cumulativeOffset(scrollingView)[1]))
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24;
-      else if (Position.page(element)[1] <= 0)
-        scrollingView.scrollTop = (Position.cumulativeOffset(element)[1] - parseInt(element.getStyle('margin-top'))) - 24;
-    }
   },
 
   // Event Handling ----------------------------------------------------------
@@ -600,6 +563,14 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         element.removeClassName('selected');
       }
     }, this);
+  },
+
+  // View Callbacks ----------------------------------------------------------
+
+  viewWillAppear: function()
+  {
+    if (this.get("selectedItem"))
+      this.scrollToSelectedItem();
   }
 
 });

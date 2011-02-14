@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.MatrixView] Removed scrollIntoView() in favor of using the
+   scrollToSelectedItem() method inherited from Aphid.UI.ListView.
+
  * [Aphid.UI.ListView] Improved the scrollToSelectedItem() method to allow for
    scrolling to items in a horizontal scrolling list.
 
