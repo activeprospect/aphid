@@ -667,37 +667,64 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   **/
   scrollToSelectedItem: function()
   {
-    if (this.get("element").scrollHeight < this.get("element").getHeight())
+    var scrollElement = this.get("element");
+    if (scrollElement.scrollHeight < scrollElement.getHeight() && scrollElement.scrollWidth < scrollElement.getWidth())
       return;
 
-    var selectedItemTop     = this.get("selectedItem.element").cumulativeOffset().top - this.get("element").cumulativeOffset().top;
+    var selectedItemTop     = this.get("selectedItem.element").cumulativeOffset().top - scrollElement.cumulativeOffset().top;
     var selectedItemBottom  = selectedItemTop + this.get("selectedItem.element").getHeight();
-    var currentScrollTop    = this.get("element").scrollTop;
-    var currentScrollBottom = this.get("element").scrollTop + this.get("element").getHeight();
+    var selectedItemLeft    = this.get("selectedItem.element").cumulativeOffset().left - scrollElement.cumulativeOffset().left;
+    var selectedItemRight   = selectedItemLeft + this.get("selectedItem.element").getWidth();
+    var currentScrollTop    = scrollElement.scrollTop;
+    var currentScrollBottom = scrollElement.scrollTop + scrollElement.getHeight();
+    var currentScrollLeft   = scrollElement.scrollLeft;
+    var currentScrollRight  = scrollElement.scrollLeft + scrollElement.getWidth();
     var itemTopMargin       = parseInt(this.get("selectedItem.element").getStyle("margin-top"));
     var itemBottomMargin    = parseInt(this.get("selectedItem.element").getStyle("margin-bottom"));
-    var scrollTo            = selectedItemTop - itemTopMargin;
-    var shouldScroll        = false;
+    var itemLeftMargin      = parseInt(this.get("selectedItem.element").getStyle("margin-left"));
+    var itemRightMargin     = parseInt(this.get("selectedItem.element").getStyle("margin-right"));
+    var scrollTopValue      = selectedItemTop - itemTopMargin;
+    var scrollLeftValue     = selectedItemLeft - itemLeftMargin;
+    var shouldScrollTop     = false;
+    var shouldScrollLeft    = false;
 
     // selectedItem is above current scroll position
     if (selectedItemTop < currentScrollTop)
-      shouldScroll = true;
+      shouldScrollTop = true;
 
     // selectedItem is below current, viewable scroll position
     if (selectedItemTop >= currentScrollBottom)
-      shouldScroll = true;
+      shouldScrollTop = true;
 
     // selectedItem is partially visible below the current, viewable scroll position
     else if (selectedItemBottom > currentScrollBottom)
     {
-      shouldScroll = true;
-      scrollTo = currentScrollTop + (selectedItemBottom - currentScrollBottom) + itemBottomMargin;
+      shouldScrollTop = true;
+      scrollTopValue = currentScrollTop + (selectedItemBottom - currentScrollBottom) + itemBottomMargin;
     }
 
-    if (shouldScroll)
-      this.get("element").scrollTop = scrollTo;
+    // selectedItem is left of current scroll position
+    if (selectedItemLeft < currentScrollLeft)
+      shouldScrollLeft = true;
 
-    return shouldScroll;
+    // selectedItem is right of current, viewable scroll position
+    if (selectedItemLeft >= currentScrollRight)
+      shouldScrollLeft = true;
+
+    // selectedItem is partially visible below the current, viewable scroll position
+    else if (selectedItemRight > currentScrollRight)
+    {
+      shouldScrollLeft = true;
+      scrollLeftValue = currentScrollLeft + (selectedItemRight - currentScrollRight) + itemRightMargin;
+    }
+
+    if (shouldScrollTop || shouldScrollLeft)
+    {
+      if (shouldScrollTop)  scrollElement.scrollTop  = scrollTopValue;
+      if (shouldScrollLeft) scrollElement.scrollLeft = scrollLeftValue;
+    }
+
+    return (shouldScrollTop || shouldScrollLeft);
   },
 
   // Sorting -----------------------------------------------------------------

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Improved the scrollToSelectedItem() method to allow for
+   scrolling to items in a horizontal scrolling list.
+
  * [Aphid.Class] Initializing classes with Aphid.Class will now automatically
    set the displayName property on each Class prototype function defined, for
    an improved debugging experience.
