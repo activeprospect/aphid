@@ -242,15 +242,14 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    *
    * Initializes a new View instance.
   **/
-  initialize: function(options)
+  initialize: function($super, options)
   {
     // Set Default State
     this.subviews  = $A();
     this.isLoaded  = false;
     this.isLoading = false;
 
-    // Apply Options to View
-    Object.applyOptionsToInstance(this, options);
+    $super(options);
 
     // Initialize from Outlet
     if (this.get("outlet"))

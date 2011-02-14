@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Object] Added a default initializer that will apply options
+   to the instance.
+
  * [Aphid.UI.MatrixView] Removed scrollIntoView() in favor of using the
    scrollToSelectedItem() method inherited from Aphid.UI.ListView.
 

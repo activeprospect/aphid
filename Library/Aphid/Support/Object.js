@@ -14,6 +14,14 @@ Aphid.Support.Object = Class.create({
   **/
   delegate: false,
 
+  // Initialization ----------------------------------------------------------
+
+  initialize: function(options)
+  {
+    // Apply Options to Instance
+    Object.applyOptionsToInstance(this, options);
+  },
+
   // Notification Proxy Methods ----------------------------------------------
 
   /**
