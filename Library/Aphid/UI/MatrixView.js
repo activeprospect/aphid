@@ -131,8 +131,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
     this.clearSelection();
     this.selectItem(item);
-
-    this.scrollToSelectedItem();
   },
 
   selectLast: function()
@@ -144,8 +142,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
     this.clearSelection();
     this.selectItem(item);
-
-    this.scrollToSelectedItem();
   },
 
   _expandSelectionLeft: function(event)
@@ -241,7 +237,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
     var item = previousElement.getStorage().get("item");
     this.selectItem(item);
-    this.scrollToSelectedItem();
   },
 
   moveRight: function(event)
@@ -258,7 +253,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     {
       var item = nextElement.getStorage().get("item");
       this.selectItem(item);
-      this.scrollToSelectedItem();
     }
     else
       this.selectLast();
@@ -285,7 +279,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         {
           var item = el.getStorage().get("item");
           this.selectItem(item);
-          this.scrollToSelectedItem();
         }
       }.bind(this)
     )
@@ -315,7 +308,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         {
           var item = el.getStorage().get("item");
           this.selectItem(item);
-          this.scrollToSelectedItem();
           selected = true;
         }
       }.bind(this)
