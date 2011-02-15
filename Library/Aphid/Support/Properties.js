@@ -20,7 +20,7 @@ Aphid.Support.Properties = {
    * Gets the value of the specified +property+. This method will check for a
    * get_PropertyName_ method definition and will call it, if present.
   **/
-  get: function(property)
+  get: function(property, options)
   {
     // Handle nested property access
     if (property.indexOf(".") > 0)
@@ -41,12 +41,12 @@ Aphid.Support.Properties = {
 
     // Check for Computed Property
     if (Object.isFunction(this[property]))
-      return this[property]();
+      return this[property](options);
 
     // Check for a Custom Accessor
     var customAccessor = "get" + property.upperCaseFirst();
     if (this[customAccessor])
-      return this[customAccessor]();
+      return this[customAccessor](options);
 
     // Otherwise, return the property directly...
     return this[property];

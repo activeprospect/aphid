@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Properties] Added support for passing function arguments to
+   properties with custom getters or computed properties
+   (i.e. foo.get("bar", { baz: "bong" })).
+
  * [Aphid.Support.Object] Added a default initializer that will apply options
    to the instance.
 
