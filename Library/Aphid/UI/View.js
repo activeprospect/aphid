@@ -450,7 +450,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       return;
     }
 
-    $L.info('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
+    $L.debug('Adding "' + (view.displayName || "Unknown") + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
 
     // Setup the View
     view.get("element").setStyle({ "visibility": "hidden" }).show();
@@ -547,7 +547,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     if (!this.get("superview")) return;
 
-    $L.info('Removing "' + (this.displayName || "Unknown") + '" from superview to "' + (this.get("superview").displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
+    $L.debug('Removing "' + (this.displayName || "Unknown") + '" from superview to "' + (this.get("superview").displayName || "unknown") + '" (animated: ' + animated + ', transition: ' + transition + ')', this);
 
     // Call "View Will Disappear" Callback
     this._viewWillDisappear(animated);
