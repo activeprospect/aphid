@@ -2,6 +2,8 @@
  * class Aphid.Model.Base < Aphid.Support.Object
 **/
 
+//= require "CollectionProxy"
+
 Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, {
 
   /**
@@ -69,6 +71,11 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   **/
   isLoaded: false,
 
+  /**
+   * Aphid.Model.Base#isLoading -> Boolean
+  **/
+  isLoading: false,
+
   // -------------------------------------------------------------------------
 
   /**
@@ -76,10 +83,10 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
    *
    * - options (Hash): Initial property values to be set on the Model instance
   **/
-  initialize: function(values)
+  initialize: function($super, options)
   {
-    if (values)
-      this._initializeFromObject(values);
+    $super(options);
+    if (options) this._initializeFromObject(options);
     this._afterInitialize();
   },
 
@@ -176,16 +183,16 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     }, this);
   },
 
-  _getHasManyAssociation: function(association)
+  _getHasManyAssociation: function(association, options)
   {
     var assn       = $H(this.get("hasMany")).get(association),
         className  = $H(assn).get("className"),
         klass      = eval(className),
-        collection = this[association];
+        collection = this[association],
+        options    = $H(options);
 
     if (!collection)
     {
-      var options = $H();
 
       // If the owning model does not have an identifier, simply return an
       // empty array.
@@ -219,17 +226,17 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     return collection;
   },
 
-  _getBelongsToAssociation: function(association)
+  _getBelongsToAssociation: function(association, options)
   {
     var assn               = $H(this.get("belongsTo")).get(association),
         className          = $H(assn).get("className"),
         klass              = eval(className),
         foreignKeyProperty = association + "Id",
-        instance           = this[association];
+        instance           = this[association],
+        options            = $H(options);
 
     if (!instance)
     {
-      var options = $H();
 
       // If the owning model does not have a value for the association
       // foreign key, simply return false.
@@ -575,12 +582,13 @@ Aphid.Model.Base.ClassMethods = {
 
     $L.info("Loading record at URL: " + url + " ...", this.className);
 
-    var instance = new modelKlass();
+    var instance = new modelKlass(options);
+    instance.set("isLoading", true);
 
     // Request Options
-    var requestOptions ={
+    var requestOptions = {
       method: 'get',
-      asynchronous: false,
+      asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleLoadResponse.bind(this, instance),
       onFailure: this._handleFailureResponse.bind(this, instance),
@@ -590,7 +598,8 @@ Aphid.Model.Base.ClassMethods = {
     // Make Request
     new Ajax.Request(url, requestOptions);
 
-    return instance.get("isLoaded") ? instance : false;
+    return instance;
+    // return instance.get("isLoaded") ? instance : false;
   },
 
   // TODO Move this to a method in the prototype
@@ -598,7 +607,8 @@ Aphid.Model.Base.ClassMethods = {
   {
     var object = transport.responseJSON;
     instance._initializeFromObject(object);
-    instance.isLoaded = true;
+    instance.set("isLoaded", true);
+    instance.set("isLoading", false);
     instance._afterLoad();
   },
 
@@ -655,12 +665,14 @@ Aphid.Model.Base.ClassMethods = {
 
     $L.info("Loading records at URL: " + url + " ...", this.className);
 
-    var collection = new $A();
+    // var collection = $A();
+    var collection = new Aphid.Model.CollectionProxy(options);
+    collection.set("isLoading", true);
 
     // Request Options
-    var requestOptions ={
+    var requestOptions = {
       method: 'get',
-      asynchronous: false,
+      asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleLoadCollectionResponse.bind(this, collection, modelKlass),
       onFailure: this._handleFailureResponse.bind(this, collection, modelKlass),
@@ -678,8 +690,17 @@ Aphid.Model.Base.ClassMethods = {
     var object = transport.responseJSON;
 
     object.each(function(attributes) {
-      collection.push(new klass(attributes));
+      instance = new klass(attributes);
+      instance.set("isLoaded", true);
+      instance.set("isLoading", false);
+      collection.push(instance);
     });
+
+    collection.set("isLoaded", true);
+    collection.set("isLoading", false);
+
+    if (collection.get("delegate") && collection.get("delegate").modelDidFinishLoading)
+      collection.get("delegate").modelDidFinishLoading(collection);
   },
 
   _handleFailureResponse: function(instance, transport)

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model.Base] Added initial support for asynchronous loading of both
+   single instances and collections (through a new CollectionProxy object).
+
  * [Aphid.Support.Properties] Added support for passing function arguments to
    properties with custom getters or computed properties
    (i.e. foo.get("bar", { baz: "bong" })).
