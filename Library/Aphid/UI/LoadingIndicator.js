@@ -99,7 +99,7 @@ Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
   **/
   initialize: function()
   {
-    $L.info('Initializing...', this);
+    $L.debug('Initializing...', this);
 
     // Set Defaults
     this.barCount       = 10;
@@ -147,7 +147,7 @@ Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
   {
     if (this.isAnimating) return;
 
-    $L.info('Showing the loading indicator...', this);
+    $L.debug('Showing the loading indicator...', this);
 
     this._displayedAt = Date.now();
 
@@ -165,7 +165,7 @@ Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
   {
     var delay = 0, now = Date.now();
 
-    $L.info('Hiding the loading indicator...', this);
+    $L.debug('Hiding the loading indicator...', this);
 
     if ((this._displayedAt + this.get("minimumDisplayTime")) > now)
       delay = ((this._displayedAt + this.get("minimumDisplayTime")) - now) / 1000;
