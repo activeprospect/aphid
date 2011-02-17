@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Core.NotificationCenter] It is no longer possible to register
+   multiple observers with the same signature.
+
  * [Aphid.Model.Base] Added initial support for asynchronous loading of both
    single instances and collections (through a new CollectionProxy object).
 

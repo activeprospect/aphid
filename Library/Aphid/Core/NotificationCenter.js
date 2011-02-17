@@ -116,17 +116,31 @@ Aphid.Core.NotificationCenter = Aphid.Class.create("Aphid.Core.NotificationCente
   **/
   addObserver: function(observer, callback, notificationName, sender)
   {
-    var registeredNotification = this.observers.get(notificationName);
+    var registeredNotification = this.observers.get(notificationName),
+        observerHash           = $H({
+          observer: observer,
+          callback: callback,
+          sender: sender
+        });
+
     if (!registeredNotification)
       registeredNotification = this.observers.set(notificationName, $A());
 
-    registeredNotification.push($H({
-      observer: observer,
-      callback: callback,
-      sender: sender
-    }));
+    var observerRegistered = registeredNotification.find(
+      function(blah)
+      {
+        if (blah.get("observer") != observer) return false;
+        else if (blah.get("callback") != callback) return false;
+        else if (blah.get("sender") != sender) return false;
+        else return true;
+      }
+    );
 
-    $L.info("Registered as an observer for \"" + notificationName + "\" notifications", observer);
+    if (Object.isUndefined(observerRegistered))
+    {
+      registeredNotification.push(observerHash);
+      $L.info("Registered as an observer for \"" + notificationName + "\" notifications", observer);
+    }
   },
 
   /**
