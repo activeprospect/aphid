@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model.Base] Added support for creating and destroying records.
+
  * [Aphid.Core.NotificationCenter] It is no longer possible to register
    multiple observers with the same signature.
 

@@ -507,6 +507,59 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     if (!this.foreignProperty)
       this.set("foreignProperty", this.get("className").lowerCaseFirst());
     return this.foreignProperty;
+  },
+
+  destroy: function()
+  {
+    var url = this.get("siteUrl").concat(this.get("instancePath"));
+    this.identifier = false;
+    this.set("identifier", this.get("id"));
+    // TODO identifier needs to be set automatically to the configured identifier attribute's value
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!this.get(property)) return property;
+      }, this).compact();
+      if (missingProperties.length > 0)
+      {
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this);
+        return;
+      }
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(this);
+
+    $L.info("Destroying record at URL: " + url + " ...", this);
+
+    // Request Options
+    var requestOptions = {
+      method: 'delete',
+      asynchronous: false,
+      onSuccess: this._handleDestroyResponse.bind(this),
+      onFailure: this._handleFailureResponse.bind(this),
+      onException: function(transport, exception) { throw exception }
+    };
+
+    // Make Request
+    new Ajax.Request(url, requestOptions);
+
+    return this;
+  },
+
+  _handleDestroyResponse: function(transport)
+  {
+    $L.info(transport.responseText, this);
+  },
+
+  _handleFailureResponse: function(transport)
+  {
+    $L.error(transport.responseText, this);
   }
 
 });
@@ -705,8 +758,70 @@ Aphid.Model.Base.ClassMethods = {
 
   _handleFailureResponse: function(instance, transport)
   {
+    instance.postNotification("ModelFailureNotification", instance);
     // window.console.log(transport)
   },
+
+  // Create ------------------------------------------------------------------
+
+  create: function(options)
+  {
+    var url    = false,
+    modelKlass = this;
+
+    // Set URL
+    if (!url)
+      url = modelKlass.prototype.get("siteUrl").concat(modelKlass.prototype.get("collectionPath"));
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!options.get(property)) return property;
+      }).compact();
+      if (missingProperties.length > 0)
+      {
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this.className);
+        return;
+      }
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(options);
+
+    $L.info("Loading record at URL: " + url + " ...", this.className);
+
+    var instance = new modelKlass(options);
+    instance.set("isLoading", true);
+
+    // Request Options
+    var requestOptions = {
+      method: 'post',
+      asynchronous: true,
+      contentType: 'application/json',
+      onSuccess: this._handleCreateResponse.bind(this, instance),
+      onFailure: this._handleFailureResponse.bind(this, instance),
+      onException: function(transport, exception) { throw exception },
+      postBody: Object.toJSON($H(options))
+    };
+
+    // Make Request
+    new Ajax.Request(url, requestOptions);
+
+    return instance;
+  },
+
+  _handleCreateResponse: function(instance, transport)
+  {
+    var object = transport.responseJSON;
+    instance._initializeFromObject(object);
+    instance.set("isLoaded", true);
+    instance.set("isLoading", false);
+    instance._afterLoad();
+  }
 
 }
 
