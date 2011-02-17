@@ -65,6 +65,20 @@ Aphid.Support.Extensions.Array = {
       return false;
     else
       return this.splice(itemIndex, 1);
+  },
+
+  /**
+   * Aphid.Support.Extensions.Array#insert(index, object[, ...]) -> Object | false
+   *
+   * - index (Integer): 
+   * - object (Object): 
+  **/
+  insert: function(index)
+  {
+    this.length = Math.max(this.length, index);
+    index = index < 0 ? this.length : index;
+    this.splice.apply(this, [index, 0].concat(Array.prototype.slice.call(arguments, 1)));
+    return this;
   }
 
 }
