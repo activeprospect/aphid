@@ -88,6 +88,11 @@ button
 
   ::-moz-focus-inner { border: 0; }
 
+  -webkit-transition-properties: opacity;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-properties: opacity;
+  -moz-transition-duration: 0.25s;
+
   :hover
   {
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.1)), to(rgba(255, 255, 255, 0.05))),
@@ -121,4 +126,17 @@ button.on
                     -webkit-gradient(linear, left top, left bottom, from(#618e0c), to(#90c130));
   background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
                     -moz-linear-gradient(top, #618e0c, #90c130);
+}
+
+button.disabled
+{
+  opacity: 0.5;
+
+  :hover,
+  :active
+  {
+    background-color: #aaa;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#bbb), to(#888));
+    background-image: -moz-linear-gradient(top, #bbb, #888);
+  }
 }
