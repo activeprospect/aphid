@@ -120,6 +120,7 @@ module Aphid
           connection(host) do |ssh|
             ssh.exec! "mkdir -p \"#{config[:path]}\""
             ssh.exec! "mkdir -p \"#{config[:path]}/releases\""
+            ssh.exec! "mkdir -p \"#{config[:path]}/cache\""
             puts "  * [#{host}] Preparing \"#{config[:path]}\" for publishing ..."
           end
         end
@@ -133,10 +134,11 @@ module Aphid
       # was published.
       #
       def self.publish(local_path, hosts = nil)
-        hosts       = parse_hosts(hosts)
-        release     = generate_release_time
-        revision    = current_git_revision
-        remote_path = "#{config[:path]}/releases/#{release}"
+        hosts             = parse_hosts(hosts)
+        release           = generate_release_time
+        revision          = current_git_revision
+        remote_path       = "#{config[:path]}/releases/#{release}"
+        remote_cache_path = "#{config[:path]}/cache/"
 
         # Sanity Check Publish Paths
         hosts.each do |host|
@@ -152,7 +154,9 @@ module Aphid
         hosts.each do |host|
           connection = connection(host) do |ssh|
             puts "  * [#{host}] Publishing release #{release} to \"#{remote_path}\" ..."
-            ssh.scp.upload! local_path, remote_path, :recursive => true
+            system "rsync -az --compress-level=9 --delete --rsh=ssh \"#{local_path}/\" #{config[:user]}@#{host}:#{remote_cache_path}"
+            ssh.exec! "cp -R #{remote_cache_path} #{remote_path}"
+            # ssh.scp.upload! local_path, remote_path, :recursive => true
             ssh.exec! "echo \"#{revision}\" > \"#{remote_path}/.revision\""
           end
         end

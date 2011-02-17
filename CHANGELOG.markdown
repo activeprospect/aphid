@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Changed publish strategy to use rsync for speed by keeping a remote
+   cached copy of the build output so that we're only transferring what has
+   changed when publishing a new release.
+
  * [Aphid.Support.Extensions] Added Array#insert().
 
  * [Aphid.Model.Base] Added support for creating and destroying records.
