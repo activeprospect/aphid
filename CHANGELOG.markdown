@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model.Base] Added a call to the modelDidFailWithError delegate
+   message when an error occurs.
+
  * [Tools] Changed publish strategy to use rsync for speed by keeping a remote
    cached copy of the build output so that we're only transferring what has
    changed when publishing a new release.

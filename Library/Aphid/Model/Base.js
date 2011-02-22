@@ -759,6 +759,9 @@ Aphid.Model.Base.ClassMethods = {
   _handleFailureResponse: function(instance, transport)
   {
     instance.postNotification("ModelFailureNotification", instance);
+
+    if (instance.get("delegate") && instance.get("delegate").modelDidFailWithError)
+      instance.get("delegate").modelDidFailWithError(instance, transport);
     // window.console.log(transport)
   },
 
