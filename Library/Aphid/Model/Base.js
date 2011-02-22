@@ -800,6 +800,10 @@ Aphid.Model.Base.ClassMethods = {
     var instance = new modelKlass(options);
     instance.set("isLoading", true);
 
+    // Remove Internal Options
+    options = $H(options);
+    options.unset("delegate");
+
     // Request Options
     var requestOptions = {
       method: 'post',
@@ -808,7 +812,7 @@ Aphid.Model.Base.ClassMethods = {
       onSuccess: this._handleCreateResponse.bind(this, instance),
       onFailure: this._handleFailureResponse.bind(this, instance),
       onException: function(transport, exception) { throw exception },
-      postBody: Object.toJSON($H(options))
+      postBody: Object.toJSON(options)
     };
 
     // Make Request
