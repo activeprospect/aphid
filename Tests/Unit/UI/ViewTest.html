@@ -114,6 +114,8 @@
           });
         }},
 
+        /* Initialization Tests ------------------------------------------- */
+
         /*
          * Ensures that instances of Aphid.UI.View can be initialized and have
          * the expected default property values set after initialization.
@@ -301,7 +303,10 @@
           assertEqual(false, view.testOutlet.falseProperty);
         }},
 
-        testShouldViewShouldInitializeEnabledByDefault: function() { with(this) {
+        /*
+         * Ensure that newly initialized views are enabled, by default.
+        **/
+        testShouldInitializeEnabledByDefault: function() { with(this) {
           var view = new TestView({
             element: $("testElement")
           });
@@ -309,7 +314,10 @@
           assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
         }},
 
-        testShouldViewShouldInitializeDisabled: function() { with(this) {
+        /*
+         * Ensure that views can be initialized in a disabled state.
+        **/
+        testShouldInitializeDisabled: function() { with(this) {
           var view = new TestView({
             element: $("testElement"),
             isEnabled: false
@@ -318,7 +326,11 @@
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
 
-        testShouldViewShouldInitializeWithDisabledCSSClass: function() { with(this) {
+        /*
+         * Ensure that views that are initialized with an element that has the
+         * "disabled" CSS class name are initialized in a disabled state.
+        **/
+        testShouldInitializeWithDisabledCSSClass: function() { with(this) {
           var view = new TestView({
             element: $("testElementWithDisabledClassName")
           });
@@ -326,6 +338,10 @@
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
 
+        /*
+         * Ensure that disabled views can be enabled and that the element
+         * receives the "enabled" CSS class name upon enabling.
+        **/
         testShouldEnableView: function() { with(this) {
           var view = new TestView({
             element: $("testElement"),
@@ -336,6 +352,10 @@
           assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
         }},
 
+        /*
+         * Ensure that enabled views can be disabled and that the element
+         * receives the "disabled" CSS class name upon disabling.
+        **/
         testShouldDisableView: function() { with(this) {
           var view = new TestView({
             element: $("testElement"),
@@ -346,27 +366,108 @@
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
 
+        /* View Stack Tests ----------------------------------------------- */
+
+        /**
+         * Ensure that views may have their view set with a single subview
+         * using the setView method.
+        **/
         testShouldSetView: function() { with(this) {
-          assert(false, "Test not implemented...");
+          var testView = new TestView(),
+              subview  = new AnotherTestView();
+
+          testView.setView(subview);
+          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
+          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
         }},
 
+        /**
+         * Ensure that views may have their view set with a single subview
+         * using the setViewAnimated method.
+        **/
+        testShouldSetViewAnimated: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new AnotherTestView();
+
+          testView.setViewAnimated(subview);
+          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
+          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+        }},
+
+        /**
+         * Ensure that subviews may be added to a view using the addSubview
+         * method.
+        **/
         testShouldAddSubview: function() { with(this) {
-          assert(false, "Test not implemented...");
+          var testView = new TestView(),
+              subview  = new AnotherTestView();
+
+          testView.addSubview(subview);
+          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
+          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
         }},
 
+        /**
+         * Ensure that subviews may be added to a view using the
+         * addSubviewAnimated method.
+        **/
+        testShouldAddSubviewAnimated: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new AnotherTestView();
+
+          testView.addSubviewAnimated(subview);
+          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
+          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+        }},
+
+        /**
+         * Ensure that subviews may be removed from their superview by calling
+         * the removeFromSuperview() method on the view to be removed.
+        **/
         testShouldRemoveFromSuperview: function() { with(this) {
-          assert(false, "Test not implemented...");
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
+          firstSubview.removeFromSuperview();
+          secondSubview.removeFromSuperview();
+          assert(!firstSubview.get("superview"));
+          assert(!secondSubview.get("superview"));
+          assertEqual(0, testView.subviews, "testView#subviews should have no subviews");
         }},
 
+        /**
+         * Ensure that subviews may be removed from their superview by calling
+         * the removeFromSuperviewAnimated() method on the view to be removed.
+        **/
         testShouldRemoveFromSuperviewAnimated: function() { with(this) {
-          assert(false, "Test not implemented...");
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
+          firstSubview.removeFromSuperviewAnimated();
+          secondSubview.removeFromSuperviewAnimated();
+          assert(!firstSubview.get("superview"), "firstSubview should not have a superview");
+          assert(!secondSubview.get("superview"), "secondSubview should not have a superview");
+          assertEqual(0, testView.subviews, "testView#subviews should have no subviews");
         }},
 
+        /**
+         * Ensure that all subviews on a view may be removed at once by
+         * calling the clearSubviews() method.
+        **/
         testShouldClearSubviews: function() { with(this) {
-          assert(false, "Test not implemented...");
+          var testView = new TestViewWithSubviews();
+          assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
+          testView.clearSubviews();
+          assertEqual(0, testView.subviews.length);
         }},
 
-        // TODO Add tests for actions
+        // Action Tests ------------------------------------------------------
+
+        // TODO Implement Action Tests...
 
         // Callback Tests ----------------------------------------------------
 
