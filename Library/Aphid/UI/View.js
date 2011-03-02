@@ -362,13 +362,17 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     // Clear the Subviews
     this.clearSubviews(animated, transition);
+    if (view)
+    {
 
-    // Reset Positioning
-    if (view.get("element").getStyle("position") == "absolute")
-      view.get("element").setStyle({ top: 0, left: 0, right: 0, bottom: 0 });
+      // Reset Positioning
+      if (view.get("element").getStyle("position") == "absolute")
+        view.get("element").setStyle({ top: 0, left: 0, right: 0, bottom: 0 });
 
-    // Add the specified view as the view's only subview
-    if (view) this.addSubviewAnimated(view, animated, transition);
+      // Add the specified view as the view's only subview
+      this.addSubviewAnimated(view, animated, transition);
+
+    }
   },
 
   /**

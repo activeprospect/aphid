@@ -701,6 +701,21 @@
             assert(subview.get("subviews")[0].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
             assert(subview.get("subviews")[1].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
           }});
+        }},
+
+        /**
+         * Ensures that setting a subview with setView() repositions the
+         * subview to fully occupy the superview.
+        **/
+        testSetViewShouldResetPositioning: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new AnotherTestView();
+          subview.get("element").setStyle({ position: "absolute", left: "100px", top: "100px", right: "100px", bottom: "100px" });
+          testView.setView(subview);
+          assertEqual("0px", subview.get("element").getStyle("left"), "CSS property 'left' should be 0");
+          assertEqual("0px", subview.get("element").getStyle("right"), "CSS property 'right' should be 0");
+          assertEqual("0px", subview.get("element").getStyle("top"), "CSS property 'top' should be 0");
+          assertEqual("0px", subview.get("element").getStyle("bottom"), "CSS property 'bottom' should be 0");
         }}
 
       }, { testLog: "logSection" });
