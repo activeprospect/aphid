@@ -437,12 +437,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     // Do not set the view if the view is already the only subview
     // TODO Need to track down a bug with ListViews that add items twice
-    // if (this.get("subviews").include(view))
-    // {
-    //   window.console.log(this.get("subviews"))
-    //   $L.warn('"' + (view.displayName || "Unknown") + '" is already a subview of "' + (this.displayName || "unknown") + '"', this);
-    //   return;
-    // }
+    if (this.get("subviews").include(view))
+      return;
 
     // If the view has still not been loaded, delay this call again...
     if (!view.isLoaded)

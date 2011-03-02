@@ -100,6 +100,14 @@
             viewDidDisappear: function(animated)
             {
               this.viewDidDisappearCalled = true;
+            },
+
+            resetCallbacks: function()
+            {
+              this.viewWillAppearCalled = false;
+              this.viewDidAppearCalled = false;
+              this.viewWillDisappearCalled = false;
+              this.viewDidDisappearCalled = false;
             }
 
           });
@@ -779,15 +787,12 @@
          * is not removed from the superview if the subview is already a
          * subview of the superview.
         **/
-        testSetViewShouldNotAttemptToAddPassedViewIfAlreadyASubview: function() { with(this) {
+        testSetViewShouldNotAttemptToSetViewIfAlreadyASubview: function() { with(this) {
           var testView   = new TestViewWithSubviews(),
               firstView  = testView.get("subviews")[0],
               secondView = testView.get("subviews")[1];
 
-          firstView.set("viewWillAppearCalled", false);
-          firstView.set("viewDidAppearCalled", false);
-          firstView.set("viewWillDisappearCalled", false);
-          firstView.set("viewDidDisappearCalled", false);
+          firstView.resetCallbacks();
 
           testView.setView(firstView);
 
@@ -795,6 +800,32 @@
           assert(!firstView.get("viewDidAppearCalled"), "viewDidAppear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewWillDisappearCalled"), "viewWillDisappear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewDidDisappearCalled"), "viewDidDisappear should not have been called on firstView, since it was already a subview of testView");
+        }},
+
+        /**
+         * Ensure that when adding a subview with addSubview() that the
+         * subview is not removed from the superview if the subview is already
+         * a subview of the superview.
+        **/
+        testSetViewShouldNotAttemptToAddViewIfAlreadyASubview: function() { with(this) {
+          var testView   = new TestViewWithSubviews(),
+              firstView  = testView.get("subviews")[0],
+              secondView = testView.get("subviews")[1];
+
+          firstView.resetCallbacks();
+          secondView.resetCallbacks();
+
+          testView.addSubview(firstView);
+
+          assertEqual(2, testView.subviews.length, "testView should have 2 subviews");
+          assert(!firstView.get("viewWillAppearCalled"), "viewWillAppear should not have been called on firstView, since it was already a subview of testView");
+          assert(!firstView.get("viewDidAppearCalled"), "viewDidAppear should not have been called on firstView, since it was already a subview of testView");
+          assert(!firstView.get("viewWillDisappearCalled"), "viewWillDisappear should not have been called on firstView, since it was already a subview of testView");
+          assert(!firstView.get("viewDidDisappearCalled"), "viewDidDisappear should not have been called on firstView, since it was already a subview of testView");
+          assert(!secondView.get("viewWillAppearCalled"), "viewWillAppear should not have been called on secondView");
+          assert(!secondView.get("viewDidAppearCalled"), "viewDidAppear should not have been called on secondView");
+          assert(!secondView.get("viewWillDisappearCalled"), "viewWillDisappear should not have been called on secondView");
+          assert(!secondView.get("viewDidDisappearCalled"), "viewDidDisappear should not have been called on secondView");
         }},
 
         /**
