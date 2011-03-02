@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Setting a subview on a view using setView() will no longer
+   attempt to re-display the added view if that view is already a subview of
+   the superview.
+
  * [Aphid.Model.Base] Added support for reloading models with the reload()
    method.
 

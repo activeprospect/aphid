@@ -346,22 +346,21 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     if (Object.isUndefined(animated)) animated = false;
     if (animated && Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
-    // Do not set the view if the view is already the only subview
-    if (this.get("subviews").length == 1 && this.get("subviews").include(view))
+    // If the passed view is already a subview, simply remove all other
+    // subviews (without animation).
+    if (view && this.get("subviews").include(view))
     {
-      $L.warn("Not setting view as it is already a subview!", this);
+      this.get("subviews").each(function(subview) {
+        if (subview == view) return;
+        subview.removeFromSuperview();
+      });
       return;
     }
 
-    // If there are other subviews, we simply want to make the specified view
-    // the only subview, so disable animation and allow the operation to take
-    // place.
-    // TODO If the view is already in the subviews, don't remove it, just remove all others...
-    else if (this.get("subviews").length > 1 && this.get("subviews").include(view))
-      animated = false;
+    // Otherwise, clear all of the subviews...
+    else
+      this.clearSubviews(animated, transition);
 
-    // Clear the Subviews
-    this.clearSubviews(animated, transition);
     if (view)
     {
 
