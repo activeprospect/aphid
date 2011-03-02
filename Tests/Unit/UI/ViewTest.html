@@ -153,12 +153,27 @@
 
         /*
          * Ensures that an instance of Aphid.UI.View can be initialized by
-         * passing in the name of a template. The view must load this template
-         * asynchronously.
+         * passing in the name of a template.
         **/
         testShouldInitializeViewFromTemplate: function() { with(this) {
           var view = new Aphid.UI.View({
             template: "TestTemplate"
+          });
+          assert(view.isLoaded, "isLoaded should be true");
+          assert(!view.isLoading, "isLoading should be false");
+          assert(view.element, "element should not be false");
+          assertEqual("testTemplate", view.element.identify());
+        }},
+
+        /*
+         * Ensures that an instance of Aphid.UI.View can be initialized by
+         * passing in the name of a template. The view must load this template
+         * asynchronously.
+        **/
+        testShouldInitializeViewAsynchronouslyFromTemplate: function() { with(this) {
+          var view = new Aphid.UI.View({
+            template: "TestTemplate",
+            asynchronousLoadingEnabled: true
           });
           assert(!view.isLoaded, "isLoaded should be false");
           assert(view.isLoading, "isLoading should be true");
