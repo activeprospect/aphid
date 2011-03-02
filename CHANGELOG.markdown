@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model.Base] Added support for reloading models with the reload()
+   method.
+
  * [Aphid.Model.Base] Added a call to the modelDidFailWithError delegate
    message when an error occurs.
 

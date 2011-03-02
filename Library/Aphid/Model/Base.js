@@ -399,43 +399,59 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   // },
 
   /**
-   * Aphid.Model#reload() -> null
+   * Aphid.Model.Base#reload() -> null
   **/
-  // reload: function()
-  // {
-  //   $L.info("Reloading " + this.displayName + " with identifier " + this.identifier, this);
-  // 
-  //   // TODO Make the loading logic common between initialization and reloading
-  // 
-  //   // Assemble URL
-  //   var urlTemplate = new Template(this.url);
-  //   var url = urlTemplate.evaluate({ identifier: this.identifier });
-  // 
-  //   // Request Options
-  //   var options = {
-  //     method: 'get',
-  //     asynchronous: false,
-  //     contentType: 'application/json',
-  //     onSuccess: function(transport)
-  //     {
-  //       this.object = transport.responseJSON;
-  //       this._initializeFromObject();
-  //       this._afterReload();
-  //     }.bind(this),
-  //     onFailure: function(transport)
-  //     {
-  //       var alertView = new Aphid.UI.AlertView();
-  //       alertView.set("title", "Error Reloading Resource");
-  //       alertView.set("message", "Failed to reload an instance of <strong>" + this.displayName + "</strong> using the identifier: <strong>" + this.identifier + "</strong>");
-  //       alertView.set("status", "Error " + transport.status + " - " + transport.statusText);
-  //       alertView.showAnimated();
-  //     }.bind(this),
-  //     onException: function(transport, exception) { throw exception }
-  //   };
-  // 
-  //   // Make Request
-  //   new Ajax.Request(url, options);
-  // },
+  reload: function()
+  {
+    var url = this.get("siteUrl").concat(this.get("instancePath"));
+    this.identifier = false;
+    this.set("identifier", this.get("id"));
+    // TODO identifier needs to be set automatically to the configured identifier attribute's value
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!this.get(property)) return property;
+      }, this).compact();
+      if (missingProperties.length > 0)
+      {
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this);
+        return;
+      }
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(this);
+
+    $L.info("Reloading Record at URL: " + url + " ...", this);
+
+    // Request Options
+    var options = {
+      method: 'get',
+      asynchronous: true,
+      contentType: 'application/json',
+      onSuccess: this._handleReloadResponse.bind(this),
+      onFailure: this._handleFailureResponse.bind(this),
+      onException: function(transport, exception) { throw exception }
+    };
+
+    // Make Request
+    new Ajax.Request(url, options);
+  },
+
+  // TODO Move this to a method in the prototype
+  _handleReloadResponse: function(transport)
+  {
+    var object = transport.responseJSON;
+    this._initializeFromObject(object);
+    this.set("isLoaded", true);
+    this.set("isLoading", false);
+    this._afterReload();
+  },
 
   // Callbacks ---------------------------------------------------------------
 
@@ -454,13 +470,13 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       this.delegate.modelDidFinishLoading(this);
   },
 
-  // _afterReload: function()
-  // {
-  //   if (this.afterReload)
-  //     this.afterReload(this);
-  //   if (this.delegate && this.delegate.modelDidFinishReloading)
-  //     this.delegate.modelDidFinishReloading(this);
-  // },
+  _afterReload: function()
+  {
+    if (this.afterReload)
+      this.afterReload(this);
+    if (this.delegate && this.delegate.modelDidFinishReloading)
+      this.delegate.modelDidFinishReloading(this);
+  },
 
   // -------------------------------------------------------------------------
 
