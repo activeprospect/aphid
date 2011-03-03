@@ -1333,16 +1333,25 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _viewWillAppear: function(animated)
   {
-    $L.debug("_viewWillAppear (animated: " + animated + ")", this);
+    $L.debug("_viewWillAppear (previously called: " + (this._viewWillAppearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
     // Start Observing for Events
-    this._startObserving();
+    if (!this._viewWillAppearCalled)
+      this._startObserving();
 
-    if (this.viewWillAppear) this.viewWillAppear(animated);
-    this.get("subviews").invoke("_viewWillAppear", animated);
+    // Call the Callback Method
+    if (!this._viewWillAppearCalled && this.viewWillAppear) this.viewWillAppear(animated);
+    this.get("subviews").each(function(subview) {
+      if (subview._viewWillAppearCalled) return;
+      subview._viewWillAppear(animated);
+    });
 
     // Allow View to Layout its Subviews
-    this._layoutSubviews();
+    if (!this._viewWillAppearCalled)
+      this._layoutSubviews();
+
+    this._viewWillAppearCalled = true;
+    this._viewWillDisappearCalled = false;
   },
 
   /*
@@ -1353,10 +1362,17 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _viewDidAppear: function(animated)
   {
-    $L.debug("_viewDidAppear (animated: " + animated + ")", this);
+    $L.debug("_viewDidAppear (previously called: " + (this._viewDidAppearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
-    if (this.viewDidAppear) this.viewDidAppear(animated);
-    this.get("subviews").invoke("_viewDidAppear", animated);
+    // Call the Callback Method
+    if (!this._viewDidAppearCalled && this.viewDidAppear) this.viewDidAppear(animated);
+    this.get("subviews").each(function(subview) {
+      if (subview._viewDidAppearCalled) return;
+      subview._viewDidAppear(animated);
+    });
+
+    this._viewDidAppearCalled = true;
+    this._viewDidDisappearCalled = false;
   },
 
   /*
@@ -1367,13 +1383,21 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _viewWillDisappear: function(animated)
   {
-    $L.debug("_viewWillDisappear (animated: " + animated + ")", this);
+    $L.debug("_viewWillDisappear (previously called: " + (this._viewWillDisappearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
     // Stop Observing for Events
-    this._stopObserving();
+    if (!this._viewWillAppearCalled)
+      this._stopObserving();
 
-    if (this.viewWillDisappear) this.viewWillDisappear(animated);
-    this.get("subviews").invoke("_viewWillDisappear", animated);
+    // Call the Callback Method
+    if (!this._viewWillDisappearCalled && this.viewWillDisappear) this.viewWillDisappear(animated);
+    this.get("subviews").each(function(subview) {
+      if (subview._viewWillDisappearCalled) return;
+      subview._viewWillDisappear(animated);
+    });
+
+    this._viewWillDisappearCalled = true;
+    this._viewWillAppearCalled = false;
   },
 
   /*
@@ -1384,10 +1408,17 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _viewDidDisappear: function(animated)
   {
-    $L.debug("_viewDidDisappear (animated: " + animated + ")", this);
+    $L.debug("_viewDidDisappear (previously called: " + (this._viewDidDisappearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
-    if (this.viewDidDisappear) this.viewDidDisappear(animated);
-    this.get("subviews").invoke("_viewDidDisappear", animated);
+    // Call the Callback Method
+    if (!this._viewDidDisappearCalled && this.viewDidDisappear) this.viewDidDisappear(animated);
+    this.get("subviews").each(function(subview) {
+      if (subview._viewDidDisappearCalled) return;
+      subview._viewDidDisappear(animated);
+    });
+
+    this._viewDidDisappearCalled = true;
+    this._viewDidAppearCalled = false;
   },
 
   // Delegate Methods --------------------------------------------------------

@@ -859,7 +859,117 @@
           assertEqual("0px", subview.get("element").getStyle("right"), "CSS property 'right' should be 0");
           assertEqual("0px", subview.get("element").getStyle("top"), "CSS property 'top' should be 0");
           assertEqual("0px", subview.get("element").getStyle("bottom"), "CSS property 'bottom' should be 0");
-        }}
+        }},
+
+        testShouldCallViewWillAppearOnlyOnce: function() { with(this) {
+          var testView = new TestViewWithCallbacks(),
+              subview  = new TestViewWithCallbacks();
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(testView.viewWillAppearCalled, "viewWillAppear should have been called on testView");
+          testView.resetCallbacks();
+
+          // Add Subview
+          testView.addSubview(subview);
+          assert(subview.viewWillAppearCalled, "viewWillAppear should have been called on subview");
+          assert(!testView.viewWillAppearCalled, "viewWillAppear should NOT have been called on testView");
+        }},
+
+        testShouldCallViewDidAppearOnlyOnce: function() { with(this) {
+          var testView = new TestViewWithCallbacks(),
+              subview  = new TestViewWithCallbacks();
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(testView.viewDidAppearCalled, "viewDidAppear should have been called on testView");
+          testView.resetCallbacks();
+
+          // Add Subview
+          testView.addSubview(subview);
+          assert(subview.viewDidAppearCalled, "viewDidAppear should have been called on subview");
+          assert(!testView.viewDidAppearCalled, "viewDidAppear should NOT have been called on testView");
+        }},
+
+        testShouldResetViewWillAppearCalledStateWhenViewDidDisappearIsCalled: function() { with(this) {
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(testView.viewWillAppearCalled, "viewWillAppear should have been called on testView");
+          assert(firstSubview.viewWillAppearCalled, "viewWillAppear should have been called on firstSubview");
+          assert(secondSubview.viewWillAppearCalled, "viewWillAppear should have been called on secondSubview");
+
+          // Remove Subviews
+          firstSubview.removeFromSuperview();
+          secondSubview.removeFromSuperview();
+          assert(!firstSubview._viewWillAppearCalled, "_viewWillAppearCalled should be false on firstSubview");
+          assert(!secondSubview._viewWillAppearCalled, "_viewWillAppearCalled should be false on secondSubview");
+          assert(testView._viewWillAppearCalled, "_viewWillAppearCalled should be true on testView");
+        }},
+
+        testShouldResetViewDidAppearCalledStateWhenViewDidDisappearIsCalled: function() { with(this) {
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(testView.viewDidAppearCalled, "viewDidAppear should have been called on testView");
+          assert(firstSubview.viewDidAppearCalled, "viewDidAppear should have been called on firstSubview");
+          assert(secondSubview.viewDidAppearCalled, "viewDidAppear should have been called on secondSubview");
+
+          // Remove Subviews
+          firstSubview.removeFromSuperview();
+          secondSubview.removeFromSuperview();
+          assert(!firstSubview._viewDidAppearCalled, "_viewDidAppearCalled should be false on firstSubview");
+          assert(!secondSubview._viewDidAppearCalled, "_viewDidAppearCalled should be false on secondSubview");
+          assert(testView._viewDidAppearCalled, "_viewDidAppearCalled should be true on testView");
+        }},
+
+        testShouldResetViewWillDisappearCalledStateWhenViewWillAppearIsCalled: function() { with(this) {
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+
+          // Remove the Test View
+          testView.removeFromSuperview();
+          assert(testView.viewWillDisappearCalled, "viewWillDisappear should have been called on testView");
+          assert(firstSubview.viewWillDisappearCalled, "viewWillDisappear should have been called on firstSubview");
+          assert(secondSubview.viewWillDisappearCalled, "viewWillDisappear should have been called on secondSubview");
+
+          // Re-Display the Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(!firstSubview._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on firstSubview");
+          assert(!secondSubview._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on secondSubview");
+          assert(!testView._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on testView");
+        }},
+
+        testShouldResetViewDidDisappearCalledStateWhenViewDidAppearIsCalled: function() { with(this) {
+          var testView      = new TestViewWithSubviews(),
+              firstSubview  = testView.get("subviews")[0],
+              secondSubview = testView.get("subviews")[1];
+
+          // Display Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+
+          // Remove the Test View
+          testView.removeFromSuperview();
+          assert(testView.viewDidDisappearCalled, "viewDidDisappear should have been called on testView");
+          assert(firstSubview.viewDidDisappearCalled, "viewDidDisappear should have been called on firstSubview");
+          assert(secondSubview.viewDidDisappearCalled, "viewDidDisappear should have been called on secondSubview");
+
+          // Re-Display the Test View
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(!firstSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on firstSubview");
+          assert(!secondSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on secondSubview");
+          assert(!testView._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on testView");
+        }},
 
       }, { testLog: "logSection" });
 
