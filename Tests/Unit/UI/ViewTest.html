@@ -138,6 +138,15 @@
           assert(!view.isLoading, "isLoading should be false");
         }},
 
+        /**
+         * Ensures that there is a lazy initializer that will return a default
+         * image when accessing the element property.
+        **/
+        testShouldLazilyInitializeDefaultElementProperty: function() { with(this) {
+          var testView = new Aphid.UI.View();
+          assertInstanceOf(Element, testView.get("element"), "element property should be lazily initialized");
+        }},
+
         /*
          * Ensures that an instance of Aphid.UI.View with an empty element
          * can be initialized with a custom tag name.
@@ -969,7 +978,7 @@
           assert(!firstSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on firstSubview");
           assert(!secondSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on secondSubview");
           assert(!testView._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on testView");
-        }},
+        }}
 
       }, { testLog: "logSection" });
 

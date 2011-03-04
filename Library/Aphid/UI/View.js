@@ -252,15 +252,15 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     $super(options);
 
     // Initialize from Outlet
-    if (this.get("outlet"))
+    if (this.outlet)
       this._initializeFromOutlet();
 
     // Initialize from Element
-    else if (this.get("element"))
+    else if (this.element)
       this._initializeFromElement();
 
     // Initialize from Template
-    else if (this.get("template"))
+    else if (this.template)
       this._initializeFromTemplate();
 
     // Initialize an Empty View
@@ -295,8 +295,17 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   _initializeEmptyView: function()
   {
     $L.debug("Initializing Empty View", this);
-    this.set("element", new Element(this.get("tagName")));
+    this.element = new Element(this.get("tagName"));
     this._setupView();
+  },
+
+  // Element -----------------------------------------------------------------
+
+  getElement: function()
+  {
+    if (!this.element)
+      this.element = new Element(this.get("tagName"));
+    return this.element;
   },
 
   // View Management ---------------------------------------------------------
