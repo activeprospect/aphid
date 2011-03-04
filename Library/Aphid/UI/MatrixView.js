@@ -126,9 +126,10 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   {
     $L.info("selectFirst", this);
 
-    var element = this.get("element").down("li"),
-        item    = element.getStorage().get("item");
+    var element = this.get("element").down("li");
+    if (!element) return;
 
+    var item = element.getStorage().get("item");
     this.clearSelection();
     this.selectItem(item);
   },
@@ -137,9 +138,10 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   {
     $L.info("selectLast", this);
 
-    var element = this.get("element").down("li").last(),
-        item    = element.getStorage().get("item");
+    var element = this.get("element").down("li").last();
+    if (!element) return;
 
+    var item = element.getStorage().get("item");
     this.clearSelection();
     this.selectItem(item);
   },
