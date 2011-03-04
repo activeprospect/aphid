@@ -47,7 +47,7 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
   // Image Management --------------------------------------------------------
 
   /*
-   * ImageView#getImageElement() -> Element
+   * Aphid.UI.ImageView#getImageElement() -> Element
    *
    * Lazily initializes the <img/> element to be managed by the ImageView
    * instance and adds it to the ImageView's element before returning it.
@@ -63,7 +63,7 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
   },
 
   /**
-   * ImageView#setImage(url) -> String
+   * Aphid.UI.ImageView#setImage(url) -> String
    *
    * Sets the URL to the image on the managed image element.
   **/
@@ -75,7 +75,7 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
   },
 
   /**
-   * ImageView#clearImage() -> null
+   * Aphid.UI.ImageView#clearImage() -> null
    *
    * Clears and hides the image view.
   **/
@@ -130,15 +130,15 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
     // Load Events
     if (this._handleLoadEventListener)
     {
-      this.get("imageElement").stopObserving("focus", this._handleLoadEventListener);
+      this.get("imageElement").stopObserving("load", this._handleLoadEventListener);
       this._handleLoadEventListener = false;
     }
 
     // Load Events
-    if (this._handleLoadEventListener)
+    if (this._handleErrorEventListener)
     {
-      this.get("imageElement").stopObserving("focus", this._handleLoadEventListener);
-      this._handleLoadEventListener = false;
+      this.get("imageElement").stopObserving("error", this._handleErrorEventListener);
+      this._handleErrorEventListener = false;
     }
 
   },
