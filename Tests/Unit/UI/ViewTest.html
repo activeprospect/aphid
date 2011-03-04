@@ -120,6 +120,19 @@
               this.addSubview(new TestViewWithCallbacks());
             }
           });
+          TestViewWithEvents = Aphid.Class.create("TestViewWithEvents", Aphid.UI.View, {
+            handleFocusEvent: function(event, element) { },
+            handleBlurEvent: function(event, element) { },
+            handleClickEvent: function(event, element) { },
+            handleDoubleClickEvent: function(event, element) { },
+            handleMouseDownEvent: function(event, element) { },
+            handleMouseUpEvent: function(event, element) { },
+            handleMouseMoveEvent: function(event, element) { },
+            handleMouseOverEvent: function(event, element) { },
+            handleMouseOutEvent: function(event, element) { },
+            handleMouseEnterEvent: function(event, element) { },
+            handleMouseLeaveEvent: function(event, element) { }
+          });
         }},
 
         /* Initialization Tests ------------------------------------------- */
@@ -978,6 +991,68 @@
           assert(!firstSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on firstSubview");
           assert(!secondSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on secondSubview");
           assert(!testView._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on testView");
+        }},
+
+        // Event Observer Tests ----------------------------------------------
+
+        testShouldAddObserverForFocusEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleFocusEventListener));
+        }},
+
+        testShouldAddObserverForBlurEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleBlurEventListener));
+        }},
+
+        testShouldAddObserverForClickEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleClickEventListener));
+        }},
+
+        testShouldAddObserverForDoubleClickEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleDoubleClickEventListener));
+        }},
+
+        testShouldAddObserverForMouseDownEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseDownEventListener));
+        }},
+
+        testShouldAddObserverForMouseUpEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseUpEventListener));
+        }},
+
+        testShouldAddObserverForMouseOverEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseOverEventListener));
+        }},
+
+        testShouldAddObserverForMouseOutEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseOutEventListener));
+        }},
+
+        testShouldAddObserverForMouseEnterEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseEnterEventListener));
+        }},
+
+        testShouldAddObserverForMouseLeaveEvents: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          assert(Object.isFunction(testView._handleMouseLeaveEventListener));
         }}
 
       }, { testLog: "logSection" });
