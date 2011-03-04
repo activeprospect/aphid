@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Do not observe for or dispatch events when a view is
+   disabled.
+
  * [Aphid.UI.ImageView] Added ImageView, a view for managing the loading and
    display of an image (by URL) which invokes callbacks upon a successful
    image load or an error.

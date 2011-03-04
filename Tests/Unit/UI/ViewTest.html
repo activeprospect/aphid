@@ -1053,6 +1053,54 @@
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseLeaveEventListener));
+        }},
+
+        testShouldStopObservingEventsWhenDisabled: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          testView.disable();
+          assert(!testView._handleFocusEventListener);
+          assert(!testView._handleBlurEventListener);
+          assert(!testView._handleClickEventListener);
+          assert(!testView._handleDoubleClickEventListener);
+          assert(!testView._handleMouseDownEventListener);
+          assert(!testView._handleMouseUpEventListener);
+          assert(!testView._handleMouseOverEventListener);
+          assert(!testView._handleMouseOutEventListener);
+          assert(!testView._handleMouseEnterEventListener);
+          assert(!testView._handleMouseLeaveEventListener);
+        }},
+
+        testShouldStartObservingEventsWhenEnabled: function() { with(this) {
+          var testView = new TestViewWithEvents();
+          testView._startObserving();
+          testView.disable();
+          testView.enable();
+          assert(Object.isFunction(testView._handleFocusEventListener));
+          assert(Object.isFunction(testView._handleBlurEventListener));
+          assert(Object.isFunction(testView._handleClickEventListener));
+          assert(Object.isFunction(testView._handleDoubleClickEventListener));
+          assert(Object.isFunction(testView._handleMouseDownEventListener));
+          assert(Object.isFunction(testView._handleMouseUpEventListener));
+          assert(Object.isFunction(testView._handleMouseOverEventListener));
+          assert(Object.isFunction(testView._handleMouseOutEventListener));
+          assert(Object.isFunction(testView._handleMouseEnterEventListener));
+          assert(Object.isFunction(testView._handleMouseLeaveEventListener));
+        }},
+
+        testShouldNotStartObservingForEventsWhenInitializedDisabled: function() { with(this) {
+          var testView = new TestViewWithEvents({ element: $('testElementWithDisabledClassName') });
+          $AppDelegate.mainWindow.addSubview(testView);
+          assert(!testView._handleFocusEventListener);
+          assert(!testView._handleBlurEventListener);
+          assert(!testView._handleClickEventListener);
+          assert(!testView._handleDoubleClickEventListener);
+          assert(!testView._handleMouseDownEventListener);
+          assert(!testView._handleMouseUpEventListener);
+          assert(!testView._handleMouseOverEventListener);
+          assert(!testView._handleMouseOutEventListener);
+          assert(!testView._handleMouseEnterEventListener);
+          assert(!testView._handleMouseLeaveEventListener);
         }}
 
       }, { testLog: "logSection" });

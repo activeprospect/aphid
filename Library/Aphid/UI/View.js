@@ -783,6 +783,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.isEnabled = true;
     if (!this.isLoaded) return;
     this.get("element").removeClassName("disabled");
+    this._startObserving();
     return this;
   },
 
@@ -798,6 +799,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.isEnabled = false;
     if (!this.isLoaded) return;
     this.get("element").addClassName("disabled");
+    this._stopObserving();
     return this;
   },
 
@@ -1276,17 +1278,14 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         var action = element.getData('action');
         if (!Object.isUndefined(this[action]))
         {
-          element.observe('click', 
+          element.observe('click',
             function(event)
             {
-              // TODO See if this can be made into this[action]()
-              eval('this.' + action + '()');
+              var element = event.element();
+              if (element.hasClassName("disabled")) return;
+              this[action]();
             }.bind(this)
           );
-
-          // var instance = eval("new " + viewClass + "()");
-          // instance.initializeFromTemplate(element);
-          // this[outlet] = instance;
         }
         else
           $L.warn('Unable to connect action "' + action + '" to view controller as the controller does not define the requested method', this);
@@ -1345,7 +1344,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     $L.debug("_viewWillAppear (previously called: " + (this._viewWillAppearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
     // Start Observing for Events
-    if (!this._viewWillAppearCalled)
+    if (!this._viewWillAppearCalled && this.isEnabled)
       this._startObserving();
 
     // Call the Callback Method
