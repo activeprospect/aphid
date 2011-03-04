@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ImageView] Added ImageView, a view for managing the loading and
+   display of an image (by URL) which invokes callbacks upon a successful
+   image load or an error.
+
  * [Aphid.UI.View] Setting or adding a subview on a view will no longer
    attempt to re-display the added view if the view is already a subview of
    the superview.

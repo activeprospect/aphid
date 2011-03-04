@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.ImageView Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.ImageView Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <!--
+    <section id="descriptionSection">
+      <p>
+        …
+      </p>
+    </section>
+    -->
+
+    <!-- Test Elements -->
+    <section id="testElements">
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestImageViewWithCallbacks;
+      var TestDelegate;
+
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+
+          TestImageViewWithCallbacks = Aphid.Class.create("TestImageViewWithCallbacks", Aphid.UI.ImageView, {
+
+            imageDidLoadCalled: false,
+            imageDidLoad: function(imageView)
+            {
+              this.imageDidLoadCalled = true;
+            },
+
+            imageLoadDidFailCalled: false,
+            imageLoadDidFail: function(imageView, error)
+            {
+              this.imageLoadDidFailCalled = true;
+            },
+
+            resetCallbacks: function()
+            {
+              this.imageDidLoadCalled = false;
+              this.imageLoadDidFailCalled = false;
+            }
+
+          });
+
+          TestDelegate = Aphid.Class.create("TestDelegate", {
+            
+            imageViewDidLoadCalled: false,
+            imageViewDidLoad: function(imageView)
+            {
+              this.imageViewDidLoadCalled = true;
+            },
+
+            imageViewLoadDidFailCalled: false,
+            imageViewLoadDidFail: function(imageView, error)
+            {
+              this.imageViewLoadDidFailCalled = true;
+            },
+
+            resetCallbacks: function()
+            {
+              this.imageViewDidLoadCalled = false;
+              this.imageViewLoadDidFailCalled = false;
+            }
+
+          });
+
+        },
+
+        /**
+         * Ensures that new instances of Aphid.UI.ImageView can be initialized.
+        **/
+        testShouldInitializeImageView: function() { with(this) {
+          var imageView = new Aphid.UI.ImageView();
+          assertInstanceOf(Aphid.UI.ImageView, imageView, "imageView should be an instance of Aphid.UI.ImageView");
+        }},
+
+        // /**
+        //  * Ensures that calling the "imageElement" accessor on a newly
+        //  * initialized ImageView lazily initializes the image element and adds
+        //  * it to the ImageView instance's element.
+        // **/
+        // testShouldLazilyInitializeImageElement: function() { with(this) {
+        //   var imageView = new Aphid.UI.ImageView();
+        //   assert(!imageView.get("element").down("img"), "imageView should not have an &lt;img/&gt; element immediately after initialization");
+        //   imageView.get("imageElement");
+        //   assert(imageView.get("element").down("img"), "imageView should have an &lt;img/&gt; element after calling the imageElement accessor");
+        // }},
+
+        /**
+         * Ensures that you can set the image (by URL) on the ImageView
+         * instance and that it updates the src attribute on the <img/> tag.
+        **/
+        testShouldSetImage: function() { with(this) {
+          var imageView = new Aphid.UI.ImageView(),
+              image     = "../../Fixtures/Image.png";
+
+          assertEqual(image, imageView.set("image", image), "setting the image attribute should return the value passed");
+          assertEqual(image, imageView.get("imageElement").readAttribute("src"), "imageElement should have a src attribute set to the passed value");
+        }},
+
+        /**
+         * Ensures that you can set the image (by URL) on the ImageView
+         * instance and that it updates the src attribute on the <img/> tag.
+        **/
+        testShouldLoadImage: function() { with(this) {
+          var imageView = new Aphid.UI.ImageView(),
+              image     = "../../Fixtures/Image.png";
+
+          imageView.set("image", image);
+          wait(1000, function() {
+            assert(imageView.loaded, "loaded should be true on imageView");
+          });
+        }},
+
+        /**
+         * Ensures that you can clear the image from the ImageView instance.
+        **/
+        testShouldClearImage: function() { with(this) {
+          var imageView = new Aphid.UI.ImageView({ image: "../../Fixtures/Image.png" });
+
+          imageView.clearImage();
+          assert(!imageView.get("loaded"), "loaded property should be false");
+          assert(!imageView.get("image"), "image property should be false");
+          assertNull(imageView.get("imageElement").readAttribute("src"), "imageElement should not have a src attribute");
+        }},
+
+        /**
+         * Ensures that the imageDidLoad callback method is called once the
+         * image has loaded.
+        **/
+        testShouldCallImageDidLoadCallbackMethod: function() { with(this) {
+          var imageView = new TestImageViewWithCallbacks(),
+              image     = "../../Fixtures/Image.png";
+
+          assert(!imageView.imageDidLoadCalled);
+          imageView.set("image", image);
+          wait(1000, function() {
+            assert(imageView.imageDidLoadCalled);
+          });
+        }},
+
+        /**
+         * Ensures that the imageViewDidLoad delegate method is called once
+         * the image has loaded.
+        **/
+        testShouldCallImageViewDidLoadDelegateMethod: function() { with(this) {
+          var testDelegate = new TestDelegate(),
+              imageView    = new Aphid.UI.ImageView({ delegate: testDelegate }),
+              image        = "../../Fixtures/Image.png";
+
+          imageView.setImage(image);
+          wait(1000, function() {
+            assert(testDelegate.imageViewDidLoadCalled);
+          });
+        }},
+
+        /**
+         * Ensures that the imageDidLoad callback method is called once the
+         * image has loaded.
+        **/
+        testShouldCallImageLoadDidFailCallbackMethod: function() { with(this) {
+          var imageView = new TestImageViewWithCallbacks(),
+              image     = "../../Fixtures/404.png";
+
+          imageView.set("image", image);
+          wait(1000, function() {
+            assert(!imageView.imageDidLoadCalled);
+            assert(imageView.imageLoadDidFailCalled);
+          });
+        }},
+
+        /**
+         * Ensures that the imageViewDidLoad delegate method is called once
+         * the image has loaded.
+        **/
+        testShouldCallImageViewDidLoadDelegateMethod: function() { with(this) {
+          var testDelegate = new TestDelegate(),
+              imageView    = new Aphid.UI.ImageView({ delegate: testDelegate }),
+              image        = "../../Fixtures/404.png";
+
+          imageView.set("image", image);
+          wait(1000, function() {
+            assert(!testDelegate.imageViewDidLoadCalled);
+            assert(testDelegate.imageViewLoadDidFailCalled);
+          });
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
