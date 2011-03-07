@@ -6,4 +6,4 @@
 
 Aphid.Support.Extensions.Vendor.Scriptaculous = {};
 
-//= require "Scriptaculous/Droppables"
+//#= require "Scriptaculous/Droppables"

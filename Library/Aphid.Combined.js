@@ -1,7 +1,8 @@
 
 //= require <prototype>
-//= require <scriptaculous>
-//= require <effects>
-//= require <dragdrop>
-//= require <controls>
+//= require <s2>
+//#= require <scriptaculous>
+//#= require <effects>
+//#= require <dragdrop>
+//#= require <controls>
 //= require "Aphid"

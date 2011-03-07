@@ -10,3 +10,6 @@
 [submodule "Vendor/Sprockets"]
 	path = Vendor/Sprockets
 	url = http://github.com/sstephenson/sprockets.git
+[submodule "Vendor/scripty2"]
+	path = Vendor/scripty2
+	url = https://github.com/madrobby/scripty2.git

@@ -140,7 +140,7 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     if (this.get("mode") || !this.get("mode") == "default")
       this.get("element").addClassName(this.get("mode"));
 
-    if (Prototype.Browser.IE)
+    // if (Prototype.Browser.IE)
       return; // Resizing is not supported by Internet Explorer, yet...
 
     if (this.get("allowsResize"))
@@ -646,15 +646,15 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
    * the redraw if the user attempts to resize beyond the minimum or maximum
    * positions defined on the SplitViewController instance.
    */
-  Draggable: Class.create(Draggable, {
-    updateDrag: function($super, event, pointer)
-    {
-      var splitViewController = this.options.splitViewController,
-          position            = (this.options.constraint == "vertical" ? event.clientY : event.clientX);
-
-      if (splitViewController.validatePosition(position))
-        $super(event, pointer);
-    }
-  })
+  // Draggable: Class.create(Draggable, {
+  //   updateDrag: function($super, event, pointer)
+  //   {
+  //     var splitViewController = this.options.splitViewController,
+  //         position            = (this.options.constraint == "vertical" ? event.clientY : event.clientX);
+  // 
+  //     if (splitViewController.validatePosition(position))
+  //       $super(event, pointer);
+  //   }
+  // })
 
 });

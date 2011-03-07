@@ -479,19 +479,22 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       {
         case Aphid.UI.View.SlideLeftTransition:
           view.get("element").setStyle({ "left": this.get("element").getWidth() + "px" });
-          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          view.get("element").appear({
-            duration: 0.35,
-            afterFinish: this._viewDidAppear.bind(this, animated)
-          });
+          // new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          view.get("element").morph("left: 0px; top: 0px", { duration: 0.5, position: "absolute" });
+          // view.get("element").appear({
+          //   duration: 0.35,
+          //   afterFinish: this._viewDidAppear.bind(this, animated)
+          // });
           break;
         case Aphid.UI.View.SlideRightTransition:
-          view.get("element").setStyle({ "left": -this.get("element").getWidth() + "px" });
-          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          view.get("element").appear({
-            duration: 0.35,
-            afterFinish: this._viewDidAppear.bind(this, animated)
-          });
+          window.console.log("xxxxxxx")
+          // view.get("element").setStyle({ "left": -this.get("element").getWidth() + "px" });
+          // new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          view.get("element").morph("left: 0px, top: 0px; right: " + -this.get("element").getWidth() + "px", { duration: 0.5, position: "absolute" });
+          // view.get("element").appear({
+          //   duration: 0.35,
+          //   afterFinish: this._viewDidAppear.bind(this, animated)
+          // });
           break;
         default:
           view.get("element").appear({
@@ -563,21 +566,26 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Hide the View
     if (animated)
     {
+      // alert("oy ya")
       switch(transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
-          new Effect.Move(this.get("element"), { x: -(this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          this.get("element").fade({
-            duration: 0.35,
-            afterFinish: this._viewDidDisappear.bind(this, animated)
-          });
+        window.console.log('to the left, to the ')
+          // new Effect.Move(this.get("element"), { x: -(this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          this.get("element").morph("left: " + -(this.get("element").getWidth()) + "px; top: 0px; right: " + -(this.get("element").getWidth()) + "px", { duration: 0.5, position: "absolute" });
+          // this.get("element").fade({
+          //   duration: 0.35,
+          //   afterFinish: this._viewDidDisappear.bind(this, animated)
+          // });
           break;
         case Aphid.UI.View.SlideRightTransition:
-          new Effect.Move(this.get("element"), { x: (this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          this.get("element").fade({
-            duration: 0.35,
-            afterFinish: this._viewDidDisappear.bind(this, animated)
-          });
+          window.console.log("xxosiufosfjds")
+          // new Effect.Move(this.get("element"), { x: (this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
+          this.get("element").morph("left: " + (this.get("element").getWidth()) + "px; top: 0px; right: " + -(this.get("element").getWidth()) + "px; top: 0px", { duration: 0.5, position: "absolute" });
+          // this.get("element").fade({
+          //   duration: 0.35,
+          //   afterFinish: this._viewDidDisappear.bind(this, animated)
+          // });
           break;
         default:
           this.get("element").fade({

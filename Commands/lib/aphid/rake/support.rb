@@ -10,7 +10,8 @@ module Aphid
         sprockets_options = {
           :root         => ROOT_PATH,
           :asset_root   => "Build/Resources/Images",
-          :load_path    => [ "Library", "Application", "Vendor/Prototype/src", "Vendor/script.aculo.us/src", "Vendor/excanvas" ],
+          :load_path    => [ "Library", "Application", "Vendor/Prototype/src", "Vendor/scripty2/src", "Vendor/excanvas" ],
+          # :load_path    => [ "Library", "Application", "Vendor/Prototype/src", "Vendor/script.aculo.us/src", "Vendor/excanvas" ],
           :source_files => [ "Library/**/*.js", "Application/**/*.js" ]
         }.merge(options)
         puts "Sprocketizing #{sprockets_options[:source_files]} to #{output} ..."
