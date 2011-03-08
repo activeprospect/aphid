@@ -1,15 +1,5 @@
 # encoding: UTF-8
 
-begin
-  require "net/ssh"
-  require "net/scp"
-rescue LoadError
-  puts "\nYou'll need Net::SCP to publish this project. Simply run:\n\n"
-  puts "  $ gem install net-scp"
-  puts "\nand you should be all set!\n\n"
-  exit
-end
-
 module Aphid
   module Rake
     class Publish
@@ -77,6 +67,16 @@ module Aphid
       # raising an exception.
       #
       def self.connection(host)
+        begin
+          require "net/ssh"
+          require "net/scp"
+        rescue LoadError
+          puts "\nYou'll need Net::SCP to publish this project. Simply run:\n\n"
+          puts "  $ gem install net-scp"
+          puts "\nand you should be all set!\n\n"
+          exit
+        end
+
         @@connections[host] ||= Net::SSH.start(host, config[:user], :compression => "none")
         if block_given?
           retried = false
