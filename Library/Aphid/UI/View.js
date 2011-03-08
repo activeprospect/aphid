@@ -1379,6 +1379,10 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       subview._viewDidAppear(animated);
     });
 
+    // Allow View to Layout its Subviews
+    if (!this._viewDidAppearCalled)
+      this._layoutSubviews();
+
     this._viewDidAppearCalled = true;
     this._viewDidDisappearCalled = false;
   },
