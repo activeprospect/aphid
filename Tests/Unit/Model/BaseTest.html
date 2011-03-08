@@ -27,74 +27,105 @@
     <!-- Tests -->
     <script>
 
-      var TestSingleton = Aphid.Class.create("TestSingleton", Aphid.Model.Base, {
-
-        siteUrl: "../../Fixtures/Models",
-        instancePath: "/Singleton.json"
-
-      });
-
-      var TestContact = Aphid.Class.create("TestContact", Aphid.Model.Base, {
-
-        siteUrl: "../../Fixtures/Models",
-        instancePath: "/Contacts/#{identifier}.json",
-        collectionPath: "/Contacts.json",
-
-        hasMany: {
-          testNotes: {
-            className: "TestNote"
-          }
-        },
-
-        belongsTo: {
-          latestTestNote: {
-            className: "TestNote"
-          }
-        }
-
-      });
-
-      var TestNote = Aphid.Class.create("TestNote", Aphid.Model.Base, {
-
-        siteUrl: "../../Fixtures/Models",
-        instancePath: "/Contacts/#{testContactId}/Notes/#{identifier}.json",
-        collectionPath: "/Contacts/#{testContactId}/Notes.json",
-
-        belongsTo: {
-          testContact: {
-            className: "TestContact"
-          },
-          previousTestNote: {
-            className: "TestNote"
-          }
-        },
-
-        hasMany: {
-          testRevisions: {
-            className: "TestRevision"
-          }
-        }
-
-      });
-
-      var TestRevision = Aphid.Class.create("TestRevision", Aphid.Model.Base, {
-
-        siteUrl: "../../Fixtures/Models",
-        instancePath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions/#{identifier}.json",
-        collectionPath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions.json",
-
-        belongsTo: {
-          testNote: {
-            className: "TestNote"
-          }
-        }
-        
-      });
+      var TestSingleton;
+      var TestContact;
+      var TestNote;
+      var TestRevision;
 
       new Test.Unit.Runner({
 
         setup: function()
         {
+
+          TestSingleton = Aphid.Class.create("TestSingleton", Aphid.Model.Base, {
+
+            siteUrl: "../../Fixtures/Models",
+            instancePath: "/Singleton.json"
+
+          });
+
+          TestContact = Aphid.Class.create("TestContact", Aphid.Model.Base, {
+
+            siteUrl: "../../Fixtures/Models",
+            instancePath: "/Contacts/#{identifier}.json",
+            collectionPath: "/Contacts.json",
+
+            hasMany: {
+              testNotes: {
+                className: "TestNote"
+              }
+            },
+
+            belongsTo: {
+              latestTestNote: {
+                className: "TestNote"
+              }
+            },
+
+            afterInitializeCalled: false,
+            afterInitialize: function()
+            {
+              this.afterInitializeCalled = true;
+            },
+
+            afterLoadCalled: false,
+            afterLoad: function()
+            {
+              this.afterLoadCalled = true;
+            },
+
+            afterReloadCalled: false,
+            afterReload: function()
+            {
+              this.afterReloadCalled = true;
+            },
+
+            resetCallbacks: function()
+            {
+              this.afterInitializeCalled = false;
+              this.afterLoadCalled = false;
+              this.afterReloadCalled = false;
+            }
+
+          });
+
+          TestNote = Aphid.Class.create("TestNote", Aphid.Model.Base, {
+
+            siteUrl: "../../Fixtures/Models",
+            instancePath: "/Contacts/#{testContactId}/Notes/#{identifier}.json",
+            collectionPath: "/Contacts/#{testContactId}/Notes.json",
+
+            belongsTo: {
+              testContact: {
+                className: "TestContact"
+              },
+              previousTestNote: {
+                className: "TestNote"
+              }
+            },
+
+            hasMany: {
+              testRevisions: {
+                className: "TestRevision"
+              }
+            }
+
+          });
+
+          TestRevision = Aphid.Class.create("TestRevision", Aphid.Model.Base, {
+
+            siteUrl: "../../Fixtures/Models",
+            instancePath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions/#{identifier}.json",
+            collectionPath: "/Contacts/#{testContactId}/Notes/#{testNoteId}/Revisions.json",
+
+            belongsTo: {
+              testNote: {
+                className: "TestNote"
+              }
+            }
+
+          });
+
         },
 
         // Initialization ----------------------------------------------------
@@ -127,9 +158,11 @@
         // 
         testShouldLoadWithIdentifier: function() { with(this) {
           var testContact = TestContact.load(1);
-          assert(testContact.get("isLoaded"));
-          assertEqual("John Doe", testContact.get("name"));
-          assertEqual("jdoe@example.com", testContact.get("email"));
+          wait(1000, function() {
+            assert(testContact.get("isLoaded"));
+            assertEqual("John Doe", testContact.get("name"));
+            assertEqual("jdoe@example.com", testContact.get("email"));
+          });
         }},
 
         // 
@@ -139,9 +172,11 @@
         testShouldLoadWithURL: function() { with(this) {
           var url = window.location.href.gsub(/Unit\/Model\/BaseTest\.html.*/, "Fixtures/Models/Contacts/1.json");
           var testContact = TestContact.load(url);
-          assert(testContact.get("isLoaded"));
-          assertEqual("John Doe", testContact.get("name"));
-          assertEqual("jdoe@example.com", testContact.get("email"));
+          wait(1000, function() {
+            assert(testContact.get("isLoaded"));
+            assertEqual("John Doe", testContact.get("name"));
+            assertEqual("jdoe@example.com", testContact.get("email"));
+          });
         }},
 
         // 
@@ -150,8 +185,10 @@
         // 
         testShouldLoadSingleton: function() { with(this) {
           var testSingleton = TestSingleton.load();
-          assert(testSingleton.get("isLoaded"));
-          assertEqual("ACME Widgets", testSingleton.get("name"));
+          wait(1000, function() {
+            assert(testSingleton.get("isLoaded"));
+            assertEqual("ACME Widgets", testSingleton.get("name"));
+          });
         }},
 
         // 
@@ -160,9 +197,11 @@
         // 
         testShouldLoadWithOptions: function() { with(this) {
           var testNote = TestNote.load(1, { testContactId: 1 });
-          assert(testNote.get("isLoaded"));
-          assertEqual("Test note...", testNote.get("body"));
-          assertEqual(1, testNote.get("testContactId"));
+          wait(1000, function() {
+            assert(testNote.get("isLoaded"));
+            assertEqual("Test note...", testNote.get("body"));
+            assertEqual(1, testNote.get("testContactId"));
+          });
         }},
 
         // 
@@ -190,8 +229,10 @@
         // 
         testShouldLoadCollection: function() { with(this) {
           var testCollection = TestContact.loadCollection();
-          assertInstanceOf(Array, testCollection);
-          assert(testCollection.length > 1);
+          assertInstanceOf(Aphid.Model.CollectionProxy, testCollection);
+          wait(1000, function() {
+            assert(testCollection.size() > 1);
+          });
         }},
 
         // 
@@ -201,8 +242,10 @@
         testShouldLoadCollectionWithURL: function() { with(this) {
           var url = window.location.href.gsub(/Unit\/Model\/BaseTest\.html.*/, "Fixtures/Models/Contacts.json");
           var testCollection = TestContact.loadCollection(url);
-          assertInstanceOf(Array, testCollection);
-          assert(testCollection.length > 1);
+          assertInstanceOf(Aphid.Model.CollectionProxy, testCollection);
+          wait(1000, function() {
+            assert(testCollection.size() > 1);
+          });
         }},
 
         // 
@@ -211,8 +254,10 @@
         // 
         testShouldLoadCollectionWithOptions: function() { with(this) {
           var testCollection = TestNote.loadCollection({ testContactId: 2 });
-          assertInstanceOf(Array, testCollection);
-          assert(testCollection.length > 1);
+          assertInstanceOf(Aphid.Model.CollectionProxy, testCollection);
+          wait(1000, function() {
+            assert(testCollection.size() > 1);
+          });
         }},
 
         // Properties --------------------------------------------------------
@@ -224,7 +269,9 @@
         // 
         testShouldCamelizeRecordProperties: function() { with(this) {
           var testContact = TestContact.load(1);
-          assert(testContact.has("phoneNumber"));
+          wait(1000, function() {
+            assert(testContact.has("phoneNumber"));
+          });
         }},
 
         // Associations ------------------------------------------------------
@@ -260,46 +307,64 @@
         }},
 
         testShouldLoadAndReturnBelongsToAssociation: function() { with(this) {
-          var testContact = TestContact.load(1),
-              testNote    = testContact.get("latestTestNote");
-          assertInstanceOf(TestNote, testNote);
+          var testContact = TestContact.load(1);
+          wait(1000, function() {
+            var testNote = testContact.get("latestTestNote");
+            assertInstanceOf(TestNote, testNote);
+          });
         }},
 
         testShouldLoadAndReturnHasManyAssociation: function() { with(this) {
-          var testContact = TestContact.load(1),
-              testNotes   = testContact.get("testNotes");
-          assert(Object.isArray(testNotes), "Should return an Array");
-          assert(testNotes.length > 0, "testNotes array should have more than 0 items");
-          testNotes.each(function(testNote) {
-            assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
+          var testContact = TestContact.load(1);
+
+          wait(1000, function() {
+            var testNotes = testContact.get("testNotes");
+            assertInstanceOf(Aphid.Model.CollectionProxy, testNotes, "Should return an instance of Aphid.Model.CollectionProxy");
+            wait(1000, function() {
+              assert(testNotes.size() > 0, "testNotes should have more than 0 items");
+              testNotes.each(function(testNote) {
+                assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
+              });
+            });
           });
         }},
 
         testShouldSetInverseAssociationOnBelongsToModelsWithInverseBelongsToAssociation: function() { with(this) {
-          var testContact = TestContact.load(1),
-              testNote    = testContact.get("latestTestNote");
-          assertInstanceOf(TestContact, testNote.testContact, "testNote.testContact should be an instance of TestContact");
+          var testContact = TestContact.load(1);
+          wait(1000, function() {
+            var testNote = testContact.get("latestTestNote");
+            wait(1000, function() {
+              assertInstanceOf(TestContact, testNote.get("testContact"), "testNote.testContact should be an instance of TestContact");
+            });
+          });
         }},
 
         testShouldSetInverseAssociationOnHasManyModelsWithInverseBelongsToAssociation: function() { with(this) {
           var testContact = TestContact.load(1),
               testNotes   = testContact.get("testNotes");
           testNotes.each(function(testNote) {
-            assertInstanceOf(TestContact, testNote.testContact, "testNote.testContact should be an instance of TestContact");
+            assertInstanceOf(TestContact, testNote.get("testContact"), "testNote.testContact should be an instance of TestContact");
           });
         }},
 
         testShouldInitializeIncludedBelongsToAssociations: function() { with(this) {
           var testContact = TestContact.load(2);
-          assertInstanceOf(TestNote, testContact.latestTestNote, "testContact.latestTestNote should be an instance of TestNote");
+          wait(1000, function() {
+            assertInstanceOf(TestNote, testContact.get("latestTestNote"), "testContact.latestTestNote should be an instance of TestNote");
+          });
         }},
 
         testShouldInitializeIncludedHasManyAssociations: function() { with(this) {
           var testContact = TestContact.load(2);
-          assert(Object.isArray(testContact.testNotes), "testNotes should be an instance of Array");
-          assert(testContact.testNotes.length > 0, "testNotes array should have more than 0 items");
-          testContact.testNotes.each(function(testNote) {
-            assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
+          wait(1000, function() {
+            // TODO This should actually still probably be a CollectionProxy...
+            assertInstanceOf(Array, testContact.get("testNotes"), "testNotes should be an instance of Array");
+            wait(1000, function() {
+              assert(testContact.get("testNotes").size() > 0, "testNotes array should have more than 0 items");
+              testContact.get("testNotes").each(function(testNote) {
+                assertInstanceOf(TestNote, testNote, "testNote should be an instance of TestNote");
+              });
+            });
           });
         }},
 
@@ -309,9 +374,11 @@
         // loading the association.
         //
         testShouldUseForeignKeyPropertiesOnBelongsToAssociation: function() { with(this) {
-          var testNote         = TestNote.load(3, { testContactId: 2 }),
-              previousTestNote = testNote.get("previousTestNote");
-          assertInstanceOf(TestNote, previousTestNote);
+          var testNote = TestNote.load(3, { testContactId: 2 });
+          wait(1000, function() {
+            var previousTestNote = testNote.get("previousTestNote");
+            assertInstanceOf(TestNote, previousTestNote);
+          });
         }},
 
         //
