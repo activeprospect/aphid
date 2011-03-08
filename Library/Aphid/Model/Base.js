@@ -762,6 +762,7 @@ Aphid.Model.Base.ClassMethods = {
       instance = new klass(attributes);
       instance.set("isLoaded", true);
       instance.set("isLoading", false);
+      instance._afterLoad();
       collection.push(instance);
     });
 

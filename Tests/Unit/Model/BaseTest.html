@@ -387,11 +387,37 @@
         // loading the association.
         //
         testShouldUseForeignKeyPropertiesOnHasManyAssociation: function() { with(this) {
-          var testNote      = TestNote.load(3, { testContactId: 2 }),
-              testRevisions = testNote.get("testRevisions");
-          window.console.log(testNote)
-          window.console.log(testRevisions)
-          assertInstanceOf(TestRevision, testRevisions.first());
+          var testNote = TestNote.load(3, { testContactId: 2 });
+          wait(1000, function() {
+            var testRevisions = testNote.get("testRevisions");
+            wait(1000, function() {
+              assertInstanceOf(TestRevision, testRevisions.get("collection").first());
+            });
+          });
+        }},
+
+        /**
+         * Ensures that the afterLoad callback is called after successfully
+         * loading a model instance.
+        **/
+        testShouldCallAfterLoadCallback: function() { with(this) {
+          var testContact = TestContact.load(1);
+          wait(1000, function() {
+            assert(testContact.afterLoadCalled, "afterLoad callback should have been called on testContact");
+          });
+        }},
+
+        /**
+         * Ensures that the afterLoad callback is called on each instance
+         * of a successfully loaded collection.
+        **/
+        testShouldCallAfterLoadCallbackOnCollections: function() { with(this) {
+          var testContacts = TestContact.loadCollection();
+          wait(1000, function() {
+            testContacts.get("collection").each(function(testContact) { with(this) {
+              assertInstanceOf(TestContact, testContact, "testNote should be an instance of TestNote");
+            }});
+          });
         }}
 
       }, { testLog: "logSection" });
