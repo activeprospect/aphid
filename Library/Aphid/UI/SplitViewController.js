@@ -140,7 +140,7 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     if (this.get("mode") || !this.get("mode") == "default")
       this.get("element").addClassName(this.get("mode"));
 
-    // if (Prototype.Browser.IE)
+    if (Prototype.Browser.IE)
       return; // Resizing is not supported by Internet Explorer, yet...
 
     if (this.get("allowsResize"))
@@ -464,19 +464,14 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
 
       this._willResize();
 
-      new Effect.Morph(this.get("firstView.element"), {
-        width: position + 'px'
-      });
-      new Effect.Morph(this.get("secondView.element"), {
-        left: (position + borderWidth + dragHandleWidth) + 'px'
-      });
-      new Effect.Morph(this.get("dragHandle"), {
-        left: dragHandlePosition + 'px'
-      });
+      this.get("firstView.element").morph("width: " + position + "px");
+      this.get("secondView.element").morph("left: " + (position + borderWidth + dragHandleWidth) + "px");
+      this.get("dragHandle").morph("left: " + dragHandlePosition + "px");
     }
     else
     {
       var borderHeight = isNaN(this.get("firstView.element").getBorderHeight()) ? 0 : this.get("firstView.element").getBorderHeight();
+      window.console.log("moo")
 
       var dragHandleHeight, dragHandlePosition;
        switch (this.get("mode"))
@@ -495,30 +490,23 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
 
       var bottom = this.get("element").getHeight() - position;
 
-      new Effect.Parallel(
+      new S2.FX.Parallel(
         [
-          new Effect.Morph(this.get("firstView.element"), {
-            style: {
-              bottom: bottom + "px"
-              // height: position + 'px'
-            }
+          this.get("firstView.element").morph("bottom: " + bottom + "px", {
+            position: "parallel",
+            duration: 0.25
           }),
-          new Effect.Morph(this.get("secondView.element"), {
-            style: {
-              bottom: "0px",
-              height: bottom + "px"
-              // top: (position + borderHeight + dragHandleHeight) + 'px'
-            }
+          this.get("secondView.element").morph("bottom: 0px; height: " + bottom + "px", {
+            position: "parallel",
+            duration: 0.25
           }),
-          new Effect.Morph(this.get("dragHandle"), {
-            style: {
-              top: dragHandlePosition + 'px'
-            }
+          this.get("dragHandle").morph("top: " + dragHandlePosition + "px", {
+            position: "parallel",
+            duration: 0.25
           })
         ],
         {
-          duration: 0.35,
-          transition: Effect.Transitions.sinoidal
+          duration: 3
         }
       );
     }
