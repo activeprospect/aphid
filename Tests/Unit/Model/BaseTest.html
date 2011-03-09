@@ -31,6 +31,53 @@
       var TestContact;
       var TestNote;
       var TestRevision;
+      var TestObserver = Aphid.Class.create("TestObserver", Aphid.Support.Object, {
+
+        initialize: function($super, options)
+        {
+          $super(options);
+          this.startObserving();
+        },
+
+        startObserving: function()
+        {
+          this.addObserver(this.handleModelDidLoadNotification, "ModelDidLoadNotification");
+          this.addObserver(this.handleModelDidReloadNotification, "ModelDidReloadNotification");
+          this.addObserver(this.handleModelWasDestroyedNotification, "ModelWasDestroyedNotification");
+        },
+
+        stopObserving: function()
+        {
+          this.removeObservers();
+        },
+
+        modelDidLoadNotificationPosted: false,
+        handleModelDidLoadNotification: function(model)
+        {
+          this.modelDidLoadNotificationPosted = true;
+        },
+
+        modelDidReloadNotificationPosted: false,
+        handleModelDidReloadNotification: function(sender, info)
+        {
+          this.modelDidReloadNotificationPosted = true;
+        },
+
+        modelWasDestroyedNotificationPosted: false,
+        handleModelWasDestroyedNotification: function(sender, info)
+        {
+          this.modelWasDestroyedNotificationPosted = true;
+        },
+
+        resetNotifications: function()
+        {
+          this.modelDidLoadNotificationPosted = false;
+          this.modelDidReloadNotificationPosted = false;
+          this.modelWasDestroyedNotificationPosted = false;
+        }
+
+      });
+      var testObserver;
 
       new Test.Unit.Runner({
 
@@ -126,6 +173,15 @@
 
           });
 
+        },
+
+        teardown: function()
+        {
+          if (testObserver)
+          {
+            testObserver.stopObserving();
+            testObserver = false;
+          }
         },
 
         // Initialization ----------------------------------------------------
@@ -408,6 +464,18 @@
         }},
 
         /**
+         * Ensures that the ModelDidLoadNotification notification is posted
+         * after successfully loading a model instance.
+        **/
+        testShouldPostModelDidLoadNotification: function() { with(this) {
+          var testObserver = new TestObserver(),
+              testContact  = TestContact.load(1);
+          wait(1000, function() {
+            assert(testObserver.modelDidLoadNotificationPosted, "The 'ModelDidLoadNotification' notification should have been posted by testContact");
+          });
+        }},
+
+        /**
          * Ensures that the afterLoad callback is called on each instance
          * of a successfully loaded collection.
         **/
@@ -417,6 +485,35 @@
             testContacts.get("collection").each(function(testContact) { with(this) {
               assertInstanceOf(TestContact, testContact, "testNote should be an instance of TestNote");
             }});
+          });
+        }},
+
+        /**
+         * Ensures that the afterReload callback is called after successfully
+         * reloading a model instance.
+        **/
+        testShouldCallAfterReloadCallback: function() { with(this) {
+          var testContact = TestContact.load(1);
+          wait(1000, function() {
+            testContact.reload();
+            wait(1000, function() {
+              assert(testContact.afterReloadCalled, "afterReload callback should have been called on testContact");
+            });
+          });
+        }},
+
+        /**
+         * Ensures that the ModelDidReloadNotification notification is posted
+         * after successfully reloading a model instance.
+        **/
+        testShouldPostModelDidReloadNotification: function() { with(this) {
+          var testObserver = new TestObserver(),
+              testContact  = TestContact.load(1);
+          wait(1000, function() {
+            testContact.reload();
+            wait(1000, function() {
+              assert(testObserver.modelDidReloadNotificationPosted, "The 'ModelDidReloadNotification' notification should have been posted by testContact");
+            });
           });
         }}
 

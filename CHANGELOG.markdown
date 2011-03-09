@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] Model instances now post notifications after loading,
+   reloading and destroying instances.
+
  * [Aphid.UI.View] Do not observe for or dispatch events when a view is
    disabled.
 

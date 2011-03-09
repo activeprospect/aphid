@@ -1,5 +1,24 @@
 /**
  * class Aphid.Model.Base < Aphid.Support.Object
+ *
+ * #### Callback Methods
+ *
+ *  - `afterLoad`
+ *  - `afterReload`
+ *  - `afterDestroy`
+ *
+ * #### Delegate Methods
+ *
+ *  - `modelDidFinishLoading(model)`
+ *  - `modelDidFinishReloading(model)`
+ *  - `modelWasDestroyed(model)`
+ *
+ * #### Posted Notifications
+ *
+ *  - `ModelDidLoadNotification`
+ *  - `ModelDidReloadNotification`
+ *  - `ModelWasDestroyedNotification`
+ *
 **/
 
 //= require "CollectionProxy"
@@ -416,9 +435,9 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
         property = requiredProperty.gsub(/[^a-zA-Z]/, "");
         if (!this.get(property)) return property;
       }, this).compact();
-      if (missingProperties.length > 0)
+      if (missingProperties.size() > 0)
       {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this);
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this);
         return;
       }
     }
@@ -431,7 +450,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
     // Request Options
     var options = {
-      method: 'get',
+      method: "GET",
       asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleReloadResponse.bind(this),
@@ -443,7 +462,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     new Ajax.Request(url, options);
   },
 
-  // TODO Move this to a method in the prototype
   _handleReloadResponse: function(transport)
   {
     var object = transport.responseJSON;
@@ -451,6 +469,63 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     this.set("isLoaded", true);
     this.set("isLoading", false);
     this._afterReload();
+  },
+
+  /**
+   * Aphid.Model.Base#destroy() -> Aphid.Model.Base
+  **/
+  destroy: function()
+  {
+    var url = this.get("siteUrl").concat(this.get("instancePath"));
+    this.identifier = false;
+    this.set("identifier", this.get("id"));
+    // TODO identifier needs to be set automatically to the configured identifier attribute's value
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!this.get(property)) return property;
+      }, this).compact();
+      if (missingProperties.size() > 0)
+      {
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this);
+        return;
+      }
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(this);
+
+    $L.info("Destroying record at URL: " + url + " ...", this);
+
+    // Request Options
+    var requestOptions = {
+      method: "DELETE",
+      asynchronous: false,
+      onSuccess: this._handleDestroyResponse.bind(this),
+      onFailure: this._handleFailureResponse.bind(this),
+      onException: function(transport, exception) { throw exception }
+    };
+
+    // Make Request
+    new Ajax.Request(url, requestOptions);
+
+    return this;
+  },
+
+  _handleDestroyResponse: function(transport)
+  {
+    $L.info(transport.responseText, this);
+    this._afterDestroy();
+  },
+
+  _handleFailureResponse: function(transport)
+  {
+    $L.error(transport.responseText, this);
   },
 
   // Callbacks ---------------------------------------------------------------
@@ -464,18 +539,50 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
   _afterLoad: function()
   {
+
+    // Call Callback Method
     if (this.afterLoad)
       this.afterLoad(this);
+
+    // Call Delegate Method
     if (this.delegate && this.delegate.modelDidFinishLoading)
       this.delegate.modelDidFinishLoading(this);
+
+    // Post Notification
+    this.postNotification("ModelDidLoadNotification");
+
   },
 
   _afterReload: function()
   {
+
+    // Call Callback Method
     if (this.afterReload)
       this.afterReload(this);
+
+    // Call Delegate Method
     if (this.delegate && this.delegate.modelDidFinishReloading)
       this.delegate.modelDidFinishReloading(this);
+
+    // Post Notification
+    this.postNotification("ModelDidReloadNotification");
+
+  },
+
+  _afterDestroy: function()
+  {
+
+    // Call Callback Method
+    if (this.afterDestroy)
+      this.afterDestroy(this);
+
+    // Call Delegate Method
+    if (this.delegate && this.delegate.modelWasDestroyed)
+      this.delegate.modelWasDestroyed(this);
+
+    // Post Notification
+    this.postNotification("ModelWasDestroyedNotification");
+
   },
 
   // -------------------------------------------------------------------------
@@ -523,59 +630,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     if (!this.foreignProperty)
       this.set("foreignProperty", this.get("className").lowerCaseFirst());
     return this.foreignProperty;
-  },
-
-  destroy: function()
-  {
-    var url = this.get("siteUrl").concat(this.get("instancePath"));
-    this.identifier = false;
-    this.set("identifier", this.get("id"));
-    // TODO identifier needs to be set automatically to the configured identifier attribute's value
-
-    // Check for Required URL Template Properties
-    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
-    if (requiredProperties)
-    {
-      var missingProperties = requiredProperties.collect(function(requiredProperty) {
-        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
-        if (!this.get(property)) return property;
-      }, this).compact();
-      if (missingProperties.length > 0)
-      {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this);
-        return;
-      }
-    }
-
-    // Replace Template Variables in URL
-    var template = new Template(url);
-    url = template.evaluate(this);
-
-    $L.info("Destroying record at URL: " + url + " ...", this);
-
-    // Request Options
-    var requestOptions = {
-      method: 'delete',
-      asynchronous: false,
-      onSuccess: this._handleDestroyResponse.bind(this),
-      onFailure: this._handleFailureResponse.bind(this),
-      onException: function(transport, exception) { throw exception }
-    };
-
-    // Make Request
-    new Ajax.Request(url, requestOptions);
-
-    return this;
-  },
-
-  _handleDestroyResponse: function(transport)
-  {
-    $L.info(transport.responseText, this);
-  },
-
-  _handleFailureResponse: function(transport)
-  {
-    $L.error(transport.responseText, this);
   }
 
 });
@@ -638,9 +692,9 @@ Aphid.Model.Base.ClassMethods = {
         property = requiredProperty.gsub(/[^a-zA-Z]/, "");
         if (!options.get(property)) return property;
       }).compact();
-      if (missingProperties.length > 0)
+      if (missingProperties.size() > 0)
       {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this.className);
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this.className);
         return;
       }
     }
@@ -656,7 +710,7 @@ Aphid.Model.Base.ClassMethods = {
 
     // Request Options
     var requestOptions = {
-      method: 'get',
+      method: "GET",
       asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleLoadResponse.bind(this, instance),
@@ -721,9 +775,9 @@ Aphid.Model.Base.ClassMethods = {
         property = requiredProperty.gsub(/[^a-zA-Z]/, "");
         if (!options.get(property)) return property;
       }).compact();
-      if (missingProperties.length > 0)
+      if (missingProperties.size() > 0)
       {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this.className);
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this.className);
         return;
       }
     }
@@ -740,7 +794,7 @@ Aphid.Model.Base.ClassMethods = {
 
     // Request Options
     var requestOptions = {
-      method: 'get',
+      method: "GET",
       asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleLoadCollectionResponse.bind(this, collection, modelKlass),
@@ -773,15 +827,6 @@ Aphid.Model.Base.ClassMethods = {
       collection.get("delegate").modelDidFinishLoading(collection);
   },
 
-  _handleFailureResponse: function(instance, transport)
-  {
-    instance.postNotification("ModelFailureNotification", instance);
-
-    if (instance.get("delegate") && instance.get("delegate").modelDidFailWithError)
-      instance.get("delegate").modelDidFailWithError(instance, transport);
-    // window.console.log(transport)
-  },
-
   // Create ------------------------------------------------------------------
 
   create: function(options)
@@ -801,9 +846,9 @@ Aphid.Model.Base.ClassMethods = {
         property = requiredProperty.gsub(/[^a-zA-Z]/, "");
         if (!options.get(property)) return property;
       }).compact();
-      if (missingProperties.length > 0)
+      if (missingProperties.size() > 0)
       {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.length, "properties") + ": " + missingProperties.join(", "), this.className);
+        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this.className);
         return;
       }
     }
@@ -823,7 +868,7 @@ Aphid.Model.Base.ClassMethods = {
 
     // Request Options
     var requestOptions = {
-      method: 'post',
+      method: "POST",
       asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleCreateResponse.bind(this, instance),
@@ -845,6 +890,16 @@ Aphid.Model.Base.ClassMethods = {
     instance.set("isLoaded", true);
     instance.set("isLoading", false);
     instance._afterLoad();
+  },
+
+  // -------------------------------------------------------------------------
+
+  _handleFailureResponse: function(instance, transport)
+  {
+    instance.postNotification("ModelFailureNotification", instance);
+
+    if (instance.get("delegate") && instance.get("delegate").modelDidFailWithError)
+      instance.get("delegate").modelDidFailWithError(instance, transport);
   }
 
 }
