@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Cookie] Added setPersistent() that will set a persistent
+   cookie (that expires in 10 years).
+
  * [Aphid.UI.Window] Added a loadResource method that will dynamically load
    JavaScript or CSS Stylesheets by URL.
 
