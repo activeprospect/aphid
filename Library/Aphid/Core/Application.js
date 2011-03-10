@@ -191,8 +191,9 @@ Aphid.Core.Application.bootstrap = function()
     $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
     Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Core.Application);
   }
-  Application.sharedInstance = new Application();
+  // Application.sharedInstance = false;
   $AppDelegate = Application.sharedInstance;
+  $AppDelegate = new Application();
   if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
     $AppDelegate.applicationDidFinishInitialization();
 }
