@@ -413,7 +413,7 @@ module Aphid
           :release           => release,
           :revision          => current_head,
           :previous_revision => self.previous_atomic_revision,
-          :dirty             => true
+          :dirty             => dirty?
         }
 
         if valid_callbacks.include? callback and config[callback].respond_to? :call
