@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Added support for calling an "after_publish" callback, if it is
+   defined in the publish configuration.
+
  * [Aphid.Support.Cookie] Added setPersistent() that will set a persistent
    cookie (that expires in 10 years).
 

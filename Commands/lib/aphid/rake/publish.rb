@@ -384,6 +384,25 @@ module Aphid
         end
       end
 
+      #
+      # Calls the specified callback, if it has been defined in the config
+      # file.
+      #
+      def self.call_callback(release, callback)
+        valid_callbacks = [ :after_publish ]
+        details         = {
+          :environment => self.current_environment,
+          :release     => release,
+          :revision    => self.current_git_revision(true),
+          :dirty       => true
+        }
+
+        if valid_callbacks.include? callback and config[callback].respond_to? :call
+          puts "  * Executing #{callback.to_s} callback ..."
+          puts config[callback].call details
+        end
+      end
+
       # ----------------------------------------------------------------------
 
       private
@@ -438,11 +457,12 @@ module Aphid
         #
         # Returns the current Git revision of the project.
         #
-        def self.current_git_revision
+        def self.current_git_revision(short = false)
+          revision = short ? current_head[0..7] : current_head
           if dirty?
-            "#{current_head}-dirty"
+            "#{revision}-dirty"
           else
-            current_head
+            revision
           end
         end
 
