@@ -138,16 +138,16 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
 
   _loadJavaScriptResource: function(url)
   {
-    var documentHeader = $(document.head);
+    var documentHeader = $$("head").first();
     var scriptElement  = new Element("script", { src: url });
-    documentHeader.insert(scriptElement);
+    documentHeader.appendChild(scriptElement);
   },
 
   _loadStylesheetResource: function(url)
   {
-    var documentHeader = $(document.head);
+    var documentHeader = $$("head").first();
     var linkElement    = new Element("link", { href: url, rel: "stylesheet" });
-    documentHeader.insert(linkElement);
+    documentHeader.appendChild(linkElement);
   },
 
   // Document Text Selection -------------------------------------------------
