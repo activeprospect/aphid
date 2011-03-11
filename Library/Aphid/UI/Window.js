@@ -198,6 +198,10 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
       Event.observe(document.onresize ? document : window, "resize", this._handleResizeEventListener);
     }
 
+    // "Before Unload" Events
+    $L.debug("Observing for Unload Events", this);
+    this._handleBeforeUnloadEventListener = this._handleBeforeUnloadEvent.bindAsEventListener(this);
+    window.onbeforeunload = this._handleBeforeUnloadEventListener;
   },
 
   _stopObserving: function($super)
@@ -217,6 +221,11 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
   _handleResizeEvent: function(event)
   {
     this._layoutSubviews();
+  },
+
+  _handleBeforeUnloadEvent: function(event)
+  {
+    return "By leaving this page you may lose any unsaved changes.";
   }
 
 });
