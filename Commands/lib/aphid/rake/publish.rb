@@ -280,6 +280,24 @@ module Aphid
       end
 
       #
+      # Returns the revision that directly preceeds the active release and is
+      # present on all hosts.
+      #
+      def self.previous_atomic_revision
+        @@previous_atomic_revision ||= begin
+          unless self.atomic?
+            raise AtomicHostStateError, "Configured hosts are not in an atomic state"
+          end
+
+          release_times = releases.keys.sort
+          index = release_times.index(atomic_release) - 1
+          index >= 0 ? releases[index][:revision] : false
+        end
+      rescue
+        false
+      end
+
+      #
       # Enumerates across all configured hosts to validate that they all have
       # the same active release.
       #
@@ -391,10 +409,11 @@ module Aphid
       def self.call_callback(release, callback)
         valid_callbacks = [ :after_publish ]
         details         = {
-          :environment => self.current_environment,
-          :release     => release,
-          :revision    => self.current_git_revision(true),
-          :dirty       => true
+          :environment       => self.current_environment,
+          :release           => release,
+          :revision          => current_head,
+          :previous_revision => self.previous_atomic_revision,
+          :dirty             => true
         }
 
         if valid_callbacks.include? callback and config[callback].respond_to? :call
@@ -457,12 +476,11 @@ module Aphid
         #
         # Returns the current Git revision of the project.
         #
-        def self.current_git_revision(short = false)
-          revision = short ? current_head[0..7] : current_head
+        def self.current_git_revision
           if dirty?
-            "#{revision}-dirty"
+            "#{current_head}-dirty"
           else
-            revision
+            current_head
           end
         end
 
@@ -474,6 +492,7 @@ module Aphid
           @@active_release = nil
           @@previous_release = nil
           @@previous_atomic_release = nil
+          @@previous_atomic_revision = nil
           @@releases = nil
           @@atomic_releases = nil
         end
