@@ -50,4 +50,14 @@
   #
   # :default_environment => :staging
 
+  #
+  # If you wish to perform some action after a successful publish operation
+  # (such as posting a notification to Campfire), you may do so in the "After
+  # Publish" callback.
+  #
+  # :after_publish => Proc.new { |details|
+  #   puts "Published w/Details: "
+  #   puts details.inspect
+  # }
+
 }
