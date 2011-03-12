@@ -24,13 +24,26 @@
       </p>
     </section>
 
+    <!-- Test Elements -->
+    <section id="testElements">
+      <section id="testElement"></section>
+    </section>
+
     <!-- Log Section -->
     <section id="logSection">
     </section>
 
     <!-- Tests -->
     <script>
+
+      var JavaScriptResourceLoaded;
+
       new Test.Unit.Runner({
+
+        teardown: function()
+        {
+          JavaScriptResourceLoaded = false;
+        },
 
         testShouldInitializeWindow: function() { with(this) {
           var mainWindow = new Aphid.UI.Window();
@@ -55,6 +68,72 @@
           wait(1000, function() {
             assert(!mainWindow.get("overlayVisible"), "overlay should not be visible");
           });
+        }},
+
+        /**
+         * Ensures that loading a JavaScript resource is possible.
+        **/
+        testShouldLoadJavaScriptResource: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.loadResource("../../Fixtures/Resource.js");
+          wait(1000, function() {
+            assert(JavaScriptResourceLoaded, "JavaScript resource should have loaded and set 'JavaScriptResourceLoaded' to 'true'");
+          });
+        }},
+
+        /**
+         * Ensures that loading a JavaScript resource from a URL with query
+         * parameters appended is still recognized as a JavaScript resource
+         * and loaded.
+        **/
+        testShouldLoadJavaScriptResourceWithQueryParameters: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.loadResource("../../Fixtures/Resource.js?foo=bar");
+          wait(1000, function() {
+            assert(JavaScriptResourceLoaded, "JavaScript resource should have loaded and set 'JavaScriptResourceLoaded' to 'true'");
+          });
+        }},
+
+        /**
+         * Ensures that loading a Stylesheet resource is possible.
+        **/
+        testShouldLoadStylesheetResource: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.loadResource("../../Fixtures/Resource.css");
+          wait(1000, function() {
+            assertEqual("rgb(255, 0, 0)", $('testElement').getStyle("background-color"), "Stylesheet resource should have loaded and set the 'background-color' property on #testElement to 'rgb(255, 0, 0)'");
+          });
+        }},
+
+        /**
+         * Ensures that loading a Stylesheet resource from a URL with query
+         * parameters appended is still recognized as a Stylesheet resource
+         * and loaded.
+        **/
+        testShouldLoadStylesheetResourceWithQueryParameters: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.loadResource("../../Fixtures/Resource.css?foo=bar");
+          wait(1000, function() {
+            assertEqual("rgb(255, 0, 0)", $('testElement').getStyle("background-color"), "Stylesheet resource should have loaded and set the 'background-color' property on #testElement to 'rgb(255, 0, 0)'");
+          });
+        }},
+
+        /**
+         * Ensures that an attempts to load a resource of an unknown type
+         * (i.e. not a JavaScript or CSS resource) display an error message in
+         * the console.
+        **/
+        testShouldLogWithErrorWhenLoadingUnknownResourceType: function() { with(this) {
+          var originalConsoleError = window.console.error;
+          var errorLogged = false;
+          window.console.error = function(message)
+          {
+            errorLogged = true;
+          }
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.loadResource("../../Fixtures/Resource.txt");
+          window.console.error = originalConsoleError;
+          assert(errorLogged);
         }}
 
       }, { testLog: "logSection" });

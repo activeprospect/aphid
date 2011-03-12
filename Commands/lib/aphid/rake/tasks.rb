@@ -248,6 +248,9 @@ task :publish do
       # Activate Release
       Publish.activate_release release, hosts
 
+      # "After Publish" Callback
+      Publish.call_callback release, :after_publish
+
     end
   rescue Publish::HostStateError, Publish::PublishError => e
     puts "Error: #{e.message}\n\n"

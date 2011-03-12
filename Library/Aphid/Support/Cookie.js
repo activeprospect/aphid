@@ -62,6 +62,22 @@ Aphid.Support.Cookie = {
   },
 
   /**
+   * Aphid.Support.Cookie.setPersistent(name, value) -> String
+   *
+   * - name (String): the name of the cookie
+   * - value (String): the value to be set in the cookie
+   *
+   * Sets a persistent browser cookie with the provided *name* and *value*.
+   * The cookie will be set to expire after 10 years.
+   *
+   * This method returns the cookie string as it was sent to the browser.
+  **/
+  setPersistent: function(name, value)
+  {
+    return this.set(name, value, 365 * 10);
+  },
+
+  /**
    * Aphid.Support.Cookie.get(name) -> String | false
    *
    * - name (String): the name of the cookie

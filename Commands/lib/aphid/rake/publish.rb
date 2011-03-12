@@ -1,15 +1,5 @@
 # encoding: UTF-8
 
-begin
-  require "net/ssh"
-  require "net/scp"
-rescue LoadError
-  puts "\nYou'll need Net::SCP to publish this project. Simply run:\n\n"
-  puts "  $ gem install net-scp"
-  puts "\nand you should be all set!\n\n"
-  exit
-end
-
 module Aphid
   module Rake
     class Publish
@@ -77,6 +67,16 @@ module Aphid
       # raising an exception.
       #
       def self.connection(host)
+        begin
+          require "net/ssh"
+          require "net/scp"
+        rescue LoadError
+          puts "\nYou'll need Net::SCP to publish this project. Simply run:\n\n"
+          puts "  $ gem install net-scp"
+          puts "\nand you should be all set!\n\n"
+          exit
+        end
+
         @@connections[host] ||= Net::SSH.start(host, config[:user], :compression => "none")
         if block_given?
           retried = false
@@ -280,6 +280,24 @@ module Aphid
       end
 
       #
+      # Returns the revision that directly preceeds the active release and is
+      # present on all hosts.
+      #
+      def self.previous_atomic_revision
+        @@previous_atomic_revision ||= begin
+          unless self.atomic?
+            raise AtomicHostStateError, "Configured hosts are not in an atomic state"
+          end
+
+          release_times = releases.keys.sort
+          index = release_times.index(atomic_release) - 1
+          index >= 0 ? releases[index][:revision] : false
+        end
+      rescue
+        false
+      end
+
+      #
       # Enumerates across all configured hosts to validate that they all have
       # the same active release.
       #
@@ -384,6 +402,26 @@ module Aphid
         end
       end
 
+      #
+      # Calls the specified callback, if it has been defined in the config
+      # file.
+      #
+      def self.call_callback(release, callback)
+        valid_callbacks = [ :after_publish ]
+        details         = {
+          :environment       => self.current_environment,
+          :release           => release,
+          :revision          => current_head,
+          :previous_revision => self.previous_atomic_revision,
+          :dirty             => dirty?
+        }
+
+        if valid_callbacks.include? callback and config[callback].respond_to? :call
+          puts "  * Executing #{callback.to_s} callback ..."
+          puts config[callback].call details
+        end
+      end
+
       # ----------------------------------------------------------------------
 
       private
@@ -454,6 +492,7 @@ module Aphid
           @@active_release = nil
           @@previous_release = nil
           @@previous_atomic_release = nil
+          @@previous_atomic_revision = nil
           @@releases = nil
           @@atomic_releases = nil
         end

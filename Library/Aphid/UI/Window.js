@@ -19,35 +19,9 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
    * The semi-translucent overlay element that is displayed behind modal
    * views, alert and message dialogs.
    */
-  _overlayElement: false,
+  overlayElement: false,
 
-  /**
-   * Aphid.UI.Window#overlayElement() -> Element
-   *
-   * Initializes (if necessary) and returns an element to be used as the
-   * overlay.
-  **/
-  overlayElement: function()
-  {
-    if (!this._overlayElement)
-    {
-      this._overlayElement = new Element("div", { className: 'overlay' });
-      this._overlayElement.hide();
-      Element.insert(document.body, { top: this._overlayElement });
-    }
-    return this._overlayElement;
-  },
-
-  /**
-   * Aphid.UI.Window#overlayVisible() -> Boolean
-   *
-   * Returns true or false depending on whether or not the overlay is
-   * currently visible.
-  **/
-  overlayVisible: function()
-  {
-    return this.get("overlayElement").visible();
-  },
+  // -------------------------------------------------------------------------
 
   /*
    * new Aphid.UI.Window([options])
@@ -64,6 +38,36 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     options.set("template", false);
 
     $super(options);
+  },
+
+  // -------------------------------------------------------------------------
+
+  /**
+   * Aphid.UI.Window#getOverlayElement() -> Element
+   *
+   * Initializes (if necessary) and returns an element to be used as the
+   * overlay.
+  **/
+  getOverlayElement: function()
+  {
+    if (!this.overlayElement)
+    {
+      this.overlayElement = new Element("div", { className: 'overlay' });
+      this.overlayElement.hide();
+      Element.insert(document.body, { top: this.overlayElement });
+    }
+    return this.overlayElement;
+  },
+
+  /**
+   * Aphid.UI.Window#overlayVisible() -> Boolean
+   *
+   * Returns true or false depending on whether or not the overlay is
+   * currently visible.
+  **/
+  overlayVisible: function()
+  {
+    return this.get("overlayElement").visible();
   },
 
   /**
@@ -120,6 +124,32 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     animated ? overlayElement.fade({ duration: 0.25 }) : overlayElement.hide();
   },
 
+  // Dynamic Resource Loading ------------------------------------------------
+
+  loadResource: function(url)
+  {
+    if (url.match(/.js(\?.*)?$/))
+      this._loadJavaScriptResource(url);
+    else if (url.match(/.css(\?.*)?$/))
+      this._loadStylesheetResource(url);
+    else
+      $L.error("Asked to load resource " + url, this);
+  },
+
+  _loadJavaScriptResource: function(url)
+  {
+    var documentHeader = $$("head").first();
+    var scriptElement  = new Element("script", { src: url });
+    documentHeader.appendChild(scriptElement);
+  },
+
+  _loadStylesheetResource: function(url)
+  {
+    var documentHeader = $$("head").first();
+    var linkElement    = new Element("link", { href: url, rel: "stylesheet" });
+    documentHeader.appendChild(linkElement);
+  },
+
   // Document Text Selection -------------------------------------------------
 
   /*
@@ -168,6 +198,10 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
       Event.observe(document.onresize ? document : window, "resize", this._handleResizeEventListener);
     }
 
+    // "Before Unload" Events
+    $L.debug("Observing for Unload Events", this);
+    this._handleBeforeUnloadEventListener = this._handleBeforeUnloadEvent.bindAsEventListener(this);
+    window.onbeforeunload = this._handleBeforeUnloadEventListener;
   },
 
   _stopObserving: function($super)
@@ -182,9 +216,16 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     }
   },
 
+  // Event Handlers ----------------------------------------------------------
+
   _handleResizeEvent: function(event)
   {
     this._layoutSubviews();
+  },
+
+  _handleBeforeUnloadEvent: function(event)
+  {
+    return "By leaving this page you may lose any unsaved changes.";
   }
 
 });

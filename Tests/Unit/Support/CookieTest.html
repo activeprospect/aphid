@@ -59,6 +59,17 @@
           assertEqual("foo", cookie);
         }},
 
+        testShouldSetPersistentCookie: function() { with(this) {
+          var cookieName   = String.random('20');
+          var cookieString = $C.setPersistent(cookieName, "foo");
+          var cookie       = $C.get(cookieName);
+          var expires      = new Date();
+          expires.setTime(expires.getTime() + (86400000 * parseFloat(365 * 10)));
+          assertEqual(cookieName + "=foo; expires=" + expires.toGMTString(), cookieString);
+          assert(cookie);
+          assertEqual("foo", cookie);
+        }},
+
         testShouldEraseCookie: function() { with(this) {
           var cookieName = String.random('20');
           $C.set(cookieName, "foo");

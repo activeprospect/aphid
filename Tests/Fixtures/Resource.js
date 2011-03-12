@@ -1,0 +1,2 @@
+
+JavaScriptResourceLoaded = true;

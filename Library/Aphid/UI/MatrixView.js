@@ -444,7 +444,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   handleMouseDownEvent: function(event)
   {
-    $L.info("handleMouseDownEvent", this);
+    $L.debug("handleMouseDownEvent", this);
 
     var element = event.element();
 
@@ -483,7 +483,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   handleMouseUpEvent: function(event)
   {
-    $L.info("handleMouseUpEvent", this);
+    $L.debug("handleMouseUpEvent", this);
 
     this._isDragging = false;
     this.get("selectionOverlayElement").hide();
