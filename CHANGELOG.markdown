@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] View callbacks are no longer called if the superview that
+   the added view is being added to is not visible. The callbacks will still
+   be called on subviews when the superview becomes visible.
+
  * [Tools] Added support for calling an "after_publish" callback, if it is
    defined in the publish configuration.
 

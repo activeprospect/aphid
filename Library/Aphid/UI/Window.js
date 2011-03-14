@@ -38,6 +38,8 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     options.set("template", false);
 
     $super(options);
+
+    this.set("isVisible", true);
   },
 
   // -------------------------------------------------------------------------

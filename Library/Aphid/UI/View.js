@@ -218,6 +218,14 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   isEnabled: true,
 
   /**
+   * Aphid.UI.View#isVisible -> Boolean
+   *
+   * Denotes whether or not the view is currently visible. This will be false
+   * until the view has been added to a superview.
+  **/
+  isVisible: false,
+
+  /**
    * Aphid.UI.View#initializedFromTemplate -> Boolean
    *
    * If the View instance was initialized from a template (using outlets),
@@ -248,6 +256,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.subviews  = $A();
     this.isLoaded  = false;
     this.isLoading = false;
+    this.isVisible = false;
 
     $super(options);
 
@@ -450,7 +459,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       return;
 
     // If the view has still not been loaded, delay this call again...
-    if (!view.isLoaded)
+    if (!view.get("isLoaded"))
     {
       // TODO We need to add a counter to this so that we don't wait longer
       // a few seconds before giving up and raising a warning...
@@ -468,13 +477,21 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Insert the view into the DOM
     this.get("element").insert(view.get("element"));
 
+    // If the superview is not visible, simply add it without calling any
+    // callbacks or performing any animations...
+    if (!this.get("isVisible"))
+    {
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 1 });
+      return;
+    }
+
     // Call "View Will Appear" Callback
     this._viewWillAppear(animated);
 
     // Display the View
     if (animated)
     {
-      view.get("element").setStyle({ "visibility": "visible", "opacity": 0})
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 0 })
       switch (transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
@@ -817,6 +834,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.isHidden = true;
     if (!this.isLoaded) return;
     this.get("element").hide();
+    this.set("isVisible", false);
     return this;
   },
 
@@ -832,6 +850,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.isHidden = false;
     if (!this.isLoaded) return;
     this.get("element").show();
+    this.set("isVisible", true);
     return this;
   },
 
@@ -1372,6 +1391,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     $L.debug("_viewDidAppear (previously called: " + (this._viewDidAppearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
+    this.set("isVisible", true);
+
     // Call the Callback Method
     if (!this._viewDidAppearCalled && this.viewDidAppear) this.viewDidAppear(animated);
     this.get("subviews").each(function(subview) {
@@ -1421,6 +1442,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   _viewDidDisappear: function(animated)
   {
     $L.debug("_viewDidDisappear (previously called: " + (this._viewDidDisappearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
+
+    this.set("isVisible", false);
 
     // Call the Callback Method
     if (!this._viewDidDisappearCalled && this.viewDidDisappear) this.viewDidDisappear(animated);
