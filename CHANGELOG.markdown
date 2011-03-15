@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.PopoverView] Added support for displaying the PopoverView to the
+   top, left and right of the attached view (in addition to the previous
+   bottom-only support).
+
  * [Aphid.UI.View] View callbacks are no longer called if the superview that
    the added view is being added to is not visible. The callbacks will still
    be called on subviews when the superview becomes visible.

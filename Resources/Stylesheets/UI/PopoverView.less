@@ -1,56 +1,114 @@
 
 .PopoverView
 {
-
   position: absolute;
-/*  left: 50%;
-  top: 50%;
-*/
+
   width: 200px;
-  height: 200px;
+  height: 40px;
   z-index: 1000;
 
-  border: 3px solid #555;
-  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.9) !important;
 
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 
-  -webkit-box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.35);
-  -moz-box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.35);
-  box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.35);
+  color: white;
+  text-align: center;
+  line-height: 40px;
 
-  :before
+  -webkit-box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.5);
+
+  .triangle
   {
-    content: "";
-    color: transparent;
-    background-color: white;
     position: absolute;
+    top: 50%;
     left: 50%;
-    margin-left: -11px;
-    width: 20px;
-    height: 20px;
-    margin-top: -11px;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    border: 3px solid #555;
-    -webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
+
+    width:0px;
+    height:0px;
+
+    margin-left: -14px;
+
+    font-size: 0px;
+    line-height: 0px;
   }
 
-  :after
+  .contentView
   {
-    content: "";
-    background-color: white;
     position: absolute;
     top: 0;
-    left: 50%;
-    margin-left: -50px;
-    width: 100px;
-    height: 24px;
-  }
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.75)), to(rgba(0, 0, 0, 0.95)));
 
+    -webkit-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25);
+    -moz-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25);
+    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25);
+  }
+}
+
+.PopoverView.top
+{
+  .triangle
+  {
+    top: auto;
+    bottom: 0;
+    margin-bottom: -15px;
+
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 14px solid rgba(0, 0, 0, 0.85);
+  }
+}
+
+.PopoverView.bottom
+{
+  .triangle
+  {
+    top: 0;
+    bottom: auto;
+    margin-top: -15px;
+
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 14px solid rgba(0, 0, 0, 0.85);
+  }
+}
+
+.PopoverView.left
+{
+  .triangle
+  {
+    top: 50%;
+    bottom: auto;
+    right: 0;
+    left: auto;
+    margin-right: -15px;
+    margin-top: -15px;
+
+    border-left: 14px solid rgba(0, 0, 0, 0.85);
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+  }
+}
+
+.PopoverView.right
+{
+  .triangle
+  {
+    top: 50%;
+    bottom: auto;
+    right: auto;
+    left: 0;
+    margin-left: -15px;
+    margin-top: -15px;
+
+    border-right: 14px solid rgba(0, 0, 0, 0.85);
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+  }
 }
