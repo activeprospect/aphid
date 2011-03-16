@@ -55,25 +55,29 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
           dimensions     = this.get("attachedView.element").getDimensions();
 
       var top, left;
-      if (this.get("position") == "top")
+      switch(this.get("position"))
       {
-        top  = (viewportOffset.top - this.get("element").getHeight() - 20);
-        left = (viewportOffset.left + (dimensions.width / 2)) - (this.get("element").getWidth() / 2);
-      }
-      else if (this.get("position") == "bottom")
-      {
-        top = (viewportOffset.top + dimensions.height) + 20;
-        left = (viewportOffset.left + (dimensions.width / 2)) - (this.get("element").getWidth() / 2);
-      }
-      else if (this.get("position") == "left")
-      {
-        top = (viewportOffset.top + (dimensions.height / 2)) - (this.get("element").getHeight() / 2);
-        left = (viewportOffset.left - dimensions.width) - 20;
-      }
-      else if (this.get("position") == "right")
-      {
-        top = (viewportOffset.top + (dimensions.height / 2)) - (this.get("element").getHeight() / 2);
-        left = (viewportOffset.left + dimensions.width) + 20;
+
+        case "top":
+          top  = viewportOffset.top - this.get("element").getOuterHeight();
+          left = (viewportOffset.left + (dimensions.width / 2)) - (this.get("element").getOuterWidth() / 2);
+          break;
+
+        case "bottom":
+          top = viewportOffset.top + dimensions.height;
+          left = (viewportOffset.left + (dimensions.width / 2)) - (this.get("element").getOuterWidth() / 2);
+          break;
+
+        case "left":
+          top = (viewportOffset.top + (dimensions.height / 2)) - (this.get("element").getOuterHeight() / 2);
+          left = viewportOffset.left - this.get("element").getOuterWidth();
+          break;
+
+        case "right":
+          top = (viewportOffset.top + (dimensions.height / 2)) - (this.get("element").getOuterHeight() / 2);
+          left = viewportOffset.left + dimensions.width;
+          break;
+
       }
 
       // Adjust for Screen
