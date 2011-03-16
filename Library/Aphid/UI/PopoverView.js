@@ -59,7 +59,7 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
       {
 
         case "top":
-          top  = viewportOffset.top - this.get("element").getOuterHeight();
+          top = viewportOffset.top - this.get("element").getOuterHeight();
           left = (viewportOffset.left + (dimensions.width / 2)) - (this.get("element").getOuterWidth() / 2);
           break;
 
@@ -80,16 +80,61 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
       }
 
-      // Adjust for Screen
-      var adjustment = 0;
-      if (left < 0)
+      if (this.get("position") == "left")
       {
-        adjustment = ((left * -1) + 20) * -1;
-        left = 20;
-        var marginLeft = parseInt(this.get("triangleElement").getStyle("margin-left")) + adjustment;
-        this.get("triangleElement").setStyle("margin-left: " + marginLeft + "px");
-        $L.info("Adjusting triangle position by " + marginLeft + " pixels")
+        if (viewportOffset.left - this.get("element").getOuterWidth() < 0)
+        {
+          left = viewportOffset.left + dimensions.width;
+          this.set("position", "right");
+        }
       }
+
+      else if (this.get("position") == "right")
+      {
+        var maxWidth = document.viewport.getWidth();
+        if (viewportOffset.left + dimensions.width + this.get("element").getOuterWidth() > maxWidth)
+        {
+          left = viewportOffset.left - this.get("element").getOuterWidth();
+          this.set("position", "left");
+        }
+      }
+
+      else if (this.get("position") == "bottom")
+      {
+        var maxHeight = document.viewport.getHeight();
+        if (viewportOffset.top + dimensions.height + this.get("element").getOuterHeight() > maxHeight)
+        {
+          top = viewportOffset.top - this.get("element").getOuterHeight();
+          this.set("position", "top");
+        }
+      }
+
+      else if (this.get("position") == "top")
+      {
+        window.console.log(viewportOffset.top - this.get("element").getOuterHeight())
+        if (viewportOffset.top - this.get("element").getOuterHeight() < 0)
+        {
+          top = viewportOffset.top + dimensions.height;
+          this.set("position", "bottom");
+        }
+      }
+
+      this.get("element").removeClassName("top");
+      this.get("element").removeClassName("right");
+      this.get("element").removeClassName("bottom");
+      this.get("element").removeClassName("left");
+      this.get("element").addClassName(this.get("position"));
+
+      // Adjust for Screen
+      // var adjustment = 0;
+      // if (left < 0)
+      // {
+      //   adjustment = ((left * -1) + 20) * -1;
+      //   left = 20;
+      //   var marginLeft = parseInt(this.get("triangleElement").getStyle("margin-left")) + adjustment;
+      //   this.get("triangleElement").setStyle("margin-left: " + marginLeft + "px");
+      //   $L.info("Adjusting triangle position by " + marginLeft + " pixels")
+      // }
 
       this.get("element").setStyle({ top: top + "px", left: left + "px" });
     }
@@ -126,12 +171,6 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
     this.set("attachedView", view);
     this.set("position", position);
     $AppDelegate.get("mainWindow").addSubviewAnimated(this);
-
-    this.get("element").removeClassName("top");
-    this.get("element").removeClassName("right");
-    this.get("element").removeClassName("bottom");
-    this.get("element").removeClassName("left");
-    this.get("element").addClassName(position);
   },
 
   resizeToFitView: function()
