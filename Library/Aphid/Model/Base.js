@@ -896,6 +896,8 @@ Aphid.Model.Base.ClassMethods = {
 
   _handleFailureResponse: function(instance, transport)
   {
+    instance.set("isLoaded", false);
+    instance.set("isLoading", false);
 
     // Post Notification
     instance.postNotification("ModelFailureNotification", transport);
