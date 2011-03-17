@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.Window] Added a confirmBeforeLeaving boolean property to Window
+   that can be set to false in order to prevent the confirmation prompt from
+   being displayed when the user attempts to leave the application.
+
  * [Aphid.UI.PopoverView] Added support for displaying the PopoverView to the
    top, left and right of the attached view (in addition to the previous
    bottom-only support).

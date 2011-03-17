@@ -13,13 +13,22 @@
 **/
 Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
 
-  /*
-   * Aphid.UI.Window#_overlayElement -> Element | false
+  /**
+   * Aphid.UI.Window#overlayElement -> Element | false
    *
    * The semi-translucent overlay element that is displayed behind modal
    * views, alert and message dialogs.
-   */
+  **/
   overlayElement: false,
+
+  /**
+   * Aphid.UI.Window#confirmBeforeLeaving -> Boolean
+   *
+   * If true, the user will be prompted to confirm before being allowed to
+   * leave the application (i.e. go to a different URL, close the browser
+   * window, etc).
+  **/
+  confirmBeforeLeaving: false,
 
   // -------------------------------------------------------------------------
 
@@ -36,6 +45,7 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     options.set("element", document.body);
     options.set("outlet", false);
     options.set("template", false);
+    options.set("confirmBeforeLeaving", true);
 
     $super(options);
 
@@ -227,7 +237,10 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
 
   _handleBeforeUnloadEvent: function(event)
   {
-    return "By leaving this page you may lose any unsaved changes.";
+    if (this.get("confirmBeforeLeaving"))
+      return "By leaving this page you may lose any unsaved changes.";
+    else
+      return;
   }
 
 });
