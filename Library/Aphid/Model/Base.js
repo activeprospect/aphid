@@ -126,9 +126,9 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     //         options  = pair.value,
     //         key      = options["key"] || property,
     //         value    = Object.isUndefined(key) ? "null" : this.object[key];
-    // 
+    //
     //     $L.debug('Setting value of property "' + property + '" to "' + value + '"', this);
-    // 
+    //
     //     if (value)
     //     {
     //       this[property] = value;
@@ -322,7 +322,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   },
 
   // // Dirty State Tracking ----------------------------------------------------
-  // 
+  //
   // /**
   //  * Aphid.Model#isDirty() -> Boolean
   //  *
@@ -339,7 +339,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   // {
   //   var isDirty = false;
   //   var properties = this.properties.keys();
-  // 
+  //
   //   properties.each(function(property)
   //   {
   //     if (this.proxies && $H(this.proxies).keys().include(property))
@@ -367,11 +367,11 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   //       isDirty = true;
   //     }
   //   }, this);
-  // 
+  //
   //   return isDirty;
   // },
   // -------------------------------------------------------------------------
-  
+
   /**
    * Aphid.Model#serialize() -> Hash
    *
@@ -383,18 +383,18 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   // serialize: function()
   // {
   //   var properties = {};
-  // 
+  //
   //   this.properties.each(function(pair)
   //   {
   //     var property = pair.key,
   //         options  = pair.value,
   //         key      = options["key"] || property,
   //         value    = Object.isUndefined(key) ? "null" : this.object[key];
-  // 
+  //
   //     // Undefined Properties
   //     if (Object.isUndefined(this[property]) || this[property] == null)
   //       properties[key] = "";
-  // 
+  //
   //     // Arrays (Values, Model Relationships, etc)
   //     else if (Object.isArray(this[property]))
   //     {
@@ -404,16 +404,16 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   //         }
   //       );
   //     }
-  // 
+  //
   //     // Model Relationships
   //     else if (this[property].serialize)
   //       properties[key] = this[property].serialize();
-  // 
+  //
   //     // Simple Value
   //     else
   //       properties[key] = this[property];
   //   }, this);
-  // 
+  //
   //   return properties;
   // },
 
@@ -523,9 +523,19 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     this._afterDestroy();
   },
 
+  // Failure Responses -------------------------------------------------------
+
   _handleFailureResponse: function(transport)
   {
-    $L.error(transport.responseText, this);
+    this.set("isLoaded", false);
+    this.set("isLoading", false);
+
+    // Post Notification
+    this.postNotification("ModelFailureNotification", transport);
+
+    // Call Delegate Method
+    if (this.get("delegate") && this.get("delegate").modelDidFailWithError)
+      this.get("delegate").modelDidFailWithError(this, transport);
   },
 
   // Callbacks ---------------------------------------------------------------
