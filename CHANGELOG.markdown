@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Resources] Added a "Light Background" pattern as a lighter variation of
+   the existing Background pattern.
+
  * [Aphid.UI.Window] Added a confirmBeforeLeaving boolean property to Window
    that can be set to false in order to prevent the confirmation prompt from
    being displayed when the user attempts to leave the application.
