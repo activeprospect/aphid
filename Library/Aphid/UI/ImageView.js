@@ -146,7 +146,10 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
   handleLoadEvent: function(event)
   {
     this.set("loaded", true);
-    this.get("imageElement").appear({ duration: 0.5 });
+    if (this.get("visible"))
+      this.get("imageElement").appear({ duration: 0.35 });
+    else
+      this.get("imageElement").show();
     this._imageDidLoad();
   },
 
