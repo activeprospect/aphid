@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added a "visible" read-only property that will return
+   true if the view is: not hidden, not 100% transparent and all of its
+   superviews are also visible.
+
  * [Aphid.UI.View] Added a "hidden" property that controls the visibility of
    the view. It is important to note that hidden views will not be be made
    visible automatically when passing the view to setView/setViewAnimated

@@ -879,6 +879,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   **/
   hide: function()
   {
+    this.get("element").setStyle({ opacity: 0 });
     this.set("hidden", true);
     return this;
   },
@@ -892,10 +893,11 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   **/
   hideAnimated: function()
   {
-    this.get("element").morph({
-      style: "opacity: 0",
-      afterFinish: this.hide.bind(this)
-     });
+    new Effect.Opacity(this.get("element"), {
+      to: 0,
+      duration: 0.35
+    });
+    this.hide.bind(this).delay(0.35);
     return this;
   },
 
@@ -907,7 +909,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   **/
   show: function(animated)
   {
-    this.set("hidden", true);
+    this.get("element").setStyle({ opacity: 1 });
+    this.set("hidden", false);
     return this;
   },
 
@@ -920,11 +923,39 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   **/
   showAnimated: function()
   {
-    this.get("element").morph({
-      style: "opacity: 1",
-      afterFinish: this.hide.bind(this)
-     });
+    new Effect.Opacity(this.get("element"), {
+      to: 1,
+      duration: 0.35
+    });
+    this.show.bind(this).delay(0.35);
     return this;
+  },
+
+  /**
+   * Aphid.UI.View#visible() -> Boolean
+   *
+  **/
+  visible: function()
+  {
+    var visible = true;
+
+    // View Hidden?
+    if (this.get("hidden"))
+      return false;
+
+    // View Opacity > 0?
+    if (this.get("element").getStyle("opacity") <= 0)
+      return false;
+
+    // TODO Is visible within the viewport?
+
+    // All Superviews Visible?
+    var hiddenSuperviews = this.get("superviews").find(function(superview) {
+      return !superview.get("visible");
+    })
+    if (hiddenSuperviews) return false;
+
+    return true;
   },
 
   // View Outlets ------------------------------------------------------------
