@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added a "superviews" property that will return all of
+   the view's superviews in order from most immediate to least immediate.
+
  * [Resources] Added a "Light Background" pattern as a lighter variation of
    the existing Background pattern.
 

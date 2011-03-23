@@ -406,8 +406,9 @@
               subview  = new AnotherTestView();
 
           testView.setView(subview);
-          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
-          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+          assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
+          assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
+          assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
 
         /**
@@ -419,8 +420,9 @@
               subview  = new AnotherTestView();
 
           testView.setViewAnimated(subview);
-          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
-          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+          assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
+          assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
+          assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
 
         /**
@@ -432,8 +434,9 @@
               subview  = new AnotherTestView();
 
           testView.addSubview(subview);
-          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
-          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+          assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
+          assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
+          assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
 
         /**
@@ -445,8 +448,9 @@
               subview  = new AnotherTestView();
 
           testView.addSubviewAnimated(subview);
-          assertEqual(1, testView.subviews.length, "testView#subviews should have a length of 1");
-          assertEqual(testView.subviews.first(), subview, "testView#subviews should include subview");
+          assertEqual(1, testView.get("subviews").length, "testView#subviews should have a length of 1");
+          assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
+          assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
 
         /**
@@ -492,6 +496,25 @@
           assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
           testView.clearSubviews();
           assertEqual(0, testView.subviews.length);
+        }},
+
+        /**
+         * Ensure that the "superviews" property on a view returns all of its
+         * superviews in the view stack. The superviews should be returned in
+         * order from the most immediate (at index 0) to the least immediate
+         * superview.
+        **/
+        testShouldReturnSuperviews: function() { with(this) {
+          var topView    = new Aphid.UI.View(),
+              middleView = new Aphid.UI.View(),
+              bottomView = new Aphid.UI.View();
+
+          topView.addSubview(middleView);
+          middleView.addSubview(bottomView);
+
+          assertEqual(2, bottomView.get("superviews").size(), "bottomView#superviews should contain 2 entries");
+          assertEqual(middleView, bottomView.get("superviews")[0], "the superview at index 0 should be middleView");
+          assertEqual(topView, bottomView.get("superviews")[1], "the superview at index 1 should be topView");
         }},
 
         // Action Tests ------------------------------------------------------

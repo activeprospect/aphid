@@ -648,6 +648,25 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.set("subviews", $A());
   },
 
+  /**
+   * Aphid.UI.View#superviews() -> Array
+   *
+   * Returns an array containing each of the view's superviews (ordered from
+   * the immediate superview to the top superview).
+  **/
+  superviews: function()
+  {
+    var superviews  = $A(),
+        currentView = this,
+        superview   = false;
+    while (superview = currentView.get("superview"))
+    {
+      superviews.push(superview);
+      currentView = superview;
+    }
+    return superviews;
+  },
+
   // View Loading ------------------------------------------------------------
 
   /*
