@@ -218,12 +218,15 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   isEnabled: true,
 
   /**
-   * Aphid.UI.View#isVisible -> Boolean
+   * Aphid.UI.View#hidden -> Boolean
    *
-   * Denotes whether or not the view is currently visible. This will be false
-   * until the view has been added to a superview.
+   * Denotes whether or not the view is currently visible to the user. This
+   * will be false unless the view has been explicitly hidden with the hide()
+   * or hideAnimated() methods. Setting this property to true is equivalent
+   * to setting the element style "visibility" to "hidden", but it also has
+   * other behind-the-scenes implications.
   **/
-  isVisible: false,
+  hidden: false,
 
   /**
    * Aphid.UI.View#initializedFromTemplate -> Boolean
@@ -256,7 +259,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this.subviews  = $A();
     this.isLoaded  = false;
     this.isLoading = false;
-    this.isVisible = false;
+    this.hidden    = false;
 
     $super(options);
 
@@ -477,19 +480,19 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Insert the view into the DOM
     this.get("element").insert(view.get("element"));
 
-    // If the superview is not visible, simply add it without calling any
-    // callbacks or performing any animations...
-    if (!this.get("isVisible"))
-    {
-      view.get("element").setStyle({ "visibility": "visible", "opacity": 1 });
-      return;
-    }
-
     // Call "View Will Appear" Callback
     this._viewWillAppear(animated);
 
-    // Display the View
-    if (animated)
+    // Make Subview Visible, if necessary
+    if (this.get("hidden") || view.get("hidden"))
+    {
+      if (!view.get("hidden"))
+        view.get("element").setStyle({ "visibility": "visible" });
+      this._viewDidAppear(animated);
+    }
+
+    // Display Animated
+    else if (animated)
     {
       view.get("element").setStyle({ "visibility": "visible", "opacity": 0 })
       switch (transition)
@@ -519,9 +522,11 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           break;
       }
     }
+
+    // Display Immediately
     else
     {
-      view.get("element").setStyle({ "visibility": "visible", "opacity": 1 });
+      view.get("element").setStyle({ "visibility": "visible" });
       this._viewDidAppear(animated);
     }
   },
@@ -775,10 +780,18 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Determine Enabled State
     if (this.get("element").hasClassName("disabled"))
       this.disable();
-    else if (this.isEnabled)
+    else if (this.get("isEnabled"))
       this.enable();
     else
       this.disable();
+
+    // Determine Hidden State
+    if (!this.get("hidden") && this.get("element").getStyle("visibility") == "hidden")
+      this.set("hidden", true);
+    else if (this.get("hidden"))
+      this.set("hidden", true);
+    else
+      this.set("hidden", false);
 
     // Notify Callbacks & Delegates
     this.viewDidLoad();
@@ -842,34 +855,75 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   // View "Visible" State ----------------------------------------------------
 
   /**
+   * Aphid.UI.View#setHidden(hidden) -> Boolean
+   *
+   * Sets the visible state of the view.
+  **/
+  setHidden: function(hidden)
+  {
+    this.hidden = (hidden == true);
+
+    if (this.hidden)
+      this.get("element").setStyle("visibility: hidden");
+    else
+      this.get("element").setStyle("visibility: visible");
+
+    return this.hidden;
+  },
+
+  /**
    * Aphid.UI.View#hide() -> [[Aphid.UI.View]]
    *
-   * Sets the view to a hidden state by setting [[Aphid.UI.View#isHidden]]
-   * to `true` and hiding the [[Aphid.UI.View#elament]]. Returns the view that
-   * was hidden.
+   * Sets the view to a hidden state by setting [[Aphid.UI.View#hidden]]
+   * to `true` and returning the view.
   **/
   hide: function()
   {
-    this.isHidden = true;
-    if (!this.isLoaded) return;
-    this.get("element").hide();
-    this.set("isVisible", false);
+    this.set("hidden", true);
+    return this;
+  },
+
+  /**
+   * Aphid.UI.View#hideAnimated() -> [[Aphid.UI.View]]
+   *
+   * Sets the view to a hidden state by setting [[Aphid.UI.View#hidden]]
+   * to `true` and hiding the [[Aphid.UI.View#element]] with a fade-out
+   * animation effect. Returns the view that was hidden.
+  **/
+  hideAnimated: function()
+  {
+    this.get("element").morph({
+      style: "opacity: 0",
+      afterFinish: this.hide.bind(this)
+     });
     return this;
   },
 
   /**
    * Aphid.UI.View#show() -> [[Aphid.UI.View]]
    *
-   * Sets the view to a visibile state by [[Aphid.UI.View#isEnabled]] to
-   * `false` and showing the [[Aphid.UI.View#elament]]. Returns the view that
-   * was displayed.
+   * Sets the view to a visibile state by setting [[Aphid.UI.View#hidden]]
+   * to `false` and returning the view.
   **/
-  show: function()
+  show: function(animated)
   {
-    this.isHidden = false;
-    if (!this.isLoaded) return;
-    this.get("element").show();
-    this.set("isVisible", true);
+    this.set("hidden", true);
+    return this;
+  },
+
+  /**
+   * Aphid.UI.View#showAnimated() -> [[Aphid.UI.View]]
+   *
+   * Sets the view to a visibile state by setting [[Aphid.UI.View#hidden]]
+   * to `false` and displaying the [[Aphid.UI.View#element]] with a fade-in
+   * animation effect. Returns the view that was displayed.
+  **/
+  showAnimated: function()
+  {
+    this.get("element").morph({
+      style: "opacity: 1",
+      afterFinish: this.hide.bind(this)
+     });
     return this;
   },
 
@@ -1410,8 +1464,6 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     $L.debug("_viewDidAppear (previously called: " + (this._viewDidAppearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
-    this.set("isVisible", true);
-
     // Call the Callback Method
     if (!this._viewDidAppearCalled && this.viewDidAppear) this.viewDidAppear(animated);
     this.get("subviews").each(function(subview) {
@@ -1461,8 +1513,6 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   _viewDidDisappear: function(animated)
   {
     $L.debug("_viewDidDisappear (previously called: " + (this._viewDidDisappearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
-
-    this.set("isVisible", false);
 
     // Call the Callback Method
     if (!this._viewDidDisappearCalled && this.viewDidDisappear) this.viewDidDisappear(animated);

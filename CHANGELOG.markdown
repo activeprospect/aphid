@@ -3,6 +3,12 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added a "hidden" property that controls the visibility of
+   the view. It is important to note that hidden views will not be be made
+   visible automatically when passing the view to setView/setViewAnimated
+   or addSubview/addSubviewAnimated, although the callbacks viewWillAppear
+   and viewDidAppear will still be called.
+
  * [Aphid.UI.View] Added a "superviews" property that will return all of
    the view's superviews in order from most immediate to least immediate.
 

@@ -41,8 +41,8 @@
       <section id="testElementWithOutletWithCustomProperties">
         <section id="testOutletWithCustomProperties" data-outlet="testOutlet" data-view-class="TestViewWithProperties" data-custom-property="foo" data-true-property="true" data-false-property="false"></section>
       </section>
-      <section id="testElementWithDisabledClassName" class="disabled">
-      </section>
+      <section id="testElementWithDisabledClassName" class="disabled"></section>
+      <section id="testElementWithVisibilityHiddenStyle" style="visibility: hidden"></section>
     </section>
 
     <!-- Log Section -->
@@ -359,7 +359,7 @@
          * Ensure that views that are initialized with an element that has the
          * "disabled" CSS class name are initialized in a disabled state.
         **/
-        testShouldInitializeWithDisabledCSSClass: function() { with(this) {
+        testShouldInitializeDisabledFromDisabledCSSClass: function() { with(this) {
           var view = new TestView({
             element: $("testElementWithDisabledClassName")
           });
@@ -395,6 +395,60 @@
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
 
+
+        /**
+         * Ensure that newly initialized views are not hidden, by default.
+        **/
+        testShouldInitializeVisibleByDefault: function() { with(this) {
+          var view = new Aphid.UI.View();
+          assert(!view.get("hidden"), "view#hidden should be false");
+          assertEqual("visible", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'visible'");
+        }},
+
+        /**
+         * Ensure that views can be initialized in a hidden state.
+        **/
+        testShouldInitializeHidden: function() { with(this) {
+          var view = new Aphid.UI.View({ hidden: true });
+          assert(view.get("hidden"), "view#hidden should be true");
+          assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
+        }},
+
+        /**
+         * Ensure that views that are initialized with an element that has the
+         * "visibility" CSS style set to "hidden" are initialized in a hidden
+         * state.
+        **/
+        testShouldInitializeHiddenFromVisibilityCSSStyle: function() { with(this) {
+          var view = new TestView({ element: $("testElementWithVisibilityHiddenStyle") });
+          assert(view.get("hidden"), "view#hidden should be true");
+          assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
+        }},
+
+        /**
+         * Ensure that a view can be hidden by setting the hidden property
+         * to true.
+        **/
+        testShouldHideWhenSettingHiddenPropertyToTrue: function() { with(this) {
+          var view = new Aphid.UI.View();
+
+          view.set("hidden", true);
+          assert(view.get("hidden"), "view#hidden should be true");
+          assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
+        }},
+
+        /**
+         * Ensure that a view can be displayed by setting the hidden property
+         * to false.
+        **/
+        testShouldMakeVisibleWhenSettingHiddenPropertyToFalse: function() { with(this) {
+          var view = new Aphid.UI.View({ hidden: true });
+
+          view.set("hidden", false);
+          assert(!view.get("hidden"), "view#hidden should be false");
+          assertEqual("visible", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'visible'");
+        }},
+
         /* View Stack Tests ----------------------------------------------- */
 
         /**
@@ -412,6 +466,19 @@
         }},
 
         /**
+         * Ensure that hidden views are not displayed when added to a view
+         * using the setView method.
+        **/
+        testShouldSetViewWithHiddenView: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new Aphid.UI.View({ hidden: true });
+
+          testView.setView(subview);
+          assert(subview.get("hidden"), "subview should be hidden");
+          assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
+        }},
+
+        /**
          * Ensure that views may have their view set with a single subview
          * using the setViewAnimated method.
         **/
@@ -423,6 +490,19 @@
           assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
+        }},
+
+        /**
+         * Ensure that hidden views are not displayed when added to a view
+         * using the setViewAnimated method.
+        **/
+        testShouldSetViewAnimatedWithHiddenView: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new Aphid.UI.View({ hidden: true });
+
+          testView.setViewAnimated(subview);
+          assert(subview.get("hidden"), "subview should be hidden");
+          assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
 
         /**
@@ -440,6 +520,19 @@
         }},
 
         /**
+         * Ensure that hidden subviews are not displayed when added to a view
+         * using the addSubview method.
+        **/
+        testShouldAddSubviewWithHiddenView: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new Aphid.UI.View({ hidden: true });
+
+          testView.addSubview(subview);
+          assert(subview.get("hidden"), "subview should be hidden");
+          assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
+        }},
+
+        /**
          * Ensure that subviews may be added to a view using the
          * addSubviewAnimated method.
         **/
@@ -451,6 +544,19 @@
           assertEqual(1, testView.get("subviews").length, "testView#subviews should have a length of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
+        }},
+
+        /**
+         * Ensure that hidden subviews are not displayed when added to a view
+         * using the addSubviewAnimated method.
+        **/
+        testShouldAddSubviewAnimatedWithHiddenView: function() { with(this) {
+          var testView = new TestView(),
+              subview  = new Aphid.UI.View({ hidden: true });
+
+          testView.addSubviewAnimated(subview);
+          assert(subview.get("hidden"), "subview should be hidden");
+          assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
 
         /**
@@ -1441,6 +1547,45 @@
           assert(!testView._handleMouseOutEventListener);
           assert(!testView._handleMouseEnterEventListener);
           assert(!testView._handleMouseLeaveEventListener);
+        }},
+
+        // Hide / Show -------------------------------------------------------
+
+        testShouldHideView: function() { with(this) {
+          var testView = new Aphid.UI.View();
+
+          $AppDelegate.get("mainWindow").addSubview(testView);
+          assert(testView.get("isVisible"), "isVisible should be true on testView");
+
+          testView.hide();
+          assert(!testView.get("isVisible"), "isVisible should be false on testView");
+        }},
+
+        testShouldHideViewAnimated: function() { with(this) {
+          var testView = new Aphid.UI.View();
+
+          $AppDelegate.get("mainWindow").addSubview(testView);
+          assert(testView.get("isVisible"), "isVisible should be true on testView");
+
+          testView.hideAnimated();
+          wait(1000, function() {
+            assert(!testView.get("isVisible"), "isVisible should be false on testView");
+          });
+        }},
+
+        testShouldShowView: function() { with(this) {
+          var testView = new Aphid.UI.View();
+          testView.hide();
+
+          $AppDelegate.get("mainWindow").addSubview(testView);
+          assert(testView.get("isVisible"), "isVisible should be true on testView");
+
+          testView.showAnimated();
+          assert(!testView.get("isVisible"), "isVisible should be false on testView");
+        }},
+
+        testShouldShowViewAnimated: function() { with(this) {
+
         }}
 
       }, { testLog: "logSection" });
