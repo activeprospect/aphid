@@ -920,8 +920,6 @@
               subview  = new TestViewWithCallbacks();
 
           $AppDelegate.get("mainWindow").addSubview(testView);
-          assert(testView.get("visible"), "visible on testView should be true");
-
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with setViewAnimated");
@@ -1053,8 +1051,6 @@
               subview  = new TestViewWithSubviews();
 
           $AppDelegate.get("mainWindow").addSubview(testView);
-          assert(testView.get("visible"), "visible on testView should be true");
-
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
@@ -1073,7 +1069,7 @@
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
 
-          assert(!testView.get("visible"), "visible on testView should be false");
+          $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
@@ -1579,13 +1575,25 @@
         }},
 
         testVisiblePropertyShouldBeTrueWhenViewIsVisible: function() { with(this) {
-
+          var testView = new Aphid.UI.View();
+          $AppDelegate.get("mainWindow").addSubview(testView);
+          assert(testView.get("visible"), "testView should be visible");
         }},
 
-        testVisiblePropertyShouldBeFalseWhenViewIsVisible: function() { with(this) {
+        testVisiblePropertyShouldBeFalseWhenViewIsNotVisible: function() { with(this) {
+          var testView = new Aphid.UI.View({ visible: false });
+          $AppDelegate.get("mainWindow").addSubview(testView);
+          assert(!testView.get("visible"), "testView should not be visible");
         }},
 
         testVisiblePropertyShouldBeFalseWhenSuperviewIsNotVisible: function() { with(this) {
+          var superview = new Aphid.UI.View(),
+              testView  = new Aphid.UI.View();
+
+          $AppDelegate.get("mainWindow").addSubview(superview);
+          superview.addSubview(testView);
+          superview.set("hidden", true);
+          assert(!testView.get("visible"), "testView should not be visible");
         }}
 
       }, { testLog: "logSection" });
