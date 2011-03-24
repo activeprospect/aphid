@@ -498,19 +498,41 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       switch (transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
-          view.get("element").setStyle({ "left": this.get("element").getWidth() + "px" });
-          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          view.get("element").appear({
+          view.get("element").setStyle({
+            left: this.get("element").getWidth() + "px",
+            right: -this.get("element").getWidth() + "px"
+          });
+          view.get("element").morph({
+            left: "0px",
+            right: "0px"
+          },
+          {
             duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
             afterFinish: this._viewDidAppear.bind(this, animated)
+          });
+          new Effect.Opacity(view.get("element"), {
+            to: 1,
+            duration: 0.35
           });
           break;
         case Aphid.UI.View.SlideRightTransition:
-          view.get("element").setStyle({ "left": -this.get("element").getWidth() + "px" });
-          new Effect.Move(view.get("element"), { x: 0, y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          view.get("element").appear({
+          view.get("element").setStyle({
+            left: -this.get("element").getWidth() + "px",
+            right: this.get("element").getWidth() + "px"
+          });
+          view.get("element").morph({
+            left: "0px",
+            right: "0px"
+          },
+          {
             duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
             afterFinish: this._viewDidAppear.bind(this, animated)
+          });
+          new Effect.Opacity(view.get("element"), {
+            to: 1,
+            duration: 0.35
           });
           break;
         default:
@@ -588,17 +610,33 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       switch(transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
-          new Effect.Move(this.get("element"), { x: -(this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          this.get("element").fade({
+          this.get("element").morph({
+            left: -(this.get("element").getWidth()) + "px",
+            right: (this.get("element").getWidth()) + "px"
+          },
+          {
             duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
             afterFinish: this._viewDidDisappear.bind(this, animated)
+          });
+          new Effect.Opacity(this.get("element"), {
+            to: 0,
+            duration: 0.35
           });
           break;
         case Aphid.UI.View.SlideRightTransition:
-          new Effect.Move(this.get("element"), { x: (this.get("element").getWidth()), y: 0, duration: 0.35, mode: 'absolute', transition: Effect.Transitions.sinoidal });
-          this.get("element").fade({
+          this.get("element").morph({
+            left: (this.get("element").getWidth()) + "px",
+            right: -(this.get("element").getWidth()) + "px"
+          },
+          {
             duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
             afterFinish: this._viewDidDisappear.bind(this, animated)
+          });
+          new Effect.Opacity(this.get("element"), {
+            to: 0,
+            duration: 0.35
           });
           break;
         default:
