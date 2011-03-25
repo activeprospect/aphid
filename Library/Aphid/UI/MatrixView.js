@@ -235,12 +235,17 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
     event.stop();
 
-    var element         = this.get("element").down(".selected");
-    var previousElement = element ? element.previous() : false;
-    if (!element || !previousElement) return this.selectFirst();
+    var element = this.get("element").down(".selected");
+    if (!element) return this.selectFirst();
 
-    var item = previousElement.getStorage().get("item");
-    this.selectItem(item);
+    var previousElement = element ? element.previous("li") : false;
+    if (previousElement)
+    {
+      var item = previousElement.getStorage().get("item");
+      this.selectItem(item);
+    }
+    else
+      this.selectFirst();
   },
 
   moveRight: function(event)
@@ -252,7 +257,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     var element = this.get("element").select(".selected").last();
     if (!element) return this.selectFirst();
 
-    var nextElement = element.next();
+    var nextElement = element.next("li");
     if (nextElement)
     {
       var item = nextElement.getStorage().get("item");
@@ -390,7 +395,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
           event.stop();
 
         // Tab
-        if (event.keyCode == Event.KEY_TAB) 
+        if (event.keyCode == Event.KEY_TAB)
         {
           if (this.selectedItems.size() > 0)
             this.moveLeft(event);
