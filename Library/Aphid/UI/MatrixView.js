@@ -410,9 +410,10 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     // Delete/Backspace
     if (event.keyCode == Event.KEY_BACKSPACE || event.keyCode == Event.KEY_DELETE || event.keyCode == 63272)
     {
-      this.selectedItems.each(function(item) {
-        this.removeItem(item);
-      }, this);
+      if (this.get("multipleSelectionEnabled"))
+        this.get("selectedItems").each(function(item) { this.removeItem(item) }, this);
+      else if (this.get("selectedItem"))
+        this.removeItem(this.get("selectedItem"));
       event.stop();
     }
 
