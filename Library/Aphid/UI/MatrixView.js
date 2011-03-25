@@ -439,7 +439,9 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     // Tab
     if (event.keyCode == Event.KEY_TAB)
     {
-      if (this.selectedItems.size() > 0)
+      if (event.shiftKey)
+        this.moveLeft(event);
+      else
         this.moveRight(event);
     }
   },
