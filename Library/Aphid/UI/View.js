@@ -1559,7 +1559,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     $L.debug("_viewWillDisappear (previously called: " + (this._viewWillDisappearCalled ? "yes" : "no") + ", animated: " + animated + ")", this);
 
     // Stop Observing for Events
-    if (!this._viewWillAppearCalled)
+    if (!this._viewWillDisappearCalled)
       this._stopObserving();
 
     // Call the Callback Method
