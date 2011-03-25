@@ -234,19 +234,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   initialize: function($super, options)
   {
     this.items = $A();
+    this.selectedItems = $A();
+    this.selectedItemIndexes = $A();
+    this.selectedItemIndex = false;
 
     $super(options);
-
-    if (this.get("multipleSelectionEnabled"))
-    {
-      this.selectedItems = $A();
-      this.selectedItemIndexes = $A();
-    }
-    else
-    {
-      this.selectedItems = false;
-      this.selectedItemIndex = false;
-    }
   },
 
   /*
