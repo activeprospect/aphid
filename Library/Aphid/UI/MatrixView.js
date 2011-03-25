@@ -231,7 +231,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   moveLeft: function(event)
   {
-    $L.info("moveLeft", this);
+    $L.debug("moveLeft", this);
 
     event.stop();
 
@@ -245,7 +245,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   moveRight: function(event)
   {
-    $L.info("moveRight", this);
+    $L.debug("moveRight", this);
 
     event.stop();
 
@@ -264,7 +264,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   moveUp: function(event)
   {
-    $L.info("moveUp", this);
+    $L.debug("moveUp", this);
 
     event.stop()
 
@@ -291,7 +291,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   moveDown: function(event)
   {
-    $L.info("moveDown", this);
+    $L.debug("moveDown", this);
 
     event.stop()
 
