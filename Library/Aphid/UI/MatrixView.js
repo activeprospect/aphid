@@ -282,16 +282,20 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     var previousSiblings = element.previousSiblings();
     if (previousSiblings.size() == 0) return this.selectFirst();
 
+    var selected = false;
+
     previousSiblings.each(
       function(el) {
         if (Position.within(el, offset[0], y))
         {
           var item = el.getStorage().get("item");
           this.selectItem(item);
+          selected = true;
         }
       }.bind(this)
     )
 
+    if (!selected) this.selectFirst();
   },
 
   moveDown: function(event)
