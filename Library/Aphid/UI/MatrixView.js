@@ -403,8 +403,10 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     // Enter (Open Item)
     if (event.keyCode == Event.KEY_RETURN)
     {
-      if (this.selectedItems.size() == 1)
-        this.openItem(this.selectedItems.first());
+      if (this.get("multipleSelectionEnabled") && this.get("selectedItems").size() == 1)
+        this.openItem(this.get("selectedItems").first());
+      else if (this.get("selectedItem"))
+        this.openItem(this.get("selectedItem"));
     }
 
     // Delete/Backspace
