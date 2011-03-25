@@ -46,7 +46,6 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
   viewWillAppear: function()
   {
-    window.console.log(this.get("attachedView"))
     if (this.get("attachedView"))
     {
       this.resizeToFitView();
