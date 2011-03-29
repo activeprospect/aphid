@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Compatibility] Added a compatibility method for
+   window.stop(), which is not supported by any version of Internet
+   Explorer.
+
  * [Aphid.UI.View] Added a "visible" read-only property that will return
    true if the view is: not hidden, not 100% transparent and all of its
    superviews are also visible.
