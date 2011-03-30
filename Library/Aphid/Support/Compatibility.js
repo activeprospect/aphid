@@ -8,5 +8,6 @@
 Aphid.Support.Compatibility = {};
 
 //= require <Aphid/Support/Compatibility/Window.js>
+//= require <Aphid/Support/Compatibility/Date.js>
 //= require <Aphid/Support/Compatibility/String>
 //= require <Aphid/Support/Compatibility/HTML5>

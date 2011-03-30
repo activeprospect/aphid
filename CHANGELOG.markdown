@@ -4,6 +4,10 @@
 ## Version 0.9.3 - *Not Yet Released*
 
  * [Aphid.Support.Compatibility] Added a compatibility method for
+   Date.now(), which is not supported by Internet Explorer 8 or
+   older.
+
+ * [Aphid.Support.Compatibility] Added a compatibility method for
    window.stop(), which is not supported by any version of Internet
    Explorer.
 
