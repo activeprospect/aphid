@@ -49,6 +49,13 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   // -------------------------------------------------------------------------
 
+  viewDidLoad: function($super)
+  {
+    $super();
+
+    this.get("element").writeAttribute("tabindex", 0);
+  },
+
   /*
    * Aphid.UI.MatrixView#selectionOverlayElement()  -> Element
    *
@@ -331,9 +338,8 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   // Event Handling ----------------------------------------------------------
 
-  _startObserving: function($super)
+  handleFocusEvent: function(event)
   {
-    $super();
 
     // Observe "Key Down" Events
     if (!this._handleKeyDownEventListener)
@@ -341,11 +347,11 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
       this._handleKeyDownEventListener = this.handleKeyDownEvent.bindAsEventListener(this);
       document.observe("keydown", this._handleKeyDownEventListener);
     }
+
   },
 
-  _stopObserving: function($super)
+  handleBlurEvent: function(event)
   {
-    $super();
 
     // Stop Observing "Key Down" Events
     if (this._handleKeyDownEventListener)
@@ -353,6 +359,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
       document.stopObserving("keydown", this._handleKeyDownEventListener);
       this._handleKeyDownEventListener = false;
     }
+
   },
 
   // TODO Move this to View once it is aware of focus

@@ -73,6 +73,8 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
     var listView                 = this.get("listView"),
         multipleSelectionEnabled = listView.get("multipleSelectionEnabled");
 
+    this.get("listView.element").focus();
+
     event.stop();
 
     // if (listView.get("multipleSelectionEnabled") && this.get("isSelected"))
@@ -86,7 +88,7 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
       // Multiple Selection (Shift-Select)
       if (event.shiftKey)
       {
-        
+
         if (this.get("isSelected"))
           listView.deselectItem(this);
         else

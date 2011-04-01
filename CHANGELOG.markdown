@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.MatrixView] Keyboard events are now only observed with the
+   MatrixView is focused.
+
  * [Aphid.Support.Compatibility] Added a compatibility method for
    Date.now(), which is not supported by Internet Explorer 8 or
    older.
