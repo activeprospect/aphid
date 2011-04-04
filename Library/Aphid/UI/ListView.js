@@ -628,17 +628,23 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   },
 
   /**
-   * Aphid.UI.ListView#removeItem(item) -> null
+   * Aphid.UI.ListView#removeItem(item[, force = false]) -> null
    *
    * - item ([[Aphid.UI.ListViewItem]]): the list view item to be removed
+   * - force (Boolean): if force is true, the listViewShouldRemoveItem delegate
+   *   method and shouldRemoveItem callback will not be consulted before
+   *   removing.
    *
    * Instructs the delegate or subclass that the specified item should be
    * removed. This functionality is implemented by the subclass or delegate
    * and has no behavior by default.
   **/
-  removeItem: function(item)
+  removeItem: function(item, force)
   {
-    if (!this._shouldRemoveItem(item))
+    if (Object.isUndefined(force))
+      force = false;
+
+    if (!force && !this._shouldRemoveItem(item))
       return;
 
     this._willRemoveItem(item);

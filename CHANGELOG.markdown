@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Added an optional boolean argument to removeItem
+   that will force the removal of an item by bypassing the shouldRemoveItem
+   callback and listViewShouldRemoveItem delegate methods.
+
  * [Aphid.UI.MatrixView] Keyboard events are now only observed with the
    MatrixView is focused.
 
