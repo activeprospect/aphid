@@ -9,7 +9,7 @@
 Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListView, {
 
   /**
-   * Aphid.UI.ListView#itemViewClass -> String
+   * Aphid.UI.MatrixView#itemViewClass -> String
    *
    * The default base class
   **/
@@ -78,7 +78,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   /**
    * Aphid.UI.MatrixView#selectItem(item) -> Boolean
    *
-   * - item ([[Aphid.UI.ListViewItem]]): the list view item to select
+   * - item ([[Aphid.UI.MatrixViewItem]]): the list view item to select
    *
    * Selects the specified list item. Returns true if the item was selected or
    * false if no action was performed.

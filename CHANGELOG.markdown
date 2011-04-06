@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.LoadingIndicatorView] Ported LoadingIndicator to derive from
+   Aphid.UI.View. Both LoadingIndicator and LoadingIndicatorView are
+   currently in place, but LoadingIndicator will be removed once integration
+   is fully complete.
+
  * [Aphid.UI.ListView] Added an optional boolean argument to removeItem
    that will force the removal of an item by bypassing the shouldRemoveItem
    callback and listViewShouldRemoveItem delegate methods.
