@@ -19,15 +19,14 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
   initialize: function($super, options)
   {
-    $super(options);
     this.attachedView = false;
     this.position = "top";
+
+    $super(options);
   },
 
   viewDidLoad: function($super)
   {
-    $super();
-
     // Add Triangle Element
     if (!this.triangleElement)
     {
@@ -40,14 +39,17 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
     {
       this.contentView = new Aphid.UI.View({ delegate: this });
       this.contentView.get("element").addClassName("contentView");
-      this.addSubview(this.contentView);
     }
+
+    $super();
   },
 
   viewWillAppear: function()
   {
     if (this.get("attachedView"))
     {
+      this.addSubview(this.get("contentView"));
+
       this.resizeToFitView();
 
       var viewportOffset = this.get("attachedView.element").viewportOffset(),
@@ -206,7 +208,12 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
   {
     var element = event.element();
 
+    // Ignore Clicks in PopoverView
     if (element == this.get("element") || (element != this.get("element") && element.descendantOf(this.get("element"))))
+      return;
+
+    // Ignore clicks in Attached View
+    if (element == this.get("attachedView.element") || (element != this.get("attachedView.element") && element.descendantOf(this.get("attachedView.element"))))
       return;
 
     $L.info("handleDocumentClickEvent", this);
