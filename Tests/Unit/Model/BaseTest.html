@@ -186,19 +186,19 @@
 
         // Initialization ----------------------------------------------------
 
-        // 
+        //
         // Ensures that a model may be initialized in an empty state.
-        // 
+        //
         testShouldInitializeModel: function() { with(this) {
           var testContact = new TestContact();
           assertInstanceOf(Aphid.Model.Base, testContact);
         }},
 
-        // 
+        //
         // Ensures that model classes are automatically extended with the
         // class methods defined in Aphid.Model.Base.ClassMethods (such as
         // finders).
-        // 
+        //
         testShouldExtendModelWithClassMethods: function() { with(this) {
           assert(Object.isFunction(TestContact.load));
           assertEqual(Aphid.Model.Base.ClassMethods.load, TestContact.load);
@@ -208,10 +208,10 @@
 
         // Loading (Single Resource) -----------------------------------------
 
-        // 
+        //
         // Ensures that a model may be loaded by identifier, as specified in
         // the model class in the URL and Path templates.
-        // 
+        //
         testShouldLoadWithIdentifier: function() { with(this) {
           var testContact = TestContact.load(1);
           wait(1000, function() {
@@ -221,10 +221,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that a model may be loaded by URL, overriding the
         // configured URL on the model class itself.
-        // 
+        //
         testShouldLoadWithURL: function() { with(this) {
           var url = window.location.href.gsub(/Unit\/Model\/BaseTest\.html.*/, "Fixtures/Models/Contacts/1.json");
           var testContact = TestContact.load(url);
@@ -235,10 +235,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that singleton records can be fetched without providing an
         // identifier, URL or any options.
-        // 
+        //
         testShouldLoadSingleton: function() { with(this) {
           var testSingleton = TestSingleton.load();
           wait(1000, function() {
@@ -247,10 +247,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that loading with additional options that are replaced in
         // the URL template is possible.
-        // 
+        //
         testShouldLoadWithOptions: function() { with(this) {
           var testNote = TestNote.load(1, { testContactId: 1 });
           wait(1000, function() {
@@ -260,10 +260,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that an attempt to load a model when required options have
         // not been passed displays an error message in the console.
-        // 
+        //
         testShouldLogWithErrorWhenMissingRequiredOptions: function() { with(this) {
           var originalConsoleError = window.console.error;
           var errorLogged = false;
@@ -279,10 +279,10 @@
 
         // Loading (Collections) ---------------------------------------------
 
-        // 
+        //
         // Ensures that singleton records can be fetched without providing an
         // identifier, URL or any options.
-        // 
+        //
         testShouldLoadCollection: function() { with(this) {
           var testCollection = TestContact.loadCollection();
           assertInstanceOf(Aphid.Model.CollectionProxy, testCollection);
@@ -291,10 +291,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that a model may be loaded by URL, overriding the
         // configured URL on the model class itself.
-        // 
+        //
         testShouldLoadCollectionWithURL: function() { with(this) {
           var url = window.location.href.gsub(/Unit\/Model\/BaseTest\.html.*/, "Fixtures/Models/Contacts.json");
           var testCollection = TestContact.loadCollection(url);
@@ -304,10 +304,10 @@
           });
         }},
 
-        // 
+        //
         // Ensures that loading with additional options that are replaced in
         // the URL template is possible.
-        // 
+        //
         testShouldLoadCollectionWithOptions: function() { with(this) {
           var testCollection = TestNote.loadCollection({ testContactId: 2 });
           assertInstanceOf(Aphid.Model.CollectionProxy, testCollection);
@@ -318,11 +318,11 @@
 
         // Properties --------------------------------------------------------
 
-        // 
+        //
         // Ensures that the keys from the loaded JSON are converted to a
         // camelized format (i.e. "phone_number" becomes "phoneNumber") before
         // setting the property on the model instance.
-        // 
+        //
         testShouldCamelizeRecordProperties: function() { with(this) {
           var testContact = TestContact.load(1);
           wait(1000, function() {
@@ -332,19 +332,19 @@
 
         // Associations ------------------------------------------------------
 
-        // 
+        //
         // Ensures that a lazy initializer is set on any belongs to
         // associations of a model after initialization.
-        // 
+        //
         testShouldDefineLazyInitializerOnBelongsToAssociations: function() { with(this) {
           var testNote = new TestNote();
           assert(Object.isFunction(testNote.getTestContact));
         }},
 
-        // 
+        //
         // Ensures that a lazy initializer is set on any has many associations
         // of a model after initialization.
-        // 
+        //
         testShouldDefineLazyInitializerOnHasManyAssociations: function() { with(this) {
           var testContact = new TestContact();
           assert(Object.isFunction(testContact.getTestNotes));
@@ -515,6 +515,10 @@
               assert(testObserver.modelDidReloadNotificationPosted, "The 'ModelDidReloadNotification' notification should have been posted by testContact");
             });
           });
+        }},
+
+        testShouldAddXCSRFTokenHeader: function() { with(this) {
+          assert(false, "Test not implemented...");
         }}
 
       }, { testLog: "logSection" });

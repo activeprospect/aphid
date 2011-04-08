@@ -511,6 +511,14 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       onException: function(transport, exception) { throw exception }
     };
 
+    // Add the Authenticity Token, if available...
+    if (Aphid.Model.Base.authenticityToken)
+    {
+      requestOptions["requestHeaders"] = {
+        "X-CSRF-Token": Aphid.Model.Base.authenticityToken
+      };
+    }
+
     // Make Request
     new Ajax.Request(url, requestOptions);
 
@@ -887,6 +895,14 @@ Aphid.Model.Base.ClassMethods = {
       postBody: Object.toJSON(options)
     };
 
+    // Add the Authenticity Token, if available...
+    if (Aphid.Model.Base.authenticityToken)
+    {
+      requestOptions["requestHeaders"] = {
+        "X-CSRF-Token": Aphid.Model.Base.authenticityToken
+      };
+    }
+
     // Make Request
     new Ajax.Request(url, requestOptions);
 
@@ -918,6 +934,13 @@ Aphid.Model.Base.ClassMethods = {
   }
 
 }
+
+// Authentication Token ------------------------------------------------------
+
+/**
+ * Aphid.Model.Base.authenticityToken -> String | false
+**/
+Aphid.Model.Base.authenticityToken = false;
 
 // "Inherited" Class Callback ------------------------------------------------
 
