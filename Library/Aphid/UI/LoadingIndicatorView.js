@@ -113,20 +113,16 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
     // Initialize Canvas Element
     this.canvasElement = new Element("canvas", { width: 96, height: 96 });
     this.get("element").insert(this.canvasElement);
+
+    // If ExplorerCanvas is present, initialize the canvas element with it for
+    // compatibility with Internet Explorer
+    if (!(typeof G_vmlCanvasManager == 'undefined'))
+      G_vmlCanvasManager.initElement(this.get("canvasElement"));
   },
 
   viewWillAppear: function()
   {
-    // If ExplorerCanvas is present, initialize the canvas element with it for
-    // compatibility with Internet Explorer
-    // if (!(typeof G_vmlCanvasManager == 'undefined'))
-    //   G_vmlCanvasManager.initElement(this._canvas);
-
-    // this._canvasContext = this._canvas.getContext("2d")
-    // Element.insert(document.body, this._canvas);
-    // this._canvas.hide();
-
-    var color = this.get("canvasElement").getStyle("color");
+    var color = this.get("element").getStyle("color");
     if (color)
     {
       colors = color.split(',');
@@ -152,42 +148,6 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
   },
 
   // --------------------------------------------------------------------------
-
-  /**
-   * Aphid.UI.LoadingIndicatorView#show() -> null
-   *
-   * Shows the loading indicator with a fade-in transition.
-  **/
-  // show: function()
-  // {
-  //   if (this.isAnimating) return;
-
-  //   $L.debug('Showing the loading indicator...', this);
-
-  //   this._displayedAt = Date.now();
-
-  //   this._startAnimation();
-  //   var opacity = this.get("canvasElement").getStyle("opacity");
-  //   this.get("canvasElement").appear({ duration: 0.2, to: opacity });
-  // },
-
-  /**
-   * Aphid.UI.LoadingIndicatorView#hide() -> null
-   *
-   * Hides the loading indicator with a quick, fade-out transition.
-  **/
-  // hide: function()
-  // {
-  //   var delay = 0, now = Date.now();
-
-  //   $L.debug('Hiding the loading indicator...', this);
-
-  //   if ((this._displayedAt + this.get("minimumDisplayTime")) > now)
-  //     delay = ((this._displayedAt + this.get("minimumDisplayTime")) - now) / 1000;
-
-  //   this.get("canvasElement").fade({ delay: delay, duration: 0.2 });
-  //   this._stopAnimation.bind(this).delay(0.2 + (delay));
-  // },
 
   /*
    * Aphid.UI.LoadingIndicatorView#_startAnimation() -> null
@@ -285,13 +245,6 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
   _makeRGBA: function()
   {
     return "rgba(" + [].slice.call(arguments, 0).join(",") + ")";
-  },
-
-  // getMinimumDisplayTime: function()
-  // {
-  //   if (this.minimumDisplayTime > 0)
-  //     return this.minimumDisplayTime * 1000;
-  //   return this.minimumDisplayTime;
-  // }
+  }
 
 });

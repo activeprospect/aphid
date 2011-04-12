@@ -5,11 +5,12 @@
  * such as Internet Explorer.
 **/
 
-//= require <excanvas.compiled>
 //= require "../Extensions/Vendor/Prototype/Browser"
 
 if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
 {
+
+  //= require <excanvas.compiled>
 
   Aphid.Support.Compatibility.HTML5 = {
 

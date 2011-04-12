@@ -116,26 +116,26 @@ Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
         height: 96
       }
     );
+    Element.insert(document.body, this._canvas);
 
     // If ExplorerCanvas is present, initialize the canvas element with it for
     // compatibility with Internet Explorer
     if (!(typeof G_vmlCanvasManager == 'undefined'))
       G_vmlCanvasManager.initElement(this._canvas);
 
-    this._canvasContext = this._canvas.getContext("2d")
-    Element.insert(document.body, this._canvas);
     this._canvas.hide();
+    this._canvasContext = this._canvas.getContext("2d")
 
-    var color = $(this._canvas).getStyle('color');
-    if (color)
-    {
-      colors = color.split(',');
-      red    = parseInt(colors[0].substr(4, 3));
-      green  = parseInt(colors[1]);
-      blue   = parseInt(colors[2]);
-      this.barColor = { red: red, green: green, blue: blue };
-    }
-    else this.barColor = { red: 85, green: 85, blue: 85 };
+    // var color = $(this._canvas).getStyle('color');
+    // if (color)
+    // {
+    //   colors = color.split(',');
+    //   red    = parseInt(colors[0].substr(4, 3));
+    //   green  = parseInt(colors[1]);
+    //   blue   = parseInt(colors[2]);
+    //   this.barColor = { red: red, green: green, blue: blue };
+    // }
+    // else this.barColor = { red: 85, green: 85, blue: 85 };
   },
 
   /**
