@@ -804,6 +804,9 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _setupView: function()
   {
+    // Store View Instance on Element
+    this.get("element").store("view", this);
+
     // Wire Outlets & Actions
     this._connectToOutlets();
     this._wireActionsToInstance();

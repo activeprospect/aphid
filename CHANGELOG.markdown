@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] The View instance is now stored on the View's element
+   instance (i.e. element.retrieve("view")).
+
  * [Aphid.UI.LoadingIndicatorView] Ported LoadingIndicator to derive from
    Aphid.UI.View. Both LoadingIndicator and LoadingIndicatorView are
    currently in place, but LoadingIndicator will be removed once integration

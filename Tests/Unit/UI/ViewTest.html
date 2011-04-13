@@ -151,6 +151,16 @@
         }},
 
         /**
+         * Ensures that the View's element has the instance of the View stored
+         * on the Element instance itself.
+        **/
+        testShouldStoreViewInstanceOnElement: function() { with(this) {
+          var view = new Aphid.UI.View();
+          assertInstanceOf(Aphid.UI.View, view.get("element").retrieve("view"));
+          assertEqual(view, view.get("element").retrieve("view"));
+        }},
+
+        /**
          * Ensures that there is a lazy initializer that will return a default
          * image when accessing the element property.
         **/
