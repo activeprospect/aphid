@@ -1445,9 +1445,10 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           element.observe('click',
             function(event)
             {
-              var element = event.element();
+              var eventElement = event.element();
+              var storedView   = element.retrieve("view");
               if (element.hasClassName("disabled")) return;
-              this[action]();
+              this[action](storedView, eventElement);
             }.bind(this)
           );
         }
