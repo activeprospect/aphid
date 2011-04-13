@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Wired actions now pass the View that the action belongs
+   to and the element that received the event to the defined action method.
+
  * [Aphid.UI.View] The View instance is now stored on the View's element
    instance (i.e. element.retrieve("view")).
 
