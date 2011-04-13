@@ -487,7 +487,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     if (this.get("hidden") || view.get("hidden"))
     {
       if (!view.get("hidden"))
-        view.get("element").setStyle({ "visibility": "visible" });
+        view.get("element").setStyle({ "visibility": "visible", opacity: 1 });
       this._viewDidAppear(animated);
     }
 
@@ -548,7 +548,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Display Immediately
     else
     {
-      view.get("element").setStyle({ "visibility": "visible" });
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 1 });
       this._viewDidAppear(animated);
     }
   },
