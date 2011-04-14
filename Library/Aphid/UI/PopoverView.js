@@ -146,31 +146,6 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
     }
   },
 
-  viewDidAppear: function()
-  {
-
-    // Document Click Events
-    if (this.handleDocumentClickEvent && !this._handleDocumentClickEventListener)
-    {
-      $L.debug("Observing for Document Click Events", this);
-      this._handleDocumentClickEventListener = this.handleDocumentClickEvent.bindAsEventListener(this);
-      Event.observe(document, "click", this._handleDocumentClickEventListener);
-    }
-
-  },
-
-  viewDidDisappear: function()
-  {
-
-    // Document Click Events
-    if (this._handleDocumentClickEventListener)
-    {
-      Event.stopObserving(document, "click", this._handleDocumentClickEventListener);
-      this._handleDocumentClickEventListener = false;
-    }
-
-  },
-
   presentRelativeToView: function(view, position)
   {
     if (Object.isUndefined(position)) position = "top";
@@ -199,9 +174,29 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
   // Event Handlers ----------------------------------------------------------
 
-  handleClickEvent: function(event, element)
+  _startObserving: function($super)
   {
-    // this.removeFromSuperviewAnimated();
+    $super();
+
+    // Document Click Events
+    if (this.handleDocumentClickEvent && !this._handleDocumentClickEventListener)
+    {
+      $L.debug("Observing for Document Click Events", this);
+      this._handleDocumentClickEventListener = this.handleDocumentClickEvent.bindAsEventListener(this);
+      Event.observe(document, "click", this._handleDocumentClickEventListener);
+    }
+  },
+
+  _stopObserving: function($super)
+  {
+    $super();
+
+    // Document Click Events
+    if (this._handleDocumentClickEventListener)
+    {
+      Event.stopObserving(document, "click", this._handleDocumentClickEventListener);
+      this._handleDocumentClickEventListener = false;
+    }
   },
 
   handleDocumentClickEvent: function(event)
@@ -220,6 +215,5 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
     this.removeFromSuperviewAnimated();
   }
-
 
 });
