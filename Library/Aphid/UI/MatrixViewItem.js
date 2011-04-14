@@ -75,8 +75,6 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
 
     this.get("listView.element").focus();
 
-    event.stop();
-
     // if (listView.get("multipleSelectionEnabled") && this.get("isSelected"))
     //   listView.deselectItem(this);
     // else

@@ -475,7 +475,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     if (Prototype.Browser.WebKit) {
       if (this.get("element").scrollHeight > this.get("element").getHeight()) {
         if (Event.pointerX(event) > (this.get("element").getWidth() + Position.cumulativeOffset(this.get("element"))[0] - 15)) {
-          event.stop();
+          // event.stop();
           return;
         }
       }
@@ -500,8 +500,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
         top: event.pointerY() - this.element.cumulativeOffset()[1]
       });
     }
-
-    // event.preventDefault();
   },
 
   handleMouseUpEvent: function(event)
@@ -511,7 +509,6 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     this._isDragging = false;
     this.get("selectionOverlayElement").hide();
     this.get("selectionOverlayElement").setStyle({ width:'0px', height:'0px' });
-    event.stop();
   },
 
   handleMouseMoveEvent: function(event)
