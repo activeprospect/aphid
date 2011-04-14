@@ -180,7 +180,7 @@ Aphid.Core.Application.bootstrap = function()
 
   // If the user is using IE6, send them to the unsupported page...
   // TODO Expand this to a blacklist so that we can blacklist early Firefox and others
-  if (Prototype.Browser.IE6)
+  if (Prototype.Browser.IE6 || Prototype.Browser.IE7)
   {
     window.location.href = "Vendor/Aphid/Resources/Templates/Unsupported.html";
     return;
