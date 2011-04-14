@@ -107,7 +107,6 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
 
     var tabElements = this.get("element").select('ul.tabs li');
     this.set("tabs", tabElements);
-    this._setupObservers();
 
     // Select Persisted Tab...
     if (this.persistSelectedTab)
@@ -198,22 +197,10 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
 
   // Event Handling ----------------------------------------------------------
 
-  /*
-   * Aphid.UI.TabViewController#_setupObservers() -> null
-   *
-   * Iterates across each tab item in the tab view, adding event observers for
-   * handling the events that we're interested in.
-   */
-  _setupObservers: function()
+  handleClickEvent: function(event)
   {
-    this.get("tabs").invoke('observe', 'click', this._handleClickEvent.bind(this));
-  },
-
-  _handleClickEvent: function(event)
-  {
-    event.stop();
-    var tab = event.findElement('li');
-    this.selectTab(tab);
+    var tab = event.findElement("li[data-tab]");
+    if (tab) this.selectTab(tab);
   },
 
   // Support Methods ---------------------------------------------------------
