@@ -84,9 +84,6 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   handleMouseDownEvent: function(event)
   {
     var listView = this.get("listView");
-
-    event.stop();
-
     if (listView.get("multipleSelectionEnabled") && this.get("isSelected"))
       listView.deselectItem(this);
     else
@@ -96,9 +93,6 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   handleDoubleClickEvent: function(event)
   {
     var listView = this.get("listView");
-
-    event.stop();
-
     listView.openItem(this);
   }
 
