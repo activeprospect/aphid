@@ -443,7 +443,7 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     if (!this._shouldResize())
       return;
 
-    $L.info("Setting Position to " + position + "px", this);
+    $L.debug("Setting Position to " + position + "px", this);
 
     if (this.get("orientation") == "vertical")
     {
