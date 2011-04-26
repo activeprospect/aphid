@@ -84,7 +84,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   /**
    * Aphid.Model.Base#isLoaded -> Boolean
    *
-   * Denotes whether the model has been fully loaded and innitialized. Since
+   * Denotes whether the model has been fully loaded and initialized. Since
    * the loading of model data can happen asynchronously, this attribute may
    * be referenced and monitored to know when the model has finished loading.
   **/
@@ -94,6 +94,13 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
    * Aphid.Model.Base#isLoading -> Boolean
   **/
   isLoading: false,
+
+  /**
+   * Aphid.Model.Base#isDestroyed -> Boolean
+   *
+   * Denotes whether the model instance has been destroyed.
+  **/
+  isDestroyed: false,
 
   // -------------------------------------------------------------------------
 
@@ -476,6 +483,8 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
   **/
   destroy: function()
   {
+    if (this.get("isDestroyed")) return;
+
     var url = this.get("siteUrl").concat(this.get("instancePath"));
     this.identifier = false;
     this.set("identifier", this.get("id"));
@@ -527,7 +536,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
   _handleDestroyResponse: function(transport)
   {
-    $L.info(transport.responseText, this);
+    this.set("isDestroyed", true);
     this._afterDestroy();
   },
 
