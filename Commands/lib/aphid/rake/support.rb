@@ -156,7 +156,7 @@ module Aphid
         puts "Optimizing #{filename} as #{output_filename} ..."
         # TODO Make this an APHID_ROOT global somewhere
         aphid_root = File.join(File.dirname(__FILE__), "../../../..")
-        `java -jar "#{aphid_root}/Vendor/YUI Compressor/yuicompressor-2.4.2.jar" --line-break 80 -o "#{output_filename}" "#{filename}"`
+        `java -jar "#{aphid_root}/Vendor/YUI Compressor/yuicompressor-2.4.6.jar" --line-break 80 -o "#{output_filename}" "#{filename}"`
       end
 
       # ------------------------------------------------------------------------

@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Updated YUI Compressor to 2.4.6.
+
  * [General] Many minor syntax fixes as a result of running Aphid through
    JSHint.
 
