@@ -109,14 +109,14 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
           return;
         }
 
-        var siblings = null
+        var siblings = null;
         if (firstSelectedElementIndex < selectedElementIndex)
           siblings = firstSelectedElement.nextSiblings();
         else
           siblings = firstSelectedElement.previousSiblings();
         var done = false;
         siblings.each(function(el) {
-          if (done == false)
+          if (done === false)
           {
             el.addClassName('selected');
             this.get("selectedItems").push(el);
@@ -133,15 +133,15 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
         // If the element is already selected, deselect it
         if (element.hasClassName('selected'))
         {
-          this.selectedItems = this.selectedItems.without(element)
-          element.removeClassName('selected')
+          this.selectedItems = this.selectedItems.remove(element);
+          element.removeClassName('selected');
         }
 
         // Otherwise, select it
         else
         {
-          this.selectedItems.push(element)
-          element.addClassName('selected')
+          this.selectedItems.push(element);
+          element.addClassName('selected');
         }
 
         return;

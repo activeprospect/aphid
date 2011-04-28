@@ -9,23 +9,25 @@ Aphid.Class = {};
 **/
 Aphid.Class.create = function(name)
 {
-  var arguments = $A(arguments);
+  var args = $A(arguments);
   var klass, parent, methods;
 
-  if (arguments[1] && Object.isFunction(arguments[1]))
+  if (args[1] && Object.isFunction(args[1]))
   {
-    parent  = arguments[1];
-    if (arguments[2])
+    parent = args[1];
+    if (args[2])
     {
-      methods = arguments[2];
+      methods = args[2];
       klass   = Class.create(parent, methods);
     }
     else
+    {
       klass = Class.create(parent);
+    }
   }
-  else if (arguments[1])
+  else if (args[1])
   {
-    methods = arguments[1];
+    methods = args[1];
     klass   = Class.create(methods);
   }
   else
@@ -52,7 +54,9 @@ Aphid.Class.create = function(name)
 
   // Notify Parent
   if (parent && Object.isFunction(parent.inherited))
+  {
     parent.inherited(klass);
+  }
 
   return klass;
-}
+};

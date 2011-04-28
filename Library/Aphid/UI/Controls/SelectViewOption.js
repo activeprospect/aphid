@@ -38,13 +38,13 @@ Aphid.UI.Controls.SelectViewOption = Aphid.Class.create("Aphid.UI.Controls.Selec
   **/
   initialize: function($super, options)
   {
-    if (options && !Object.isUndefined(options["element"]))
+    if (options && !Object.isUndefined(options.element))
     {
-      var element = options["element"];
-      if (Object.isUndefined(options["label"]))
-        options["label"] = element.innerHTML;
-      if (Object.isUndefined(options["value"]))
-        options["value"] = element.readAttribute("value");
+      var element = options.element;
+      if (Object.isUndefined(options.label))
+        options.label = element.innerHTML;
+      if (Object.isUndefined(options.value))
+        options.value = element.readAttribute("value");
     }
 
     $super(options);

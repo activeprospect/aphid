@@ -25,8 +25,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element = {
   fromString: function(htmlString)
   {
     htmlString = htmlString.trim();
-    var element;
-      element = new Element('div').update(htmlString);
+    var element = new Element('div').update(htmlString);
     return element.firstDescendant();
   }
 
@@ -50,8 +49,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getBorderHeight: function(element)
   {
     element = $(element);
-    var height = parseInt(element.getStyle('border-top-width'));
-    height += parseInt(element.getStyle('border-bottom-width'));
+    var height = parseInt(element.getStyle('border-top-width'), 10);
+    height += parseInt(element.getStyle('border-bottom-width'), 10);
     return height;
   },
 
@@ -65,8 +64,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getBorderWidth: function(element)
   {
     element = $(element);
-    var width = parseInt(element.getStyle('border-left-width'));
-    width += parseInt(element.getStyle('border-right-width'));
+    var width = parseInt(element.getStyle('border-left-width'), 10);
+    width += parseInt(element.getStyle('border-right-width'), 10);
     return width;
   },
 
@@ -81,10 +80,10 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   {
     element = $(element);
     var height = element.getHeight();
-    height -= parseInt(element.getStyle('padding-top'));
-    height -= parseInt(element.getStyle('padding-bottom'));
-    height -= parseInt(element.getStyle('border-top-width'));
-    height -= parseInt(element.getStyle('border-bottom-width'));
+    height -= parseInt(element.getStyle('padding-top'), 10);
+    height -= parseInt(element.getStyle('padding-bottom'), 10);
+    height -= parseInt(element.getStyle('border-top-width'), 10);
+    height -= parseInt(element.getStyle('border-bottom-width'), 10);
     return height;
   },
 
@@ -99,10 +98,10 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   {
     element = $(element);
     var width = element.getWidth();
-    width -= parseInt(element.getStyle('padding-left'));
-    width -= parseInt(element.getStyle('padding-right'));
-    width -= parseInt(element.getStyle('border-left-width'));
-    width -= parseInt(element.getStyle('border-right-width'));
+    width -= parseInt(element.getStyle('padding-left'), 10);
+    width -= parseInt(element.getStyle('padding-right'), 10);
+    width -= parseInt(element.getStyle('border-left-width'), 10);
+    width -= parseInt(element.getStyle('border-right-width'), 10);
     return width;
   },
 
@@ -117,8 +116,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getMaximumHeight: function(element)
   {
     element = $(element);
-    var maxHeight = parseInt(element.getStyle('max-height'));
     if (isNaN(maxHeight)) return false;
+    var maxHeight = parseInt(element.getStyle('max-height'), 10);
     return maxHeight;
   },
 
@@ -133,8 +132,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getMaximumWidth: function(element)
   {
     element = $(element);
-    var maxWidth = parseInt(element.getStyle('max-width'));
     if (isNaN(maxWidth)) return false;
+    var maxWidth = parseInt(element.getStyle('max-width'), 10);
     return maxWidth;
   },
 
@@ -149,7 +148,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getMinimumHeight: function(element)
   {
     element = $(element);
-    var minHeight = parseInt(element.getStyle('min-height'));
+    var minHeight = parseInt(element.getStyle('min-height'), 10);
     return minHeight;
   },
 
@@ -164,7 +163,7 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   getMinimumWidth: function(element)
   {
     element = $(element);
-    var minWidth = parseInt(element.getStyle('min-width'));
+    var minWidth = parseInt(element.getStyle('min-width'), 10);
     return minWidth;
   },
 
@@ -179,8 +178,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   {
     element = $(element);
     var height = element.getHeight();
-    height += parseInt(element.getStyle('margin-top'));
-    height += parseInt(element.getStyle('margin-bottom'));
+    height += parseInt(element.getStyle('margin-top'), 10);
+    height += parseInt(element.getStyle('margin-bottom'), 10);
     return height;
   },
 
@@ -195,8 +194,8 @@ Aphid.Support.Extensions.Vendor.Prototype.Element.Methods = {
   {
     element = $(element);
     var width = element.getWidth();
-    width += parseInt(element.getStyle('margin-left'));
-    width += parseInt(element.getStyle('margin-right'));
+    width += parseInt(element.getStyle('margin-left'), 10);
+    width += parseInt(element.getStyle('margin-right'), 10);
     return width;
   },
 

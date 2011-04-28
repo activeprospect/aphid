@@ -117,7 +117,7 @@ Aphid.UI.Controls.SegmentedControl = Aphid.Class.create("Aphid.UI.Controls.Segme
   **/
   selectSegment: function(segment)
   {
-    var segment = this.set("selectedSegment", segment);
+    segment = this.set("selectedSegment", segment);
     this.set("selectedSegmentIndex", this.get("segments").indexOf(segment));
 
     // Clear Selection

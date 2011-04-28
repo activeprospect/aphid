@@ -53,23 +53,23 @@ Aphid.UI.CalendarView = Aphid.Class.create("Aphid.UI.CalendarView", Aphid.UI.Vie
     var dayOfMonth = date.getDate();
 
     // Calculate the first day to display (including the previous month)
-    date.setDate(1)
-    date.setDate(-(date.getDay()) + 1)
+    date.setDate(1);
+    date.setDate(-(date.getDay()) + 1);
   
     // Fill in the days of the month
     this.get("element").select("tbody tr").each(function(row, i)
     {
-      var rowHasDays = false
+      var rowHasDays = false;
       row.immediateDescendants().each(function(cell, j)
       {
-        var day            = date.getDate()
-        var dayOfWeek      = date.getDay()
-        var isCurrentMonth = (date.getMonth() == month)
+        var day            = date.getDate();
+        var dayOfWeek      = date.getDay();
+        var isCurrentMonth = (date.getMonth() == month);
 
         // Reset classes on the cell
-        cell.className = ''
-        cell.date = new Date(date)
-        cell.update(day)
+        cell.className = '';
+        cell.date = new Date(date);
+        cell.update(day);
 
         // Account for days of the month other than the current month
         if (!isCurrentMonth)
@@ -79,23 +79,26 @@ Aphid.UI.CalendarView = Aphid.Class.create("Aphid.UI.CalendarView", Aphid.UI.Vie
 
         // Ensure the current day is selected
         if (isCurrentMonth && day == dayOfMonth) {
-          cell.addClassName('selected')
-          this.currentDateElement = cell
+          cell.addClassName('selected');
+          this.currentDateElement = cell;
         }
 
         // Today
         if (date.getFullYear() == thisYear && date.getMonth() == thisMonth && day == thisDay)
-          cell.addClassName('today')
+          cell.addClassName('today');
 
         // Weekend
         if ([0, 6].indexOf(dayOfWeek) != -1)
-          cell.addClassName('weekend')
+          cell.addClassName('weekend');
 
         // Set the date to tommorrow
-        date.setDate(day + 1)
+        date.setDate(day + 1);
       }, this);
       // Hide the extra row if it contains only days from another month
-      !rowHasDays ? row.hide() : row.show()
+      if (!rowHasDays)
+        row.hide();
+      else
+        row.show();
     }, this);
 
     this.get("element").down("td.title").update(this.get("date").strftime("%B %Y"));
@@ -136,7 +139,7 @@ Aphid.UI.CalendarView = Aphid.Class.create("Aphid.UI.CalendarView", Aphid.UI.Vie
       for (var i = 0; i < 7; ++i)
       {
         var weekdayCellElement = new Element("th").update(Date.shortDayNames[i].substring(0, 1));
-        if (i == 0 || i == 6) weekdayCellElement.addClassName("weekend");
+        if (i === 0 || i === 6) weekdayCellElement.addClassName("weekend");
         weekdayHeaderRow.appendChild(weekdayCellElement);
       }
       tableHeaderElement.appendChild(weekdayHeaderRow);

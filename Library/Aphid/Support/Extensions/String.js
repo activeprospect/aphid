@@ -53,7 +53,7 @@ Aphid.Support.Extensions.String = {
   **/
   toInt: function()
   {
-    return parseInt(this);
+    return parseInt(this, 10);
   },
 
   /**
@@ -66,7 +66,7 @@ Aphid.Support.Extensions.String = {
     var date, parts, year, month, day, hours, minutes, seconds, ms;
 
     // Check for ISO 8601 dates
-    if (parts = this.match(/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(\.([0-9]{1,3}))?(Z|([-+0-9:]{6}))$/))
+    if ((parts = this.match(/^([0-9]{4})\-([0-9]{2})\-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(\.([0-9]{1,3}))?(Z|([\-+0-9:]{6}))$/)))
     {
       date = Date.parse(this);
 
@@ -123,8 +123,8 @@ Aphid.Support.Extensions.String = {
   parseURI: function()
   {
     var keys         = [ "source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor" ],
-        parser       = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
-        paramsParser = /(?:^|&)([^&=]*)=?([^&]*)/g;
+        parser       = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        paramsParser = /(?:^|&)([^&=]*)=?([^&]*)/g,
         uri          = {},
         i            = keys.length,
         match        = parser.exec(this);
@@ -133,10 +133,10 @@ Aphid.Support.Extensions.String = {
     while (i--) uri[keys[i]] = match[i] || "";
 
     // Request Parameters
-    uri["params"] = {};
-    uri["query"].replace(paramsParser, function($0, $1, $2)
+    uri.params = {};
+    uri.query.replace(paramsParser, function($0, $1, $2)
     {
-      if ($1) uri["params"][$1] = $2;
+      if ($1) uri.params[$1] = $2;
     });
 
     return uri;
@@ -156,5 +156,5 @@ String.random = function(length)
 {
   if (Object.isUndefined(length)) length = 10;
   var chars = $R('a', 'z').toArray().concat($R('A', 'Z').toArray()).concat($R(0, 9).toArray());
-  return $R(1, length).inject('', function(m, i) { return m + chars.random() });
-}
+  return $R(1, length).inject('', function(m, i) { return m + chars.random(); });
+};

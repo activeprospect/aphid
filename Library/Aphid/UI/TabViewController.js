@@ -219,10 +219,10 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
     return this.get("tabs").find(
       function(tab)
       {
-        if (tab.getData('tab') == tabName)
+        if (tab.getData("tab") == tabName)
           return true;
       }
-    )
+    );
   },
 
   /*

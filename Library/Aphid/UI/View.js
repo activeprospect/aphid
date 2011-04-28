@@ -494,7 +494,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Display Animated
     else if (animated)
     {
-      view.get("element").setStyle({ "visibility": "visible", "opacity": 0 })
+      view.get("element").setStyle({ "visibility": "visible", "opacity": 0 });
       switch (transition)
       {
         case Aphid.UI.View.SlideLeftTransition:
@@ -643,12 +643,12 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           this.get("element").fade({
             duration: 0.25,
             afterFinish: this._viewDidDisappear.bind(this, animated)
-          })
+          });
           break;
       }
 
       // Remove the View's element from the DOM
-      if (this.get("element").parentNode != null)
+      if (this.get("element").parentNode !== null)
         this.get("element").remove.delay.bind(this, 0.35);
 
     }
@@ -659,7 +659,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       this.get("element").hide();
 
       // Remove the View's element from the DOM
-      if (this.get("element").parentNode != null)
+      if (this.get("element").parentNode !== null)
         this.get("element").remove();
 
     }
@@ -702,7 +702,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     var superviews  = $A(),
         currentView = this,
         superview   = false;
-    while (superview = currentView.get("superview"))
+    while ((superview = currentView.get("superview")))
     {
       superviews.push(superview);
       currentView = superview;
@@ -726,7 +726,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           method: 'get',
           onSuccess: this._templateDidFinishLoading.bind(this),
           onFailure: this._templateRequestDidFail.bind(this),
-          onException: function(transport, exception) { throw exception }
+          onException: function(transport, exception) { throw exception; }
         };
 
     this.isLoaded  = false;
@@ -902,7 +902,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   **/
   setHidden: function(hidden)
   {
-    this.hidden = (hidden == true);
+    this.hidden = (hidden === true);
 
     if (this.hidden)
       this.get("element").setStyle("visibility: hidden");
@@ -993,7 +993,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // All Superviews Visible?
     var hiddenSuperviews = this.get("superviews").find(function(superview) {
       return !superview.get("visible");
-    })
+    });
     if (hiddenSuperviews) return false;
 
     return true;
@@ -1019,7 +1019,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _connectToOutlets: function()
   {
-    if (this.get("element").childElements().length == 0) return;
+    if (this.get("element").childElements().length === 0) return;
 
     var outletElements = this.get("element").select('*[data-outlet]');
     $L.debug('Found ' + outletElements.length + ' ' + "outlet".pluralize(outletElements.length) + ' in the view (' + this.displayName + ')...', this);
@@ -1069,7 +1069,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
                 if (Object.isFunction(viewClassImplementation.prototype[property]))
                   return;
                 var value;
-                if ((value = element.readAttribute("data-" + property.attributize())) != null)
+                if ((value = element.readAttribute("data-" + property.attributize())) !== null)
                 {
                   if (value == "true") value = true;
                   if (value == "false") value = false;
@@ -1431,7 +1431,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    */
   _wireActionsToInstance: function()
   {
-    if (this.get("element").childElements().length == 0) return;
+    if (this.get("element").childElements().length === 0) return;
 
     var actionElements = this.get("element").select('*[data-action]');
     $L.debug('Found ' + actionElements.length + ' ' + "action".pluralize(actionElements.length) + ' in the view (' + this.displayName + ')...', this);

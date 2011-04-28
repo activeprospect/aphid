@@ -116,7 +116,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
 
   addItemToSelection: function($super, item)
   {
-    alert('add item to selection')
+    $L.error("addItemToSelection is not implemented!", this);
   },
 
   selectAll: function()
@@ -194,7 +194,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     var itemOffset = Position.cumulativeOffset(element);
     var done = false;
     element.previousSiblings().each(function(el) {
-      if (done == false)
+      if (done === false)
       {
         el.addClassName('selected');
         this.get("selectedItems").push(el);
@@ -217,11 +217,11 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     var element = this.get("element").select(".selected").last();
 
     var offset = Position.cumulativeOffset(element);
-    var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle("margin-bottom"));
+    var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle("margin-bottom"), 10);
 
     var done = false;
     element.nextSiblings().each(function(el) {
-      if (done == false)
+      if (done === false)
       {
         el.addClassName('selected');
         this.selectedItems.push(el);
@@ -278,7 +278,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   {
     $L.debug("moveUp", this);
 
-    event.stop()
+    event.stop();
 
     var element = this.get("element").down(".selected");
     if (!element) return this.selectFirst();
@@ -287,7 +287,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     var y = Math.floor(offset[1] - element.getHeight());
 
     var previousSiblings = element.previousSiblings();
-    if (previousSiblings.size() == 0) return this.selectFirst();
+    if (previousSiblings.size() === 0) return this.selectFirst();
 
     var selected = false;
 
@@ -300,7 +300,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
           selected = true;
         }
       }.bind(this)
-    )
+    );
 
     if (!selected) this.selectFirst();
   },
@@ -309,16 +309,16 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
   {
     $L.debug("moveDown", this);
 
-    event.stop()
+    event.stop();
 
     var element = this.get("element").select(".selected").last();
     if (!element) return this.selectFirst();
 
     var offset = Position.cumulativeOffset(element);
-    var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle('margin-bottom'));
+    var y = Math.floor(offset[1] + element.getHeight() + (element.getHeight() / 2)) + parseInt($(element).getStyle('margin-bottom'), 10);
 
     var nextSiblings = element.nextSiblings();
-    if (nextSiblings.size() == 0) return this.selectLast();
+    if (nextSiblings.size() === 0) return this.selectLast();
 
     var selected = false;
 
@@ -331,7 +331,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
           selected = true;
         }
       }.bind(this)
-    )
+    );
 
     if (!selected) this.selectLast();
   },
@@ -429,7 +429,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
     if (event.keyCode == Event.KEY_BACKSPACE || event.keyCode == Event.KEY_DELETE || event.keyCode == 63272)
     {
       if (this.get("multipleSelectionEnabled"))
-        this.get("selectedItems").each(function(item) { this.removeItem(item) }, this);
+        this.get("selectedItems").each(function(item) { this.removeItem(item); }, this);
       else if (this.get("selectedItem"))
         this.removeItem(this.get("selectedItem"));
       event.stop();
@@ -553,7 +553,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
       top: top + 'px',
       width: width + 'px',
       height: height + 'px'
-    })
+    });
 
     this.get("element").select('li').each(function(element) {
       var offset = element.cumulativeOffset();

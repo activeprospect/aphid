@@ -110,9 +110,9 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
     // Prevent Text Selection (in Internet Explorer)
     if (Prototype.Browser.IE)
     {
-      this.element.onselectstart = function() { return false };
-      this.widgetElement.onselectstart = function() { return false };
-      this.listElement.onselectstart = function() { return false };
+      this.element.onselectstart = function() { return false; };
+      this.widgetElement.onselectstart = function() { return false; };
+      this.listElement.onselectstart = function() { return false; };
     }
   },
 
@@ -152,7 +152,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
 
     this.listElement.select(".selected").invoke("removeClassName", "selected");
 
-    var selectedItem = this.listElement.down("[data-value='" + this.selectedOption["value"] + "']");
+    var selectedItem = this.listElement.down("[data-value='" + this.selectedOption.value + "']");
     var top, left;
 
     if (selectedItem)
@@ -449,6 +449,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
   _handleKeyDownEvent: function(event)
   {
     var selectedValue = false;
+    var element;
 
     // Up Arrow
     if (event.keyCode == 38)
@@ -458,9 +459,8 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
       if (!this.listElement.visible())
         return this.displayOptions();
 
-      var element;
       if (this.hoverElement)
-        element = this.hoverElement.previous()
+        element = this.hoverElement.previous();
       else
         element = this.listElement.childElements().last();
 
@@ -478,9 +478,8 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
       if (!this.listElement.visible())
         return this.displayOptions();
 
-      var element;
       if (this.hoverElement)
-        element = this.hoverElement.next()
+        element = this.hoverElement.next();
       else
         element = this.listElement.childElements().first();
 

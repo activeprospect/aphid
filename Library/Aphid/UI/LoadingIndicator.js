@@ -120,11 +120,11 @@ Aphid.UI.LoadingIndicator = Aphid.Class.create("Aphid.UI.LoadingIndicator", {
 
     // If ExplorerCanvas is present, initialize the canvas element with it for
     // compatibility with Internet Explorer
-    if (!(typeof G_vmlCanvasManager == 'undefined'))
+    if (typeof G_vmlCanvasManager !== "undefined")
       G_vmlCanvasManager.initElement(this._canvas);
 
     this._canvas.hide();
-    this._canvasContext = this._canvas.getContext("2d")
+    this._canvasContext = this._canvas.getContext("2d");
 
     // var color = $(this._canvas).getStyle('color');
     // if (color)

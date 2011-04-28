@@ -139,7 +139,7 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
         left = (document.viewport.getWidth() - this.get("element").getOuterWidth());
       }
 
-      $L.info("Adjusting triangle position by " + (marginLeft + adjustment) + " pixels")
+      $L.debug("Adjusting triangle position by " + (marginLeft + adjustment) + " pixels", this);
       this.get("triangleElement").setStyle("margin-left: " + (marginLeft + adjustment) + "px");
 
       this.get("element").setStyle({ top: top + "px", left: left + "px" });

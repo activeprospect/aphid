@@ -54,7 +54,7 @@ Aphid.Support.Cookie = {
     var expire = '';
     if (!Object.isUndefined(daysToExpire))
     {
-      var date = new Date()
+      var date = new Date();
       date.setTime(date.getTime() + (86400000 * parseFloat(daysToExpire)));
       expire = '; expires=' + date.toGMTString();
     }
@@ -104,7 +104,7 @@ Aphid.Support.Cookie = {
   erase: function(name)
   {
     var cookie = Aphid.Support.Cookie.get(name) || false;
-    Aphid.Support.Cookie.set(name, '', -1);
+    Aphid.Support.Cookie.set(name, "", -1);
     return cookie;
   },
 
@@ -115,12 +115,12 @@ Aphid.Support.Cookie = {
   **/
   acceptsCookies: function()
   {
-    if (typeof navigator.cookieEnabled == 'boolean')
+    if (typeof navigator.cookieEnabled === "boolean")
       return navigator.cookieEnabled;
-    Cookie.set('_test', '1');
-    return Cookie.erase('_test') != false;
+    Cookie.set("_test", "1");
+    return Cookie.erase("_test") !== false;
   }
 
-}
+};
 
 $C = Aphid.Support.Cookie;

@@ -139,7 +139,10 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
     this.get("modalView").setView(viewController);
 
     // Display the Modal View
-    animated ? $AppDelegate.mainWindow.addSubviewAnimated(this.get("modalView")) : $AppDelegate.mainWindow.addSubview(this.get("modalView"));
+    if (animated)
+      $AppDelegate.mainWindow.addSubviewAnimated(this.get("modalView"));
+    else
+      $AppDelegate.mainWindow.addSubview(this.get("modalView"));
 
     this.set("modalViewController", viewController);
     // TODO This should be parentViewController
@@ -174,8 +177,16 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
     $AppDelegate.get("mainWindow").dismissOverlayAnimated(animated);
 
     // Hide the Modal View Container
-    animated ? this.get("modalView").removeFromSuperviewAnimated() : this.get("modalView").removeFromSuperview();
-    animated ? this.get("modalViewController").removeFromSuperviewAnimated() : this.get("modalViewController").removeFromSuperview();
+    if (animated)
+    {
+      this.get("modalView").removeFromSuperviewAnimated();
+      this.get("modalViewController").removeFromSuperviewAnimated();
+    }
+    else
+    {
+      this.get("modalView").removeFromSuperview();
+      this.get("modalViewController").removeFromSuperview();
+    }
 
     // Unset the Modal View Controller
     this.set("modalViewController", false);

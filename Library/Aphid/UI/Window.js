@@ -105,7 +105,10 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     if (Object.isUndefined(animated)) animated = true;
     $L.debug("Displaying Overlay (Animated: " + (animated ? "Yes" : "No") + ")", this);
     var overlayElement = this.get("overlayElement");
-    animated ? overlayElement.appear({ duration: 0.25, to: 0.6 }) : overlayElement.show();
+    if (animated)
+      overlayElement.appear({ duration: 0.25, to: 0.6 });
+    else
+      overlayElement.show();
   },
 
   /** related to: Aphid.UI.Window#dismissOverlayAnimated
@@ -131,7 +134,10 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     if (Object.isUndefined(animated)) animated = true;
     $L.debug("Dismissing Overlay (Animated: " + (animated ? "Yes" : "No") + ")", this);
     var overlayElement = this.get("overlayElement");
-    animated ? overlayElement.fade({ duration: 0.25 }) : overlayElement.hide();
+    if (animated)
+      overlayElement.fade({ duration: 0.25 });
+    else
+      overlayElement.hide();
   },
 
   // Dynamic Resource Loading ------------------------------------------------

@@ -109,14 +109,14 @@ Aphid.Support.Extensions.Date = {
     return Date.daysInMonth(this.getMonth(), this.getFullYear());
   }
 
-}
+};
 
 Object.extend(Date.prototype, Aphid.Support.Extensions.Date);
 
 Date.daysInMonth = function(month, year)
 {
   return 32 - new Date(year, month, 32).getDate();
-}
+};
 
 Date.monthNames = [
   'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
@@ -134,4 +134,4 @@ Date.dayNames = [
 
 Date.shortDayNames = [
   'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
-]
+];

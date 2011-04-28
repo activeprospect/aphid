@@ -10,5 +10,5 @@ if (Object.isUndefined(window.stop))
       document.executeCommand("Stop");
     }
     catch(err) {}
-  }
+  };
 }

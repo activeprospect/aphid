@@ -9,7 +9,7 @@ Aphid.Support.Extensions.Vendor.Prototype.BrowserFeatures = {
   HTML5StructuralElements: function() {
     var element = document.createElement("div");
     element.innerHTML = "<section></section>";
-    if (element.innerHTML.length == 0)
+    if (element.innerHTML.length === 0)
       return false;
     else
       return true;

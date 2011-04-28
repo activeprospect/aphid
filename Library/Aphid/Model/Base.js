@@ -172,7 +172,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     // Cast Association
     if (belongsToAssociation || hasManyAssociation)
     {
-      var className          = (belongsToAssociation || hasManyAssociation)["className"],
+      var className          = (belongsToAssociation || hasManyAssociation).className,
           klass              = eval(className),
           foreignKeyProperty = property + "Id";
 
@@ -211,11 +211,11 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
   _getHasManyAssociation: function(association, options)
   {
+    options        = $H(options);
     var assn       = $H(this.get("hasMany")).get(association),
         className  = $H(assn).get("className"),
         klass      = eval(className),
-        collection = this[association],
-        options    = $H(options);
+        collection = this[association];
 
     if (!collection)
     {
@@ -254,12 +254,12 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
   _getBelongsToAssociation: function(association, options)
   {
+    options                = $H(options);
     var assn               = $H(this.get("belongsTo")).get(association),
         className          = $H(assn).get("className"),
         klass              = eval(className),
         foreignKeyProperty = association + "Id",
-        instance           = this[association],
-        options            = $H(options);
+        instance           = this[association];
 
     if (!instance)
     {
@@ -294,7 +294,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     return instance;
   },
 
-  instancePathVariables: false,
   instancePathVariables: function()
   {
     var url = this.get("siteUrl").concat(this.get("instancePath"));
@@ -311,7 +310,6 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
     return instancePathVariables;
   },
 
-  collectionPathVariables: false,
   collectionPathVariables: function()
   {
     var url = this.get("siteUrl").concat(this.get("collectionPath"));
@@ -462,7 +460,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       contentType: 'application/json',
       onSuccess: this._handleReloadResponse.bind(this),
       onFailure: this._handleFailureResponse.bind(this),
-      onException: function(transport, exception) { throw exception }
+      onException: function(transport, exception) { throw exception; }
     };
 
     // Make Request
@@ -517,13 +515,13 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
       asynchronous: false,
       onSuccess: this._handleDestroyResponse.bind(this),
       onFailure: this._handleFailureResponse.bind(this),
-      onException: function(transport, exception) { throw exception }
+      onException: function(transport, exception) { throw exception; }
     };
 
     // Add the Authenticity Token, if available...
     if (Aphid.Model.Base.authenticityToken)
     {
-      requestOptions["requestHeaders"] = {
+      requestOptions.requestHeaders = {
         "X-CSRF-Token": Aphid.Model.Base.authenticityToken
       };
     }
@@ -742,7 +740,7 @@ Aphid.Model.Base.ClassMethods = {
       contentType: 'application/json',
       onSuccess: this._handleLoadResponse.bind(this, instance),
       onFailure: this._handleFailureResponse.bind(this, instance),
-      onException: function(transport, exception) { throw exception }
+      onException: function(transport, exception) { throw exception; }
     };
 
     // Make Request
@@ -826,7 +824,7 @@ Aphid.Model.Base.ClassMethods = {
       contentType: 'application/json',
       onSuccess: this._handleLoadCollectionResponse.bind(this, collection, modelKlass),
       onFailure: this._handleFailureResponse.bind(this, collection, modelKlass),
-      onException: function(transport, exception) { throw exception }
+      onException: function(transport, exception) { throw exception; }
     };
 
     // Make Request
@@ -900,14 +898,14 @@ Aphid.Model.Base.ClassMethods = {
       contentType: 'application/json',
       onSuccess: this._handleCreateResponse.bind(this, instance),
       onFailure: this._handleFailureResponse.bind(this, instance),
-      onException: function(transport, exception) { throw exception },
+      onException: function(transport, exception) { throw exception; },
       postBody: Object.toJSON(options)
     };
 
     // Add the Authenticity Token, if available...
     if (Aphid.Model.Base.authenticityToken)
     {
-      requestOptions["requestHeaders"] = {
+      requestOptions.requestHeaders = {
         "X-CSRF-Token": Aphid.Model.Base.authenticityToken
       };
     }
@@ -942,7 +940,7 @@ Aphid.Model.Base.ClassMethods = {
       instance.get("delegate").modelDidFailWithError(instance, transport);
   }
 
-}
+};
 
 // Authentication Token ------------------------------------------------------
 
@@ -962,4 +960,4 @@ Aphid.Model.Base.inherited = function(subclass)
 
   // Assign the adapter to the Subclass as a class property
   subclass.adapter = subclass.prototype.adapter;
-}
+};

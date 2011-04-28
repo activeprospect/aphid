@@ -151,7 +151,7 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
       asynchronous: false,
       onSuccess: function(transport)
       {
-        this._buildstamp = parseInt(transport.responseText);
+        this._buildstamp = parseInt(transport.responseText, 10);
         $L.debug("Successfully loaded build stamp: " + this._buildstamp, this);
       }.bind(this),
       onFailure: function(transport)
@@ -196,6 +196,6 @@ Aphid.Core.Application.bootstrap = function()
   $AppDelegate = new Application();
   if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
     $AppDelegate.applicationDidFinishInitialization();
-}
+};
 
 document.observe("dom:loaded", Aphid.Core.Application.bootstrap);

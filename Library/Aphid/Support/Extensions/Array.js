@@ -17,7 +17,7 @@ Aphid.Support.Extensions.Array = {
   compare: function(otherArray)
   {
     if (Object.isUndefined(otherArray)) return false;
-    if (otherArray == null) return false;
+    if (otherArray === null) return false;
     if (this.length != otherArray.length) return false;
     for (var i = 0; i < otherArray.length; i++)
     {
@@ -36,7 +36,7 @@ Aphid.Support.Extensions.Array = {
   **/
   random: function()
   {
-    return this[parseInt(Math.random() * this.length)];
+    return this[parseInt(Math.random() * this.length, 10)];
   },
 
   /**
@@ -46,7 +46,7 @@ Aphid.Support.Extensions.Array = {
   **/
   randomize: function()
   {
-    for (var rnd, tmp, i = this.length; i; rnd = parseInt(Math.random() * i), tmp = this[--i], this[i] = this[rnd], this[rnd] = tmp);
+    for (var rnd, tmp, i = this.length; i; rnd = parseInt(Math.random() * i, 0), tmp = this[--i], this[i] = this[rnd], this[rnd] = tmp);
   },
 
   /**
@@ -81,6 +81,6 @@ Aphid.Support.Extensions.Array = {
     return this;
   }
 
-}
+};
 
 Object.extend(Array.prototype, Aphid.Support.Extensions.Array);

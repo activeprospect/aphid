@@ -116,7 +116,7 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
 
     // If ExplorerCanvas is present, initialize the canvas element with it for
     // compatibility with Internet Explorer
-    if (!(typeof G_vmlCanvasManager == 'undefined'))
+    if (typeof G_vmlCanvasManager !== "undefined")
       G_vmlCanvasManager.initElement(this.get("canvasElement"));
   },
 
@@ -126,9 +126,9 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
     if (color)
     {
       colors = color.split(',');
-      red    = parseInt(colors[0].substr(4, 3));
-      green  = parseInt(colors[1]);
-      blue   = parseInt(colors[2]);
+      red    = parseInt(colors[0].substr(4, 3), 10);
+      green  = parseInt(colors[1], 10);
+      blue   = parseInt(colors[2], 10);
       this.barColor = { red: red, green: green, blue: blue };
     }
     else this.barColor = { red: 85, green: 85, blue: 85 };
@@ -144,7 +144,7 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
 
   getCanvasContext: function()
   {
-    return this.get("canvasElement").getContext("2d")
+    return this.get("canvasElement").getContext("2d");
   },
 
   // --------------------------------------------------------------------------

@@ -87,9 +87,11 @@ Aphid.Support.Properties = {
     // Check for a Custom Setter
     var customSetterName = "set" + property.upperCaseFirst();
     if (this[customSetterName])
-      return this[customSetterName](value)
+    {
+      return (this[customSetterName](value));
+    }
 
-    return this[property] = value;
+    return (this[property] = value);
   },
 
   /**

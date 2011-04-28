@@ -2,7 +2,7 @@
  * Aphid.Support.Compatibility.String
 **/
 
-Aphid.Support.Compatibility.String = {}
+Aphid.Support.Compatibility.String = {};
 
 /**
  * mixin Aphid.Support.Compatibility.String.Trim
@@ -60,7 +60,7 @@ Aphid.Support.Compatibility.String.TrimSupport = {
     return this.replace(/\s+$/,"");
   }
 
-}
+};
 
 //
 // Extend the String class only for browsers that do not already define the

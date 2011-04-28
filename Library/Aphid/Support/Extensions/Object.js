@@ -43,6 +43,6 @@ Aphid.Support.Extensions.Object = {
     });
   }
 
-}
+};
 
 Object.extend(Object, Aphid.Support.Extensions.Object);

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [General] Many minor syntax fixes as a result of running Aphid through
+   JSHint.
+
  * [Aphid.UI.View] Wired actions now pass the View that the action belongs
    to and the element that received the event to the defined action method.
 

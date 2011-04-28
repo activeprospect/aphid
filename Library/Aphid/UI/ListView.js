@@ -677,10 +677,10 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     var currentScrollBottom = scrollElement.scrollTop + scrollElement.getHeight();
     var currentScrollLeft   = scrollElement.scrollLeft;
     var currentScrollRight  = scrollElement.scrollLeft + scrollElement.getWidth();
-    var itemTopMargin       = parseInt(this.get("selectedItem.element").getStyle("margin-top"));
-    var itemBottomMargin    = parseInt(this.get("selectedItem.element").getStyle("margin-bottom"));
-    var itemLeftMargin      = parseInt(this.get("selectedItem.element").getStyle("margin-left"));
-    var itemRightMargin     = parseInt(this.get("selectedItem.element").getStyle("margin-right"));
+    var itemTopMargin       = parseInt(this.get("selectedItem.element").getStyle("margin-top"), 10);
+    var itemBottomMargin    = parseInt(this.get("selectedItem.element").getStyle("margin-bottom"), 10);
+    var itemLeftMargin      = parseInt(this.get("selectedItem.element").getStyle("margin-left"), 10);
+    var itemRightMargin     = parseInt(this.get("selectedItem.element").getStyle("margin-right"), 10);
     var scrollTopValue      = selectedItemTop - itemTopMargin;
     var scrollLeftValue     = selectedItemLeft - itemLeftMargin;
     var shouldScrollTop     = false;
@@ -745,7 +745,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
   _addOrderedIdentitiesToItems: function()
   {
-    this.get("items").each(function(item) { item.get("element").identify() });
+    this.get("items").each(function(item) { item.get("element").identify(); });
   },
 
   // Call the listViewOrderDidChange method on the delegate, if the
@@ -786,7 +786,9 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     if (this.get("selectedItem"))
       this.set("selectedItemIndex", this.get("items").indexOf(this.get("selectedItem")));
     else if (this.get("selectedItems"))
-      this.set("selectedItemIndexes", this.get("selectedItems").each(function(item) { return this.get("items").indexOf(item) }, this));
+      this.set("selectedItemIndexes", this.get("selectedItems").each(function(item) {
+        return this.get("items").indexOf(item);
+      }, this));
   },
 
   // Event Handling ----------------------------------------------------------
@@ -949,7 +951,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   _shouldClearSelection: function()
   {
     var shouldClearSelection = true;
-    if (this.get("multipleSelectionEnabled") && this.get("selectedItems").length == 0)
+    if (this.get("multipleSelectionEnabled") && this.get("selectedItems").length === 0)
       shouldClearSelection = false;
     else if (!this.get("multipleSelectionEnabled") && !this.get("selectedItem"))
       shouldClearSelection = false;
@@ -1192,7 +1194,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     $L.info("Restoring selection to item at index \"" + itemIndex + "\" from cookie \"" + cookieName + "\"", this);
 
-    this.selectItemAtIndex(parseInt(itemIndex));
+    this.selectItemAtIndex(parseInt(itemIndex, 10));
 
     return true;
   }

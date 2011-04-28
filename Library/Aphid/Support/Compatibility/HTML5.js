@@ -68,7 +68,7 @@ if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
         // Do not attempt to cache HTML5 elements
         if (Aphid.Support.Compatibility.HTML5.Elements.include(tagName))
         {
-          var element = Element.extend(document.createElement(tagName))
+          var element = Element.extend(document.createElement(tagName));
           return Element.writeAttribute(element, attributes);
         }
 
@@ -138,7 +138,7 @@ if (Prototype.Browser.IE7 || Prototype.Browser.IE8)
 
     }
 
-  }
+  };
 
   //
   // Extend the Element class with some extensions specific to helping IE7
