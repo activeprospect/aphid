@@ -71,9 +71,9 @@ module Aphid
       puts "Initializing Git repository ..."
       `git init "#{@project_path}"`
       File.open "#{@project_path}/.gitignore", "w" do |file|
-        file.write ".DS_Store"
-        file.write "Build"
-        file.write "Resources/Stylesheets/*.css"
+        file.write ".DS_Store\n"
+        file.write "Build\n"
+        file.write "Resources/Stylesheets/*.css\n"
       end
       `cd "#{@project_path}" && git add . && cd -`
     end
