@@ -13,6 +13,7 @@ module Aphid
       "Application/Views",
       "Build",
       "Library",
+      "Public",
       "Resources",
       "Resources/Images",
       "Resources/Stylesheets",
