@@ -4,6 +4,8 @@ require File.join(File.dirname(__FILE__), "..", "aphid")
 require File.join(File.dirname(__FILE__), "extensions")
 
 module Aphid
+  class AlreadyVendoredError < RuntimeError; end
+
   class Bootstrapper
 
     #
@@ -75,10 +77,20 @@ module Aphid
       `cd "#{@project_path}" && git add . && cd -`
     end
 
-    def vendorize_aphid
+    def vendorize_aphid(options = {})
       puts "Vendorizing Aphid from \"#{Aphid.path}\" ..."
       vendorized_path = "#{@project_path}/Vendor/Aphid"
-      Dir.clone! Aphid.path, vendorized_path, ["^\\."]
+      unless options[:force] or not File.exists? vendorized_path
+        raise AlreadyVendoredError, "Aphid already exists in Vendor"
+      end
+
+      if File.exists? "#{@project_path}/.git"
+        `cd "#{@project_path}" && git submodule add git@github.com:activeprospect/aphid.git Vendor/Aphid && cd -`
+        `cd "#{vendorized_path}" && git submodule init && git submodule update && cd -`
+        `cd "#{vendorized_path}" && rake build && cd -`
+      else
+        Dir.clone! Aphid.path, vendorized_path, ["^\\."] unless File.exists? vendorized_path
+      end
     end
 
     def build_project

@@ -40,6 +40,35 @@ command :new do |c|
   end
 end
 
+command :vendorize do |c|
+  c.syntax = "aphid vendorize [options]"
+  c.description = "Copies Aphid or initializes it as a submodule in Vendor. This must be run from the root path of an Aphid-based project."
+  c.summary = "Places Aphid in the Vendor folder"
+  c.option "--force", "Forces the vendorization of Aphid, overwriting the previous copy (default: false)"
+  c.option "--[no-]submodule", "Adds Aphid as a Git submodule (default: true, if a valid Git repository)"
+  c.action do |args, options|
+    begin
+      raise unless File.read("Rakefile").lines.grep(/require.*aphid\/rake/).length > 0
+    rescue
+      puts
+      puts "ERROR: You must run \"aphid vendorize\" from the root of your Aphid-based project"
+      puts
+      exit
+    end
+    begin
+      options.default :force => false, :submodule => true
+      Aphid::Bootstrapper.new(Dir.getwd) do |aphid|
+        aphid.vendorize_aphid options
+      end
+    rescue Aphid::AlreadyVendoredError
+      puts
+      puts "Error: Aphid already exists in Vendor. Try with --force to replace this version."
+      puts
+      exit
+    end
+  end
+end
+
 command :path do |c|
   c.syntax = "aphid path"
   c.description = "Returns the path to the active Aphid installation"

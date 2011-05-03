@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Added "aphid vendorize" for vendorizing Aphid in an existing Aphid
+   project.
+
  * [Tools] When building an Aphid-based project, the toolchain will now copy
    Aphid from the installed location if it is not Vendored.
 
