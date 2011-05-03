@@ -101,8 +101,8 @@ task :build => [ :clean, :prepare ] do
       optimize output
     end
 
-    # Copy Vendored Aphid
-    copy_vendored_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
+    # Copy Aphid to Build Folder
+    copy_aphid_to_build_folder unless PROJECT_NAME == "Aphid"
 
     # Add Asset Timestamps
     (Dir["Build/**/*.html"] + Dir["Build/**/*.css"]).each do |file|

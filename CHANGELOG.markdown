@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] When building an Aphid-based project, the toolchain will now copy
+   Aphid from the installed location if it is not Vendored.
+
  * [Tools] Added Aphid.path and Aphid.version for returning the path to the
    current Aphid installation and its version, respectively.
 
