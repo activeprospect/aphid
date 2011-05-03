@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Fixed an issue where template evaluation during project
+   bootstrapping wasn't properly re-writing the evaluated template output.
+
  * [Tools] Updated YUI Compressor to 2.4.6.
 
  * [General] Many minor syntax fixes as a result of running Aphid through

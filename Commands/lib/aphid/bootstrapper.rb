@@ -49,7 +49,7 @@ module Aphid
       Dir["#{@project_path}/**/*.erb"].each do |filename|
         File.open(filename, "r+") do |file|
           template = ERB.new file.read
-          file.rewind
+          file.reopen(filename, "w")
           file.write template.result(binding)
         end
         File.rename filename, filename[0..-5]
