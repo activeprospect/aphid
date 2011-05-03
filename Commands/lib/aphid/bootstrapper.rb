@@ -5,7 +5,15 @@ require File.join(File.dirname(__FILE__), "extensions")
 module Aphid
   class Bootstrapper
 
+    #
+    # Set the APHID_ROOT constant to the Aphid folder to which this library
+    # belongs.
+    #
     APHID_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
+
+    #
+    # Define the skeleton directory structure of new Aphid-based projects.
+    #
     SKELETON_STRUCTURE = [
       "Application",
       "Application/Controllers",
@@ -57,6 +65,16 @@ module Aphid
       end
     end
 
+    def initialize_git_repository
+      puts "Initializing Git repository ..."
+      `git init "#{@project_path}"`
+      File.open "#{@project_path}/.gitignore", "w" do |file|
+        file.write "Build"
+        file.write "Resources/Stylesheets/*.css"
+      end
+      `cd "#{@project_path}" && git add . && cd -`
+    end
+
     def vendorize_aphid
       puts "Vendorizing Aphid ..."
       vendorized_path = "#{@project_path}/Vendor/Aphid"
@@ -74,8 +92,6 @@ module Aphid
       create_project_folder
       create_project_structure
       evaluate_templates
-      vendorize_aphid
-      build_project
       puts "Initialized \"#{project_name}\" in #{@project_path} ..."
     end
 

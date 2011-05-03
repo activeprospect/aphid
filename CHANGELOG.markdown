@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Added support for initializing bootstrapped projects as Git
+   repositories and for disabling Aphid vendorization.
+
  * [Tools] Fixed an issue where template evaluation during project
    bootstrapping wasn't properly re-writing the evaluated template output.
 

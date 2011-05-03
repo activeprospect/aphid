@@ -22,14 +22,24 @@ program :description, 'Aphid'
 default_command :help
 
 command :new do |c|
-  c.syntax = 'aphid new [name]'
-  c.description = 'Creates [name] as a new Aphid project'
+  c.syntax = 'aphid new [name] [options]'
+  c.description = 'Initializes [name] as a new Aphid project.'
+  c.option "--[no-]git", "Initialize the project as a Git repository (default: true)"
+  c.option "--[no-]vendorize", "Copy Aphid to or initialize as a submodule in Vendor (default: false)"
   c.action do |args, options|
     if args.first.nil?
       command(:help).call(["new"])
       exit
     end
-    aphid = Aphid::Bootstrapper.new(args.first)
-    aphid.bootstrap!
+    options.default :git => true
+
+    Aphid::Bootstrapper.new(args.first) do |aphid|
+      aphid.bootstrap!
+      aphid.initialize_git_repository if options.git
+      aphid.vendorize_aphid if options.vendorize
+      aphid.build_project
+    end
+  end
+end
   end
 end
