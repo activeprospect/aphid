@@ -114,14 +114,20 @@ rescue LoadError
 end
 
 desc "Runs all the JavaScript unit tests and collects the results"
-JavaScriptTestTask.new(:test) do |test|
-  test.mount("/Build")
-  test.mount("/Tests")
-  test.mount("/Vendor")
+begin
+  JavaScriptTestTask.new(:test) do |test|
+    test.mount("/Build")
+    test.mount("/Tests")
+    test.mount("/Vendor")
 
-  Dir["Tests/**/*Test.html"].each { |test_file| test.run("/#{test_file}") }
+    Dir["Tests/**/*Test.html"].each { |test_file| test.run("/#{test_file}") }
 
-  test.browser(:safari)
+    test.browser(:safari)
+  end
+rescue => e
+  puts
+  puts "Error while initializing test tasks (#{e})"
+  # Ignore errors
 end
 
 # Package Tasks --------------------------------------------------------------
