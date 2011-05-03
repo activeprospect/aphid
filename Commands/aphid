@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
+require "rubygems"
 begin
-  require 'commander/import'
+  require "commander/import"
 rescue LoadError
   puts "\nYou'll need the Commander gem to run this command. Simply run:\n\n"
   puts "  $ gem install commander"
@@ -10,19 +10,17 @@ rescue LoadError
   exit
 end
 
-APHID_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-
 require File.join(File.dirname(__FILE__), 'lib', 'aphid', 'bootstrapper')
 
 # :name is optional, otherwise uses the basename of this executable
 program :name, "Aphid Bootstrapper"
-program :version, File.read("#{APHID_ROOT}/VERSION").strip
-program :description, 'Aphid'
+program :version, Aphid.version
+program :description, "Aphid"
 
 default_command :help
 
 command :new do |c|
-  c.syntax = 'aphid new [name] [options]'
+  c.syntax = "aphid new [name] [options]"
   c.description = 'Initializes [name] as a new Aphid project.'
   c.option "--[no-]git", "Initialize the project as a Git repository (default: true)"
   c.option "--[no-]vendorize", "Copy Aphid to or initialize as a submodule in Vendor (default: false)"
@@ -41,5 +39,11 @@ command :new do |c|
     end
   end
 end
+
+command :path do |c|
+  c.syntax = "aphid path"
+  c.description = "Returns the path to the active Aphid installation"
+  c.action do |args, options|
+    puts Aphid.path
   end
 end

@@ -123,7 +123,7 @@ module Aphid
       def copy_vendored_aphid_to_build_folder
         mkdir "#{ROOT_PATH}/Build/Vendor" unless File.exist? "#{ROOT_PATH}/Build/Vendor"
         mkdir "#{ROOT_PATH}/Build/Vendor/Aphid" unless File.exist? "#{ROOT_PATH}/Build/Vendor/Aphid"
-        Dir.clone! "Vendor/Aphid/Build", "Build/Vendor/Aphid", [ "\.git" ]
+        Dir.clone! "#{Aphid.path}/Build", "Build/Vendor/Aphid", [ "\.git" ]
       end
 
       # ------------------------------------------------------------------------
@@ -154,9 +154,7 @@ module Aphid
       def optimize(filename)
         output_filename = filename.gsub(/\.([a-z]+)$/, '.Optimized.\1')
         puts "Optimizing #{filename} as #{output_filename} ..."
-        # TODO Make this an APHID_ROOT global somewhere
-        aphid_root = File.join(File.dirname(__FILE__), "../../../..")
-        `java -jar "#{aphid_root}/Vendor/YUI Compressor/yuicompressor-2.4.6.jar" --line-break 80 -o "#{output_filename}" "#{filename}"`
+        `java -jar "#{Aphid.path}/Vendor/YUI Compressor/yuicompressor-2.4.6.jar" --line-break 80 -o "#{output_filename}" "#{filename}"`
       end
 
       # ------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 
 require "fileutils"
+require File.join(File.dirname(__FILE__), "..", "aphid")
 require File.join(File.dirname(__FILE__), "extensions")
 
 module Aphid
@@ -49,7 +50,7 @@ module Aphid
       SKELETON_STRUCTURE.each do |path|
         Dir.mkdir "#{@project_path}/#{path}"
       end
-      Dir.clone! "#{APHID_ROOT}/Skeleton", @project_path, ["^\\."]
+      Dir.clone! "#{Aphid.path}/Skeleton", @project_path, ["^\\."]
     end
 
     def evaluate_templates
@@ -75,9 +76,9 @@ module Aphid
     end
 
     def vendorize_aphid
-      puts "Vendorizing Aphid ..."
+      puts "Vendorizing Aphid from \"#{Aphid.path}\" ..."
       vendorized_path = "#{@project_path}/Vendor/Aphid"
-      Dir.clone! APHID_ROOT, vendorized_path, ["^\\."]
+      Dir.clone! Aphid.path, vendorized_path, ["^\\."]
     end
 
     def build_project
