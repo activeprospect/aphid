@@ -29,6 +29,7 @@ module Aphid
     def initialize(path)
       @project_path = path
       @project_name = File.basename(path)
+      yield self if block_given?
     end
 
     def create_project_folder
