@@ -18,11 +18,10 @@ spec = Gem::Specification.new do |s|
     "Aphid.gemspec",
     Dir["Build/**/*"],
     Dir["Commands/**/*"],
-    Dir["Demo/**/*"],
+    Dir["Documentation/**/*"],
     Dir["Library/**/*"],
     Dir["Resources/**/*"],
     Dir["Skeleton/**/*"],
-    Dir["Templates/**/*"],
     Dir["Tests/**/*"],
     Dir["Vendor/**/*"]
   ]

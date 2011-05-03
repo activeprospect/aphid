@@ -27,8 +27,7 @@ module Aphid
       "Resources/Stylesheets",
       "Resources/Templates",
       "Tests",
-      "Vendor",
-      "Vendor/Aphid"
+      "Vendor"
     ]
 
     attr_accessor :project_name
