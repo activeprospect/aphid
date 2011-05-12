@@ -77,6 +77,11 @@ task :build => [ :clean, :prepare ] do
       Dir.clone! "Resources/Images", "Build/Resources/Images", [ "\.psd$", "\.pxm$", "\.ai$", "\.eps$" ]
     end
 
+    # Copy Movies
+    if File.exist? "Resources/Movies"
+      Dir.clone! "Resources/Movies", "Build/Resources/Movies"
+    end
+
     # Copy Public Assets
     if File.exist? "Public"
       Dir.clone! "Public", "Build"
