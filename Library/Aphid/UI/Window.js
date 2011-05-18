@@ -45,7 +45,6 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     options.set("element", document.body);
     options.set("outlet", false);
     options.set("template", false);
-    options.set("confirmBeforeLeaving", true);
 
     $super(options);
   },
