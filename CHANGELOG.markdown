@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ModalView] Modal views may now be dismissed by pressing the
+   escape key.
+
  * [Tools] Added "aphid vendorize" for vendorizing Aphid in an existing Aphid
    project.
 

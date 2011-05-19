@@ -110,6 +110,41 @@ Aphid.UI.ModalView = Aphid.Class.create("Aphid.UI.ModalView", Aphid.UI.View, {
     this.title = false;
     this.message = false;
     this.status = false;
+  },
+
+  _startObserving: function($super)
+  {
+
+    $super();
+
+    // Key Down Events
+    if (this.handleKeyDownEvent && !this._handleKeyDownEventListener)
+    {
+      $L.debug("Observing for Key Down Events", this);
+      this._handleKeyDownEventListener = this.handleKeyDownEvent.bindAsEventListener(this);
+      document.observe("keydown", this._handleKeyDownEventListener);
+    }
+
+  },
+
+  _stopObserving: function($super)
+  {
+
+    $super();
+
+    // Key Down Events
+    if (this._handleKeyDownEventListener)
+    {
+      document.stopObserving("keydown", this._handleKeyDownEventListener);
+      this._handleKeyDownEventListener = false;
+    }
+
+  },
+
+  handleKeyDownEvent: function(event)
+  {
+    if (event.keyCode == 27)
+      this.dismissAnimated();
   }
 
 });
