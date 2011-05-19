@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model] Added support for manually parsing the instance or response
+   collections in each model class definition by defining parseCollectionResponse
+   or parseInstanceResponse.
+
  * [Aphid.UI.ModalView] Modal views may now be dismissed by pressing the
    escape key.
 

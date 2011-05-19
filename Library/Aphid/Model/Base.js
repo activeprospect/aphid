@@ -754,6 +754,11 @@ Aphid.Model.Base.ClassMethods = {
   _handleLoadResponse: function(instance, transport)
   {
     var object = transport.responseJSON;
+
+    // Custom Instance Response Parsing
+    if (instance.parseInstanceResponse)
+      object = instance.parseInstanceResponse(transport);
+
     instance._initializeFromObject(object);
     instance.set("isLoaded", true);
     instance.set("isLoading", false);
@@ -836,6 +841,10 @@ Aphid.Model.Base.ClassMethods = {
   _handleLoadCollectionResponse: function(collection, klass, transport)
   {
     var object = transport.responseJSON;
+
+    // Custom Collection Response Parsing
+    if (klass.prototype.parseCollectionResponse)
+      object = klass.prototype.parseCollectionResponse(transport);
 
     object.each(function(attributes) {
       instance = new klass(attributes);
