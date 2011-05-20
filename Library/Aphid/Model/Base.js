@@ -26,11 +26,6 @@
 Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, {
 
   /**
-   * Aphid.Model.Base#adapter -> Aphid.Model.Adapter | false
-  **/
-  adapter: false,
-
-  /**
    * Aphid.Model.Base#identifierProperty -> String | "id"
   **/
   identifierProperty: "id",
@@ -957,7 +952,4 @@ Aphid.Model.Base.inherited = function(subclass)
 
   // Add the Model Class Methods (find, all, etc) to the Subclass
   Object.extend(subclass, Aphid.Model.Base.ClassMethods);
-
-  // Assign the adapter to the Subclass as a class property
-  subclass.adapter = subclass.prototype.adapter;
 };
