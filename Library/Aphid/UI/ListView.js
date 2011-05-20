@@ -261,8 +261,10 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     $L.info("Initializing Item as " + viewClass, this);
 
     var viewClassImplementation = eval(viewClass);
-    viewClassImplementation.get("element").setData("item", viewClassImplementation);
-    return new viewClassImplementation({ element: element });
+    var viewClassInstance = new viewClassImplementation({ element: element });
+    viewClassInstance.get("element").setData("item", viewClassInstance);
+
+    return viewClassInstance;
   },
 
   viewDidLoad: function($super)
