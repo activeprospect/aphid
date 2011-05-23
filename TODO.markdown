@@ -90,16 +90,11 @@
 
  * Add tests and documentation for persisted item support.
 
-### Aphid.UI.LoadingIndicator
-
- * Convert to a subclass of Aphid.UI.View.
+### Aphid.UI.LoadingIndicatorView
 
  * Add tests.
 
  * Add support for a CSS-based animation for browsers that support it.
-
- * Allow multiple loading indicator instances so that we can show one on each
-   view that is initializing.
 
 ### Aphid.UI.MatrixView
 

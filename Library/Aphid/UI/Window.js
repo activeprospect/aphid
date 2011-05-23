@@ -22,6 +22,11 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
   overlayElement: false,
 
   /**
+   * Aphid.UI.Window#loadingIndicatorView -> Aphid.UI.LoadingIndicatorView | false
+  **/
+  loadingIndicatorView: false,
+
+  /**
    * Aphid.UI.Window#confirmBeforeLeaving -> Boolean
    *
    * If true, the user will be prompted to confirm before being allowed to
@@ -50,7 +55,7 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
     $super(options);
   },
 
-  // -------------------------------------------------------------------------
+  // Overlay -----------------------------------------------------------------
 
   /**
    * Aphid.UI.Window#getOverlayElement() -> Element
@@ -138,6 +143,30 @@ Aphid.UI.Window = Aphid.Class.create("Aphid.UI.Window", Aphid.UI.View, {
       overlayElement.fade({ duration: 0.25 });
     else
       overlayElement.hide();
+  },
+
+  // Loading Indicator -------------------------------------------------------
+
+  /*
+   * Aphid.UI.Window#getLoadingIndicatorView() -> Aphid.UI.LoadingIndicatorView
+   *
+   * Initializes (if necessary) and returns an instance of LoadingIndicatorView.
+   */
+  getLoadingIndicatorView: function()
+  {
+    if (!this.loadingIndicatorView)
+      this.loadingIndicatorView = new Aphid.UI.LoadingIndicatorView();
+    return this.loadingIndicatorView;
+  },
+
+  displayLoadingIndicator: function()
+  {
+    this.addSubviewAnimated(this.get("loadingIndicatorView"));
+  },
+
+  dismissLoadingIndicator: function()
+  {
+    this.get("loadingIndicatorView").removeFromSuperviewAnimated();
   },
 
   // Dynamic Resource Loading ------------------------------------------------

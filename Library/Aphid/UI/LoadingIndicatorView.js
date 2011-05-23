@@ -70,24 +70,6 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _currentOffset: 0,
 
-  // /**
-  //  * Aphid.UI.LoadingIndicatorView#minimumDisplayTime -> Number
-  //  *
-  //  * The minimum display time for the loading indicator, as to prevent
-  //  * animation flicker.
-  // **/
-  // minimumDisplayTime: 5.5,
-
-  // /*
-  //  * Aphid.UI.LoadingIndicatorView#_displayedAt -> Number
-  //  *
-  //  * The timestamp, in seconds (with microseconds), at which the loading
-  //  * indicator was displayed with Aphid.UI.LoadingIndicatorView#show(). This is
-  //  * used to calculate the delay to use when hiding the indicator, with
-  //  * Aphid.UI.LoadingIndicatorView#minimumDisplayTime taken into account.
-  //  */
-  // _displayedAt: false,
-
   // -------------------------------------------------------------------------
 
   /**

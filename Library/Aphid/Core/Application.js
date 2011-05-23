@@ -52,13 +52,6 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
   notificationCenter: false,
 
   /**
-   * Aphid.Core.Application#loadingIndicator -> Aphid.Support.LoadingIndicator | false
-   *
-   * A global, shared instance of [[Aphid.Support.LoadingIndicator]].
-  **/
-  loadingIndicator: false,
-
-  /**
    * Aphid.Core.Application#mainWindow -> Aphid.UI.Window | false
    *
    * An instance of [[Aphid.UI.Window]] that represents the current document
@@ -72,6 +65,7 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
    * The base view path (or URL) that view templates should be loaded from,
    * by default.
   **/
+  // TODO Move this to Aphid.UI.View.baseViewPath
   baseViewPath: false,
 
   /**
@@ -83,8 +77,10 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
   {
     this._initializeLogger();
     this._initializeNotificationCenter();
-    this._initializeLoadingIndicator();
+
     this.mainWindow = new Aphid.UI.Window();
+    this.mainWindow.displayLoadingIndicator();
+
     this.baseViewPath = "Resources/Templates";
   },
 
@@ -97,7 +93,7 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
   **/
   applicationDidFinishInitialization: function()
   {
-
+    this.get("mainWindow").dismissLoadingIndicator();
   },
 
   /*
@@ -124,22 +120,6 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
   {
     this.notificationCenter = new Aphid.Core.NotificationCenter();
     return this.notificationCenter;
-  },
-
-  /*
-   * Aphid.Core.Application#_initializeLoadingIndicator() -> Aphid.UI.LoadingIndicator
-   *
-   * Initializes a new LoadingIndicator instance to be shared by the
-   * application.
-   */
-  _initializeLoadingIndicator: function()
-  {
-    this.loadingIndicator = new Aphid.UI.LoadingIndicator();
-    Ajax.Responders.register({
-      onCreate:   this.loadingIndicator.show.bind(this.loadingIndicator),
-      onComplete: this.loadingIndicator.hide.bind(this.loadingIndicator)
-    });
-    return this.loadingIndicator;
   },
 
   buildstamp: function()

@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI] Removed all instances of LoadingIndicator, replacing them with
+   the new View-based LoadingIndicatorView. This includes moving the global
+   loading indicator to Aphid.UI.Window from Aphid.Core.Application.
+
  * [Tools] Added "aphid vendorize" for vendorizing Aphid in an existing Aphid
    project.
 

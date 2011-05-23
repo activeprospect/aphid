@@ -70,6 +70,15 @@
           });
         }},
 
+        testShouldDisplayAndDismissLoadingIndicatorView: function() { with(this) {
+          var mainWindow = new Aphid.UI.Window();
+          mainWindow.displayLoadingIndicator();
+          assert(mainWindow.get("subviews").length == 1);
+          assertEqual(mainWindow.get("loadingIndicatorView"), mainWindow.get("subviews").first());
+          mainWindow.dismissLoadingIndicator();
+          assert(mainWindow.get("subviews").length == 0);
+        }},
+
         /**
          * Ensures that loading a JavaScript resource is possible.
         **/
