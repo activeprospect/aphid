@@ -7,10 +7,8 @@
  *
  * Customize or replace this view controller with your own.
 **/
-var MainViewController = Class.create(Aphid.UI.ViewController, {
+var MainViewController = Aphid.Class.create("MainViewController", Aphid.UI.ViewController, {
 
-  // View Configuration
-  displayName: 'MainViewController',
   template: 'MainView',
 
   // Outlets

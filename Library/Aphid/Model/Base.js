@@ -26,11 +26,6 @@
 Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, {
 
   /**
-   * Aphid.Model.Base#adapter -> Aphid.Model.Adapter | false
-  **/
-  adapter: false,
-
-  /**
    * Aphid.Model.Base#identifierProperty -> String | "id"
   **/
   identifierProperty: "id",
@@ -754,6 +749,11 @@ Aphid.Model.Base.ClassMethods = {
   _handleLoadResponse: function(instance, transport)
   {
     var object = transport.responseJSON;
+
+    // Custom Instance Response Parsing
+    if (instance.parseInstanceResponse)
+      object = instance.parseInstanceResponse(transport);
+
     instance._initializeFromObject(object);
     instance.set("isLoaded", true);
     instance.set("isLoading", false);
@@ -836,6 +836,10 @@ Aphid.Model.Base.ClassMethods = {
   _handleLoadCollectionResponse: function(collection, klass, transport)
   {
     var object = transport.responseJSON;
+
+    // Custom Collection Response Parsing
+    if (klass.prototype.parseCollectionResponse)
+      object = klass.prototype.parseCollectionResponse(transport);
 
     object.each(function(attributes) {
       instance = new klass(attributes);
@@ -957,7 +961,4 @@ Aphid.Model.Base.inherited = function(subclass)
 
   // Add the Model Class Methods (find, all, etc) to the Subclass
   Object.extend(subclass, Aphid.Model.Base.ClassMethods);
-
-  // Assign the adapter to the Subclass as a class property
-  subclass.adapter = subclass.prototype.adapter;
 };

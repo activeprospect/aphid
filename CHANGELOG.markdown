@@ -7,6 +7,13 @@
    the new View-based LoadingIndicatorView. This includes moving the global
    loading indicator to Aphid.UI.Window from Aphid.Core.Application.
 
+ * [Aphid.Model] Added support for manually parsing the instance or response
+   collections in each model class definition by defining parseCollectionResponse
+   or parseInstanceResponse.
+
+ * [Aphid.UI.ModalView] Modal views may now be dismissed by pressing the
+   escape key.
+
  * [Tools] Added "aphid vendorize" for vendorizing Aphid in an existing Aphid
    project.
 
