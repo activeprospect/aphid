@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.PopoverView] The PopoverView now recalculates and adjusts its
+   position in the case of its attachedView changing position as that result
+   of a scroll event.
+
  * [Aphid.UI.View] Added viewDidScroll callback, viewScrollOffsetDidChange
    delegate method and a ViewDidScrollNotification notification that are all
    fired when the view scroll offset changes.
