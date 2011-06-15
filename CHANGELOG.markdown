@@ -3,6 +3,13 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added scopeIdentifier() for use as a queue scope
+   identifier with script.aculo.us' Effect class.
+
+ * [Aphid.Core] Added an auto-incrementing instance counter that can be used
+   to identify specific instances of any object that is created with the
+   Aphid.Support.Object mixin.
+
  * [Aphid.Support.Extensions] Added Array#sum().
 
  * [Aphid.UI.PopoverView] The PopoverView now recalculates and adjusts its

@@ -545,7 +545,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         default:
           view.get("element").appear({
             duration: 0.25,
-            queue: "end",
+            queue: { scope: view.scopeIdentifier(), position: "end" },
             afterFinish: this._viewDidAppear.bind(this, animated)
           });
           break;
@@ -649,6 +649,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         default:
           this.get("element").fade({
             duration: 0.25,
+            queue: { scope: this.scopeIdentifier(), position: "end" },
             afterFinish: this._viewDidDisappear.bind(this, animated)
           });
           break;
@@ -1752,6 +1753,11 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     if (this.layoutSubviews) this.layoutSubviews();
     this.get("subviews").invoke("_layoutSubviews");
+  },
+
+  scopeIdentifier: function()
+  {
+    return this.displayName + "-" + this.instanceIdentifier;
   }
 
 });
