@@ -129,6 +129,10 @@
  *  - [[Aphid.UI.View#viewDidDisappear]]
  *    Called after the view has been displayed.
  *
+ *  - [[Aphid.UI.View#viewDidScroll]]
+ *    Called after the view scroll offset has changed. This may be called many
+ *    times as the view continues to scroll.
+ *
  * ### Delegate Methods
  *
  * The following methods may be implemented by your class that serves as the
@@ -137,6 +141,9 @@
  *  - [[Aphid.UI.View#viewDidLoadAsynchronously]]
  *    Called once the view template has finished loading and the view is in a
  *    fully initialized state.
+ *
+ *  - [[Aphid.UI.View#viewScrollOffsetDidChange]]
+ *    Called when the scroll offset of the view has changed.
  *
 **/
 
@@ -1103,6 +1110,15 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   _startObserving: function()
   {
 
+    // Scroll Events (Always Observed)
+    // TODO Make a ScrollView subclass of View to handle more scrolling specifics
+    if (!this._handleScrollEventListener)
+    {
+      $L.debug("Observing for Scroll Events", this);
+      this._handleScrollEventListener = this._handleScrollEvent.bindAsEventListener(this);
+      this.get("element").observe("scroll", this._handleScrollEventListener);
+    }
+
     // Focus Events
     if (this.handleFocusEvent && !this._handleFocusEventListener)
     {
@@ -1196,6 +1212,13 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   _stopObserving: function()
   {
 
+    // Scroll Events
+    if (this._handleScrollEventListener)
+    {
+      this.get("element").stopObserving("scroll", this._handleScrollEventListener);
+      this._handleScrollEventListener = false;
+    }
+
     // Focus Events
     if (this._handleFocusEventListener)
     {
@@ -1273,6 +1296,11 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       this._handleMouseLeaveEventListener = false;
     }
 
+  },
+
+  _handleScrollEvent: function(event)
+  {
+    this._viewDidScroll();
   },
 
   _handleFocusEvent: function(event)
@@ -1596,6 +1624,23 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     this._viewDidDisappearCalled = true;
     this._viewDidAppearCalled = false;
+  },
+
+  /*
+   * Aphid.UI.View#_viewDidScroll() -> null
+   *
+   * Calls the viewDidScroll callback on the current view, the
+   * viewScrollOffsetDidChange delegate method on the view's delegate and
+   * raises the ViewDidScrollNotification.
+   */
+  _viewDidScroll: function()
+  {
+    $L.debug("_viewDidScroll", this);
+    if (this.viewDidScroll)
+      this.viewDidScroll();
+    if (this.delegate && this.delegate.viewScrollOffsetDidChange)
+      this.delegate.viewScrollOffsetDidChange(this);
+    this.postNotification("ViewDidScrollNotification");
   },
 
   // Delegate Methods --------------------------------------------------------

@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added viewDidScroll callback, viewScrollOffsetDidChange
+   delegate method and a ViewDidScrollNotification notification that are all
+   fired when the view scroll offset changes.
+
  * [Aphid.UI] Removed all instances of LoadingIndicator, replacing them with
    the new View-based LoadingIndicatorView. This includes moving the global
    loading indicator to Aphid.UI.Window from Aphid.Core.Application.
