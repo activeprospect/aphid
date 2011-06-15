@@ -73,8 +73,10 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
    *
    * Initializes the Logger.
   **/
-  initialize: function()
+  initialize: function($super, options)
   {
+    $super(options);
+
     this._initializeLogger();
     this._initializeNotificationCenter();
 
