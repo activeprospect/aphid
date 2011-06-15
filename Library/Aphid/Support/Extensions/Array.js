@@ -79,6 +79,17 @@ Aphid.Support.Extensions.Array = {
     index = index < 0 ? this.length : index;
     this.splice.apply(this, [index, 0].concat(Array.prototype.slice.call(arguments, 1)));
     return this;
+  },
+
+  /**
+   * Aphid.Support.Extensions.Array#sum() -> Number
+   *
+   * Iterates an Array of numbers, returning the sum of those numbers.
+  **/
+  sum: function()
+  {
+  	for (var i = 0, sum = 0; i < this.length; sum += this[i++]);
+  	return sum;
   }
 
 };

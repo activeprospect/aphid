@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Extensions] Added Array#sum().
+
  * [Aphid.UI.PopoverView] The PopoverView now recalculates and adjusts its
    position in the case of its attachedView changing position as that result
    of a scroll event.
