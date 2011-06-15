@@ -60,3 +60,5 @@ Aphid.Class.create = function(name)
 
   return klass;
 };
+
+Aphid.Class.instanceCounter = 0;

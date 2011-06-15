@@ -14,12 +14,19 @@ Aphid.Support.Object = Class.create({
   **/
   delegate: false,
 
+  /**
+   * Aphid.Support.Object#instanceIdentifier -> Number | false
+  **/
+  instanceIdentifier: false,
+
   // Initialization ----------------------------------------------------------
 
   initialize: function(options)
   {
     // Apply Options to Instance
     Object.applyOptionsToInstance(this, options);
+
+    this.instanceIdentifier = Aphid.Class.instanceCounter++;
   },
 
   // Notification Proxy Methods ----------------------------------------------
