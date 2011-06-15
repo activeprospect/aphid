@@ -1207,6 +1207,30 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       this.get("element").observe("mouseleave", this._handleMouseLeaveEventListener);
     }
 
+    // Handle Touch Start Events
+    if (this.handleTouchStartEvent && !this._handleTouchStartEventListener)
+    {
+      $L.debug("Observing for Touch Start Events", this);
+      this._handleTouchStartEventListener = this._handleTouchStartEvent.bindAsEventListener(this);
+      this.get("element").observe("touchstart", this._handleTouchStartEventListener);
+    }
+
+    // Handle Touch Move Events
+    if (this.handleTouchMoveEvent && !this._handleTouchMoveEventListener)
+    {
+      $L.debug("Observing for Touch Move Events", this);
+      this._handleTouchMoveEventListener = this._handleTouchMoveEvent.bindAsEventListener(this);
+      this.get("element").observe("touchmove", this._handleTouchMoveEventListener);
+    }
+
+    // Handle Touch End Events
+    if (this.handleTouchEndEvent && !this._handleTouchEndEventListener)
+    {
+      $L.debug("Observing for Touch End Events", this);
+      this._handleTouchEndEventListener = this._handleTouchEndEvent.bindAsEventListener(this);
+      this.get("element").observe("touchend", this._handleTouchEndEventListener);
+    }
+
   },
 
   _stopObserving: function()
@@ -1294,6 +1318,27 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     {
       this.get("element").stopObserving("mouseleave", this._handleMouseLeaveEventListener);
       this._handleMouseLeaveEventListener = false;
+    }
+
+    // Touch Start Events
+    if (this._handleTouchStartEventListener)
+    {
+      this.get("element").stopObserving("touchstart", this._handleTouchStartEventListener);
+      this._handleTouchStartEventListener = false;
+    }
+
+    // Touch Move Events
+    if (this._handleTouchMoveEventListener)
+    {
+      this.get("element").stopObserving("touchmove", this._handleTouchMoveEventListener);
+      this._handleTouchMoveEventListener = false;
+    }
+
+    // Touch End Events
+    if (this._handleTouchEndEventListener)
+    {
+      this.get("element").stopObserving("touchend", this._handleTouchEndEventListener);
+      this._handleTouchEndEventListener = false;
     }
 
   },
@@ -1433,6 +1478,42 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
 
     var element = event.element();
     this.handleMouseLeaveEvent(event, element);
+  },
+
+  _handleTouchStartEvent: function(event)
+  {
+    if (!this.handleTouchStartEvent)
+    {
+      $L.warn("Missing handleTouchStartEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleTouchStartEvent(event, element);
+  },
+
+  _handleTouchMoveEvent: function(event)
+  {
+    if (!this.handleTouchMoveEvent)
+    {
+      $L.warn("Missing handleTouchMoveEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleTouchMoveEvent(event, element);
+  },
+
+  _handleTouchEndEvent: function(event)
+  {
+    if (!this.handleTouchEndEvent)
+    {
+      $L.warn("Missing handleTouchEndEvent callback method!", this);
+      return;
+    }
+
+    var element = event.element();
+    this.handleTouchEndEvent(event, element);
   },
 
   // View Actions ------------------------------------------------------------
