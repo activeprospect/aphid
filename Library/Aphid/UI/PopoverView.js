@@ -229,7 +229,8 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
 
   handleViewDidScrollNotification: function(view)
   {
-    this.calculatePosition();
+    if (this.get("superview"))
+      this.calculatePosition();
   }
 
 });
