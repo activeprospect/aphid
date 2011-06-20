@@ -219,7 +219,7 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
       return;
 
     // Ignore clicks in Attached View
-    if (element == this.get("attachedView.element") || (element != this.get("attachedView.element") && element.descendantOf(this.get("attachedView.element"))))
+    if (this.get("attachedView") && element == this.get("attachedView.element") || (element != this.get("attachedView.element") && element.descendantOf(this.get("attachedView.element"))))
       return;
 
     $L.info("handleDocumentClickEvent", this);
