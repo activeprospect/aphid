@@ -14,12 +14,12 @@
 Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI.View,
 {
 
-  /*
-   * Aphid.UI.ViewController#_modalViewContainer -> Element | false
+  /**
+   * Aphid.UI.ViewController#modalView -> Aphid.UI.ModalView | false
    *
-   * The container element that will contain the modal view controller's view.
-   */
-  _modalViewContainer: false,
+   * Modal View instance.
+  **/
+  modalView: false,
 
   /**
    * Aphid.UI.ViewController#modalViewController -> Aphid.UI.ViewController | false
@@ -28,22 +28,6 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
    * controller, or false if no view controller is currently modal.
   **/
   modalViewController: false,
-
-  /**
-   * Aphid.UI.ViewController#modalView -> Aphid.UI.ModalView
-   *
-   * The currently presented modal view controller whose parent is this view
-   * controller, or false if no view controller is currently modal.
-  **/
-  modalView: function()
-  {
-    if (!this._modalView)
-      this._modalView = new Aphid.UI.ModalView({
-        viewController: this,
-        delegate: this
-      });
-    return this._modalView;
-  },
 
   /**
    * Aphid.UI.ViewController#viewControllers -> Array | false
@@ -67,6 +51,24 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   initialize: function($super, options)
   {
     $super(options);
+  },
+
+  // -------------------------------------------------------------------------
+
+  /**
+   * Aphid.UI.ViewController#getModalView -> Aphid.UI.ModalView
+   *
+   * The currently presented modal view controller whose parent is this view
+   * controller, or false if no view controller is currently modal.
+  **/
+  getModalView: function()
+  {
+    if (!this.modalView)
+      this.modalView = new Aphid.UI.ModalView({
+        viewController: this,
+        delegate: this
+      });
+    return this.modalView;
   },
 
   // Modal View Controllers --------------------------------------------------
@@ -140,9 +142,9 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
 
     // Display the Modal View
     if (animated)
-      $AppDelegate.mainWindow.addSubviewAnimated(this.get("modalView"));
+      $AppDelegate.get("mainWindow").addSubviewAnimated(this.get("modalView"));
     else
-      $AppDelegate.mainWindow.addSubview(this.get("modalView"));
+      $AppDelegate.get("mainWindow").addSubview(this.get("modalView"));
 
     this.set("modalViewController", viewController);
     // TODO This should be parentViewController

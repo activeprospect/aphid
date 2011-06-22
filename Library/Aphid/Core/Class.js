@@ -1,11 +1,11 @@
 /**
- * class Aphid.Class < Class
+ * class Aphid.Class
 **/
 
 Aphid.Class = {};
 
 /**
- * Aphid.Class.create(name, [parent[, methods...]]) -> Class
+ * Aphid.Class.create(name[, parent[, methods]]) -> Aphid.Class
 **/
 Aphid.Class.create = function(name)
 {
@@ -54,9 +54,7 @@ Aphid.Class.create = function(name)
 
   // Notify Parent
   if (parent && Object.isFunction(parent.inherited))
-  {
     parent.inherited(klass);
-  }
 
   return klass;
 };

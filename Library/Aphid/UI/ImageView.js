@@ -24,21 +24,21 @@
 Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
 
   /**
-   * ImageView#image -> String | false
+   * Aphid.UI.ImageView#image -> String | false
    *
    * The URL to the image.
   **/
   image: false,
 
   /**
-   * ImageView#imageElement -> Element | false
+   * Aphid.UI.ImageView#imageElement -> Element | false
    *
    * The Element for the Image.
   **/
   imageElement: false,
 
   /**
-   * ImageView#loaded -> Boolean
+   * Aphid.UI.ImageView#loaded -> Boolean
    *
    * True if the image has loaded, otherwise false.
   **/

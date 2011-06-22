@@ -664,14 +664,11 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 Aphid.Model.Base.ClassMethods = {
 
   /**
-   * Aphid.Model.Base.load(identifier | url[, options]) -> Object | false
+   * Aphid.Model.Base.load(identifier_or_url[, options]) -> Object | false
    *
-   *  - identifier (String | Number): (Optional) If specified, the model will
-   *    be loaded by the specified identifier.
-   *
-   *  - url (String): (Optional) If specified (in place of an identifier), the
-   *    specified URL will be requested (either absolute or relative to the
-   *    siteUrl defined on the model).
+   *  - identifier_or_url (String | Number): Either an identifier or a URL
+   *    to the resource to be loaded. The URL may be either absolute or
+   *    relative to the siteUrl defined on the model.
    *
    *  - options (Hash): Options to be passed to the URL.
    *

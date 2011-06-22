@@ -5,17 +5,26 @@
 Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View, {
 
   /**
-   * Aphid.UI.PopoverView -> View | false
+   * Aphid.UI.PopoverView#attachedView -> Aphid.UI.View | false
   **/
   attachedView: false,
 
   /**
-   * Aphid.UI.position -> String
+   * Aphid.UI.PopoverView#contentView -> Aphid.UI.View
+  **/
+  contentView: false,
+
+  /**
+   * Aphid.UI.PopoverView#position -> String
   **/
   position: false,
 
-  contentView: false,
+  /**
+   * Aphid.UI.PopoverView#triangleElement -> Element
+  **/
   triangleElement: false,
+
+  // -------------------------------------------------------------------------
 
   initialize: function($super, options)
   {

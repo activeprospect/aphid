@@ -68,7 +68,7 @@ Aphid.Support.Extensions.Array = {
   },
 
   /**
-   * Aphid.Support.Extensions.Array#insert(index, object[, ...]) -> Object | false
+   * Aphid.Support.Extensions.Array#insert(index, object[, object]) -> Object | false
    *
    * - index (Integer): 
    * - object (Object): 
