@@ -4,7 +4,7 @@
  * Manages an HTML unordered list by providing support for selection of the
  * items contained within the list.
  *
- * #### Usage
+ * # Usage
  *
  * To initialize an instance of [[Aphid.UI.ListView]], you must specify the
  * `data-view-class` attribute on an HTML unordered list element. The value

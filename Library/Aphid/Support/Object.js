@@ -1,6 +1,5 @@
 /**
  * class Aphid.Support.Object
- *
 **/
 
 //= require <Aphid/Support/Properties>

@@ -1,5 +1,5 @@
 /**
- * class Aphid.Support.Cookie
+ * Aphid.Support.Cookie
  * 
  * A utility class for simplifying the management of browser cookies. This
  * class is also aliased as the `$C` global (i.e. `$C.get('someCookie')`).

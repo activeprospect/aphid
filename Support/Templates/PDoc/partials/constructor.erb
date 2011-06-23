@@ -1,0 +1,7 @@
+<% if object.respond_to?(:constructor) && object.constructor %>
+  <%= layout_section "Constructor" %>
+    <ul class="method-list">
+      <li><%= auto_link_code(object.constructor, :name => :long) %></li>
+    </ul>
+  <%= end_layout_section %>
+<% end %>

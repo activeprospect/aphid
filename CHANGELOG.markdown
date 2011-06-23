@@ -3,6 +3,8 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Documentation] Added a custom documentation template for PDoc.
+
  * [Aphid.UI.View] Added scopeIdentifier() for use as a queue scope
    identifier with script.aculo.us' Effect class.
 

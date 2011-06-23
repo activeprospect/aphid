@@ -1,0 +1,36 @@
+<% @title = "#{@doc_instance.full_name} #{@doc_instance.type}" %>
+
+<%= include "partials/title", :object => @doc_instance %>
+
+<section class="contentView">
+
+  <section class="section">
+    <section class="contentView">
+      <div class="method-description">
+        <% if @doc_instance.respond_to?(:signatures) %>
+          <%= include "partials/method_signatures", :object => @doc_instance %>
+        <% else %>
+          <pre class="syntax"><code class="ebnf"><%= @doc_instance.signature.name %> &rarr; <%= auto_link_types(@doc_instance.signature.return_value, :name => :long).join(' | ') %></code></pre>
+        <% end %>
+
+        <%= parse_description htmlize(@doc_instance.description) %>
+      
+        <%= include "partials/relationships", :object => @doc_instance %>
+        <%= include "partials/methodized_note", :object => @doc_instance %>
+      </div>
+    </section>
+  </section>
+
+  <% if @doc_instance.type == "instance property" %>
+    <section class="section note">
+      <strong>Note:</strong> <em>Do not access or set properties directly.</em>
+      You must always use
+      the <%= auto_link_code "Aphid.Support.Properties#get", :name => :full %>
+      and <%= auto_link_code "Aphid.Support.Properties#set", :name => :full %>
+      methods to manipulate properties so that custom accessors and setters
+      may be called. This will also ensure that observed properties will
+      always notify any observers upon changes.
+    </section>
+  <% end %>
+
+</section>

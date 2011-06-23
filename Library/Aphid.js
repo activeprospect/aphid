@@ -1,5 +1,5 @@
 /**
- * ==Aphid Framework==
+ * Aphid
  *
  * The Aphid namespace is the main container for the various Aphid frameworks
  * and contains other metadata for Aphid, including version.
@@ -15,11 +15,7 @@
  * take full advantage of the flexibility of those technologies while simply
  * assisting the developer in compartmentalizing the behavioral aspects of
  * their application.
- *
-**/
-
-/** section: Aphid Framework
- * Aphid
+ * 
 **/
 var Aphid = {
 

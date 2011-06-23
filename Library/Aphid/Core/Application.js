@@ -10,7 +10,7 @@
  *
  * ### Usage Example
  * 
- *     var Application = Class.create(Aphid.Core.Application, {
+ *     var Application = Aphid.Class.create("Application", Aphid.Core.Application, {
  *       initialize: function($super)
  *       {
  *         $super();

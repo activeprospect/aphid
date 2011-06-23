@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="generator" content="PDoc" />
+    <title><%= @title %> — <%= @short_name %> API Documentation</title>
+    <%= stylesheet_link_tag "../Vendor/Aphid/Resources/Stylesheets/Aphid" %>
+    <%= stylesheet_link_tag "../Resources/Stylesheets/Application" %>
+    <%= javascript_include_tag "../Vendor/Aphid/Library/Aphid.Combined.Optimized" %>
+    <%= javascript_include_tag "../Library/Application" %>
+
+    <%= stylesheet_link_tag "pdoc/api", "pdoc/pygments" %>
+    <%= javascript_include_tag "pdoc/application", "pdoc/tabs" %>
+    <%= javascript_include_tag "pdoc/item_index" %>
+    <script>
+      PDoc.pathPrefix = "<%= path_prefix %>";
+    </script>
+  </head>
+  <body>
+
+    <section class="TabViewController ViewController View">
+
+      <header>
+        <h1><%= @short_name %> API Documentation <small><%= @version %></small></h1>
+      </header>
+
+      <section id="contentView" data-outlet="contentView" class="View">
+
+        <div id="sidebar" class="SourceListView ListView View">
+          <ul id="sidebar_tabs" class="sidebar-tabs">
+            <li>
+              <a href="#menu_pane">Menu</a>
+            </li>
+            <li>
+              <a href="#search_pane">Search</a>
+            </li>
+          </ul> <!-- .sidebar-tabs -->
+
+          <form class="search-ribbon">
+            <input type="search" id="search" placeholder="Search" />
+          </form>
+
+          <div class="sidebar-pane scrollable" id="menu_pane">
+            <%= menu(@root) %><!--- #api_menu =-->
+          </div> <!-- .sidebar-pane -->
+          <div class="sidebar-pane" id="search_pane">
+            <ul id="search_results" class="search-results menu-items scrollable"></ul>
+          </div> <!-- .sidebar-pane -->
+        </div> <!-- #sidebar -->
+
+        <section id="contentPane">
+          <%= @home ? @index_header : @header %>
+          <%= @content_for_layout %>
+        </section>
+
+        <!--
+        <%# if @timestamp %>
+          Last updated on <%#= @timestamp.strftime('%B %d, %Y at %H:%M UTC') %>.
+        <%# end %>
+        -->
+
+      </section>
+    </section>
+
+  </body>
+</html>

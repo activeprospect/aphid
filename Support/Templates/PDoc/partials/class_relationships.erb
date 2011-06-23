@@ -1,0 +1,15 @@
+<% if object.is_a?(Models::Class) %>
+  <% if object.subclasses? %>
+    <%= layout_section('Subclasses') %>
+      <ul class="method-list">
+        <%= include "partials/class_list", :collection => object.subclasses.sort! %>
+      </ul>
+    <%= end_layout_section %>
+  <% end %>
+<% end %>
+
+<% if object.included_mixins? %>
+  <%= layout_section('Includes', :mixins) %>
+    <p><%= object.included_mixins.sort!.map { |m| auto_link_code(m, :name => :long) }.join(', ') %></p>
+  <%= end_layout_section %>
+<% end %>

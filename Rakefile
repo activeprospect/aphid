@@ -54,6 +54,12 @@ task "docs:build" => [ :build, "docs:clean" ] do
   end
 
   begin
+
+    # Copy Built Aphid to PDoc Templates Directory
+    Dir.mkdir "#{ROOT_PATH}/Support/Templates/PDoc/assets/Vendor" rescue ""
+    Dir.clone! "#{ROOT_PATH}/Build", "#{ROOT_PATH}/Support/Templates/PDoc/assets/Vendor/Aphid"
+
+    # Generate Documentation
     PDoc.run({
       :source_files => [ "Build/Library/#{File.basename(DOCUMENTATION_SOURCE).gsub(/js$/, "Documented.js")}" ],
       :destination => File.join(ROOT_PATH, "Documentation"),
@@ -69,8 +75,10 @@ task "docs:build" => [ :build, "docs:clean" ] do
       :home_url => 'http://aphid.activeprospect.com/',
       :doc_url => 'http://aphid.activeprospect.com/api',
       :version => File.read("#{ROOT_PATH}/VERSION").strip,
-      :copyright_notice => "Copyright &copy; 2010 ActiveProspect, Inc. All Rights Reserved."
+      :copyright_notice => "Copyright &copy; 2010-#{Time.now.year} ActiveProspect, Inc. All Rights Reserved.",
+      :templates => "#{ROOT_PATH}/Support/Templates/PDoc"
     })
+
   rescue => e
     $FAILED = true
     if $GROWL

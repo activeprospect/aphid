@@ -17,7 +17,8 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#modalView -> Aphid.UI.ModalView | false
    *
-   * Modal View instance.
+   * The [[Aphid.UI.ModalView]] instance that will contain the current modal
+   * view controller.
   **/
   modalView: false,
 
@@ -39,27 +40,14 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   **/
   parentViewController: false,
 
-  // -------------------------------------------------------------------------
+  // Accessors ---------------------------------------------------------------
 
   /**
-   * new Aphid.UI.ViewController([options])
+   * Aphid.UI.ViewController#getModalView() -> Aphid.UI.ModalView
    *
-   * - options (Hash): Initial property values to set on the View Controller instance
-   *
-   * Initializes a new View Controller.
-  **/
-  initialize: function($super, options)
-  {
-    $super(options);
-  },
-
-  // -------------------------------------------------------------------------
-
-  /**
-   * Aphid.UI.ViewController#getModalView -> Aphid.UI.ModalView
-   *
-   * The currently presented modal view controller whose parent is this view
-   * controller, or false if no view controller is currently modal.
+   * Returns the Aphid.UI.ModalView instance that will contain the presented
+   * modal view controller. This accessor will lazily initialize the instance,
+   * if necessary.
   **/
   getModalView: function()
   {
@@ -76,7 +64,8 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#presentModalViewController(viewController) -> null
    *
-   * - viewController (ViewController): the view controller that should be presented
+   *  - viewController (ViewController): the view controller that should be
+   *    presented
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller.
@@ -90,8 +79,11 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#presentModalViewControllerAnimated(viewController[, animated = true]) -> null
    *
-   * - viewController (ViewController): the view controller that should be presented
-   * - animated (Boolean): true if the view controller should be presented with animation
+   *  - viewController (ViewController): the view controller that should be
+   *    presented
+   *
+   *  - animated (Boolean): true if the view controller should be presented
+   *    with animation
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller with an animated effect, by default.
@@ -113,8 +105,11 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /*
    * Aphid.UI.View#_presentModalViewController(viewController[, animated = false]) -> null
    *
-   * - viewController (ViewController): the view controller that should be presented
-   * - animated (Boolean): true if the view controller should be presented with animation
+   *  - viewController (ViewController): the view controller that should be
+   *    presented
+   *
+   *  - animated (Boolean): true if the view controller should be presented
+   *    with animation
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller, presenting it optionally with an animated effect.
@@ -250,9 +245,9 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
     this._popViewController(parentViewController, true, transition);
   },
 
-  /**
-   * Aphid.UI.ViewController#_popViewController(viewController, animated, transitoin) -> null
-  **/
+  /*
+   * Aphid.UI.ViewController#_popViewController(viewController[, animated = true[, transition]]) -> null
+   */
   _popViewController: function(viewController, animated, transition)
   {
     if (animated)

@@ -1,0 +1,752 @@
+
+span.hidden { display: none; }
+
+code, pre {
+  font-family: "Panic Sans", "Bitstream Vera Sans Mono", Monaco, Consolas, Andale Mono, monospace;
+  font-size: 12px;
+}
+
+/* Page ------------------------------------------------------------------- */
+
+section#contentPane
+{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 240px;
+  overflow: hidden;
+}
+
+/* Breadcrumbs ------------------------------------------------------------ */
+
+ul.breadcrumbs
+{
+  height: 32px;
+  line-height: 32px;
+  display: block;
+  margin: 0 !important;
+  padding: 0;
+  padding-left: 20px;
+  background-color: rgba(0, 0, 0, 0.15);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.05)));
+  list-style: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+ul.breadcrumbs li
+{
+  display: inline-block;
+  list-style-type: none;
+  margin: 0 !important;
+  margin-right: 10px !important;
+}
+
+ul.breadcrumbs li:after
+{
+  content: "»";
+  display: inline-block;
+  margin-left: 10px;
+  color: rgb(125, 125, 125);
+}
+
+ul.breadcrumbs li:last-of-type:after
+{
+  display: none;
+}
+
+ul.breadcrumbs li a
+{
+  display: inline-block;
+  line-height: 32px;
+  color: rgb(75, 75, 75) !important;
+  text-decoration: none;
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+ul.breadcrumbs li a:hover
+{
+  color: rgb(25, 25, 25) !important;
+}
+
+/* Page Content ----------------------------------------------------------- */
+
+section#contentPane > header
+{
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 64px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+               "Helvetica Neue", sans-serif;
+  font-weight: 300;
+}
+
+section#contentPane > header h1,
+section#contentPane > header h2
+{
+  margin: 0;
+  padding: 0;
+}
+
+section#contentPane > header h1
+{
+  font-size: 24px;
+}
+
+section#contentPane > header h1 span.superclass a
+{
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+}
+
+section#contentPane > header h1 span.superclass a:hover
+{
+  color: rgba(0, 0, 0, 0.75);
+}
+
+section#contentPane > header h1 span.superclass:before
+{
+  content: "<";
+  color: rgba(0, 0, 0, 0.25);
+  padding-right: 10px;
+}
+
+section#contentPane > header h2
+{
+  position: absolute;
+  right: 20px;
+  top: 0;
+  bottom: 0;
+  text-transform: uppercase;
+  font-size: 18px;
+  color: #aaa;
+}
+
+
+section#contentPane > .contentView
+{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 98px;
+  overflow: auto;
+  -webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.page-introduction
+{
+  background-color: red;
+  margin-left: 120px;
+  margin-bottom: 25px;
+}
+
+section#contentPane > .contentView pre
+{
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 14px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 1);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  background-image: -webkit-gradient(linear, 0% 48%, 0% 47%, from(transparent), to(rgba(255, 255, 255, 0.05)));
+  -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.4),
+    inset 1px 0px 0px rgba(255, 255, 255, 0.25),
+    inset -1px 0px 0px rgba(255, 255, 255, 0.25),
+    inset 0px -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+section#contentPane > .contentView pre.syntax
+{
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+pre.syntax + ul
+{
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+
+  color: black;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 14px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.4),
+    inset 1px 0px 0px rgba(255, 255, 255, 0.25),
+    inset -1px 0px 0px rgba(255, 255, 255, 0.25),
+    inset 0px -1px 0px rgba(0, 0, 0, 0.15);
+}
+
+pre.syntax + ul:after
+{
+  content: "";
+  display: block;
+  clear: both;
+}
+
+pre.syntax + ul li
+{
+  float: left;
+  width: 100%;
+  clear: both;
+  margin-bottom: 20px;
+}
+
+pre.syntax + ul li:last-of-type
+{
+  margin-bottom: 0;
+}
+
+pre.syntax + ul li span
+{
+  float: left;
+}
+
+pre.syntax + ul li .argumentName
+{
+  font-weight: bold;
+  box-sizing: border-box;
+  width: 20%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+pre.syntax + ul li .argumentTypes
+{
+  box-sizing: border-box;
+  width: 15%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+pre.syntax + ul li .argumentDescription
+{
+  box-sizing: border-box;
+  width: 65%;
+}
+
+/* DEPRECATION */
+
+#deprecated
+{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.menu-item a.deprecated
+{
+  text-decoration: line-through;
+  color: #999;
+}
+  
+/* Page Sections ---------------------------------------------------------- */
+
+section#contentPane .section
+{
+  position: relative;
+  margin: 20px;
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 20px;
+  border: 1px solid rgb(200, 200, 200);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 20px;
+/*  -webkit-box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.25);*/
+  -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.9),
+    inset 1px 0px 0px rgba(255, 255, 255, 0.5),
+    inset -1px 0px 0px rgba(255, 255, 255, 0.5),
+    inset 0px -1px 0px rgba(0, 0, 0, 0.25),
+    0px 0px 3px rgba(0, 0, 0, 0.15);
+}
+
+section#contentPane .section > header
+{
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-top: -20px;
+  margin-bottom: 20px;
+  height: 32px;
+  line-height: 32px;
+  background-color: rgba(0, 0, 0, 0.025);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 20px;
+}
+
+section#contentPane .section > header h1
+{
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.8);
+}
+
+section#contentPane .section > .contentView h1,
+section#contentPane .section > .contentView h2,
+section#contentPane .section > .contentView h3,
+section#contentPane .section > .contentView h4,
+section#contentPane .section > .contentView h5
+{
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+               "Helvetica Neue", sans-serif;
+  font-weight: 300;
+}
+
+section#contentPane .section > .contentView h1
+{
+  font-size: 26px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+
+section#contentPane .section > .contentView h2
+{
+  font-size: 22px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+
+section#contentPane .section > .contentView h3
+{
+  font-size: 18px;
+  color: #000;
+  margin: 1.0em 0 0.6em;
+}
+
+section#contentPane .section > .contentView h4
+{
+  font-size: 14px;
+  color: #555;
+  margin: 1.0em 0 0.6em;
+}
+
+section#contentPane .section > .contentView h5
+{
+  font-size: 12px;
+  color: #555;
+  margin: 1.0em 0 0.6em;
+}
+
+#section#contentPane .section.note
+{
+  padding: 20px;
+  background-color: #fff8cc;
+}
+
+/*
+.section-description header
+{
+  display: none;
+}
+
+.section-description
+{
+  padding-top: 20px;
+}
+*/
+
+/* API STYLES */
+
+
+ul.section-list
+{
+  list-style: none;
+}
+
+ul.section-list li
+{
+  list-style-type: none;
+}
+  
+ul.section-list li h4 {
+  margin-top: 0;
+}
+
+ul.method-list
+{
+  list-style: none;
+  margin-bottom: -12px;
+}
+
+ul.method-list:after
+{
+  content: "";
+  display: block;
+  clear: both;
+}
+
+ul.method-list li
+{
+  list-style: none;
+  float: left;
+  display: block;
+  margin-right: 6px;
+  line-height: 100%;
+  margin-bottom: 15px;
+}
+
+ul.method-list li code
+{
+  background-color: #d9f1ff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 4px 6px;
+  -webkit-transition-properties: background-color, color;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-properties: background-color, color;
+  -moz-transition-duration: 0.25s;
+}
+
+ul.method-list li code:hover
+{
+  color: white;
+  background-color: #0087d1;
+}
+
+ul.method-list li code:hover a
+{
+  color: white;
+}
+
+ul.method-list li a,
+ul.method-list li a:link
+{
+  text-decoration: none;
+  border: 0;
+  -webkit-transition-properties: background-color, color;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-properties: background-color, color;
+  -moz-transition-duration: 0.25s;
+}
+
+ul.method-details-list {
+  margin-top: 0;
+}
+
+  li.method-description {
+    margin: 0 0 2.0em;
+    list-style-type: none;
+  }
+  
+    .method-description h4 {
+      margin: 0 0 0.6em;
+      line-height: 90%;
+    }
+    
+    .method-description p {
+      margin: 0.8em 0;
+    }
+  
+  
+ .method-description .method-permalink a {
+  color: #aaa;
+  text-decoration: none;
+  border-bottom: 0;
+  font-size: 14px;
+}
+
+h4.inherited {
+  clear: left;
+  font-size: 15px;
+  font-style: italic;
+}
+
+pre.syntax {
+  margin-bottom: 5px;
+}
+
+ul.argument-list {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+  ul.argument-list li {
+    line-height: 140%;
+    margin-top: 0px;
+    margin-bottom: 5px;
+  }
+  
+    ul.argument-list li code {
+      font-size: 11px;
+    }
+    
+    ul.argument-list .argument-name {
+      background-color: #eeffee;
+      border-color: #6b6;
+    }
+  
+
+/* notes */
+
+p.note,
+p.alias,
+p.related-to {
+  font-size: 11px;
+  line-height: 14px;
+  padding: 5px 20px 5px 60px;
+  background-repeat: no-repeat;
+  background-position: 20px 50%;
+  border: 1px solid #000;
+}
+
+p.note {
+  background-color: #f0f0f4;
+  background-image: url(../../images/pdoc/information.png);
+  border-color: #69c;
+}
+
+p.alias {
+  background-color: #fff6de;
+  background-image: url(../../images/pdoc/alias.png);
+  border-color: #cc9;
+}
+
+p.related-to {
+  background-color: #f4f0f4;
+  background-image: url(../../images/pdoc/related_to.png);
+  border-color: #c9c;
+}
+
+/* Sidebar ---------------------------------------------------------------- */
+
+#sidebar
+{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 239px;
+  background-color: #dee4ea;
+  font-size: 12px;
+  border-right: 1px solid #b4b4b4;
+}
+
+#sidebar form.search-ribbon
+{
+  position: relative;
+  height: 32px;
+  line-height: 32px;
+  display: block;
+  margin: 0 !important;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.05)));
+  list-style: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/* Keep these around for `Control.Tabs`. */
+.sidebar-tabs { display: none; }
+  
+.menu-items ul {
+  margin: 0;
+}
+
+  .menu-items ul li {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .menu-items ul .menu-item a {
+    padding-left: 38px;
+    background-position: 16px 50%;
+  }
+  
+    .menu-items ul ul .menu-item a {
+      padding-left: 48px;
+      background-position: 26px 50%;
+    }
+    
+      .menu-items ul ul ul .menu-item a {
+        padding-left: 58px;
+        background-position: 36px 50%;
+      }
+      
+        .menu-items ul ul ul ul .menu-item a {
+          padding-left: 68px;
+          background-position: 46px 50%;
+        }
+      
+      
+
+    .menu-item a,
+    .menu-item a:link {
+      display: block;
+      padding: 4px 10px 4px 28px;
+      background-position: 6px 50%;
+      background-repeat: no-repeat;
+      text-align: left;
+      text-decoration: none;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+      .menu-item a:hover,
+      .menu-item a.highlighted,
+      #sidebar .highlighted a {
+        background-color: #f0f0ff;
+      }
+
+      .menu-item a.current,
+      #sidebar .current a {
+        background-color: #f0f0ff;
+      }
+
+      .menu-item a.current-parent,
+      #sidebar .current-parent a {
+        background-color: #f0f0ff;
+      }
+
+    .menu-item a.class-method {
+      background-image: url(../../images/pdoc/class_method.png);  
+    }
+    
+    .menu-item a.instance-method {
+      background-image: url(../../images/pdoc/instance_method.png);  
+    }
+
+    .menu-item a.class {
+      background-image: url(../../images/pdoc/class.png);  
+    }
+
+    .menu-item a.constructor {
+      background-image: url(../../images/pdoc/constructor.png);  
+    }
+
+    .menu-item a.class-property {
+      background-image: url(../../images/pdoc/class_property.png);  
+    }
+
+    .menu-item a.instance-property {
+      background-image: url(../../images/pdoc/instance_property.png);  
+    }
+
+    .menu-item a.namespace {
+      background-image: url(../../images/pdoc/namespace.png);  
+    }
+    
+    .menu-item a.mixin {
+      background-image: url(../../images/pdoc/mixin.png);
+    }
+
+    .menu-item a.utility {
+      background-image: url(../../images/pdoc/utility.png);    
+    }
+    
+    .menu-item a.section {
+      margin: 0;
+      background-image: url(../../images/pdoc/section.png);    
+    }
+  
+    #api_menu .menu-item a.section {
+      height: 22px;
+      font-weight: normal;
+      color: #a5a5a5;
+      margin-top: 0;
+      margin-bottom: 0;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+      background: url(../../images/pdoc/section-background.png) repeat-x 0 0;
+    }
+    
+    #api_menu .menu-item a.section:hover {
+      border-color: #69f;
+      color: #D8D9EA;
+      background-image: url(../../images/pdoc/selected-section-background.png);
+    }
+    
+.menu-section {
+  margin-bottom: 1.0em;
+}
+  
+#menu_pane
+{
+  position: absolute;
+  top: 33px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#search_pane
+{
+  position: absolute;
+  top: 33px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+  #search_results {
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 239px;
+  }
+  
+#search
+{
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border: 1px solid #aaa;
+  height: 24px;
+  top: 4px;
+
+
+  border-top: 1px solid rgb(200, 200, 200);
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+  border-left: 1px solid rgb(200, 200, 200);
+  border-left: 1px solid rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgb(200, 200, 200);
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgb(200, 200, 200);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-appearance: textfield;
+  -webkit-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 2px 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#src_code_href {
+  display: none;
+}

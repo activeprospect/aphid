@@ -2,23 +2,47 @@
  * mixin Aphid.Support.Properties
  *
  * This mixin adds support for a common pattern of using accessors and
- * setters.
+ * setters to manipulate properties on an object.
  *
- * Because Internet Explorer does not support custom properties on
- * any objects but DOM objects (and only then on Internet Explorer 8),
- * we must implement our own getter/setter methods in order to support
- * IE.
+ * Any class defined with [[Aphid.Class]] or object that derives from
+ * [[Aphid.Support.Object]] will automatically have property support mixed in to
+ * it.
+ *
 **/
 
 Aphid.Support.Properties = {
 
   /**
-   * Aphid.Support.Properties#get(property) -> Object
+   * Aphid.Support.Properties#get(propertyName) -> Object | Boolean | null
    *
-   * - property (String): name of the property that should be retrieved
+   * - propertyName (String): the name of the property whose value should be
+   *   returned.
    *
-   * Gets the value of the specified +property+. This method will check for a
-   * get_PropertyName_ method definition and will call it, if present.
+   * Accesses and returns the value of the property specified with the
+   * `propertyName` argument.
+   *
+   * ### Implementing Custom Accessors
+   *
+   * You may implement a custom accessor that can transform or otherwise
+   * operate on the property before returning it by implementing a method
+   * named <code>get<em>PropertyName</em></code>, where _PropertyName_ is the
+   * name of the property. For example:
+   *
+   *     firstName: false,
+   *     getFirstName: function()
+   *     {
+   *       return this.firstName.capitalize();
+   *     }
+   *
+   * ### Exceptions
+   *
+   *  - Attempts to access an undefined property will throw an
+   *    `UndefinedPropertyError` exception.
+   *
+   *  - Attempts to access a property on an object that has not been extended
+   *    by [[Aphid.Support.Properties]] will throw an
+   *    `ObjectWithoutPropertiesError` exception.
+   *
   **/
   get: function(property, options)
   {
@@ -40,6 +64,7 @@ Aphid.Support.Properties = {
       throw this._undefinedPropertyError(property);
 
     // Check for Computed Property
+    // TODO Remove this and force the getPropertyName convention to be used...
     if (Object.isFunction(this[property]))
       return this[property](options);
 
@@ -53,14 +78,39 @@ Aphid.Support.Properties = {
   },
 
   /**
-   * Aphid.Support.Properties#set(property, value) -> Object
+   * Aphid.Support.Properties#set(propertyName, value) -> Object | Boolean | null
    *
-   * - property (String): the name of the property whose value should be set
-   * - value (Object): the object to set as the value of the property
+   * - propertyName (String): the name of the property whose value should be
+   *   set.
    *
-   * Sets the specified +property+ to the provided +value+, returning the
-   * +value+ upon success. This method will check for a set_PropertyName_
-   * method definition and will call it, if present.
+   * - value (Object): the new value to set on the property.
+   *
+   * Sets the value of the property specified with the `propertyName`
+   * argument to the value given as the `value` argument.
+   *
+   * ### Implementing Custom Setters
+   *
+   * You may implement a custom setter that can transform or otherwise
+   * operate on the property before returning it by implementing a method
+   * named <code>set<em>PropertyName</em></code>, where _PropertyName_ is the
+   * name of the property. For example:
+   *
+   *     firstName: false,
+   *     setFirstName: function(value)
+   *     {
+   *       this.firstName = value.capitalize();
+   *       return this.value;
+   *     }
+   *
+   * ### Exceptions
+   *
+   *  - Attempts to set an undefined property will throw an
+   *    `UndefinedPropertyError` exception.
+   *
+   *  - Attempts to set a property value on an object that has not been
+   *    extended by [[Aphid.Support.Properties]] will throw an
+   *    `ObjectWithoutPropertiesError` exception.
+   *
   **/
   set: function(property, value)
   {
@@ -77,6 +127,7 @@ Aphid.Support.Properties = {
         throw this._objectWithoutPropertiesError(thisProperty);
     }
 
+    // Ensure that the property is defined
     if (!this.has(property))
       throw this._undefinedPropertyError(property);
 
@@ -91,21 +142,24 @@ Aphid.Support.Properties = {
       return (this[customSetterName](value));
     }
 
+    // Otherwise, set the property value directly...
     return (this[property] = value);
   },
 
   /**
-   * Aphid.Support.Properties#has(property) -> Boolean
+   * Aphid.Support.Properties#has(propertyName) -> Boolean
    *
-   * Returns true or false depending on whether or not the object has the
-   * specified +property+ defined.
+   * - propertyName (String): the name of the property to verify.
+   *
+   * Checks whether or not the specified `propertyName` has been defined on
+   * the object, returning true or false depending on the result.
   **/
   has: function(property)
   {
     return !Object.isUndefined(this[property]);
   },
 
-  // -------------------------------------------------------------------------
+  // Exceptions --------------------------------------------------------------
 
   /*
    * Aphid.Support.Properties#_undefinedPropertyError(property) -> Error
