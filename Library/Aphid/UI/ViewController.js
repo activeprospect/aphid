@@ -119,7 +119,7 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
     if (Object.isUndefined(animated)) animated = false;
 
     // If the view has still not been loaded, delay this call again...
-    if (!viewController.isLoaded)
+    if (!viewController.get("isLoaded"))
     {
       // TODO We need to add a counter to this so that we don't wait longer
       // a few seconds before giving up and raising a warning...
@@ -130,20 +130,22 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
     // Display the Overlay
-    $AppDelegate.mainWindow.displayOverlayAnimated(animated);
+    $AppDelegate.get("mainWindow").displayOverlayAnimated(animated);
 
     // Add the Modal View Controller to the Modal View
     this.get("modalView").setView(viewController);
 
-    // Display the Modal View
+    // Display the Modal View in the Main Window
     if (animated)
       $AppDelegate.get("mainWindow").addSubviewAnimated(this.get("modalView"));
     else
       $AppDelegate.get("mainWindow").addSubview(this.get("modalView"));
 
+    // Set the current Modal View Controller to the presented instance
     this.set("modalViewController", viewController);
-    // TODO This should be parentViewController
-    // this.subviews.push(this.modalViewController);
+
+    // Set the Parent View Controller to this instance
+    viewController.set("parentViewController", this);
   },
 
   /**
