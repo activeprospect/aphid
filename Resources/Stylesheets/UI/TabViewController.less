@@ -116,7 +116,7 @@
 
   /* Content View --------------------------------------------------------- */
 
-  section#contentView
+  section > .contentView
   {
     position: absolute;
     top: @header-height + @header-border-width;
@@ -125,6 +125,7 @@
     bottom: 0;
     background-color: #e3e6e8;
     background-image: url('../Images/Patterns/Background.png');
+    overflow: auto;
   }
 
 }
