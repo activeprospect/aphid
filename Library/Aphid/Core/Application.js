@@ -10,7 +10,7 @@
  *
  * ### Usage Example
  * 
- *     var Application = Class.create(Aphid.Core.Application, {
+ *     var Application = Aphid.Class.create("Application", Aphid.Core.Application, {
  *       initialize: function($super)
  *       {
  *         $super();
@@ -93,9 +93,12 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
    * initialized and can be overloaded in your subclass to perform any actions
    * that need to be performed after initialization has completed.
   **/
-  applicationDidFinishInitialization: function()
+  _applicationDidFinishInitialization: function()
   {
     this.get("mainWindow").dismissLoadingIndicator();
+
+    if (!Object.isUndefined(this.applicationDidFinishInitialization))
+      this.applicationDidFinishInitialization();
   },
 
   /*
@@ -176,8 +179,7 @@ Aphid.Core.Application.bootstrap = function()
   // Application.sharedInstance = false;
   $AppDelegate = Application.sharedInstance;
   $AppDelegate = new Application();
-  if (!Object.isUndefined($AppDelegate.applicationDidFinishInitialization))
-    $AppDelegate.applicationDidFinishInitialization();
+  $AppDelegate._applicationDidFinishInitialization();
 };
 
 document.observe("dom:loaded", Aphid.Core.Application.bootstrap);
