@@ -38,9 +38,9 @@ module Aphid
         puts "Lessifying #{input} to #{output} ..."
         template = File.read(input)
         $LESS_LOAD_PATH = [ "Resources/Stylesheets" ]
-        less = Less::Engine.new(template)
+        @parser ||= Less::Parser.new :paths => $LESS_LOAD_PATH
         File.open(output, 'w') do |file|
-          file.write less.to_css
+          file.write @parser.parse(template).to_css
         end
       rescue => e
         $FAILED = true
