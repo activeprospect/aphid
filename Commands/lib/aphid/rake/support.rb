@@ -65,27 +65,11 @@ module Aphid
 
       def watch_with(tasks)
 
-        begin
-          require "filewatcher"
-        rescue LoadError
-          puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
-          puts "  $ gem install filewatcher"
-          puts "\nand you should be all set!\n\n"
-          exit
-        end
-
-        begin
-          require "ruby-growl"
-          $GROWL = Growl.new("localhost", PROJECT_NAME, ["Build Succeeded", "Build Failed"])
-        rescue LoadError
-          header "Growl Support Notice"
-          puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
-          puts "  $ gem install ruby-growl"
-          puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
-        end
-
         $WATCHING = true
-        header "Waiting for Change(s)"
+
+        watched_paths = [ "Application", "Library", "Resources", "Public",
+                          "Vendor/Aphid/Build" ]
+
         watched_files = Dir["Application/**/*.js"] \
                       + Dir["Library/**/*.js"] \
                       + Dir["Resources/Stylesheets/**/*.less"] \
@@ -93,28 +77,87 @@ module Aphid
                       + Dir["Resources/Images/**/*"] \
                       + Dir["Public/**/*"] \
                       + [ "Vendor/Aphid/Build/.buildstamp" ]
-        FileWatcher.new(watched_files).watch do |filename|
-          puts filename + " was changed. Rebuilding project...\n"
-          tasks.each { |task| Rake::Task[task].reenable }
-          tasks.each do |task|
-            if $FAILED
-              puts
-              header "Build Failed!"
-              break
-            end
-            Rake::Task[task].invoke
+
+        if RUBY_PLATFORM.downcase.include? "darwin"
+          begin
+            require "rb-fsevent"
+          rescue LoadError
+            puts "\nYou'll need rb-fsevent to watch for changes. Simply run:\n\n"
+            puts "  $ gem install rb-fsevent"
+            puts "\nand you should be all set!\n\n"
+            exit
           end
-          if $GROWL and $WATCHING and not $FAILED
-            begin
-              $GROWL.notify "Build Succeeded", "#{PROJECT_NAME} Build Succeeded",
-                "Automated build of #{PROJECT_NAME} has completed successfully."
-            rescue Errno::ECONNREFUSED
-              puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
-            end
+
+          begin
+            require "ruby-growl"
+            $GROWL = Growl.new("localhost", PROJECT_NAME, ["Build Succeeded", "Build Failed"])
+          rescue LoadError
+            header "Growl Support Notice"
+            puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
+            puts "  $ gem install ruby-growl"
+            puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
           end
-          $FAILED = false
+
           header "Waiting for Change(s)"
+
+          options = { :latency => 2.5 }
+          fsevent = FSEvent.new
+          fsevent.watch watched_paths, options do |directories|
+            tasks.each { |task| Rake::Task[task].reenable }
+            tasks.each do |task|
+              if $FAILED
+                puts
+                header "Build Failed!"
+                break
+              end
+              Rake::Task[task].invoke
+            end
+            if $GROWL and $WATCHING and not $FAILED
+              begin
+                $GROWL.notify "Build Succeeded", "#{PROJECT_NAME} Build Succeeded",
+                  "Automated build of #{PROJECT_NAME} has completed successfully."
+              rescue Errno::ECONNREFUSED
+                puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+              end
+            end
+            $FAILED = false
+            header "Waiting for Change(s)"
+          end
+          fsevent.run
+        else
+          begin
+            require "filewatcher"
+          rescue LoadError
+            puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
+            puts "  $ gem install filewatcher"
+            puts "\nand you should be all set!\n\n"
+            exit
+          end
+
+          FileWatcher.new(watched_files).watch do |filename|
+            puts filename + " was changed. Rebuilding project...\n"
+            tasks.each { |task| Rake::Task[task].reenable }
+            tasks.each do |task|
+              if $FAILED
+                puts
+                header "Build Failed!"
+                break
+              end
+              Rake::Task[task].invoke
+            end
+            if $GROWL and $WATCHING and not $FAILED
+              begin
+                $GROWL.notify "Build Succeeded", "#{PROJECT_NAME} Build Succeeded",
+                  "Automated build of #{PROJECT_NAME} has completed successfully."
+              rescue Errno::ECONNREFUSED
+                puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+              end
+            end
+            $FAILED = false
+            header "Waiting for Change(s)"
+          end
         end
+
       end
 
       # ------------------------------------------------------------------------
