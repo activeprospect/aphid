@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added support for transitions to showAnimated and
+   hideAnimated.
+
  * [Tools] Added support for watching changes with OSX FSEvents API by way of
    the rb-fsevent library. This has the distinct advantage to picking up new,
    removed or renamed files.
