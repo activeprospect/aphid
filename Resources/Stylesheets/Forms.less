@@ -81,14 +81,9 @@ input[type=submit]
   background-color: transparent;
   background-image: url("../Images/Gradients/Light.png");
   background-image: none, url("../Images/Gradients/Light.svg");
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.025)), to(rgba(0, 0, 0, 0.15)));
-  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
-  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
-  background-image: linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
+  .linear-gradient(rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
 
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+  .border-radius(2px);
 
   -webkit-box-shadow: inset 1px 1px 0px rgba(0, 0, 0, 0.25),
                       1px 1px 0px rgba(255, 255, 255, 1),
@@ -106,7 +101,7 @@ input[type=submit]
   border: 1px solid rgb(195, 195, 195);
   border: 0px solid rgba(255, 255, 255, 0);
 
-  ::-moz-focus-inner { border: 0; }
+  &::-moz-focus-inner { border: 0; }
 
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -144,7 +139,7 @@ input[type=submit]
     border-left: 1px solid rgba(255, 255, 255, 0.5);
   }
 
-  :hover
+  &:hover
   {
     background-color: rgba(255, 255, 255, 0.9);
   }
@@ -160,10 +155,7 @@ input[type=submit].on
   background-color: rgba(255, 255, 255, 0.9);
   background-image: url("../Images/Gradients/Light Reversed.png");
   background-image: none, url("../Images/Gradients/Light Reversed.svg");
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0.0)));
-  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-  background-image: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  .linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
 }
 
 button.disabled,
@@ -174,9 +166,10 @@ input[type=submit].disabled
   background-color: transparent;
   background-image: url("../Images/Gradients/Light.png") !important;
   background-image: none, url("../Images/Gradients/Light.svg") !important;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.025)), to(rgba(0, 0, 0, 0.15))) !important;
   background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15)) !important;
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15)) !important;
   background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15)) !important;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.025)), to(rgba(0, 0, 0, 0.15))) !important;
   background-image: linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15)) !important;
 }
 
@@ -184,16 +177,13 @@ input[type=submit].disabled
 
 button.destructive
 {
-  :hover
+  &:hover
   {
     background-color: rgb(196, 72, 72);
     background-color: rgba(184, 2, 0, 0.7);
     background-image: url("../Images/Gradients/Light.png");
     background-image: none, url("../Images/Gradients/Light.svg");
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.025)), to(rgba(0, 0, 0, 0.15)));
-    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
-    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
-    background-image: linear-gradient(top, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
+    .linear-gradient(rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.15));
     color: white;
     text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: inset 1px 1px 0px rgba(0, 0, 0, 0.25),
@@ -219,8 +209,9 @@ button.destructive.on
   background-color: rgba(184, 2, 0, 0.7);
   background-image: url("../Images/Gradients/Light Reversed.png") !important;
   background-image: none, url("../Images/Gradients/Light Reversed.svg") !important;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0.0))) !important;
   background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) !important;
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) !important;
   background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) !important;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0.0))) !important;
   background-image: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) !important;
 }

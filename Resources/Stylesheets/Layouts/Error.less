@@ -24,9 +24,7 @@ body.errorLayout section#mainSection
   overflow-y: auto;
   overflow-x: hidden;
 
-  -webkit-border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  border-radius: 0.5em;
+  .border-radius(0.5em);
 
   -webkit-box-shadow: 0 0 0.5em #ddd;
   -moz-box-shadow: 0 0 0.5em #ddd;
@@ -46,8 +44,7 @@ body.errorLayout header
   border-bottom: 0.1em solid #aaa;
 
   background-color: #ddd;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#f3f4f5), to(#ddd));
-  background-image: -moz-linear-gradient(top, #f3f4f5, #ddd);
+  .linear-gradient(#f3f4f5, #ddd);
 
   line-height: 6em;
 

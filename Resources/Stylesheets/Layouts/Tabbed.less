@@ -183,8 +183,7 @@ nav#primaryNavigation li[data-badge]:after
   color: white;
   font-weight: bold;
   text-align: center;
-  -webkit-border-radius: 1em;
-  -moz-border-radius: 1em;
+  .border-radius(1em);
   border: 0.4em solid white;
 }
 */
@@ -225,8 +224,7 @@ body.tabbedLayout[data-section='jobs'] li#jobsTab > a,
 body.tabbedLayout[data-section='servers'] li#serversTab > a
 {
   background-color: #ddd;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f4f5));
-  background-image: -moz-linear-gradient(top, #fff, #f3f4f5);
+  .linear-gradient(#fff, #f3f4f5);
   color: #222;
   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
   z-index: 101;
@@ -296,9 +294,7 @@ body.tabbedLayout aside nav#sectionNavigation
 {
   background-color: white;
   border: 0.1em solid #cdcdcd;
-  -webkit-border-radius: 0.6em;
-  -moz-border-radius: 0.6em;
-  border-radius: 0.6em;
+  .border-radius(0.6em);
 }
 
 body.tabbedLayout aside nav#sectionNavigation a
@@ -335,9 +331,7 @@ body.tabbedLayout aside nav#sectionNavigation li:after
   font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;
   font-weight: bold;
   color: #888;
-  -webkit-border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  border-radius: 0.5em;
+  .border-radius(0.5em);
 }
 
 body.tabbedLayout aside nav#sectionNavigation li.current:after
@@ -364,8 +358,7 @@ body.tabbedLayout aside nav#sectionNavigation li.current:last-of-type a
 body.tabbedLayout aside nav#sectionNavigation li.current a
 {
   background-color: #336699;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#586c8c), to(#224272));
-  background-image: -moz-linear-gradient(top, #586c8c, #224272);
+  .linear-gradient(#586c8c, #224272);
   color: white;
   text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
 }
@@ -388,14 +381,11 @@ body.tabbedLayout aside ul#sectionActions li a
   font-weight: bold;
   color: #555;
   text-align: center;
-  -webkit-border-radius: 0.6em;
-  -moz-border-radius: 0.6em;
-  border-radius: 0.6em;
+  .border-radius(0.6em);
   padding: 0.8em 1.2em;
   border: 0.1em solid #cdcdcd;
   background-color: #ddd;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-  background-image: -moz-linear-gradient(top, #fff, #ddd);
+  .linear-gradient(#fff, #ddd);
   cursor: default;
   outline: none;
 }
@@ -403,16 +393,14 @@ body.tabbedLayout aside ul#sectionActions li a
 body.tabbedLayout aside ul#sectionActions li a:hover
 {
   background-color: #eee;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
-  background-image: -moz-linear-gradient(top, #fff, #eee);
+  .linear-gradient(#fff, #eee);
   color: #222;
 }
 
 body.tabbedLayout aside ul#sectionActions li a:active
 {
   background-color: #ddd;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#fff));
-  background-image: -moz-linear-gradient(top, #ddd, #fff);
+  .linear-gradient(#ddd, #fff);
   color: #222;
 }
 

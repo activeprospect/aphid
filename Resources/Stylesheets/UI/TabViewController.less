@@ -24,9 +24,7 @@
     border-bottom: @header-border-width solid #3b4046;
 
     background-color: #464d53;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#464d53), to(#2b3036));
-    background-image: -moz-linear-gradient(top, #464d53, #2b3036);
-    background-image: -o-linear-gradient(top, #464d53, #2b3036);
+    .linear-gradient(#464d53, #2b3036);
 
     cursor: default;
     z-index: 1;
@@ -85,9 +83,7 @@
       text-shadow: 0 -0.1em 0.1em rgba(0, 0, 0, 0.9);
       font-weight: bold;
 
-      -webkit-border-radius: 0.3em;
-      -moz-border-radius: 0.3em;
-      border-radius: 0.3em;
+      .border-radius(0.3em);
     }
 
     li:not(.current):hover
@@ -107,8 +103,7 @@
       color: white;
       text-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
       background-color: rgba(255, 255, 255, 0.3);
-      background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.3)));
-      background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+      .linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
       -webkit-box-shadow: inset 0 0 0.25em rgba(0, 0, 0, 0.5), 0 0 0.1em rgba(0, 0, 0, 0.9);
       -moz-box-shadow: inset 0 0 0.25em rgba(0, 0, 0, 0.5), 0 0 0.1em rgba(0, 0, 0, 0.9);
     }

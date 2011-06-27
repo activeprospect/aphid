@@ -11,9 +11,7 @@
   border: 2px solid rgb(0, 0, 0) !important;
   border: 2px solid rgba(0, 0, 0, 0.9) !important;
 
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+  .border-radius(2px);
 
   color: white;
   text-align: center;
@@ -44,9 +42,11 @@
 
     background: rgb(0, 0, 0);
     background: rgba(0, 0, 0, 0.825);
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.75)), to(rgba(0, 0, 0, 0.95)));
     background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95));
+    background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95));
     background: -o-linear-gradient(top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95));
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.75)), to(rgba(0, 0, 0, 0.95)));
+    background: linear-gradient(top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95));
 
     -webkit-box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.25);
     -moz-box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.25);

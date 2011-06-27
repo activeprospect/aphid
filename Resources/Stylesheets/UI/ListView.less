@@ -24,7 +24,7 @@ ul.ListView
     height: 3em;
     padding-left: 1em;
 
-    :nth-of-type(even)
+    &:nth-of-type(even)
     {
       background-color: #f3f4f5;
     }
@@ -34,8 +34,7 @@ ul.ListView
   {
     text-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.7);
     background-color: #bac7d1;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#bac7d1), to(#94a3b1));
-    background-image: -moz-linear-gradient(top, #bac7d1, #94a3b1);
+    .linear-gradient(#bac7d1, #94a3b1);
   }
 
 }

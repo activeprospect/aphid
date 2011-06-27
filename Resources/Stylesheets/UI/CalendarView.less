@@ -7,10 +7,9 @@ section.CalendarView
   bottom: 0;
   left: 0;
 
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#838485));
-  background-image: -moz-linear-gradient(top, #fff, #838485);
+  .linear-gradient(#fff, #838485);
 
-  -webkit-border-radius: 3px;
+  .border-radius(3px);
 
   z-index: 1;
 
@@ -49,14 +48,14 @@ section.CalendarView
 
         th
         {
-          :hover
+          &:hover
           {
             background-color: #34ABFA;
             cursor: pointer;
-            -webkit-border-radius: 3px;
+            .border-radius(3px);
             color: white;
           }
-          :active
+          &:active
           {
             background-color: #cde;
           }
@@ -84,14 +83,14 @@ section.CalendarView
         text-align: center;
         cursor: pointer;
 
-        :hover
+        &:hover
         {
           background-color: #34ABFA;
           cursor: pointer;
-          -webkit-border-radius: 3px;
+          .border-radius(3px);
           color: white;
         }
-        :active
+        &:active
         {
           background-color: #cde;
         }
