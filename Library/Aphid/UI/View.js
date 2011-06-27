@@ -504,6 +504,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       view.get("element").setStyle({ "visibility": "visible", "opacity": 0 });
       switch (transition)
       {
+
         case Aphid.UI.View.SlideLeftTransition:
           view.get("element").setStyle({
             left: this.get("element").getWidth() + "px",
@@ -523,6 +524,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             duration: 0.35
           });
           break;
+
         case Aphid.UI.View.SlideRightTransition:
           view.get("element").setStyle({
             left: -this.get("element").getWidth() + "px",
@@ -542,6 +544,47 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             duration: 0.35
           });
           break;
+
+        case Aphid.UI.View.SlideUpTransition:
+          view.get("element").setStyle({
+            top: (this.get("element").getHeight()) + "px",
+            bottom: -(this.get("element").getHeight()) + "px"
+          });
+          view.get("element").morph({
+            top: "0px",
+            bottom: "0px"
+          },
+          {
+            duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
+            afterFinish: this._viewDidAppear.bind(this, true)
+          });
+          new Effect.Opacity(view.get("element"), {
+            to: 1,
+            duration: 0.35
+          });
+          break;
+
+        case Aphid.UI.View.SlideDownTransition:
+          view.get("element").setStyle({
+            top: -(this.get("element").getHeight()) + "px",
+            bottom: (this.get("element").getHeight()) + "px"
+          });
+          view.get("element").morph({
+            top: "0px",
+            bottom: "0px"
+          },
+          {
+            duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
+            afterFinish: this._viewDidAppear.bind(this, true)
+          });
+          new Effect.Opacity(view.get("element"), {
+            to: 1,
+            duration: 0.35
+          });
+          break;
+
         default:
           view.get("element").appear({
             duration: 0.25,
@@ -631,6 +674,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             duration: 0.35
           });
           break;
+
         case Aphid.UI.View.SlideRightTransition:
           this.get("element").morph({
             left: (this.get("element").getWidth()) + "px",
@@ -646,6 +690,39 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             duration: 0.35
           });
           break;
+
+        case Aphid.UI.View.SlideUpTransition:
+          this.get("element").morph({
+            top: -(this.get("element").getHeight()) + "px",
+            bottom: (this.get("element").getHeight()) + "px"
+          },
+          {
+            duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
+            afterFinish: this._viewDidDisappear.bind(this, true)
+          });
+          new Effect.Opacity(this.get("element"), {
+            to: 0,
+            duration: 0.35
+          });
+          break;
+
+        case Aphid.UI.View.SlideDownTransition:
+          this.get("element").morph({
+            top: (this.get("element").getHeight()) + "px",
+            bottom: -(this.get("element").getHeight()) + "px"
+          },
+          {
+            duration: 0.35,
+            transition: Effect.Transitions.sinoidal,
+            afterFinish: this._viewDidDisappear.bind(this, true)
+          });
+          new Effect.Opacity(this.get("element"), {
+            to: 0,
+            duration: 0.35
+          });
+          break;
+
         default:
           this.get("element").fade({
             duration: 0.25,
@@ -953,6 +1030,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Hide the View
     switch(transition)
     {
+
       case Aphid.UI.View.SlideLeftTransition:
         this.get("element").morph({
           left: -(this.get("element").getWidth()) + "px",
@@ -969,6 +1047,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         });
         this.hide.bind(this).delay(0.35);
         break;
+
       case Aphid.UI.View.SlideRightTransition:
         this.get("element").morph({
           left: (this.get("element").getWidth()) + "px",
@@ -983,15 +1062,50 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           to: 0,
           duration: 0.35
         });
-        // this.hide.bind(this).delay(0.35);
+        this.hide.bind(this).delay(0.35);
         break;
+
+      case Aphid.UI.View.SlideUpTransition:
+        this.get("element").morph({
+          top: -(this.get("element").getHeight()) + "px",
+          bottom: (this.get("element").getHeight()) + "px"
+        },
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal,
+          afterFinish: this._viewDidDisappear.bind(this, true)
+        });
+        new Effect.Opacity(this.get("element"), {
+          to: 0,
+          duration: 0.35
+        });
+        this.hide.bind(this).delay(0.35);
+        break;
+
+      case Aphid.UI.View.SlideDownTransition:
+        this.get("element").morph({
+          top: (this.get("element").getHeight()) + "px",
+          bottom: -(this.get("element").getHeight()) + "px"
+        },
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal,
+          afterFinish: this._viewDidDisappear.bind(this, true)
+        });
+        new Effect.Opacity(this.get("element"), {
+          to: 0,
+          duration: 0.35
+        });
+        this.hide.bind(this).delay(0.35);
+        break;
+
       default:
         this.get("element").fade({
           duration: 0.25,
           queue: { scope: this.scopeIdentifier(), position: "end" },
           afterFinish: this._viewDidDisappear.bind(this, true)
         });
-        // this.hide.bind(this).delay(0.25);
+        this.hide.bind(this).delay(0.25);
         break;
     }
 
@@ -1025,38 +1139,17 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     if (Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
-    $L.error("transition: " + this.get("element").getWidth());
-
     // Call "View Will Appear" Callback
     this._viewWillAppear(true);
 
     // Show the View
     switch (transition)
     {
+
       case Aphid.UI.View.SlideLeftTransition:
         this.get("element").setStyle({
-          left: this.get("element").getWidth() + "px",
-          right: -this.get("element").getWidth() + "px"
-        });
-        this.set("hidden", false);
-        this.get("element").morph({
-          left: "0px",
-          right: "0px"
-        },
-        {
-          duration: 0.35,
-          transition: Effect.Transitions.sinoidal,
-          afterFinish: this._viewDidAppear.bind(this, true)
-        });
-        new Effect.Opacity(this.get("element"), {
-          to: 1,
-          duration: 0.35
-        });
-        break;
-      case Aphid.UI.View.SlideRightTransition:
-        this.get("element").setStyle({
-          left: -this.get("element").getWidth() + "px",
-          right: this.get("element").getWidth() + "px"
+          left: (this.get("element").getWidth()) + "px",
+          right: -(this.get("element").getWidth()) + "px"
         });
         this.get("element").morph({
           left: "0px",
@@ -1073,6 +1166,71 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         });
         this.show.bind(this).delay(0.35);
         break;
+
+      case Aphid.UI.View.SlideRightTransition:
+        this.get("element").setStyle({
+          left: -(this.get("element").getWidth()) + "px",
+          right: (this.get("element").getWidth()) + "px"
+        });
+        this.get("element").morph({
+          left: "0px",
+          right: "0px"
+        },
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal,
+          afterFinish: this._viewDidAppear.bind(this, true)
+        });
+        new Effect.Opacity(this.get("element"), {
+          to: 1,
+          duration: 0.35
+        });
+        this.show.bind(this).delay(0.35);
+        break;
+
+      case Aphid.UI.View.SlideUpTransition:
+        this.get("element").setStyle({
+          top: (this.get("element").getHeight()) + "px",
+          bottom: -(this.get("element").getHeight()) + "px"
+        });
+        this.set("hidden", false);
+        this.get("element").morph({
+          top: "0px",
+          bottom: "0px"
+        },
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal,
+          afterFinish: this._viewDidAppear.bind(this, true)
+        });
+        new Effect.Opacity(this.get("element"), {
+          to: 1,
+          duration: 0.35
+        });
+        this.show.bind(this).delay(0.35);
+        break;
+
+      case Aphid.UI.View.SlideDownTransition:
+        this.get("element").setStyle({
+          top: -(this.get("element").getHeight()) + "px",
+          bottom: (this.get("element").getHeight()) + "px"
+        });
+        this.get("element").morph({
+          top: "0px",
+          bottom: "0px"
+        },
+        {
+          duration: 0.35,
+          transition: Effect.Transitions.sinoidal,
+          afterFinish: this._viewDidAppear.bind(this, true)
+        });
+        new Effect.Opacity(this.get("element"), {
+          to: 1,
+          duration: 0.35
+        });
+        this.show.bind(this).delay(0.35);
+        break;
+
       default:
         this.get("element").appear({
           duration: 0.25,
@@ -1895,3 +2053,21 @@ Aphid.UI.View.SlideLeftTransition = 1;
 * in from the left.
 **/
 Aphid.UI.View.SlideRightTransition = 2;
+
+/**
+ * Aphid.UI.View.SlideUpTransition -> 3
+ *
+ * The slide up transition will slide the view to be removed out of the
+ * viewable area to the top while simultaneously sliding the view to be added
+ * in from the bottom.
+**/
+Aphid.UI.View.SlideUpTransition = 3;
+
+/**
+ * Aphid.UI.View.SlideDownTransition -> 4
+ *
+ * The slide down transition will slide the view to be removed out of the
+ * viewable area to the bottom while simultaneously sliding the view to be
+ * added in from the top.
+**/
+Aphid.UI.View.SlideDownTransition = 4;

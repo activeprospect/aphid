@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Added two new transitions: SlideUpTransition and
+   SlideDownTransition.
+
  * [Aphid.UI.View] Added support for transitions to showAnimated and
    hideAnimated.
 
