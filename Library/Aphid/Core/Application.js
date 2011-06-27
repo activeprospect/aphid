@@ -163,8 +163,8 @@ Aphid.Core.Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Supp
 Aphid.Core.Application.bootstrap = function()
 {
 
-  // If the user is using IE6, send them to the unsupported page...
-  // TODO Expand this to a blacklist so that we can blacklist early Firefox and others
+  // If the user is running a blacklisted browser, redirect them to the
+  // "Browser Unsupported" page...
   if (Prototype.Browser.IE6 || Prototype.Browser.IE7)
   {
     window.location.href = "Vendor/Aphid/Resources/Templates/Unsupported.html";
@@ -176,10 +176,10 @@ Aphid.Core.Application.bootstrap = function()
     $L.warn("Initializing a default application delegate as 'Application' ... You should define your own Aphid.Core.Application subclass.", this);
     Application = Aphid.Class.create("Aphid.Core.Application", Aphid.Core.Application);
   }
-  // Application.sharedInstance = false;
-  $AppDelegate = Application.sharedInstance;
+
   $AppDelegate = new Application();
   $AppDelegate._applicationDidFinishInitialization();
+
 };
 
 document.observe("dom:loaded", Aphid.Core.Application.bootstrap);
