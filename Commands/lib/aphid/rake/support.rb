@@ -145,14 +145,6 @@ module Aphid
               end
               Rake::Task[task].invoke
             end
-            if $GROWL and $WATCHING and not $FAILED
-              begin
-                $GROWL.notify "Build Succeeded", "#{PROJECT_NAME} Build Succeeded",
-                  "Automated build of #{PROJECT_NAME} has completed successfully."
-              rescue Errno::ECONNREFUSED
-                puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
-              end
-            end
             $FAILED = false
             header "Waiting for Change(s)"
           end
