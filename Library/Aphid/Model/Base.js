@@ -1,29 +1,50 @@
 /**
  * class Aphid.Model.Base < Aphid.Support.Object
  *
- * #### Callback Methods
+ *
+ *
+ * # Implementation Example
+ *
+ *     var Widget = Aphid.Class.create("Widget", Aphid.Model.Base, {
+ *       siteUrl: "http://example.com/api",
+ *       instancePath: "/widgets/#{identifier}.json",
+ *       collectionPath: "/widgets.json"
+ *     });
+ *
+ * # Usage Example
+ *
+ *     this.widgets = Widget.loadCollection({ delegate: this });
+ *     ...
+ *     modelDidFinishLoading: function(model)
+ *     {
+ *     }
+ *
+ * # Callback Methods
  *
  *  - `afterLoad`
  *  - `afterReload`
  *  - `afterDestroy`
  *
- * #### Delegate Methods
+ * # Delegate Methods
  *
  *  - `modelDidFinishLoading(model)`
  *  - `modelDidFinishReloading(model)`
  *  - `modelWasDestroyed(model)`
+ *  - `modelDidFailWithError(model, transport)`
  *
- * #### Posted Notifications
+ * # Posted Notifications
  *
  *  - `ModelDidLoadNotification`
  *  - `ModelDidReloadNotification`
  *  - `ModelWasDestroyedNotification`
+ *  - `ModelFailureNotification`
  *
 **/
 
 //= require "CollectionProxy"
 
-Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, {
+Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
+{
 
   /**
    * Aphid.Model.Base#identifierProperty -> String | "id"
@@ -32,6 +53,14 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object, 
 
   /**
    * Aphid.Model.Base#siteUrl -> String | false
+   *
+   * This is the base site URL that will be used when constructing the
+   * URLs for operating on instances or collections of this model.
+   *
+   * # Example
+   *
+   *    "http://www.example.com/api"
+   *
   **/
   siteUrl: window.location.protocol + "//" + window.location.host,
 
