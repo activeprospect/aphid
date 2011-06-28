@@ -1151,6 +1151,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           left: (this.get("element").getWidth()) + "px",
           right: -(this.get("element").getWidth()) + "px"
         });
+        this.set("hidden", false);
         this.get("element").morph({
           left: "0px",
           right: "0px"
@@ -1172,6 +1173,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           left: -(this.get("element").getWidth()) + "px",
           right: (this.get("element").getWidth()) + "px"
         });
+        this.set("hidden", false);
         this.get("element").morph({
           left: "0px",
           right: "0px"
@@ -1215,6 +1217,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           top: -(this.get("element").getHeight()) + "px",
           bottom: (this.get("element").getHeight()) + "px"
         });
+        this.set("hidden", false);
         this.get("element").morph({
           top: "0px",
           bottom: "0px"
