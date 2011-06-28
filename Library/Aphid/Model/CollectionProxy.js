@@ -1,5 +1,5 @@
 /**
- * class Aphid.Model.Base < Aphid.Support.Object
+ * class Aphid.Model.CollectionProxy < Aphid.Support.Object
 **/
 
 Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", Aphid.Support.Object, {

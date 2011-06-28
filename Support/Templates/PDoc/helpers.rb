@@ -15,7 +15,7 @@ module PDoc
           end
 
           def parse_description(description)
-            description.gsub(/<li>([^\s]+)\s+\((.*)\):\s+(.*)<\/li>/, '<li><span class="argumentName">\1</span><span class="argumentTypes">\2</span><span class="argumentDescription">\3</span></li>')
+            description.gsub(/<li>\s*(<p>)?\s*([^\s]+)\s+\((.*)\):\s+(.*)\s*(<\/p>)?\s*<\/li>/, '<li><span class="argumentName">\2</span><span class="argumentTypes">\3</span><span class="argumentDescription">\4</span></li>')
           end
         end
         

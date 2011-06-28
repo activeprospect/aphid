@@ -1,5 +1,5 @@
 <% if object.description && !object.description.empty? %>
   <%= layout_section %>
-    <%= htmlize(object.description) %>
+    <%= parse_description htmlize(object.description) %>
   <%= end_layout_section %>
 <% end %>
