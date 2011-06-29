@@ -1024,6 +1024,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     if (Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
+    // TODO If the view is already hidden, don't attempt to re-animated it...
+
     // Call "View Will Disappear" Callback
     this._viewWillDisappear(true);
 
@@ -1139,6 +1141,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     if (Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
+    // TODO If the view is already visible, don't attempt to re-animated it...
+
     // Call "View Will Appear" Callback
     this._viewWillAppear(true);
 
@@ -1149,7 +1153,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       case Aphid.UI.View.SlideLeftTransition:
         this.get("element").setStyle({
           left: (this.get("element").getWidth()) + "px",
-          right: -(this.get("element").getWidth()) + "px"
+          right: -(this.get("element").getWidth()) + "px",
+          opacity: 0
         });
         this.set("hidden", false);
         this.get("element").morph({
@@ -1171,7 +1176,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       case Aphid.UI.View.SlideRightTransition:
         this.get("element").setStyle({
           left: -(this.get("element").getWidth()) + "px",
-          right: (this.get("element").getWidth()) + "px"
+          right: (this.get("element").getWidth()) + "px",
+          opacity: 0
         });
         this.set("hidden", false);
         this.get("element").morph({
@@ -1193,7 +1199,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       case Aphid.UI.View.SlideUpTransition:
         this.get("element").setStyle({
           top: (this.get("element").getHeight()) + "px",
-          bottom: -(this.get("element").getHeight()) + "px"
+          bottom: -(this.get("element").getHeight()) + "px",
+          opacity: 0
         });
         this.set("hidden", false);
         this.get("element").morph({
@@ -1215,7 +1222,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       case Aphid.UI.View.SlideDownTransition:
         this.get("element").setStyle({
           top: -(this.get("element").getHeight()) + "px",
-          bottom: (this.get("element").getHeight()) + "px"
+          bottom: (this.get("element").getHeight()) + "px",
+          opacity: 0
         });
         this.set("hidden", false);
         this.get("element").morph({
@@ -1235,6 +1243,8 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         break;
 
       default:
+        this.get("element").setStyle({ opacity: 0 });
+        this.set("hidden", false);
         this.get("element").appear({
           duration: 0.25,
           queue: { scope: this.scopeIdentifier(), position: "end" },
