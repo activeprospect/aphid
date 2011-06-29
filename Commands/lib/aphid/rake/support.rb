@@ -46,7 +46,7 @@ module Aphid
         $FAILED = true
         if $WATCHING and $GROWL
           prefix = "An "
-          if e.instance_of? Less::SyntaxError
+          if e.instance_of? Less::ParseError
             prefix = "A syntax"
           end
           begin
@@ -57,6 +57,7 @@ module Aphid
           end
         end
         puts e
+        @parser = nil
         exit unless $WATCHING
         false
       end
