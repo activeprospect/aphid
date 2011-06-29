@@ -5,7 +5,7 @@
 
 Aphid.UI.Controls.SelectViewOption = Aphid.Class.create("Aphid.UI.Controls.SelectViewOption", Aphid.UI.View, {
 
-  tagName: "option",
+  tagName: "li",
 
   /**
    * Aphid.UI.Controls.SelectViewOption#selectView -> Aphid.UI.Controls.SelectView
@@ -45,17 +45,24 @@ Aphid.UI.Controls.SelectViewOption = Aphid.Class.create("Aphid.UI.Controls.Selec
         options.label = element.innerHTML;
       if (Object.isUndefined(options.value))
         options.value = element.readAttribute("value");
+      options.element = false;
     }
 
     $super(options);
   },
 
-  toListItemElement: function()
+  setLabel: function(label)
   {
-    var listItemElement = new Element("li");
-    listItemElement.update(this.get("label"));
-    listItemElement.setData("value", this.get("value"));
-    return listItemElement;
+    this.label = label;
+    this.get("element").update(label);
+    return label;
+  },
+
+  setValue: function(value)
+  {
+    this.value = value;
+    this.get("element").setData("value", value);
+    return value;
   }
 
 });
