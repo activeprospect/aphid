@@ -36,7 +36,7 @@ Aphid.Support.Object = Class.create({
    *  - callback (Function): the method reference that will be invoked when
    *    the notification is posted
    *  - notificationName (String): the name of the notification to observe
-   *  - sender (String): an optional object reference to scope observation to
+   *  - sender (Object): an optional object reference to scope observation to
    *
    * Registers an observer that will be notified whenever the notification has
    * been posted anywhere in the application. See [[Aphid.Core.NotificationCenter]]
