@@ -14,7 +14,7 @@ Aphid.Support.Extensions.Date = {
    * Formats the *date* according to the directives given in the *format*
    * string.
    *
-   * ## Format Components
+   * # Format Components
    *
    * The format string may contain the following formatting components. Any
    * string not matching the following will simply be passed through:
@@ -43,15 +43,15 @@ Aphid.Support.Extensions.Date = {
    *     %Y  // Year with century (2010)
    *     %z  // Time Zone Offset (-4, -6, +10, ...)
    *
-   * ## Examples
+   * # Examples
    *
-   * #### "January 1, 2010"
+   * ## "January 1, 2010"
    *
-   *     date.strftime("%B %d, %Y")
+   *     date.strftime("%B %d, %Y");
    *
-   * #### "Modified on Tuesday at 4:20 PM"
+   * ## "Modified on Tuesday at 4:20 PM"
    *
-   *     date.strftime("Modified on %A at %h:%MM %P")
+   *     date.strftime("Modified on %A at %h:%MM %P");
    *
   **/
   strftime: function(format)
