@@ -9,19 +9,23 @@ section.ModalView
   left: 50%;
   top: 50%;
 
+  overflow: hidden;
+  z-index: @modal-z-index;
+
   height: 400px;
   width: 600px;
 
   margin-top: -200px;
   margin-left: -300px;
 
-  background-color: white;
-  outline: 0.1em solid black;
+  background-color: black;
+  border: 3px solid black;
 
-  z-index: @modal-z-index;
-  .border-radius(5px);
+  .border-radius(7px);
 
-  -webkit-box-shadow: 0 0 3em rgba(0, 0, 0, 1);
+  -webkit-box-shadow: 0 0 48px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 0 0 48px rgba(0, 0, 0, 1);
+  box-shadow: 0 0 48px rgba(0, 0, 0, 1);
 }
 
 section.ModalView.dialog

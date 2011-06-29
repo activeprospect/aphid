@@ -31,24 +31,42 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   modalViewController: false,
 
   /**
-   * Aphid.UI.ViewController#viewControllers -> Array | false
-  **/
-  viewControllers: false,
-
-  /**
    * Aphid.UI.ViewController#parentViewController -> Aphid.UI.ViewController | false
+   *
+   * The view controller instance that this view controller belongs to and is
+   * being managed by. This will be false if the view controller is not being
+   * managed by another view controller.
   **/
   parentViewController: false,
 
-  // Accessors ---------------------------------------------------------------
+  /**
+   * Aphid.UI.ViewController#navigationController -> Aphid.UI.NavigationController | false
+  **/
+  navigationController: false,
+
+  // Initialization ----------------------------------------------------------
 
   /**
+   * new Aphid.UI.ViewController([options])
+   *
+   * - options (Hash): Initial property values to set on the View Controller instance
+   *
+   * Initializes a new View Controller instance with the given *options*.
+  **/
+  initialize: function($super, options)
+  {
+    $super(options);
+  },
+
+  // Accessors ---------------------------------------------------------------
+
+  /*
    * Aphid.UI.ViewController#getModalView() -> Aphid.UI.ModalView
    *
-   * Returns the Aphid.UI.ModalView instance that will contain the presented
-   * modal view controller. This accessor will lazily initialize the instance,
-   * if necessary.
-  **/
+   * Returns the [[Aphid.UI.ModalView]] instance that will contain the
+   * presented modal view controller. This accessor will lazily initialize the
+   * instance, if necessary.
+   */
   getModalView: function()
   {
     if (!this.modalView)
@@ -64,8 +82,8 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#presentModalViewController(viewController) -> null
    *
-   *  - viewController (ViewController): the view controller that should be
-   *    presented
+   *  - viewController ([[Aphid.UI.ViewController]]): The view controller that
+   *    should be presented
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller.
@@ -79,11 +97,11 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#presentModalViewControllerAnimated(viewController[, animated = true]) -> null
    *
-   *  - viewController (ViewController): the view controller that should be
-   *    presented
+   *  - viewController ([[Aphid.UI.ViewController]]): The view controller that
+   *    should be presented.
    *
    *  - animated (Boolean): true if the view controller should be presented
-   *    with animation
+   *    with animation.
    *
    * Presents the specified *viewController* as the modal view of the current
    * view controller with an animated effect, by default.
@@ -105,8 +123,8 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /*
    * Aphid.UI.View#_presentModalViewController(viewController[, animated = false]) -> null
    *
-   *  - viewController (ViewController): the view controller that should be
-   *    presented
+   *  - viewController ([[Aphid.UI.ViewController]]): The view controller that
+   *    should be presented.
    *
    *  - animated (Boolean): true if the view controller should be presented
    *    with animation
@@ -162,7 +180,8 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.View#dismissModalViewController([animated = true]) -> null
    *
-   * - animated (Boolean): true if the view controller should be dismissed with animation
+   *  - animated (Boolean): true if the view controller should be dismissed
+   *    with animation
    *
    * Dismisses the current modal view controller, if present, with animation
    * by default.
@@ -189,73 +208,6 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
 
     // Unset the Modal View Controller
     this.set("modalViewController", false);
-  },
-
-  // Stacked View Controllers ------------------------------------------------
-
-  /**
-   * Aphid.UI.ViewController#pushViewController(viewController) -> null
-  **/
-  pushViewController: function(viewController)
-  {
-    this._pushViewController(viewController, false);
-  },
-
-  /**
-   * Aphid.UI.ViewController#pushViewControllerAnimated(viewController, transition) -> null
-  **/
-  pushViewControllerAnimated: function(viewController, transition)
-  {
-    if (Object.isUndefined(transition))
-      transition = Aphid.UI.View.SlideLeftTransition;
-
-    this._pushViewController(viewController, true, transition);
-  },
-
-  /*
-   * Aphid.UI.ViewController#_pushViewController(viewController, animated, transition) -> null
-   */
-  _pushViewController: function(viewController, animated, transition)
-  {
-    viewController.set("parentViewController", this);
-    if (animated)
-      this.get("superview").setViewAnimated(viewController, true, transition);
-    else
-      this.get("superview").setView(viewController);
-  },
-
-  /**
-   * Aphid.UI.ViewController#popViewController() -> null
-  **/
-  popViewController: function()
-  {
-    var parentViewController = this.get("parentViewController");
-
-    this._popViewController(parentViewController, false);
-  },
-
-  /**
-   * Aphid.UI.ViewController#popViewControllerAnimated(transition) -> null
-  **/
-  popViewControllerAnimated: function(transition)
-  {
-    if (Object.isUndefined(transition))
-      transition = Aphid.UI.View.SlideRightTransition;
-
-    var parentViewController = this.get("parentViewController");
-
-    this._popViewController(parentViewController, true, transition);
-  },
-
-  /*
-   * Aphid.UI.ViewController#_popViewController(viewController[, animated = true[, transition]]) -> null
-   */
-  _popViewController: function(viewController, animated, transition)
-  {
-    if (animated)
-      this.get("superview").setViewAnimated(viewController, true, transition);
-    else
-      this.get("superview").setView(viewController);
   }
 
 });

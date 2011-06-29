@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.NavigationController] Added a navigation controller that can be
+   used to manage a stack of view controllers and handle switching between
+   them.
+
  * [Aphid.UI.View] Added two new transitions: SlideUpTransition and
    SlideDownTransition.
 
