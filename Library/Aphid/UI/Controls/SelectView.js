@@ -1,12 +1,12 @@
 /**
  * class Aphid.UI.Controls.SelectView < Aphid.UI.View
  *
- * #### Delegate Methods
+ * # Delegate Methods
  *
  *  * `selectViewSelectionDidChange(selectView, option)` - Called when the
  *    current selection has changed.
  *
- * #### Subclassing Notes
+ * # Subclassing Notes
  *
  * If you wish to subclass [[Aphid.UI.Controls.SelectView]] instead of
  * wrapping an instance and implementing the delegate pattern, you may also
@@ -158,7 +158,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
     if (selectedItem)
     {
       selectedItem.addClassName("selected");
-      this._updateHoverElement(this.selectedItem);
+      this._updateHoverElement(selectedItem);
 
       var offset = (selectedItem.getHeight() / 2) + selectedItem.positionedOffset().top;
       top = (this.get("element").cumulativeOffset().top - selectedItem.positionedOffset().top) + "px";
@@ -327,24 +327,6 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
     // Add Item to items Property
     this.get("options").push(option);
 
-    // Select Item
-    // if (item.get("isSelected"))
-    // {
-    //   var itemIndex = this.get("items").indexOf(item);
-    //   if (!this.get("multipleSelectionEnabled"))
-    //   {
-    //     if (this.get("selectedItem"))
-    //       this._deselectItem(this.get("selectedItem"));
-    //     this.set("selectedItem", item);
-    //     this.set("selectedItemIndex", itemIndex);
-    //   }
-    //   else
-    //   {
-    //     this.get("selectedItems").push(item);
-    //     this.get("selectedItemIndexes").push(itemIndex);
-    //   }
-    // }
-
     // Set listView on Item
     option.set("selectView", this);
 
@@ -353,7 +335,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
     //   item.set("sortIndex", this.get("items").indexOf(item));
 
     // Add Item View to Subviews
-    var listItemElement = option.toListItemElement();
+    var listItemElement = option.get("element");
     this.get("listElement").insert(listItemElement);
 
     // Observe Item
@@ -427,7 +409,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
     var element = event.element();
     event.stop();
 
-    $L.info("_handleClickEvent - " + element.outerHTML, this.displayName);
+    $L.info("_handleClickEventOnListItem - " + element.outerHTML, this.displayName);
 
     this.select(element.getData("value"));
   },
