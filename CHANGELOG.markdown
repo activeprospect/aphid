@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.ListView] Optimized the reloading of data in a list view so that
+   it no longer redraws items that were already present in the list. This also
+   fixes an issue where reloading data from cached items would result in the
+   cached items not being re-added to the list view after a reloadData call.
+
  * [Aphid.UI.NavigationController] Added a navigation controller that can be
    used to manage a stack of view controllers and handle switching between
    them.

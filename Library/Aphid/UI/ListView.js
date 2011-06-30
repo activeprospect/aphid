@@ -300,9 +300,9 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       return;
     }
 
-    // Reset Selection, Element and Items
-    this.clearSelection();
-    this.element.update();
+    // Clear existing items out of the list
+    this._clearSelection();
+    this.items.invoke("removeFromSuperview");
     this.items = $A();
 
     // Add each item to the list
@@ -322,7 +322,6 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    *
    * Adds the specified item to the end of the list view.
   **/
-  // TODO addItem and setItem should not be duplicating logic...
   addItem: function(item)
   {
     this._addItem(item);
@@ -388,11 +387,26 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   **/
   reloadData: function()
   {
-    var items     = $A();
-    var itemCount = this._listViewItemCount();
-    for (var i = 0; i < itemCount; i++)
-      items.push(this._listViewItemForIndex(i));
-    this.set("items", items);
+    var newItems = $A();
+    var newItemCount = this._listViewItemCount();
+    for (var i = 0; i < newItemCount; i++)
+      newItems.push(this._listViewItemForIndex(i));
+
+    // Removed Items
+    this.get("items").each(function(existingItem) {
+      if (!newItems.include(existingItem))
+        this.removeItem(existingItem);
+    }, this);
+
+    // Add New Items
+    newItems.each(function(newItem) {
+      if (!this.get("items").include(newItem))
+        this._addItem(newItem);
+    }, this);
+
+    // Setup sorting
+    if (this.get("items").length > 0 && this.get("sortingEnabled"))
+      this._setupSorting();
   },
 
   /*
