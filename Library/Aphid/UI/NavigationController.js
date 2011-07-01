@@ -73,11 +73,9 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
   viewWillAppear: function()
   {
 
-    // Display the rootViewController
-    this.get("contentView").addSubview(this.get("rootViewController"));
-
-    // Set the visibleViewController to the rootViewController
-    this.set("visibleViewController", this.get("rootViewController"));
+    // Display the rootViewController by default...
+    if (this.get("subviews").length == 0 && this.get("rootViewController"))
+      this.pushViewController(this.get("rootViewController"));
 
   },
 
@@ -151,6 +149,7 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
         previousViewController = this.get("viewControllers")[currentIndex - 1];
     return previousViewController;
   },
+
   // Navigation Stack --------------------------------------------------------
 
   /**
@@ -178,9 +177,6 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
   **/
   pushViewControllerAnimated: function(viewController, transition)
   {
-    if (Object.isUndefined(transition))
-      transition = Aphid.UI.View.SlideLeftTransition;
-
     this._pushViewController(viewController, true, transition);
   },
 
@@ -189,6 +185,7 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
    */
   _pushViewController: function(viewController, animated, transition)
   {
+    if (Object.isUndefined(transition)) transition = Aphid.UI.View.SlideLeftTransition;
 
     // Set this navigationController on the pushed view controller instance
     viewController.set("navigationController", this);
@@ -204,7 +201,6 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
       this.get("contentView").setViewAnimated(viewController, true, transition);
     else
       this.get("contentView").setView(viewController);
-
   },
 
   /**
@@ -214,7 +210,7 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
   {
     return this._popViewController(false);
   },
- 
+
   /**
    * Aphid.UI.NavigationController#popViewControllerAnimated([transition = Aphid.UI.View.SlideRightTransition]) -> Aphid.UI.ViewController | false
    *

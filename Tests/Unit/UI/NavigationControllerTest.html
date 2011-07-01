@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.NavigationController Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.NavigationController Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <section id="testView"></section>
+      <section id="testModalView"></section>
+      <section id="testViewAnimated"></section>
+      <section id="testModalViewAnimated"></section>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestViewController, TestRootViewController;
+
+      new Test.Unit.Runner({
+
+        setup: function() { with(this) {
+          TestViewController = Aphid.Class.create("TestViewController", Aphid.UI.ViewController, {});
+          TestRootViewController = Aphid.Class.create("TestRootViewController", Aphid.UI.ViewController, {});
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ViewController can be
+         * initialized.
+        **/
+        testShouldInitializeNavigationController: function() { with(this) {
+          var navigationController = new Aphid.UI.NavigationController();
+          assertInstanceOf(Aphid.UI.NavigationController, navigationController, "navigationController should be an instance of Aphid.UI.NavigationController");
+          assertInstanceOf(Array, navigationController.get("viewControllers"), "navigationController#viewControllers should be an instance of Array");
+          assert(!navigationController.get("rootViewController"), "navigationController#rootViewController should be false by default");
+          assert(!navigationController.get("visibleViewController"), "navigationController#visibleViewController should be false by default");
+        }},
+
+        /*
+         * Ensures that new instances of Aphid.UI.ViewController can be
+         * initialized.
+        **/
+        testShouldInitializeNavigationControllerWithRootViewController: function() { with(this) {
+          var testViewController = new TestViewController();
+          var navigationController = new Aphid.UI.NavigationController({
+            rootViewController: testViewController
+          });
+          assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+          assertEqual(testViewController, navigationController.get("rootViewController"), "navigationController#rootViewController should be equal to testViewController")
+        }},
+
+        /*
+         * Ensures that view controllers can be pushed onto the navigation
+         * stack.
+        **/
+        testShouldPushViewController: function() { with(this) {
+          var testViewController = new TestViewController();
+          var navigationController = new Aphid.UI.NavigationController({
+            rootViewController: new TestRootViewController()
+          });
+          navigationController.pushViewController(testViewController);
+          assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController");
+        }},
+
+        /*
+         * Ensures that view controllers can be pushed onto the navigation
+         * stack with animation.
+        **/
+        testShouldPushViewControllerAnimated: function() { with(this) {
+          var testViewController = new TestViewController();
+          var navigationController = new Aphid.UI.NavigationController({
+            rootViewController: new TestRootViewController()
+          });
+          navigationController.pushViewControllerAnimated(testViewController);
+          wait(1000, function() { with(this) {
+            assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+            assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController");
+          }});
+        }},
+
+        /*
+         * Ensures that view controllers can be popped from the navigation
+         * stack.
+        **/
+        testShouldPopViewController: function() { with(this) {
+          var rootViewController = new TestRootViewController();
+          var testViewController = new TestViewController();
+          var navigationController = new Aphid.UI.NavigationController({
+            rootViewController: rootViewController
+          });
+          navigationController.pushViewController(testViewController);
+          assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController");
+          navigationController.popViewController();
+          assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+          assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
+        }},
+
+        /*
+         * Ensures that view controllers can be popped from the navigation
+         * stack with animation.
+        **/
+        testShouldPopViewControllerAnimated: function() { with(this) {
+          var rootViewController = new TestRootViewController();
+          var testViewController = new TestViewController();
+          var navigationController = new Aphid.UI.NavigationController({
+            rootViewController: rootViewController
+          });
+          navigationController.pushViewController(testViewController);
+          assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController");
+          navigationController.popViewControllerAnimated();
+          wait(1000, function() { with(this) {
+            assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+            assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
+          }});
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
