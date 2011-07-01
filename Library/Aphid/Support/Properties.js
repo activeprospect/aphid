@@ -65,7 +65,7 @@ Aphid.Support.Properties = {
 
     // Check for Computed Property
     // TODO Remove this and force the getPropertyName convention to be used...
-    if (Object.isFunction(this[property]))
+    if (Object.isFunction(this[property]) && !this[property].prototype)
       return this[property](options);
 
     // Check for a Custom Accessor

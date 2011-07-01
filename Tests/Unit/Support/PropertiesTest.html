@@ -63,6 +63,10 @@
           assertEqual("bar", propertyValue);
         }},
 
+        testShouldGetPropertyWithKlassValue: function() { with(this) {
+          assert(false, "Not implemented...");
+        }},
+
         testShouldGetChainedProperty: function() { with(this) {
           var propertyValue = this.testObject.get("chainedProperty.nestedProperty.nestedProperty");
           assertInstanceOf(NestedClass, propertyValue);
