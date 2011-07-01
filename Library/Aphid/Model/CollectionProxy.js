@@ -134,7 +134,7 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     this.set("isLoaded", true);
     this.set("isLoading", false);
 
-    if (this.get("delegate") && collection.get("delegate").modelDidFinishAppending)
+    if (this.get("delegate") && this.get("delegate").modelDidFinishAppending)
       this.get("delegate").modelDidFinishAppending(this);
   },
 
