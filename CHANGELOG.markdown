@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Model.CollectionProxy] Added support for appending to the collection
+   by calling appendCollection(). This method takes the same arguments as the
+   Aphid.Model.Base.loadCollection() method.
+
  * [Aphid.UI.ListView] Optimized the reloading of data in a list view so that
    it no longer redraws items that were already present in the list. This also
    fixes an issue where reloading data from cached items would result in the

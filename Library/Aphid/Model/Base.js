@@ -842,6 +842,7 @@ Aphid.Model.Base.ClassMethods = {
     // var collection = $A();
     var collection = new Aphid.Model.CollectionProxy(options);
     collection.set("isLoading", true);
+    collection.set("modelKlass", modelKlass);
 
     // Request Options
     var requestOptions = {
