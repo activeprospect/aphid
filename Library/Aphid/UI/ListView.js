@@ -260,7 +260,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     $L.info("Initializing Item as " + viewClass, this);
 
-    var viewClassImplementation = eval(viewClass);
+    var viewClassImplementation = resolveClassName(viewClass);
     var viewClassInstance = new viewClassImplementation({ element: element });
     viewClassInstance.get("element").setData("item", viewClassInstance);
 
@@ -1170,7 +1170,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    */
   _validateItem: function(item)
   {
-    return (item instanceof eval(this.get("itemViewClass")));
+    return (item instanceof resolveClassName(this.get("itemViewClass")));
   },
 
   // Selection Persistence ---------------------------------------------------

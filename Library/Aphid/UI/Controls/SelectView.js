@@ -137,7 +137,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
 
     $L.info("Initializing Option as " + viewClass, this);
 
-    var viewClassImplementation = eval(viewClass);
+    var viewClassImplementation = resolveClassName(viewClass);
     return new viewClassImplementation({ element: element });
   },
 

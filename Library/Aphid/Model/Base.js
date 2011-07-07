@@ -197,7 +197,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
     if (belongsToAssociation || hasManyAssociation)
     {
       var className          = (belongsToAssociation || hasManyAssociation).className,
-          klass              = eval(className),
+          klass              = resolveClassName(className),
           foreignKeyProperty = property + "Id";
 
       if (belongsToAssociation)
@@ -238,7 +238,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
     options        = $H(options);
     var assn       = $H(this.get("hasMany")).get(association),
         className  = $H(assn).get("className"),
-        klass      = eval(className),
+        klass      = resolveClassName(className),
         collection = this[association];
 
     if (!collection)
@@ -281,7 +281,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
     options                = $H(options);
     var assn               = $H(this.get("belongsTo")).get(association),
         className          = $H(assn).get("className"),
-        klass              = eval(className),
+        klass              = resolveClassName(className),
         foreignKeyProperty = association + "Id",
         instance           = this[association];
 

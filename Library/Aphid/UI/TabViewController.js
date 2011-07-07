@@ -243,7 +243,7 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
     // Initialize the View
     if (!this[view] && viewClass)
     {
-      viewClassImplementation = eval(viewClass);
+      viewClassImplementation = resolveClassName(viewClass);
       this[view] = new viewClassImplementation({ delegate: this });
     }
 
