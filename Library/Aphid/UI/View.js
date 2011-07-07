@@ -201,6 +201,13 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   superview: false,
 
   /**
+   * Aphid.UI.View#superviews -> Array
+   *
+   * An array of all View instances that are in the view stack above this view.
+  **/
+  superviews: false,
+
+  /**
    * Aphid.UI.View#isLoaded -> Boolean
    *
    * If the View has been loaded, this property will be set to true.
@@ -782,7 +789,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
    * Returns an array containing each of the view's superviews (ordered from
    * the immediate superview to the top superview).
   **/
-  superviews: function()
+  getSuperviews: function()
   {
     var superviews  = $A(),
         currentView = this,
