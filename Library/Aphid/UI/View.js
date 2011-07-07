@@ -270,10 +270,11 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   initialize: function($super, options)
   {
     // Set Default State
-    this.subviews  = $A();
-    this.isLoaded  = false;
-    this.isLoading = false;
-    this.hidden    = false;
+    this.subviews   = $A();
+    this.superviews = $A();
+    this.isLoaded   = false;
+    this.isLoading  = false;
+    this.hidden     = false;
 
     $super(options);
 
