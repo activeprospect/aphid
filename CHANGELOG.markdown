@@ -3,6 +3,11 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.View] Views are now properly initialized with the correct
+   superview. They are also instantiated before being connected to their
+   outlets. This allows us to instantiate views that are not connected to an
+   outlet.
+
  * [Aphid.UI.TabViewController] Change the data-* property that defines the
    view to automatically instantiate on tab elements from data-view-class to
    data-content-view-class. This is a backwards incompatible API change!
