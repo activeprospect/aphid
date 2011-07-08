@@ -10,13 +10,13 @@
  *       <header>
  *         <h1>My Application</h1>
  *         <ul class="tabs">
- *           <li data-tab="home" data-view="homeView" data-view-class="HomeViewController">
+ *           <li data-tab="home" data-view="homeView" data-content-view-class="HomeViewController">
  *             Home
  *           </li>
- *           <li data-tab="products" data-view="productsView" data-view-class="ProductsController">
+ *           <li data-tab="products" data-view="productsView" data-content-view-class="ProductsController">
  *             Products
  *           </li>
- *           <li data-tab="contact" data-view="contactView" data-view-class="ContactViewController">
+ *           <li data-tab="contact" data-view="contactView" data-content-view-class="ContactViewController">
  *             Contact Us
  *           </li>
  *         </ul>
@@ -90,16 +90,6 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
   contentView: false,
 
   // Initialization ----------------------------------------------------------
-
-  /**
-   * new Aphid.UI.TabViewController()
-   *
-   * Initializes a new instance.
-  **/
-  initialize: function($super, options)
-  {
-    $super(options);
-  },
 
   viewDidLoad: function($super)
   {
@@ -231,13 +221,13 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
    * - tab (Element): the tab Element
    *
    * Attempts to switch the content view based on the data-view and
-   * data-view-class attributes on the tab Element.
+   * data-content-view-class attributes on the tab Element.
    */
   _switchView: function(tab, animated)
   {
     // Instantiate & Switch to View
     var view      = tab.getData('view'),
-        viewClass = tab.getData('view-class'),
+        viewClass = tab.getData('content-view-class'),
         viewClassImplementation;
 
     // Initialize the View

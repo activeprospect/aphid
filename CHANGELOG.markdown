@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.TabViewController] Change the data-* property that defines the
+   view to automatically instantiate on tab elements from data-view-class to
+   data-content-view-class. This is a backwards incompatible API change!
+
  * [Aphid.Model.CollectionProxy] Added support for appending to the collection
    by calling appendCollection(). This method takes the same arguments as the
    Aphid.Model.Base.loadCollection() method.
