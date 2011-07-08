@@ -46,6 +46,11 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
   secondView: false,
 
   /**
+   * Aphid.UI.SplitViewController#dragHandle -> Element | false
+  **/
+  dragHandle: false,
+
+  /**
    * Aphid.UI.SplitViewController#orientation -> String | false
    *
    * The orientation of the split view, either "horizontal" or "vertical". If
@@ -345,14 +350,14 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
 
   // Custom Accessors --------------------------------------------------------
 
-  dragHandle: function()
+  getDragHandle: function()
   {
-    if (!this._dragHandle)
+    if (!this.dragHandle)
     {
-      this._dragHandle = new Element("div").addClassName("dragHandle");
-      Element.insert(this.get("firstView.element"), { after: this._dragHandle });
+      this.dragHandle = new Element("div").addClassName("dragHandle");
+      Element.insert(this.get("firstView.element"), { after: this.dragHandle });
     }
-    return this._dragHandle;
+    return this.dragHandle;
   },
 
   getDraggableInstance: function()
