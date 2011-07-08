@@ -21,7 +21,7 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
    * The semi-translucent overlay element that is displayed above items in the
    * view during a mouse drag-select operation.
    */
-  _selectionOverlayElement: false,
+  selectionOverlayElement: false,
 
   /*
    * Aphid.UI.MatrixView#_originX -> Boolean
@@ -62,15 +62,15 @@ Aphid.UI.MatrixView = Aphid.Class.create("Aphid.UI.MatrixView", Aphid.UI.ListVie
    * Initializes (if necessary) and returns an element to be used as the
    * overlay.
    */
-  selectionOverlayElement: function()
+  getSelectionOverlayElement: function()
   {
-    if (!this._selectionOverlayElement)
+    if (!this.selectionOverlayElement)
     {
-      this._selectionOverlayElement = new Element("div", { className: "selectionOverlay" });
-      this._selectionOverlayElement.hide();
-      this.get("element").insert({ top: this._selectionOverlayElement });
+      this.selectionOverlayElement = new Element("div", { className: "selectionOverlay" });
+      this.selectionOverlayElement.hide();
+      this.get("element").insert({ top: this.selectionOverlayElement });
     }
-    return this._selectionOverlayElement;
+    return this.selectionOverlayElement;
   },
 
   // Selection ---------------------------------------------------------------
