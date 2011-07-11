@@ -878,9 +878,7 @@ Aphid.Model.Base.ClassMethods = {
 
     collection.set("isLoaded", true);
     collection.set("isLoading", false);
-
-    if (collection.get("delegate") && collection.get("delegate").modelDidFinishLoading)
-      collection.get("delegate").modelDidFinishLoading(collection);
+    collection._afterLoad();
   },
 
   // Create ------------------------------------------------------------------

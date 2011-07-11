@@ -53,6 +53,24 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     this.get("collection").each(iterator);
   },
 
+  // Callbacks ---------------------------------------------------------------
+
+  _afterLoad: function()
+  {
+
+    // Call Callback Method
+    if (this.afterLoad)
+      this.afterLoad(this);
+
+    // Call Delegate Method
+    if (this.delegate && this.delegate.modelDidFinishLoading)
+      this.delegate.modelDidFinishLoading(this);
+
+    // Post Notification
+    this.postNotification("ModelDidLoadNotification");
+
+  },
+
   // -------------------------------------------------------------------------
 
   /**
