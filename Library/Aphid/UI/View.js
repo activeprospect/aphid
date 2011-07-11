@@ -1337,13 +1337,19 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             }
           }
         );
-        instance = new viewClassImplementation(options.merge({ outlet: element })); // , delegate: this, dataSource: this }));
 
-        // Set Superview
+        // Initialize View Instance
+        instance = new viewClassImplementation(options.merge({
+          outlet: element,
+          delegate: this,
+          dataSource: this
+        }));
+
+        // Find Superview
         var superviewElement = element.up("*[data-view-class], *[data-outlet]"),
             superview        = superviewElement ? superviewElement.retrieve("view") : this;
 
-        // superview._addSubview(instance);
+        // Add View Instance to the Superview's Subviews
         superview.get("subviews").push(instance);
         instance.superview = superview;
       }
@@ -1390,8 +1396,6 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       }
     
       $L.info('Connected outlet "' + outlet + '" to view controller', this);
-      if (view.has("delegate")) view.set("delegate", this);
-      if (view.has("dataSource")) view.set("dataSource", this);
       this[outlet] = view;
     }, this);
   },
