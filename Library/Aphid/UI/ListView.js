@@ -34,6 +34,9 @@
  *  * `listViewWillSelectItem(listView, item)` — Called just before the
  *    specified item will be selected.
  *
+ *  * `listViewDidSelectItem(listView, item)` - Called when the current
+ *    selection has changed.
+ *
  *  * `listViewShouldDeselectItem(listView, item)` - Called just before the
  *    item deselection process begins. Returning false will prevent the
  *    deselection from happening.
