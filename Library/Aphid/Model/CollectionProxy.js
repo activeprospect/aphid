@@ -56,9 +56,7 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
   // -------------------------------------------------------------------------
 
   /**
-   * Aphid.Model.CollectionProxy#klass -> Aphid.Model.CollectionProxy
-   *
-   * The lcass definition of the model that this collection represents.
+   * Aphid.Model.CollectionProxy#appendCollection() -> Aphid.Model.CollectionProxy
   **/
   appendCollection: function()
   {

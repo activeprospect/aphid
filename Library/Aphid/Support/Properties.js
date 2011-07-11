@@ -64,7 +64,7 @@ Aphid.Support.Properties = {
       throw this._undefinedPropertyError(property);
 
     // Check for Computed Property
-    if (Object.isFunction(this[property]))
+    if (Object.isFunction(this[property]) && (!this[property].prototype || !this[property].prototype.displayName))
       return this[property](options);
 
     // Check for a Custom Accessor
