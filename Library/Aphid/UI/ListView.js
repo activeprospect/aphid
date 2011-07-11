@@ -4,7 +4,7 @@
  * Manages an HTML unordered list by providing support for selection of the
  * items contained within the list.
  *
- * #### Usage
+ * # Usage
  *
  * To initialize an instance of [[Aphid.UI.ListView]], you must specify the
  * `data-view-class` attribute on an HTML unordered list element. The value
@@ -17,7 +17,7 @@
  *       <li>Trash</li>
  *     </ul>
  *
- * #### Data Source Methods
+ * # Data Source Methods
  *
  *  * `listViewItemCount(listView)` - Should return the number of items
  *    contained within the list view.
@@ -25,7 +25,7 @@
  *  * `listViewItemForIndex(listView, index)` - Should return the item to be
  *    displayed at the given index.
  *
- * #### Delegate Methods
+ * # Delegate Methods
  *
  *  * `listViewShouldSelectItem(listView, item)` - Called just before the item
  *    selection process begins. Returning false will prevent the selection
@@ -82,7 +82,7 @@
  *    has finished dragging.
  *
  *
- * #### Subclassing Notes
+ * # Subclassing Notes
  *
  * If you wish to subclass [[Aphid.UI.ListView]] instead of wrapping an
  * instance and implementing the delegate pattern, you may also override the
