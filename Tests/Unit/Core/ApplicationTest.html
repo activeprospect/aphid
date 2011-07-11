@@ -38,14 +38,9 @@
           this.application = new Aphid.Core.Application();
         },
 
-        testShouldInitializeSharedInstance: function() { with(this) {
-          assert(Application.sharedInstance);
-          assertInstanceOf(Aphid.Core.Application, Application.sharedInstance);
-        }},
-
         testShouldSetAppDelegateGlobal: function() { with(this) {
           assert($AppDelegate);
-          assertEqual(Application.sharedInstance, $AppDelegate);
+          assertInstanceOf(Aphid.Core.Application, $AppDelegate);
         }},
 
         testShouldInitializeLogger: function() { with(this) {
