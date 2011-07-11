@@ -739,10 +739,7 @@ Aphid.Model.Base.ClassMethods = {
         if (!options.get(property)) return property;
       }).compact();
       if (missingProperties.size() > 0)
-      {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this.className);
-        return;
-      }
+        $L.warn("URL (\"" + url + "\") is missing " + "property".pluralize(missingProperties.size(), "properties") + " (" + missingProperties.join(", ") + ") and may not load correctly as a result.", this.className);
     }
 
     // Replace Template Variables in URL
@@ -827,10 +824,7 @@ Aphid.Model.Base.ClassMethods = {
         if (!options.get(property)) return property;
       }).compact();
       if (missingProperties.size() > 0)
-      {
-        $L.error("Cannot assemble URL (\"" + url + "\") with missing " + "property".pluralize(missingProperties.size(), "properties") + ": " + missingProperties.join(", "), this.className);
-        return;
-      }
+        $L.warn("URL (\"" + url + "\") is missing " + "property".pluralize(missingProperties.size(), "properties") + " (" + missingProperties.join(", ") + ") and may not load correctly as a result.", this.className);
     }
 
     // Replace Template Variables in URL
