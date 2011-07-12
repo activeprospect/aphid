@@ -139,6 +139,20 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
     if (options) this._initializeFromObject(options);
     this._afterInitialize();
   },
+  
+  /**
+   * Aphid.Model.Base#equals(object) -> Boolean
+   *
+   * Returns false if the specified object does not implement the #has and #get functions.
+   * Otherwise, returns true if the specified object instance has the same class name and ID as 
+   * this. 
+  **/
+  equals: function(other) 
+  {
+    if (!other || !other.has || !other.get || !other.has("identifier") || !other.has("className"))
+      return false;
+    return this.get("className") == other.get("className") && this.get("identifier") == other.get("identifier");
+  },
 
   /*
    * Aphid.Model.Base#_initializeFromObject(object) -> null

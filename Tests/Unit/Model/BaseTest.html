@@ -329,6 +329,30 @@
             assert(testContact.has("phoneNumber"));
           });
         }},
+        
+        testShouldBeEqual: function() { with(this) {
+          var testContact1 = TestContact.load(1);
+          var testContact2 = TestContact.load(1);
+          wait(1000, function() {
+            assert(testContact1.equals(testContact2));
+          });
+        }},
+        
+        testShouldNotBeEqual: function() { with(this) {
+          var testContact1 = TestContact.load(1);
+          var testContact2 = TestContact.load(2);
+          wait(1000, function() {
+            assert(!testContact1.equals(testContact2));
+          });
+        }},
+        
+        testDifferentInstanceTypesWithSameIdShouldNotBeEqual: function() { with(this) {
+          var testContact1 = TestContact.load(1);
+          var testNote = TestNote.load(1);
+          wait(1000, function() {
+            assert(!testContact1.equals(testNote));
+          });
+        }},
 
         // Associations ------------------------------------------------------
 
