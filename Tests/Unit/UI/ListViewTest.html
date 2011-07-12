@@ -86,29 +86,6 @@
         }},
 
         /*
-         * Ensures that event observers are setup on each item during
-         * initialization.
-        **/
-        testShouldSetupObserversOnListItems: function() { with(this) {
-          var lastSelectedItem, lastOpenedItem;
-          var listViewDelegate = {
-            listViewSelectionDidChange: function(listView, item) { lastSelectedItem = item; },
-            listViewDidOpenItem: function(listView, item) { lastOpenedItem = item }
-          };
-          var listView = new Aphid.UI.ListView({
-            element: $('testListView'),
-            delegate: listViewDelegate
-          });
-          listView.items.each(function(item) {
-            Event.simulateMouse(item.element, 'click');
-            assertEqual(item, lastSelectedItem);
-            assertEqual(item, listView.selectedItem);
-            Event.simulateMouse(item.element, 'dblclick');
-            assertEqual(item, lastOpenedItem);
-          });
-        }},
-
-        /*
          * Ensures that list items can be set after initialization.
         **/
         testShouldSetListItems: function() { with(this) {
@@ -506,6 +483,9 @@
           var listViewDataSource = {
             listViewItemCount: function(listView) {
               listViewItemCountCalled = true;
+            },
+            listViewItemForIndex: function(listView, index) {
+              // Do Nothing
             }
           };
           var listView = new Aphid.UI.ListView({
