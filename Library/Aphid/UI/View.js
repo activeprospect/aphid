@@ -1033,7 +1033,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     if (Object.isUndefined(transition)) transition = Aphid.UI.View.FadeTransition;
 
-    // TODO If the view is already hidden, don't attempt to re-animated it...
+    // TODO If the view is already hidden, don't attempt to re-animate it...
 
     // Call "View Will Disappear" Callback
     this._viewWillDisappear(true);

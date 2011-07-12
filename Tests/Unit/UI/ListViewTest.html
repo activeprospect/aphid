@@ -521,6 +521,67 @@
         }},
 
         /*
+         * Ensures that the ListView can reload its items from a data source.
+        **/
+        testShouldReloadDataFromDataSource: function() { with(this) {
+          var listViewItemCountCallCount = 0;
+          var listViewItemForIndexCallCount = 0;
+          var listViewDataSource = {
+            items: $A([ "One", "Two", "Three" ]),
+            listViewItemCount: function(listView) {
+              listViewItemCountCallCount++;
+              return this.items.length;
+            },
+            listViewItemForIndex: function(listView, index) {
+              listViewItemForIndexCallCount++;
+              var listViewItem = new Aphid.UI.ListViewItem();
+              listViewItem.element.update(this.items[index]);
+              return listViewItem;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('emptyListView'),
+            dataSource: listViewDataSource
+          });
+          listView.reloadData();
+          assertEqual(2, listViewItemCountCallCount);
+          assertEqual(6, listViewItemForIndexCallCount);
+          assertEqual(3, listView.items.length);
+        }},
+
+        /*
+         * Ensures that the ListView will remove items that are no longer
+         * available from the datasource when reloading its data from the
+         * datasource.
+        **/
+        testShouldRemoveItemsNoLongerInDataSourceWhenReloadingDataFromDataSource: function() { with(this) {
+          var listViewItemCountCallCount = 0;
+          var listViewItemForIndexCallCount = 0;
+          var listViewDataSource = {
+            items: $A([ "One", "Two", "Three" ]),
+            listViewItemCount: function(listView) {
+              listViewItemCountCallCount++;
+              return this.items.length;
+            },
+            listViewItemForIndex: function(listView, index) {
+              listViewItemForIndexCallCount++;
+              var listViewItem = new Aphid.UI.ListViewItem();
+              listViewItem.element.update(this.items[index]);
+              return listViewItem;
+            }
+          };
+          var listView = new Aphid.UI.ListView({
+            element: $('emptyListView'),
+            dataSource: listViewDataSource
+          });
+          listViewDataSource.items = $A([ "Four", "Five" ]);
+          listView.reloadData();
+          assertEqual(2, listViewItemCountCallCount);
+          assertEqual(5, listViewItemForIndexCallCount);
+          assertEqual(2, listView.items.length);
+        }},
+
+        /*
          * Ensures that the list view items have their listView property set
          * when the items are set by calling [[Aphid.UI.ListView#setItems()]].
         **/

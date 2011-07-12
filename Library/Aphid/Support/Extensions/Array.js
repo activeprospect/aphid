@@ -66,6 +66,19 @@ Aphid.Support.Extensions.Array = {
     else
       return this.splice(itemIndex, 1);
   },
+  // TODO Finish this implementation that will remove an array or use a function to remove items
+  // remove: function()
+  // {
+  //   if (Object.isFunction(arguments[0]))
+  //     removedItems = this.reject(arguments[0]);
+  //   else
+  //     removedItems = $A([ arguments[0] ]);
+  // 
+  //   return removedItems.each(function(item) {
+  //     var itemIndex = this.indexOf(item);
+  //     return (itemIndex == -1) ? false : this.splice(itemIndex, 1);
+  //   }, this);
+  // },
 
   /**
    * Aphid.Support.Extensions.Array#insert(index, object[, object]) -> Object | false

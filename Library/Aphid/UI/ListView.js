@@ -387,6 +387,10 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    *
    * Reloads the items in the list view by asking the data source for each of
    * the list view items in the list.
+   *
+   * **Note:** When reloading data and items have been removed during the
+   * reload, the callback and delegate methods will not be notified or
+   * consulted for the removed items.
   **/
   reloadData: function()
   {
@@ -396,9 +400,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       newItems.push(this._listViewItemForIndex(i));
 
     // Removed Items
-    this.get("items").each(function(existingItem) {
-      if (!newItems.include(existingItem))
-        this.removeItem(existingItem);
+    var removedItems = this.get("items").reject(function(existingItem) {
+      return newItems.include(existingItem);
+    }, this);
+    removedItems.each(function(removedItem) {
+      this._removeItem(removedItem);
     }, this);
 
     // Add New Items
@@ -667,12 +673,25 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       return;
 
     this._willRemoveItem(item);
+    this._removeItem(item);
+    this._didRemoveItem(item);
+  },
 
+  /*
+   * Aphid.UI.ListView#_removeItem(item) -> null
+   *
+   * - item ([[Aphid.UI.ListViewItem]]): the list view item to be removed
+   *
+   * This is the internal implementation of the public removeItem method that
+   * simply performs the action without checking with or notifying any
+   * delegate or callback methods. See [[Aphid.UI.ListView#removeItem]] for
+   * more details.
+   */
+  _removeItem: function(item, force)
+  {
     this.deselectItem(item);
     item.removeFromSuperview();
     this.get("items").remove(item);
-
-    this._didRemoveItem(item);
   },
 
   /**
