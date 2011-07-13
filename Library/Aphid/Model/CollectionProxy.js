@@ -244,6 +244,9 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     // Set the loading state on the collection...
     this.set("isLoaded", true);
     this.set("isLoading", false);
+
+    // Post Notification
+    this.postNotification("ModelDidReloadNotification", this);
   }
 
 });
