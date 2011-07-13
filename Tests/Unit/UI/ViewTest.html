@@ -43,6 +43,12 @@
       </section>
       <section id="testElementWithDisabledClassName" class="disabled"></section>
       <section id="testElementWithVisibilityHiddenStyle" style="visibility: hidden"></section>
+      <section id="testElementWithMultipleNestedSubviews">
+        <section data-outlet="firstSubview">
+          <section data-outlet="thirdSubview"></section>
+        </section>
+        <section data-outlet="secondSubview"></section>
+      </section>
     </section>
 
     <!-- Log Section -->
@@ -57,6 +63,7 @@
       var TestViewWithProperties;
       var TestViewWithCallbacks;
       var TestViewWithSubviews;
+      var TestViewWithNestedSubviews;
 
       new Test.Unit.Runner({
 
@@ -132,6 +139,11 @@
             handleMouseEnterEvent: function(event, element) { },
             handleMouseLeaveEvent: function(event, element) { }
           });
+          TestViewWithNestedSubviews = Aphid.Class.create("TestViewWithNestedSubviews", Aphid.UI.View, {
+            firstSubview: false,
+            secondSubview: false,
+            thirdSubview: false
+          });
         }},
 
         /* Initialization Tests ------------------------------------------- */
@@ -149,7 +161,7 @@
           assert(view.isLoaded, "isLoaded should be false");
           assert(!view.isLoading, "isLoading should be false");
         }},
-
+        
         /**
          * Ensures that the View's element has the instance of the View stored
          * on the Element instance itself.
@@ -159,7 +171,7 @@
           assertInstanceOf(Aphid.UI.View, view.get("element").retrieve("view"));
           assertEqual(view, view.get("element").retrieve("view"));
         }},
-
+        
         /**
          * Ensures that there is a lazy initializer that will return a default
          * image when accessing the element property.
@@ -168,7 +180,7 @@
           var testView = new Aphid.UI.View();
           assertInstanceOf(Element, testView.get("element"), "element property should be lazily initialized");
         }},
-
+        
         /*
          * Ensures that an instance of Aphid.UI.View with an empty element
          * can be initialized with a custom tag name.
@@ -178,7 +190,7 @@
           assertInstanceOf(Element, view.element, "element should be an instance of Element");
           assertEqual("ul", view.tagName, "tagName should be equal to &quot;ul&quot;");
         }},
-
+        
         /*
          * Ensures that an instance of Aphid.UI.View can be initialized by
          * passing an element to the constructor.
@@ -191,7 +203,7 @@
           assert(view.isLoaded, "isLoaded should be true");
           assert(!view.isLoading, "isLoading should be false");
         }},
-
+        
         /*
          * Ensures that an instance of Aphid.UI.View can be initialized by
          * passing in the name of a template.
@@ -205,7 +217,7 @@
           assert(view.element, "element should not be false");
           assertEqual("testTemplate", view.element.identify());
         }},
-
+        
         /*
          * Ensures that an instance of Aphid.UI.View can be initialized by
          * passing in the name of a template. The view must load this template
@@ -225,7 +237,7 @@
             assertEqual("testTemplate", view.element.identify());
           }});
         }},
-
+        
         /*
          * Ensures that an instance of Aphid.UI.View can be initialized by
          * passing in the element that defines an outlet.
@@ -239,7 +251,7 @@
           assert(view.element, "element should not be false");
           assertEqual($('testOutlet'), view.element);
         }},
-
+        
         /*
          * Ensures that outlets are initialized when they are found within
          * a view that was initialized from an element.
@@ -252,7 +264,7 @@
           assertInstanceOf(Aphid.UI.View, view.testOutlet, "testOutlet should be an instance of Aphid.UI.View");
           assertEqual("testElementWithOutletTestOutlet", view.testOutlet.element.identify());
         }},
-
+        
         /*
          * Ensures that outlets are initialized when they are found within
          * a view that was initialized from a template that was loaded
@@ -268,7 +280,7 @@
             assertEqual("testTemplateWithOutletTestOutlet", view.testOutlet.element.identify());
           }});
         }},
-
+        
         /*
          * Ensures that outlets are initialized when they are found within
          * a view that was initialized as an outlet of a parent view.
@@ -281,7 +293,7 @@
           assertInstanceOf(Aphid.UI.View, view.testOutlet, "testOutlet should be an instance of Aphid.UI.View");
           assertEqual("testOutletWithOutletChildOutlet", view.testOutlet.element.identify());
         }},
-
+        
         /*
          * Ensure that views that are initialized from an outlet have their
          * superview property set to the view that owns the outlet.
@@ -294,7 +306,7 @@
           assertInstanceOf(Aphid.UI.View, view.testOutlet.superview, "testOutlet.superview should be an instance of Aphid.UI.View");
           assertEqual("testElementWithOutlet", view.testOutlet.superview.element.identify());
         }},
-
+        
         /*
          * Ensure that views that are initialized from an outlet are added to
          * the subviews property of the view that owns the outlet.
@@ -306,7 +318,7 @@
           assertEqual(1, view.subviews.length, "view.subviews.length should be 1");
           assert(view.subviews.include(view.testOutlet));
         }},
-
+        
         /*
          * Ensures that an outlet the defines the data-view-class attribute
          * for a custom class is actually initialized with the expected class.
@@ -320,6 +332,17 @@
         }},
 
         /*
+         *
+        **/
+        testShouldInitializeViewStackFromTemplate: function() { with(this) {
+          var testView = new TestViewWithNestedSubviews({
+            element: $("testElementWithMultipleNestedSubviews")
+          });
+          assertEqual(2, testView.get("subviews").length, "testView should have exactly 2 subviews");
+          assertEqual(1, testView.get("firstSubview.subviews").length, "testView#firstSubview should have exactly 1 subview");
+        }},
+
+        /*
          * Ensure that views that are initialized from an outlet be
          * initialized with options specified as HTML5 data-* attributes.
         **/
@@ -329,7 +352,7 @@
           });
           assertEqual("foo", view.testOutlet.customProperty);
         }},
-
+        
         /*
          * Ensure that views that are initialized from an outlet with boolean
          * HTML5 data-* attributes are properly cast to boolean values.
@@ -341,7 +364,7 @@
           assertEqual(true, view.testOutlet.trueProperty);
           assertEqual(false, view.testOutlet.falseProperty);
         }},
-
+        
         /*
          * Ensure that newly initialized views are enabled, by default.
         **/
@@ -352,7 +375,7 @@
           assert(view.isEnabled, "view#isEnabled should be true");
           assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
         }},
-
+        
         /*
          * Ensure that views can be initialized in a disabled state.
         **/
@@ -364,7 +387,7 @@
           assert(!view.isEnabled, "view#isEnabled should be false");
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
-
+        
         /*
          * Ensure that views that are initialized with an element that has the
          * "disabled" CSS class name are initialized in a disabled state.
@@ -376,7 +399,7 @@
           assert(!view.isEnabled, "view#isEnabled should be false");
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
-
+        
         /*
          * Ensure that disabled views can be enabled and that the element
          * receives the "enabled" CSS class name upon enabling.
@@ -390,7 +413,7 @@
           assert(view.isEnabled, "view#isEnabled should be true");
           assert(!view.element.hasClassName("disabled"), "view#element should not have the CSS class name 'disabled'");
         }},
-
+        
         /*
          * Ensure that enabled views can be disabled and that the element
          * receives the "disabled" CSS class name upon disabling.
@@ -404,8 +427,8 @@
           assert(!view.isEnabled, "view#isEnabled should be false");
           assert(view.element.hasClassName("disabled"), "view#element should have the CSS class name 'disabled'");
         }},
-
-
+        
+        
         /**
          * Ensure that newly initialized views are not hidden, by default.
         **/
@@ -414,7 +437,7 @@
           assert(!view.get("hidden"), "view#hidden should be false");
           assertEqual("visible", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'visible'");
         }},
-
+        
         /**
          * Ensure that views can be initialized in a hidden state.
         **/
@@ -423,7 +446,7 @@
           assert(view.get("hidden"), "view#hidden should be true");
           assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that views that are initialized with an element that has the
          * "visibility" CSS style set to "hidden" are initialized in a hidden
@@ -434,33 +457,33 @@
           assert(view.get("hidden"), "view#hidden should be true");
           assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that a view can be hidden by setting the hidden property
          * to true.
         **/
         testShouldHideWhenSettingHiddenPropertyToTrue: function() { with(this) {
           var view = new Aphid.UI.View();
-
+        
           view.set("hidden", true);
           assert(view.get("hidden"), "view#hidden should be true");
           assertEqual("hidden", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that a view can be displayed by setting the hidden property
          * to false.
         **/
         testShouldMakeVisibleWhenSettingHiddenPropertyToFalse: function() { with(this) {
           var view = new Aphid.UI.View({ hidden: true });
-
+        
           view.set("hidden", false);
           assert(!view.get("hidden"), "view#hidden should be false");
           assertEqual("visible", view.get("element").getStyle("visibility"), "view#element should have its 'visibility' CSS style set to 'visible'");
         }},
-
+        
         /* View Stack Tests ----------------------------------------------- */
-
+        
         /**
          * Ensure that views may have their view set with a single subview
          * using the setView method.
@@ -468,13 +491,13 @@
         testShouldSetView: function() { with(this) {
           var testView = new TestView(),
               subview  = new AnotherTestView();
-
+        
           testView.setView(subview);
           assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
-
+        
         /**
          * Ensure that hidden views are not displayed when added to a view
          * using the setView method.
@@ -482,12 +505,12 @@
         testShouldSetViewWithHiddenView: function() { with(this) {
           var testView = new TestView(),
               subview  = new Aphid.UI.View({ hidden: true });
-
+        
           testView.setView(subview);
           assert(subview.get("hidden"), "subview should be hidden");
           assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that views may have their view set with a single subview
          * using the setViewAnimated method.
@@ -495,13 +518,13 @@
         testShouldSetViewAnimated: function() { with(this) {
           var testView = new TestView(),
               subview  = new AnotherTestView();
-
+        
           testView.setViewAnimated(subview);
           assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
-
+        
         /**
          * Ensure that hidden views are not displayed when added to a view
          * using the setViewAnimated method.
@@ -509,12 +532,12 @@
         testShouldSetViewAnimatedWithHiddenView: function() { with(this) {
           var testView = new TestView(),
               subview  = new Aphid.UI.View({ hidden: true });
-
+        
           testView.setViewAnimated(subview);
           assert(subview.get("hidden"), "subview should be hidden");
           assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that subviews may be added to a view using the addSubview
          * method.
@@ -522,13 +545,13 @@
         testShouldAddSubview: function() { with(this) {
           var testView = new TestView(),
               subview  = new AnotherTestView();
-
+        
           testView.addSubview(subview);
           assertEqual(1, testView.get("subviews").size(), "testView#subviews should have a size of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
-
+        
         /**
          * Ensure that hidden subviews are not displayed when added to a view
          * using the addSubview method.
@@ -536,12 +559,12 @@
         testShouldAddSubviewWithHiddenView: function() { with(this) {
           var testView = new TestView(),
               subview  = new Aphid.UI.View({ hidden: true });
-
+        
           testView.addSubview(subview);
           assert(subview.get("hidden"), "subview should be hidden");
           assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that subviews may be added to a view using the
          * addSubviewAnimated method.
@@ -549,13 +572,13 @@
         testShouldAddSubviewAnimated: function() { with(this) {
           var testView = new TestView(),
               subview  = new AnotherTestView();
-
+        
           testView.addSubviewAnimated(subview);
           assertEqual(1, testView.get("subviews").length, "testView#subviews should have a length of 1");
           assertEqual(testView.get("subviews").first(), subview, "testView#subviews should include subview");
           assertEqual(testView, subview.get("superview"), "subview#superview should be equal to testView");
         }},
-
+        
         /**
          * Ensure that hidden subviews are not displayed when added to a view
          * using the addSubviewAnimated method.
@@ -563,12 +586,12 @@
         testShouldAddSubviewAnimatedWithHiddenView: function() { with(this) {
           var testView = new TestView(),
               subview  = new Aphid.UI.View({ hidden: true });
-
+        
           testView.addSubviewAnimated(subview);
           assert(subview.get("hidden"), "subview should be hidden");
           assertEqual("hidden", subview.get("element").getStyle("visibility"), "subview#element should have its 'visibility' CSS style set to 'hidden'");
         }},
-
+        
         /**
          * Ensure that subviews may be removed from their superview by calling
          * the removeFromSuperview() method on the view to be removed.
@@ -577,7 +600,7 @@
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
           firstSubview.removeFromSuperview();
           secondSubview.removeFromSuperview();
@@ -585,7 +608,7 @@
           assert(!secondSubview.get("superview"));
           assertEqual(0, testView.subviews, "testView#subviews should have no subviews");
         }},
-
+        
         /**
          * Ensure that subviews may be removed from their superview by calling
          * the removeFromSuperviewAnimated() method on the view to be removed.
@@ -594,7 +617,7 @@
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           assertEqual(2, testView.subviews.length, "testView#subviews should have 2 subviews");
           firstSubview.removeFromSuperviewAnimated();
           secondSubview.removeFromSuperviewAnimated();
@@ -602,7 +625,7 @@
           assert(!secondSubview.get("superview"), "secondSubview should not have a superview");
           assertEqual(0, testView.subviews, "testView#subviews should have no subviews");
         }},
-
+        
         /**
          * Ensure that all subviews on a view may be removed at once by
          * calling the clearSubviews() method.
@@ -613,7 +636,7 @@
           testView.clearSubviews();
           assertEqual(0, testView.subviews.length);
         }},
-
+        
         /**
          * Ensure that the "superviews" property on a view returns all of its
          * superviews in the view stack. The superviews should be returned in
@@ -624,21 +647,21 @@
           var topView    = new Aphid.UI.View(),
               middleView = new Aphid.UI.View(),
               bottomView = new Aphid.UI.View();
-
+        
           topView.addSubview(middleView);
           middleView.addSubview(bottomView);
-
+        
           assertEqual(2, bottomView.get("superviews").size(), "bottomView#superviews should contain 2 entries");
           assertEqual(middleView, bottomView.get("superviews")[0], "the superview at index 0 should be middleView");
           assertEqual(topView, bottomView.get("superviews")[1], "the superview at index 1 should be topView");
         }},
-
+        
         // Action Tests ------------------------------------------------------
-
+        
         // TODO Implement Action Tests...
-
+        
         // Callback Tests ----------------------------------------------------
-
+        
         /**
          * Ensure that setting the view with setView() will call the
          * viewWillAppear callback when the superview is visible.
@@ -646,17 +669,17 @@
         testSetViewShouldCallViewWillAppearCallback: function() { with(this) {
           var testView = new TestView(),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.setView(subview);
           assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with setView");
           subview.viewWillAppearCalled = false;
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setView() will not call the
          * viewWillAppear callback if the superview is not visible.
@@ -664,12 +687,12 @@
         // testSetViewShouldNotCallViewWillAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView(),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setView(subview);
         //   assert(!subview.viewWillAppearCalled, "viewWillAppear should not be called on the view when adding to a hidden view with setView");
         // }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will call the
          * viewWillAppear callback when the superview is visible.
@@ -677,17 +700,17 @@
         testSetViewAnimatedShouldCallViewWillAppearCallback: function() { with(this) {
           var testView = new TestView(),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.setViewAnimated(subview);
           assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with setViewAnimated");
           subview.viewWillAppearCalled = false;
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
         * Ensure that setting the view with setViewAnimated() will not call
         * the viewWillAppear callback if the superview is not visible.
@@ -695,13 +718,13 @@
         // testSetViewAnimatedShouldNotCallViewWillAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView(),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setViewAnimated(subview);
         //   assert(!subview.viewWillAppearCalled, "viewWillAppear should not be called on the view when adding to a hidden view with setView");
         //   subview.viewWillAppearCalled = false;
         // }},
-
+        
         /**
          * Ensure that adding a view width addSubview() will call the
          * viewWillAppear callback when the superview is visible.
@@ -709,17 +732,17 @@
         testAddSubviewShouldCallViewWillAppearCallback: function() { with(this) {
           var testView = new TestView(),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubview(subview);
           assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with addSubview");
           subview.viewWillAppearCalled = false;
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view width addSubview() will not call the
          * viewWillAppear callback if the superview is not visible.
@@ -727,13 +750,13 @@
         // testAddSubviewShouldNotCallViewWillAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView(),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.addSubview(subview);
         //   assert(!subview.viewWillAppearCalled, "viewWillAppear should not be called on the view when adding to another view with addSubview");
         //   subview.viewWillAppearCalled = false;
         // }},
-
+        
         /**
          * Ensure that adding a view width addSubviewAnimated() will call the
          * viewWillAppear callback when the superview is visible.
@@ -741,17 +764,17 @@
         testAddSubviewAnimatedShouldCallViewWillAppearCallback: function() { with(this) {
           var testView = new TestView(),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubviewAnimated(subview);
           assert(subview.viewWillAppearCalled, "viewWillAppear should be called on the view when adding to another view with addSubviewAnimated");
           subview.viewWillAppearCalled = false;
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view width addSubviewAnimated() will not call
          * the viewWillAppear callback if the superview is not visible.
@@ -759,13 +782,13 @@
         // testAddSubviewAnimatedShouldNotCallViewWillAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView(),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.addSubviewAnimated(subview);
         //   assert(!subview.viewWillAppearCalled, "viewWillAppear should not be called on the view when adding to another view with addSubviewAnimated");
         //   subview.viewWillAppearCalled = false;
         // }},
-
+        
         /**
          * Ensure that setting the view with setView() will call the
          * viewWillAppear callback on each of the subviews on the view that
@@ -774,15 +797,15 @@
         testSetViewShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setView(subview);
           assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setView");
           assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setView");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setView() will not call the
          * viewWillAppear callback on each of the subviews on the view that
@@ -791,13 +814,13 @@
         // testSetViewShouldNotCallViewWillAppearCallbackOnSubviewsWhenSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setView(subview);
         //   assert(!subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with setView");
         //   assert(!subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with setView");
         // }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will call the
          * viewWillAppear callback on each of the subviews on the view that is
@@ -806,15 +829,15 @@
         testSetViewAnimatedShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setViewAnimated(subview);
           assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setViewAnimated");
           assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with setViewAnimated");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will not call
          * the viewWillAppear callback on each of the subviews on the view
@@ -823,13 +846,13 @@
         // testSetViewAnimatedShouldNotCallViewWillAppearCallbackOnSubviewsWhenSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setViewAnimated(subview);
         //   assert(!subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with setViewAnimated");
         //   assert(!subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with setViewAnimated");
         // }},
-
+        
         /**
          * Ensure that adding a view with addSubview() will call the
          * viewWillAppear callback on each of the subviews on the view that is
@@ -838,15 +861,15 @@
         testAddSubviewShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.addSubview(subview);
           assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubview");
           assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubview");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view with addSubview() will not call the
          * viewWillAppear callback on each of the subviews on the view that is
@@ -855,13 +878,13 @@
         // testAddSubviewShouldNotCallViewWillAppearCallbackOnSubviewsIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.addSubview(subview);
         //   assert(!subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with addSubview");
         //   assert(!subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should not be called on the view's subviews when adding to another view with addSubview");
         // }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will call the
          * viewWillAppear callback on each of the subviews on the view that is
@@ -870,15 +893,15 @@
         testAddSubviewAnimatedShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.addSubviewAnimated(subview);
           assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
           assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will not call the
          * viewWillAppear callback on each of the subviews on the view that is
@@ -887,13 +910,13 @@
         testAddSubviewAnimatedShouldCallViewWillAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.addSubviewAnimated(subview);
           assert(subview.get("subviews")[0].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
           assert(subview.get("subviews")[1].viewWillAppearCalled, "viewWillAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
         }},
-
+        
         /**
          * Ensure that setting the view with setView() will call the
          * viewDidAppear callback when the superview is visible.
@@ -901,13 +924,13 @@
         testSetViewShouldCallViewDidAppearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setView(subview);
           assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with setView");
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setView() will not call the
          * viewDidAppear callback if the superview is not visible.
@@ -915,12 +938,12 @@
         // testSetViewShouldNotCallViewDidAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setView(subview);
         //   assert(!subview.viewDidAppearCalled, "viewDidAppear should not be called on the view when adding to another view with setView");
         // }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will call the
          * viewDidAppear callback when the superview is visible.
@@ -928,16 +951,16 @@
         testSetViewAnimatedShouldCallViewDidAppearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with setViewAnimated");
           }});
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will call the
          * viewDidAppear callback when the superview is visible.
@@ -945,14 +968,14 @@
         // testSetViewAnimatedShouldNotCallViewDidAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setViewAnimated(subview);
         //   wait(2000, function() { with(this) {
         //     assert(!subview.viewDidAppearCalled, "viewDidAppear should not be called on the view when adding to another view with setViewAnimated");
         //   }});
         // }},
-
+        
         /**
          * Ensure that adding a view width addSubview() will call the
          * viewDidAppear callback when the superview is visible.
@@ -960,16 +983,16 @@
         testAddSubviewShouldCallViewDidAppearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubview(subview);
           assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with addSubview");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view width addSubview() will call the
          * viewDidAppear callback when the superview is visible.
@@ -977,12 +1000,12 @@
         // testAddSubviewShouldNotCallViewDidAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be true");
         //   testView.addSubview(subview);
         //   assert(!subview.viewDidAppearCalled, "viewDidAppear should not be called on the view when adding to another view with addSubview");
         // }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will call the
          * viewDidAppear callback when the superview is visible.
@@ -990,18 +1013,18 @@
         testAddSubviewAnimatedShouldCallViewDidAppearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubviewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.viewDidAppearCalled, "viewDidAppear should be called on the view when adding to another view with addSubviewAnimated");
           }});
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will not call
          * the viewDidAppear callback if the superview is not visible.
@@ -1009,14 +1032,14 @@
         // testAddSubviewAnimatedShouldNotCallViewDidAppearCallbackIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithCallbacks();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.addSubviewAnimated(subview);
         //   wait(2000, function() { with(this) {
         //     assert(!subview.viewDidAppearCalled, "viewDidAppear should not be called on the view when adding to another view with addSubviewAnimated");
         //   }});
         // }},
-
+        
         /**
          * Ensure that setting the view with setView() will call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1025,17 +1048,17 @@
         testSetViewShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.setView(subview);
           assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setView");
           assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setView");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setView() will not call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1044,13 +1067,13 @@
         // testSetViewShouldNotCallViewDidAppearCallbackOnSubviewsIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.setView(subview);
         //   assert(!subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with setView");
         //   assert(!subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with setView");
         // }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1059,17 +1082,17 @@
         testSetViewAnimatedShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
             assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
           }});
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that setting the view with setViewAnimated() will not call
          * the viewDidAppear callback on each of the subviews on the view that
@@ -1078,7 +1101,7 @@
         testSetViewAnimatedShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.setViewAnimated(subview);
           wait(2000, function() { with(this) {
@@ -1086,7 +1109,7 @@
             assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with setViewAnimated");
           }});
         }},
-
+        
         /**
          * Ensure that adding a view with addSubview() will call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1095,17 +1118,17 @@
         testAddSubviewShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubview(subview);
           assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubview");
           assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubview");
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view with addSubview() will not call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1114,13 +1137,13 @@
         // testAddSubviewShouldNotCallViewDidAppearCallbackOnSubviewsIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("visible"), "visible on testView should be false");
         //   testView.addSubview(subview);
         //   assert(!subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with addSubview");
         //   assert(!subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with addSubview");
         // }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will call the
          * viewDidAppear callback on each of the subviews on the view that is
@@ -1129,19 +1152,19 @@
         testAddSubviewAnimatedShouldCallViewDidAppearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible on testView should be true");
-
+        
           testView.addSubviewAnimated(subview);
           wait(2000, function() { with(this) {
             assert(subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
             assert(subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should be called on the view's subviews when adding to another view with addSubviewAnimated");
           }});
-
+        
           testView.removeFromSuperview();
         }},
-
+        
         /**
          * Ensure that adding a view with addSubviewAnimated() will not call
          * the viewDidAppear callback on each of the subviews on the view that
@@ -1150,51 +1173,51 @@
         // testAddSubviewAnimatedShouldNotCallViewDidAppearCallbackOnSubviewsIfSuperviewIsNotVisible: function() { with(this) {
         //   var testView = new TestView({ element: $('testElement')}),
         //       subview  = new TestViewWithSubviews();
-
+        
         //   assert(!testView.get("isVisible"), "isVisible on testView should be false");
         //   testView.addSubviewAnimated(subview);
         //   wait(2000, function() { with(this) {
         //     assert(!subview.get("subviews")[0].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with addSubviewAnimated");
         //     assert(!subview.get("subviews")[1].viewDidAppearCalled, "viewDidAppear should not be called on the view's subviews when adding to another view with addSubviewAnimated");
         //   }});
-
+        
         //   testView.removeFromSuperview();
         // }},
-
+        
         testSetViewShouldCallViewWillDisappearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           testView.setView(subview);
           testView.setView();
           assert(subview.viewWillDisappearCalled, "viewWillDisappear should be called on the view when adding to another view with setView");
         }},
-
+        
         testSetViewAnimatedShouldCallViewWillDisappearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           testView.setViewAnimated(subview);
           testView.setViewAnimated();
           wait(2000, function() { with(this) {
             assert(subview.viewWillDisappearCalled, "viewWillDisappear should be called on the view when adding to another view with setViewAnimated");
           }});
         }},
-
+        
         testSetViewShouldCallViewWillDisappearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           testView.setView(subview);
           testView.setView();
           assert(subview.get("subviews")[0].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setView");
           assert(subview.get("subviews")[1].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setView");
         }},
-
+        
         testSetViewAnimatedShouldCallViewWillDisappearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           testView.setView(subview);
           testView.setViewAnimated();
           wait(2000, function() { with(this) {
@@ -1202,41 +1225,41 @@
             assert(subview.get("subviews")[1].viewWillDisappearCalled, "viewWillDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
           }});
         }},
-
+        
         testSetViewShouldCallViewDidDisappearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           testView.setView(subview);
           testView.setView();
           assert(subview.viewDidDisappearCalled, "viewDidDisappear should be called on the view when adding to another view with setView");
         }},
-
+        
         testSetViewAnimatedShouldCallViewDidDisappearCallback: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithCallbacks();
-
+        
           testView.setView(subview);
           testView.setViewAnimated();
           wait(2000, function() { with(this) {
             assert(subview.viewDidDisappearCalled, "viewDidDisappear should be called on the view when adding to another view with setViewAnimated");
           }});
         }},
-
+        
         testSetViewShouldCallViewDidDisappearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           testView.setView(subview);
           testView.setView();
           assert(subview.get("subviews")[0].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setView");
           assert(subview.get("subviews")[1].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setView");
         }},
-
+        
         testSetViewAnimatedShouldCallViewDidDisappearCallbackOnSubviews: function() { with(this) {
           var testView = new TestView({ element: $('testElement')}),
               subview  = new TestViewWithSubviews();
-
+        
           testView.setView(subview);
           testView.setViewAnimated();
           wait(2000, function() { with(this) {
@@ -1244,7 +1267,7 @@
             assert(subview.get("subviews")[1].viewDidDisappearCalled, "viewDidDisappear should be called on the view's subviews when adding to another view with setViewAnimated");
           }});
         }},
-
+        
         /**
          * Ensure that when setting a subview with setView() that the subview
          * is not removed from the superview if the subview is already a
@@ -1254,17 +1277,17 @@
           var testView   = new TestViewWithSubviews(),
               firstView  = testView.get("subviews")[0],
               secondView = testView.get("subviews")[1];
-
+        
           firstView.resetCallbacks();
-
+        
           testView.setView(firstView);
-
+        
           assert(!firstView.get("viewWillAppearCalled"), "viewWillAppear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewDidAppearCalled"), "viewDidAppear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewWillDisappearCalled"), "viewWillDisappear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewDidDisappearCalled"), "viewDidDisappear should not have been called on firstView, since it was already a subview of testView");
         }},
-
+        
         /**
          * Ensure that when adding a subview with addSubview() that the
          * subview is not removed from the superview if the subview is already
@@ -1274,12 +1297,12 @@
           var testView   = new TestViewWithSubviews(),
               firstView  = testView.get("subviews")[0],
               secondView = testView.get("subviews")[1];
-
+        
           firstView.resetCallbacks();
           secondView.resetCallbacks();
-
+        
           testView.addSubview(firstView);
-
+        
           assertEqual(2, testView.subviews.length, "testView should have 2 subviews");
           assert(!firstView.get("viewWillAppearCalled"), "viewWillAppear should not have been called on firstView, since it was already a subview of testView");
           assert(!firstView.get("viewDidAppearCalled"), "viewDidAppear should not have been called on firstView, since it was already a subview of testView");
@@ -1290,7 +1313,7 @@
           assert(!secondView.get("viewWillDisappearCalled"), "viewWillDisappear should not have been called on secondView");
           assert(!secondView.get("viewDidDisappearCalled"), "viewDidDisappear should not have been called on secondView");
         }},
-
+        
         /**
          * Ensure that when setting a subview with setView() that the subview
          * is not removed from the superview if the subview is already a
@@ -1300,15 +1323,15 @@
           var testView   = new TestViewWithSubviews(),
               firstView  = testView.get("subviews")[0],
               secondView = testView.get("subviews")[1];
-
+        
           testView.setView(firstView);
-
+        
           assertEqual(1, testView.get("subviews").length, "testView should only have 1 subview");
           assert(!secondView.get("superview"), "secondView should not have a superview");
           assert(secondView.get("viewWillDisappearCalled"), "viewWillAppear should have been called on secondView");
           assert(secondView.get("viewDidDisappearCalled"), "viewDidAppear should have been called on secondView");
         }},
-
+        
         /**
          * Ensures that setting a subview with setView() repositions the
          * subview to fully occupy the superview.
@@ -1323,48 +1346,48 @@
           assertEqual("0px", subview.get("element").getStyle("top"), "CSS property 'top' should be 0");
           assertEqual("0px", subview.get("element").getStyle("bottom"), "CSS property 'bottom' should be 0");
         }},
-
+        
         testShouldCallViewWillAppearOnlyOnce: function() { with(this) {
           var testView = new TestViewWithCallbacks(),
               subview  = new TestViewWithCallbacks();
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(testView.viewWillAppearCalled, "viewWillAppear should have been called on testView");
           testView.resetCallbacks();
-
+        
           // Add Subview
           testView.addSubview(subview);
           assert(subview.viewWillAppearCalled, "viewWillAppear should have been called on subview");
           assert(!testView.viewWillAppearCalled, "viewWillAppear should NOT have been called on testView");
         }},
-
+        
         testShouldCallViewDidAppearOnlyOnce: function() { with(this) {
           var testView = new TestViewWithCallbacks(),
               subview  = new TestViewWithCallbacks();
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(testView.viewDidAppearCalled, "viewDidAppear should have been called on testView");
           testView.resetCallbacks();
-
+        
           // Add Subview
           testView.addSubview(subview);
           assert(subview.viewDidAppearCalled, "viewDidAppear should have been called on subview");
           assert(!testView.viewDidAppearCalled, "viewDidAppear should NOT have been called on testView");
         }},
-
+        
         testShouldResetViewWillAppearCalledStateWhenViewDidDisappearIsCalled: function() { with(this) {
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(testView.viewWillAppearCalled, "viewWillAppear should have been called on testView");
           assert(firstSubview.viewWillAppearCalled, "viewWillAppear should have been called on firstSubview");
           assert(secondSubview.viewWillAppearCalled, "viewWillAppear should have been called on secondSubview");
-
+        
           // Remove Subviews
           firstSubview.removeFromSuperview();
           secondSubview.removeFromSuperview();
@@ -1372,18 +1395,18 @@
           assert(!secondSubview._viewWillAppearCalled, "_viewWillAppearCalled should be false on secondSubview");
           assert(testView._viewWillAppearCalled, "_viewWillAppearCalled should be true on testView");
         }},
-
+        
         testShouldResetViewDidAppearCalledStateWhenViewDidDisappearIsCalled: function() { with(this) {
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(testView.viewDidAppearCalled, "viewDidAppear should have been called on testView");
           assert(firstSubview.viewDidAppearCalled, "viewDidAppear should have been called on firstSubview");
           assert(secondSubview.viewDidAppearCalled, "viewDidAppear should have been called on secondSubview");
-
+        
           // Remove Subviews
           firstSubview.removeFromSuperview();
           secondSubview.removeFromSuperview();
@@ -1391,111 +1414,111 @@
           assert(!secondSubview._viewDidAppearCalled, "_viewDidAppearCalled should be false on secondSubview");
           assert(testView._viewDidAppearCalled, "_viewDidAppearCalled should be true on testView");
         }},
-
+        
         testShouldResetViewWillDisappearCalledStateWhenViewWillAppearIsCalled: function() { with(this) {
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
-
+        
           // Remove the Test View
           testView.removeFromSuperview();
           assert(testView.viewWillDisappearCalled, "viewWillDisappear should have been called on testView");
           assert(firstSubview.viewWillDisappearCalled, "viewWillDisappear should have been called on firstSubview");
           assert(secondSubview.viewWillDisappearCalled, "viewWillDisappear should have been called on secondSubview");
-
+        
           // Re-Display the Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(!firstSubview._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on firstSubview");
           assert(!secondSubview._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on secondSubview");
           assert(!testView._viewWillDisappearCalled, "_viewWillDisappearCalled should be false on testView");
         }},
-
+        
         testShouldResetViewDidDisappearCalledStateWhenViewDidAppearIsCalled: function() { with(this) {
           var testView      = new TestViewWithSubviews(),
               firstSubview  = testView.get("subviews")[0],
               secondSubview = testView.get("subviews")[1];
-
+        
           // Display Test View
           $AppDelegate.mainWindow.addSubview(testView);
-
+        
           // Remove the Test View
           testView.removeFromSuperview();
           assert(testView.viewDidDisappearCalled, "viewDidDisappear should have been called on testView");
           assert(firstSubview.viewDidDisappearCalled, "viewDidDisappear should have been called on firstSubview");
           assert(secondSubview.viewDidDisappearCalled, "viewDidDisappear should have been called on secondSubview");
-
+        
           // Re-Display the Test View
           $AppDelegate.mainWindow.addSubview(testView);
           assert(!firstSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on firstSubview");
           assert(!secondSubview._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on secondSubview");
           assert(!testView._viewDidDisappearCalled, "_viewDidDisappearCalled should be false on testView");
         }},
-
+        
         // Event Observer Tests ----------------------------------------------
-
+        
         testShouldAddObserverForFocusEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleFocusEventListener));
         }},
-
+        
         testShouldAddObserverForBlurEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleBlurEventListener));
         }},
-
+        
         testShouldAddObserverForClickEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleClickEventListener));
         }},
-
+        
         testShouldAddObserverForDoubleClickEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleDoubleClickEventListener));
         }},
-
+        
         testShouldAddObserverForMouseDownEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseDownEventListener));
         }},
-
+        
         testShouldAddObserverForMouseUpEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseUpEventListener));
         }},
-
+        
         testShouldAddObserverForMouseOverEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseOverEventListener));
         }},
-
+        
         testShouldAddObserverForMouseOutEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseOutEventListener));
         }},
-
+        
         testShouldAddObserverForMouseEnterEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseEnterEventListener));
         }},
-
+        
         testShouldAddObserverForMouseLeaveEvents: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
           assert(Object.isFunction(testView._handleMouseLeaveEventListener));
         }},
-
+        
         testShouldStopObservingEventsWhenDisabled: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
@@ -1511,7 +1534,7 @@
           assert(!testView._handleMouseEnterEventListener);
           assert(!testView._handleMouseLeaveEventListener);
         }},
-
+        
         testShouldStartObservingEventsWhenEnabled: function() { with(this) {
           var testView = new TestViewWithEvents();
           testView._startObserving();
@@ -1528,7 +1551,7 @@
           assert(Object.isFunction(testView._handleMouseEnterEventListener));
           assert(Object.isFunction(testView._handleMouseLeaveEventListener));
         }},
-
+        
         testShouldNotStartObservingForEventsWhenInitializedDisabled: function() { with(this) {
           var testView = new TestViewWithEvents({ element: $('testElementWithDisabledClassName') });
           $AppDelegate.mainWindow.addSubview(testView);
@@ -1543,38 +1566,38 @@
           assert(!testView._handleMouseEnterEventListener);
           assert(!testView._handleMouseLeaveEventListener);
         }},
-
+        
         // Hide / Show -------------------------------------------------------
-
+        
         testShouldHideView: function() { with(this) {
           var testView = new Aphid.UI.View();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible should be true on testView");
-
+        
           testView.hide();
           assert(!testView.get("visible"), "visible should be false on testView");
         }},
-
+        
         testShouldHideViewAnimated: function() { with(this) {
           var testView = new Aphid.UI.View();
-
+        
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "visible should be true on testView");
-
+        
           testView.hideAnimated();
           wait(1000, function() {
             assert(!testView.get("visible"), "visible should be false on testView");
           });
         }},
-
+        
         testShouldShowView: function() { with(this) {
           var testView = new Aphid.UI.View({ hidden: true });
           $AppDelegate.get("mainWindow").addSubview(testView);
           testView.show();
           assert(testView.get("visible"), "visible should be true on testView");
         }},
-
+        
         testShouldShowViewAnimated: function() { with(this) {
           var testView = new Aphid.UI.View({ hidden: true });
           $AppDelegate.get("mainWindow").addSubview(testView);
@@ -1583,23 +1606,23 @@
             assert(testView.get("visible"), "visible should be true on testView");
           });
         }},
-
+        
         testVisiblePropertyShouldBeTrueWhenViewIsVisible: function() { with(this) {
           var testView = new Aphid.UI.View();
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(testView.get("visible"), "testView should be visible");
         }},
-
+        
         testVisiblePropertyShouldBeFalseWhenViewIsNotVisible: function() { with(this) {
           var testView = new Aphid.UI.View({ visible: false });
           $AppDelegate.get("mainWindow").addSubview(testView);
           assert(!testView.get("visible"), "testView should not be visible");
         }},
-
+        
         testVisiblePropertyShouldBeFalseWhenSuperviewIsNotVisible: function() { with(this) {
           var superview = new Aphid.UI.View(),
               testView  = new Aphid.UI.View();
-
+        
           $AppDelegate.get("mainWindow").addSubview(superview);
           superview.addSubview(testView);
           superview.set("hidden", true);

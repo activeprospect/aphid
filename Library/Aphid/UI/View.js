@@ -1303,7 +1303,14 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Any elements with either a custom view class or outlet declaration
     // should be instantiated as a View...
     var viewElements = element.select("*[data-view-class], *[data-outlet]");
-    $L.info('Found ' + viewElements.length + ' ' + "subview".pluralize(viewElements.length) + ' in the view (' + this.displayName + ')...', this);
+
+    // Only instantiate subviews that this View owns directly...
+    viewElements = viewElements.reject(function(viewElement) {
+      var parentViewElement = viewElement.up("*[data-view-class], *[data-outlet]");
+      return (parentViewElement && parentViewElement.descendantOf(element));
+    }, this);
+
+    $L.debug('Found ' + viewElements.length + ' ' + "subview".pluralize(viewElements.length) + ' in the view (' + this.displayName + ')...', this);
 
     viewElements.each(function(element)
     {
@@ -1315,7 +1322,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       viewClassImplementation = resolveClassName(viewClass);
 
       try {
-        $L.info('Instantiating an instance of ' + viewClass + ' with the element ' + element, this);
+        $L.debug('Instantiating an instance of ' + viewClass + ' with the element ' + element.outerHTML, this);
 
         // Set options from data-* attributes...
         var options = $H();
@@ -1329,7 +1336,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             if (Object.isFunction(viewClassImplementation.prototype[property])) return;
 
             var value;
-            if ((value = element.readAttribute("data-" + property.attributize())) !== null)
+            if (value = element.getData(property.attributize())
             {
               if (value == "true") value = true;
               if (value == "false") value = false;
@@ -1338,11 +1345,15 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
           }
         );
 
+        var targetIdentifier = element.getData("target"),
+            targetElement    = element.up("#" + targetIdentifier),
+            target           = (targetElement && targetElement.retrieve("view")) || this;
+
         // Initialize View Instance
         instance = new viewClassImplementation(options.merge({
           outlet: element,
-          delegate: this,
-          dataSource: this
+          delegate: target,
+          dataSource: target
         }));
 
         // Find Superview
@@ -1355,7 +1366,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       }
       catch (error)
       {
-        $L.error("Unable to instantiate view (" + viewClass + ") for element (" + element + ")... " + error, this);
+        $L.error("Unable to instantiate view (" + viewClass + ") for element (" + element.outerHTML + ")... " + error, this);
         return;
       }
     }, this);
@@ -1387,16 +1398,21 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
       var outlet = element.getData("outlet"),
           view   = element.retrieve("view");
 
+      // Find the target object
+      var targetIdentifier = element.getData("target"),
+          targetElement    = element.up("#" + targetIdentifier),
+          target           = (targetElement && targetElement.retrieve("view")) || this;
+
       // If the view does not define a property for the outlet, do not
       // connect it.
-      if (Object.isUndefined(this[outlet]))
+      if (Object.isUndefined(target[outlet]))
       {
         $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', this);
         return;
       }
     
       $L.info('Connected outlet "' + outlet + '" to view controller', this);
-      this[outlet] = view;
+      target[outlet] = view;
     }, this);
   },
 
