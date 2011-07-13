@@ -1336,7 +1336,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
             if (Object.isFunction(viewClassImplementation.prototype[property])) return;
 
             var value;
-            if (value = element.getData(property.attributize())
+            if (value = element.getData(property.attributize()))
             {
               if (value == "true") value = true;
               if (value == "false") value = false;
