@@ -118,7 +118,7 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
       asynchronous: true,
       contentType: 'application/json',
       onSuccess: this._handleAppendCollectionResponse.bind(this, modelKlass),
-     onFailure: this._handleFailureResponse.bind(this, modelKlass),
+      onFailure: this._handleFailureResponse.bind(this, modelKlass),
       onException: function(transport, exception) { throw exception; }
     };
 
@@ -146,9 +146,6 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
 
     this.set("isLoaded", true);
     this.set("isLoading", false);
-
-    if (this.get("delegate") && this.get("delegate").modelDidFinishAppending)
-      this.get("delegate").modelDidFinishAppending(this);
   },
 
   // Failure Responses -------------------------------------------------------
@@ -164,6 +161,89 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     // Call Delegate Method
     if (this.get("delegate") && this.get("delegate").modelDidFailWithError)
       this.get("delegate").modelDidFailWithError(this, transport);
+  },
+
+  // -------------------------------------------------------------------------
+
+  /**
+   * Aphid.Model.CollectionProxy#reload() -> null
+  **/
+  reload: function()
+  {
+    var url        = false,
+        options    = false,
+        modelKlass = this.get("modelKlass");
+
+    // Parse Arguments
+    if (Object.isString(arguments[0]))
+    {
+      url     = arguments[0];
+      options = $H(arguments[1]);
+    }
+    else options = $H(arguments[0]);
+
+    // Set URL
+    if (!url)
+      url = modelKlass.prototype.get("siteUrl").concat(modelKlass.prototype.get("collectionPath"));
+
+    // Check for Required URL Template Properties
+    var requiredProperties = url.match(/#\{[a-zA-Z]+\}/g);
+    if (requiredProperties)
+    {
+      var missingProperties = requiredProperties.collect(function(requiredProperty) {
+        property = requiredProperty.gsub(/[^a-zA-Z]/, "");
+        if (!options.get(property)) return property;
+      }).compact();
+      if (missingProperties.size() > 0)
+        $L.warn("URL (\"" + url + "\") is missing " + "property".pluralize(missingProperties.size(), "properties") + " (" + missingProperties.join(", ") + ") and may not load correctly as a result.", this.className);
+    }
+
+    // Replace Template Variables in URL
+    var template = new Template(url);
+    url = template.evaluate(options);
+
+    $L.info("Reloading records at URL: " + url + " ...", this.className);
+
+    // Request Options
+    var options = {
+      method: "GET",
+      asynchronous: true,
+      contentType: 'application/json',
+      onSuccess: this._handleReloadCollectionResponse.bind(this, modelKlass),
+      onFailure: this._handleFailureResponse.bind(this, modelKlass),
+      onException: function(transport, exception) { throw exception; }
+    };
+
+    // Make Request
+    new Ajax.Request(url, options);
+
+    return this;
+  },
+
+  _handleReloadCollectionResponse: function(klass, transport)
+  {
+    var object = transport.responseJSON;
+    console.log("--")
+    console.log(this)
+    console.log("--")
+    this.set("collection", $A());
+
+    // Custom Collection Response Parsing
+    if (klass.prototype.parseCollectionResponse)
+      object = klass.prototype.parseCollectionResponse(transport);
+
+    // Instantiate each instance...
+    object.each(function(attributes) {
+      instance = new klass(attributes);
+      instance.set("isLoaded", true);
+      instance.set("isLoading", false);
+      instance._afterLoad();
+      this.push(instance);
+    }, this);
+
+    // Set the loading state on the collection...
+    this.set("isLoaded", true);
+    this.set("isLoading", false);
   }
 
 });
