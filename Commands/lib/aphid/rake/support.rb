@@ -68,8 +68,7 @@ module Aphid
 
         $WATCHING = true
 
-        watched_paths = [ "Application", "Library", "Resources", "Public",
-                          "Vendor/Aphid/Build" ]
+        watched_paths = [ "Application", "Library", "Resources", "Public" ]
 
         watched_files = Dir["Application/**/*.js"] \
                       + Dir["Library/**/*.js"] \
@@ -78,6 +77,15 @@ module Aphid
                       + Dir["Resources/Images/**/*"] \
                       + Dir["Public/**/*"] \
                       + [ "Vendor/Aphid/Build/.buildstamp" ]
+
+        begin
+          require "filewatcher"
+        rescue LoadError
+          puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
+          puts "  $ gem install filewatcher"
+          puts "\nand you should be all set!\n\n"
+          exit
+        end
 
         if RUBY_PLATFORM.downcase.include? "darwin"
           begin
@@ -101,9 +109,29 @@ module Aphid
 
           header "Waiting for Change(s)"
 
-          options = { :latency => 2.5 }
+          # Watch for Aphid Rebuilds
+          if File.exist? "Vendor/Aphid"
+            FileWatcher.new([ "Vendor/Aphid/Build/.buildstamp" ]).watch do |filename|
+              puts "Aphid was changed. Rebuilding project...\n"
+              tasks.each { |task| Rake::Task[task].reenable }
+              tasks.each do |task|
+                if $FAILED
+                  puts
+                  header "Build Failed!"
+                  break
+                end
+                Rake::Task[task].invoke
+              end
+              $FAILED = false
+              header "Waiting for Change(s)"
+            end
+          end
+
+          # Watch for Project Changes
+          options = { :latency => 5, :no_defer => false }
           fsevent = FSEvent.new
           fsevent.watch watched_paths, options do |directories|
+            fsevent.stop
             tasks.each { |task| Rake::Task[task].reenable }
             tasks.each do |task|
               if $FAILED
@@ -123,18 +151,10 @@ module Aphid
             end
             $FAILED = false
             header "Waiting for Change(s)"
+            fsevent.run
           end
           fsevent.run
         else
-          begin
-            require "filewatcher"
-          rescue LoadError
-            puts "\nYou'll need FileWatcher to watch for changes. Simply run:\n\n"
-            puts "  $ gem install filewatcher"
-            puts "\nand you should be all set!\n\n"
-            exit
-          end
-
           FileWatcher.new(watched_files).watch do |filename|
             puts filename + " was changed. Rebuilding project...\n"
             tasks.each { |task| Rake::Task[task].reenable }
