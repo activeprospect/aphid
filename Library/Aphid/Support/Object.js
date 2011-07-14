@@ -91,6 +91,35 @@ Aphid.Support.Object = Class.create({
   postNotification: function(notificationName, info)
   {
     return $AppDelegate.get("notificationCenter").postNotification(notificationName, this, info);
+  },
+
+  /**
+   * Aphid.Support.Object#hasDelegateMethod(methodName) -> Boolean
+   *
+   *  - methodName (String): the name of the method to be validated.
+   *
+   * Checks for a delegate for the object and whether or not the delegate has
+   * implemented the requested method.
+  **/
+  hasDelegateMethod: function(methodName)
+  {
+    if (this.get("delegate") && Object.isFunction(this.get("delegate")[methodName]))
+      return true;
+    return false;
+  },
+
+  /**
+   * Aphid.Support.Object#callDelegateMethod(methodName[, arguments]) -> Object | Boolean | undefined
+  **/
+  callDelegateMethod: function()
+  {
+    var methodName = arguments[0];
+    arguments[0] = this;
+    if (!this.hasDelegateMethod(methodName))
+      $L.debug("Unable to call delegate method " + methodName + " as no delegate is set!", this);
+    else
+      return this.get("delegate")[methodName].apply(this.get("delegate"), arguments);
+    return undefined;
   }
 
 });

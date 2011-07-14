@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.Support.Object Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.Support.Object Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+      </p>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestView;
+      var TestDelegate;
+
+      new Test.Unit.Runner({
+
+        setup: function()
+        {
+
+          TestView = Aphid.Class.create("TestView", Aphid.UI.View, {
+
+          });
+
+          TestDelegate = Aphid.Class.create("TestDelegate", {
+
+            testArguments: false,
+
+            testDelegateMethodCalled: false,
+            testDelegateMethod: function()
+            {
+              this.testDelegateMethodCalled = true;
+              this.testArguments = arguments;
+            },
+
+            testDelegateMethodWithArgumentsCalled: false,
+            argumentsPassedToTestDelegateMethodWithArguments: false,
+            testDelegateMethodWithArguments: function()
+            {
+              this.testDelegateMethodWithArgumentsCalled = true;
+              this.testArguments = arguments;
+            },
+
+            resetCallbacks: function()
+            {
+              this.testDelegateMethodCalled = false;
+              this.testDelegateMethodWithArgumentsCalled = false;
+              this.testArguments = false;
+            }
+
+          });
+
+        },
+
+        /**
+         * 
+        **/
+        testHasDelegateMethodShouldReturnFalseForNoDelegate: function() { with(this) {
+          var testView = new TestView();
+          assert(!testView.hasDelegateMethod("testDelegateMethod"), "testDelegate.hasDelegateMethod() should return false when there is no delegate assigned");
+        }},
+
+        /**
+         * 
+        **/
+        testHasDelegateMethodShouldReturnFalseForNonImplementedMethods: function() { with(this) {
+          var testDelegate = new TestDelegate(),
+              testView     = new TestView({ delegate: testDelegate });
+
+          assert(!testView.hasDelegateMethod("bogusDelegateMethod"), "testDelegate.hasDelegateMethod() should return false when the delegate does not implement the requested method");
+        }},
+
+        /**
+         * 
+        **/
+        testHasDelegateMethodShouldReturnTrueForImplementedMethods: function() { with(this) {
+          var testDelegate = new TestDelegate(),
+              testView     = new TestView({ delegate: testDelegate });
+
+          assert(testView.hasDelegateMethod("testDelegateMethod"), "testDelegate.hasDelegateMethod() should return true when the delegate implements the requested method");
+        }},
+
+        /**
+         * 
+        **/
+        testShouldCallDelegateMethod: function() { with(this) {
+          var testDelegate = new TestDelegate(),
+              testView     = new TestView({ delegate: testDelegate });
+
+          testView.callDelegateMethod("testDelegateMethod");
+          assert(testDelegate.testDelegateMethodCalled, "testDelegate#testDelegateMethodCalled should be true");
+        }},
+
+        /**
+         * 
+        **/
+        testShouldPassSenderAsFirstArgumentToDelegateMethod: function() { with(this) {
+          var testDelegate  = new TestDelegate(),
+              testView      = new TestView({ delegate: testDelegate });
+
+          testView.callDelegateMethod("testDelegateMethod");
+          assert(testDelegate.testDelegateMethodCalled, "testDelegate#testDelegateMethodCalled should be true");
+          assertEqual(testView, testDelegate.testArguments[0], "testDelegate#testArguments[0] should be equal to the testView instance");
+        }},
+
+        /**
+         * 
+        **/
+        testShouldCallDelegateMethodWithArguments: function() { with(this) {
+          var testDelegate  = new TestDelegate(),
+              testView      = new TestView({ delegate: testDelegate });
+
+          testView.callDelegateMethod("testDelegateMethodWithArguments", "Foo", "Bar");
+          assert(testDelegate.testDelegateMethodWithArgumentsCalled, "testDelegate#testDelegateMethodWithArgumentsCalled should be true");
+          assertEqual(testView, testDelegate.testArguments[0], "testDelegate#testArguments[0] should be equal to the testView instance");
+          assertEqual("Foo", testDelegate.testArguments[1], "testDelegate#testArguments[1] should be equal to 'Foo'");
+          assertEqual("Bar", testDelegate.testArguments[2], "testDelegate#testArguments[2] should be equal to 'Bar'");
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>

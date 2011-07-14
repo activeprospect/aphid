@@ -281,8 +281,7 @@ Aphid.UI.CalendarView = Aphid.Class.create("Aphid.UI.CalendarView", Aphid.UI.Vie
     
     // Call the calendarViewDateDidChange method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.calendarViewDateDidChange)
-      this.delegate.calendarViewDateDidChange(this, this.get("date"));
+    this.callDelegateMethod("calendarViewDateDidChange", this.get("date"));
   }
 
 });

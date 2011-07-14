@@ -167,8 +167,7 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
       this.imageDidLoad();
 
     // Call the Delegate Method
-    if (this.delegate && this.delegate.imageViewDidLoad)
-      this.delegate.imageViewDidLoad(this);
+    this.callDelegateMethod("imageViewDidLoad");
   },
 
   _imageLoadDidFail: function()
@@ -178,8 +177,7 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
       this.imageLoadDidFail();
 
     // Call the Delegate Method
-    if (this.delegate && this.delegate.imageViewLoadDidFail)
-      this.delegate.imageViewLoadDidFail(this);
+    this.callDelegateMethod("imageViewLoadDidFail");
   }
 
 });

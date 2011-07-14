@@ -587,8 +587,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
     this.postNotification("ModelFailureNotification", transport);
 
     // Call Delegate Method
-    if (this.get("delegate") && this.get("delegate").modelDidFailWithError)
-      this.get("delegate").modelDidFailWithError(this, transport);
+    this.callDelegateMethod("modelDidFailWithError", transport);
   },
 
   // Callbacks ---------------------------------------------------------------
@@ -608,8 +607,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
       this.afterLoad(this);
 
     // Call Delegate Method
-    if (this.delegate && this.delegate.modelDidFinishLoading)
-      this.delegate.modelDidFinishLoading(this);
+    this.callDelegateMethod("modelDidFinishLoading");
 
     // Post Notification
     this.postNotification("ModelDidLoadNotification");
@@ -624,8 +622,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
       this.afterReload(this);
 
     // Call Delegate Method
-    if (this.delegate && this.delegate.modelDidFinishReloading)
-      this.delegate.modelDidFinishReloading(this);
+    this.callDelegateMethod("modelDidFinishReloading");
 
     // Post Notification
     this.postNotification("ModelDidReloadNotification");
@@ -640,8 +637,7 @@ Aphid.Model.Base = Aphid.Class.create("Aphid.Model.Base", Aphid.Support.Object,
       this.afterDestroy(this);
 
     // Call Delegate Method
-    if (this.delegate && this.delegate.modelWasDestroyed)
-      this.delegate.modelWasDestroyed(this);
+    this.callDelegateMethod("modelWasDestroyed");
 
     // Post Notification
     this.postNotification("ModelWasDestroyedNotification");
@@ -973,8 +969,7 @@ Aphid.Model.Base.ClassMethods = {
     instance.postNotification("ModelFailureNotification", transport);
 
     // Call Delegate Method
-    if (instance.get("delegate") && instance.get("delegate").modelDidFailWithError)
-      instance.get("delegate").modelDidFailWithError(instance, transport);
+    instance.callDelegateMethod("modelDidFailWithError", transport);
   }
 
 };

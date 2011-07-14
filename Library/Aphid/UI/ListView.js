@@ -261,7 +261,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     var viewClass = element.getData("view-class");
     if (!viewClass) viewClass = this.get("itemViewClass");
 
-    $L.info("Initializing Item as " + viewClass, this);
+    $L.debug("Initializing static list element (" + element.outerHTML + ") as an instance of " + viewClass + " ...", this);
 
     var viewClassImplementation = resolveClassName(viewClass);
     var viewClassInstance = new viewClassImplementation({ element: element });
@@ -299,7 +299,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     // Ensure that we are only passed instances of Aphid.UI.ListViewItem...
     if (!items.all(this._validateItem, this))
     {
-      $L.error("All items must be instances of " + this.get("itemViewClass") + "!", this);
+      $L.error("Unable to set items as all items must be instances of " + this.get("itemViewClass") + "!", this);
       return;
     }
 
@@ -428,8 +428,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   _listViewItemCount: function()
   {
     var listViewItemCount = 0;
-    if (this.dataSource && this.dataSource.listViewItemCount)
-      listViewItemCount = this.dataSource.listViewItemCount(this);
+    if (this.get("dataSource") && Object.isFunction(this.get("dataSource").listViewItemCount))
+      listViewItemCount = this.get("dataSource").listViewItemCount(this);
     else
     {
       $L.warn('Data source does not implement required method "listViewItemCount(listView)"', this);
@@ -448,8 +448,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   _listViewItemForIndex: function(index)
   {
     var listViewItem;
-    if (this.dataSource && this.dataSource.listViewItemForIndex)
-      listViewItem = this.dataSource.listViewItemForIndex(this, index);
+    if (this.get("dataSource") && Object.isFunction(this.get("dataSource").listViewItemForIndex))
+      listViewItem = this.get("dataSource").listViewItemForIndex(this, index);
     else
     {
       $L.warn('Data source does not implement required method "listViewItemForIndex(listView, index)"', this);
@@ -770,10 +770,10 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    */
   _setupSorting: function()
   {
-    if (this.get("element").hasClassName('sortable'))
+    if (this.get("element").hasClassName("sortable"))
       Sortable.destroy(this.get("element"));
     else
-      this.get("element").addClassName('sortable');
+      this.get("element").addClassName("sortable");
     this._addOrderedIdentitiesToItems();
     Sortable.create(this.get("element"), {
       onChange: this._listViewOrderDidChange.bind(this),
@@ -790,17 +790,15 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   // delegate has defined it.
   _listViewOrderDidChange: function()
   {
-    $L.info('_listViewOrderDidChange', this);
-    if (this.delegate && this.delegate.listViewOrderDidChange)
-      this.delegate.listViewOrderDidChange(this);
+    $L.debug("List view order changed...", this);
+    this.callDelegateMethod("listViewOrderDidChange");
   },
 
   _listViewOrderDidUpdate: function()
   {
     $L.info('_listViewOrderDidUpdate', this);
     this._updateSortIndexes();
-    if (this.delegate && this.delegate.listViewOrderDidUpdate)
-      this.delegate.listViewOrderDidUpdate(this);
+    this.callDelegateMethod("listViewOrderDidUpdate");
   },
 
   _updateSortIndexes: function()
@@ -860,8 +858,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       shouldSelect = false;
     if (this.shouldSelectItem)
       shouldSelect = this.shouldSelectItem(item);
-    if (this.delegate && this.delegate.listViewShouldSelectItem)
-      shouldSelect = this.delegate.listViewShouldSelectItem(this, item);
+    if (this.hasDelegateMethod("listViewShouldSelectItem"))
+      shouldSelect = this.callDelegateMethod("listViewShouldSelectItem", item);
     return shouldSelect;
   },
 
@@ -882,8 +880,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   {
     if (this.willSelectItem)
       this.willSelectItem(item);
-    if (this.delegate && this.delegate.listViewWillSelectItem)
-      this.delegate.listViewWillSelectItem(this, item);
+    this.callDelegateMethod("listViewWillSelectItem", item);
   },
 
   /*
@@ -901,13 +898,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     // Call the listViewDidSelectItem method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.listViewDidSelectItem)
-      this.delegate.listViewDidSelectItem(this, item);
+    this.callDelegateMethod("listViewDidSelectItem", item);
 
     // Call the listViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, item);
+    this.callDelegateMethod("listViewSelectionDidChange", item);
   },
 
   /*
@@ -930,8 +925,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       shouldDeselect = false;
     if (this.shouldDeselectItem)
       shouldDeselect = this.shouldDeselectItem(item);
-    if (this.delegate && this.delegate.listViewShouldDeselectItem)
-      shouldDeselect = this.delegate.listViewShouldDeselectItem(this, item);
+    if (this.hasDelegateMethod("listViewShouldDeselectItem"))
+      shouldDeselect = this.callDelegateMethod("listViewShouldDeselectItem", item);
     return shouldDeselect;
   },
 
@@ -952,8 +947,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   {
     if (this.willDeselectItem)
       this.willDeselectItem(item);
-    if (this.delegate && this.delegate.listViewWillDeselectItem)
-      this.delegate.listViewWillDeselectItem(this, item);
+    this.callDelegateMethod("listViewWillDeselectItem", item);
   },
 
   /*
@@ -971,8 +965,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     // Call the listViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this, item);
+    this.callDelegateMethod("listViewSelectionDidChange", item);
   },
 
   /*
@@ -995,8 +988,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
       shouldClearSelection = false;
     if (this.shouldClearSelection)
       shouldClearSelection = this.shouldClearSelection();
-    if (this.delegate && this.delegate.listViewShouldClearSelection)
-      shouldClearSelection = this.delegate.listViewShouldClearSelection(this);
+    if (this.hasDelegateMethod("listViewShouldClearSelection"))
+      shouldClearSelection = this.callDelegateMethod("listViewShouldClearSelection");
     return shouldClearSelection;
   },
 
@@ -1017,12 +1010,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   {
     if (this.willClearSelection)
       this.willClearSelection(item);
-    if (this.delegate && this.delegate.listViewWillClearSelection)
-      this.delegate.listViewWillClearSelection(this);
+    this.callDelegateMethod("listViewWillClearSelection");
   },
 
   /*
-   * Aphid.UI.ListView#_didClearSelection(item) -> Boolean
+   * Aphid.UI.ListView#_didClearSelection() -> Boolean
    *
    * Performs any internal actions after an item has been deselected before
    * calling the `didClearSelection` callback and the two delegate methods:
@@ -1032,13 +1024,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
   {
     // Call the listViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.listViewSelectionDidChange)
-      this.delegate.listViewSelectionDidChange(this);
+    this.callDelegateMethod("listViewSelectionDidChange");
 
     // Call the listViewDidClearSelection method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.listViewDidClearSelection)
-      this.delegate.listViewDidClearSelection(this);
+    this.callDelegateMethod("listViewDidClearSelection");
   },
 
   /*
@@ -1055,8 +1045,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     var shouldOpen = true;
     if (this.shouldOpenItem)
       shouldOpen = this.shouldOpenItem(item);
-    if (this.delegate && this.delegate.listViewShouldOpenItem)
-      shouldOpen = this.delegate.listViewShouldOpenItem(this, item);
+    if (this.hasDelegateMethod("listViewShouldOpenItem"))
+      this.callDelegateMethod("listViewShouldOpenItem", item);
     return shouldOpen;
   },
 
@@ -1073,12 +1063,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    *    if it has been implemented by the delegate.
    *
    */
-  _willOpenItem: function()
+  _willOpenItem: function(item)
   {
     if (this.willOpenItem)
       this.willOpenItem(item);
-    if (this.delegate && this.delegate.listViewWillOpenItem)
-      this.delegate.listViewWillOpenItem(this, item);
+    this.callDelegateMethod("listViewWillOpenItem", item);
   },
 
   /*
@@ -1096,8 +1085,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     // Call the listViewDidOpenItem method on the delegate, if the delegate
     // has defined it.
-    if (this.delegate && this.delegate.listViewDidOpenItem)
-      this.delegate.listViewDidOpenItem(this, item);
+    this.callDelegateMethod("listViewDidOpenItem", item);
   },
 
   /*
@@ -1119,8 +1107,8 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
     }
     if (this.shouldRemoveItem)
       shouldOpen = this.shouldRemoveItem(item);
-    if (this.delegate && this.delegate.listViewShouldRemoveItem)
-      shouldRemove = this.delegate.listViewShouldRemoveItem(this, item);
+    if (this.hasDelegateMethod("listViewShouldRemoveItem"))
+      shouldRemove = this.callDelegateMethod("listViewShouldRemoveItem", item);
     return shouldRemove;
   },
 
@@ -1137,12 +1125,11 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
    *    if it has been implemented by the delegate.
    *
    */
-  _willRemoveItem: function()
+  _willRemoveItem: function(item)
   {
     if (this.willRemoveItem)
       this.willRemoveItem(item);
-    if (this.delegate && this.delegate.listViewWillRemoveItem)
-      this.delegate.listViewWillRemoveItem(this, item);
+    this.callDelegateMethod("listViewWillRemoveItem", item);
   },
 
   /*
@@ -1160,8 +1147,7 @@ Aphid.UI.ListView = Aphid.Class.create("Aphid.UI.ListView", Aphid.UI.View, {
 
     // Call the listViewDidRemoveItem method on the delegate, if the delegate
     // has defined it.
-    if (this.delegate && this.delegate.listViewDidRemoveItem)
-      this.delegate.listViewDidRemoveItem(this, item);
+    this.callDelegateMethod("listViewDidRemoveItem", item);
   },
 
   // -------------------------------------------------------------------------

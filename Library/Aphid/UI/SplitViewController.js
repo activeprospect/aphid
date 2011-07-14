@@ -619,8 +619,8 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     var shouldResize = true;
     if (this.shouldResize)
       shouldResize = this.shouldResize(this);
-    if (this.delegate && this.delegate.splitViewShouldResize)
-      shouldResize = this.delegate.splitViewShouldResize(this);
+    if (this.hasDelegateMethod("splitViewShouldResize"))
+      shouldResize = this.callDelegateMethod("splitViewShouldResize");
     return shouldResize;
   },
 
@@ -629,8 +629,7 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     $L.debug("_willResize", this);
     if (this.willResize)
       this.willResize(this);
-    if (this.delegate && this.delegate.splitViewWillResize)
-      this.delegate.splitViewWillResize(this);
+    this.callDelegateMethod("splitViewWillResize");
   },
 
   _didResize: function()
@@ -638,8 +637,7 @@ Aphid.UI.SplitViewController = Aphid.Class.create("Aphid.UI.SplitViewController"
     $L.debug("_didResize", this);
     if (this.didResize)
       this.didResize(this);
-    if (this.delegate && this.delegate.splitViewDidResize)
-      this.delegate.splitViewDidResize(this);
+    this.callDelegateMethod("splitViewDidResize");
     $AppDelegate.notificationCenter.postNotification("SplitViewControllerResizedNotification");
   },
 

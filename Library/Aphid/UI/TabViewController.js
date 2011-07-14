@@ -261,8 +261,7 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
       shouldSelect = false;
     if (this.shouldSelectTab)
       shouldSelect = this.shouldSelectTab(tab);
-    if (this.delegate && this.delegate.tabViewShouldSelectTab)
-      shouldSelect = this.delegate.tabViewShouldSelectTab(this, tab);
+    this.callDelegateMethod("tabViewShouldSelectTab", tab);
     return shouldSelect;
   },
 
@@ -288,8 +287,7 @@ Aphid.UI.TabViewController = Aphid.Class.create("Aphid.UI.TabViewController", Ap
 
     // Call the tabViewSelectionDidChange method on the delegate, if the
     // delegate has defined it.
-    if (this.delegate && this.delegate.tabViewSelectionDidChange)
-      this.delegate.tabViewSelectionDidChange(this, tab);
+    this.callDelegateMethod("tabViewSelectionDidChange", tab);
   }
 
 });

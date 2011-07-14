@@ -931,8 +931,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     // Notify Callbacks & Delegates
     this.viewDidLoad();
     if (this.asynchronousLoadingEnabled)
-      if (this.delegate && this.delegate.viewDidLoadAsynchronously)
-        this.delegate.viewDidLoadAsynchronously(this);
+      this.callDelegateMethod("viewDidLoadAsynchronously");
   },
 
   /*
@@ -2030,8 +2029,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     $L.debug("_viewDidScroll", this);
     if (this.viewDidScroll)
       this.viewDidScroll();
-    if (this.delegate && this.delegate.viewScrollOffsetDidChange)
-      this.delegate.viewScrollOffsetDidChange(this);
+    this.callDelegateMethod("viewScrollOffsetDidChange");
     this.postNotification("ViewDidScrollNotification");
   },
 

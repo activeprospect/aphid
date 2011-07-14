@@ -286,8 +286,7 @@ Aphid.UI.Controls.SegmentedControl = Aphid.Class.create("Aphid.UI.Controls.Segme
 
     // Call the segmentedControlSelectionDidChange method on the delegate, if the
     // delegate has implemented it.
-    if (this.delegate && this.delegate.segmentedControlSelectionDidChange)
-      this.delegate.segmentedControlSelectionDidChange(this, segment);
+    this.callDelegateMethod("segmentedControlSelectionDidChange", segment);
   }
 
 });

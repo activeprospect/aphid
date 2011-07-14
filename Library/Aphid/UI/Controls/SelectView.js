@@ -563,8 +563,7 @@ Aphid.UI.Controls.SelectView = Aphid.Class.create("Aphid.UI.Controls.SelectView"
 
     // Call the selectViewSelectionDidChange method on the delegate, if the
     // delegate has implemented it.
-    if (this.delegate && this.delegate.selectViewSelectionDidChange)
-      this.delegate.selectViewSelectionDidChange(this, option);
+    this.callDelegateMethod("selectViewSelectionDidChange", option);
   },
 
   // -------------------------------------------------------------------------

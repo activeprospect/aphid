@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.Support.Object] Added convenience methods callDelegateMethod and
+   hasDelegateMethod for calling delegate methods or checking for a valid
+   method implemented by the delegate of an object.
+
  * [Aphid.UI.View] Views are now properly initialized with the correct
    superview. They are also instantiated before being connected to their
    outlets. This allows us to instantiate views that are not connected to an
