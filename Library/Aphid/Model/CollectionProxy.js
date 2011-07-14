@@ -63,8 +63,7 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
       this.afterLoad(this);
 
     // Call Delegate Method
-    if (this.delegate && this.delegate.modelDidFinishLoading)
-      this.delegate.modelDidFinishLoading(this);
+    this.callDelegateMethod("modelDidFinishLoading");
 
     // Post Notification
     this.postNotification("ModelDidLoadNotification");
@@ -146,6 +145,8 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
 
     this.set("isLoaded", true);
     this.set("isLoading", false);
+
+    this.callDelegateMethod("modelDidFinishAppending");
   },
 
   // Failure Responses -------------------------------------------------------
@@ -159,8 +160,7 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     this.postNotification("ModelFailureNotification", transport);
 
     // Call Delegate Method
-    if (this.get("delegate") && this.get("delegate").modelDidFailWithError)
-      this.get("delegate").modelDidFailWithError(this, transport);
+    this.callDelegateMethod("modelDidFailWithError", transport);
   },
 
   // -------------------------------------------------------------------------
@@ -223,9 +223,6 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
   _handleReloadCollectionResponse: function(klass, transport)
   {
     var object = transport.responseJSON;
-    console.log("--")
-    console.log(this)
-    console.log("--")
     this.set("collection", $A());
 
     // Custom Collection Response Parsing
