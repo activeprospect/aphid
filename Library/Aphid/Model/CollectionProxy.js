@@ -63,7 +63,8 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
       this.afterLoad(this);
 
     // Call Delegate Method
-    this.callDelegateMethod("modelDidFinishLoading");
+    if (this.get("delegate") && Object.isFunction(this.get("delegate").modelDidFinishLoading))
+      this.get("delegate").modelDidFinishLoading(this);
 
     // Post Notification
     this.postNotification("ModelDidLoadNotification");
@@ -146,7 +147,8 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     this.set("isLoaded", true);
     this.set("isLoading", false);
 
-    this.callDelegateMethod("modelDidFinishAppending");
+    if (this.get("delegate") && Object.isFunction(this.get("delegate").modelDidFinishAppending))
+      this.get("delegate").modelDidFinishAppending(this);
   },
 
   // Failure Responses -------------------------------------------------------
@@ -160,7 +162,8 @@ Aphid.Model.CollectionProxy = Aphid.Class.create("Aphid.Model.CollectionProxy", 
     this.postNotification("ModelFailureNotification", transport);
 
     // Call Delegate Method
-    this.callDelegateMethod("modelDidFailWithError", transport);
+    if (this.get("delegate") && Object.isFunction(this.get("delegate").modelDidFailWithError))
+      this.get("delegate").modelDidFailWithError(this, transport);
   },
 
   // -------------------------------------------------------------------------
