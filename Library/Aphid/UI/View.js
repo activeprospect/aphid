@@ -7,7 +7,7 @@
  * **TODO** Document the 3 ways that views can be initialized: from an element,
  * a template or an outlet...
  *
- * ### Implementing Custom Views
+ * # Custom Views
  *
  * In general, [[Aphid.UI.View]] should be subclassed and not initialized
  * directly so that you may implement the functionality that is specific to
@@ -33,7 +33,7 @@
  * method in our subclass so that we can set the new label on our `fooLabel`
  * outlet.
  *
- * ### View Templates
+ * # View Templates
  *
  * View templates are loaded asynchronously when the instance is first
  * initialized. The view template itself should be located in the path
@@ -50,10 +50,10 @@
  *     </section>
  *
  * View templates that are not wrapped in a single containing element will
- * automatically be wrapped in a <section/> element with the DOM ID set to
- * the `displayName` instance property.
+ * automatically be wrapped in a `<section>` element with the DOM ID set
+ * to the `displayName` instance property.
  *
- * #### Outlets
+ * ## Outlets
  *
  * In traditional JavaScript integrations, you must peruse the DOM to select
  * the elements on which you wish to operate. In Aphid, we go one step further
@@ -76,12 +76,12 @@
  * a vanilla [[Aphid.UI.View]] instance and assigned to your view's matching
  * instance property.
  *
- * #### Delegates & Data Sources on Outlets
+ * ### Delegates & Data Sources on Outlets
  *
  * By default, delegates and data sources (if applicable) will be
  * automatically assigned to the view that owns the outlet.
  *
- * #### Actions
+ * ## Actions
  *
  * Similar to outlets, actions allow you to easily map element events to
  * methods in your view subclass. For example, if you defined a `doSomething`
@@ -105,45 +105,51 @@
  * is recommended that you set an outlet on the element and set up your own
  * event observers.
  *
- * ### Callback Methods
+ * # Callback Methods
  *
  * The following methods may be implemented by your custom subclass of
  * [[Aphid.UI.View]]:
  *
- *  - [[Aphid.UI.View#viewDidLoad]]
- *    Called once the view has been loaded and initialized.
+ *  - `Aphid.UI.View#viewDidLoad` — Called once the view has been loaded
+ *    and initialized.
  *
- *  - [[Aphid.UI.View#viewWillAppear]]
- *    Called before the view is displayed.
+ *  - `Aphid.UI.View#viewWillAppear` — Called before the view is
+ *    displayed.
  *
- *  - [[Aphid.UI.View#layoutSubviews]]
- *    Called before the view is displayed or any time the view is resized or
- *    otherwise changes.
+ *  - `Aphid.UI.View#layoutSubviews` — Called before the view is displayed
+ *    or any time the view is resized or otherwise changes.
  *
- *  - [[Aphid.UI.View#viewDidAppear]]
- *    Called after the view has been displayed.
+ *  - `Aphid.UI.View#viewDidAppear` — Called after the view has been
+ *    displayed.
  *
- *  - [[Aphid.UI.View#viewWillDisappear]]
- *    Called before the view will be removed from display.
+ *  - `Aphid.UI.View#viewWillDisappear` — Called before the view will be
+ *    removed from display.
  *
- *  - [[Aphid.UI.View#viewDidDisappear]]
- *    Called after the view has been displayed.
+ *  - `Aphid.UI.View#viewDidDisappear` — Called after the view has been
+ *    displayed.
  *
- *  - [[Aphid.UI.View#viewDidScroll]]
- *    Called after the view scroll offset has changed. This may be called many
- *    times as the view continues to scroll.
+ *  - `Aphid.UI.View#viewDidScroll` —  Called after the view scroll offset
+ *    has changed. This may be called many times as the view continues to
+ *    scroll.
  *
- * ### Delegate Methods
+ * # Delegate Methods
  *
  * The following methods may be implemented by your class that serves as the
  * delegate for an instance of [[Aphid.UI.View]]:
  *
- *  - [[Aphid.UI.View#viewDidLoadAsynchronously]]
- *    Called once the view template has finished loading and the view is in a
- *    fully initialized state.
+ *  - `Aphid.UI.View#viewDidLoadAsynchronously(view)` — Called once the
+ *    view template has finished loading and the view is in a fully
+ *    initialized state.
  *
- *  - [[Aphid.UI.View#viewScrollOffsetDidChange]]
- *    Called when the scroll offset of the view has changed.
+ *  - `Aphid.UI.View#viewScrollOffsetDidChange(view)` — Called when the
+ *    scroll offset of the view has changed.
+ *
+ * # Notifications
+ *
+ * The following notifications are posted by instances of [[Aphid.UI.View]]
+ * (see [[Aphid.Core.NotificationCenter]] for more details):
+ *
+ *  - `FooNotification` — Foo
  *
 **/
 
