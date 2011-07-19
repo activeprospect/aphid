@@ -190,6 +190,10 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
     // Set this navigationController on the pushed view controller instance
     viewController.set("navigationController", this);
 
+    // Set the modalView on the pushed view controller instance
+    viewController.set("modalView", this.get("modalView"));
+    viewController.set("parentViewController", this);
+
     // Set the visibleViewController to the pushed view controller
     this.set("visibleViewController", viewController);
 
