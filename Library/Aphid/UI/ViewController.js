@@ -10,6 +10,14 @@
  * and delegates that notify the class of view state changes, such as
  * notifying that the view will be displayed or hidden, etc.
  *
+ * # Notifications
+ *
+ *  - **`ModalViewControllerPresentedNotification`** — Posted when a view
+ *    controller is presented as modal.
+ *
+ *  - **`ModalViewControllerDismissedNotification`** — Posted when a view
+ *    controller has been dismissed from a modal state.
+ *
 **/
 Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI.View,
 {
@@ -17,18 +25,25 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   /**
    * Aphid.UI.ViewController#modalView -> Aphid.UI.ModalView | false
    *
-   * The [[Aphid.UI.ModalView]] instance that will contain the current modal
-   * view controller.
+   * A reference to the [[Aphid.UI.ModalView]] instance that the view
+   * controller is presently contained within (or false if the view controller
+   * is not currently presented in a modal fashion).
+   *
+   * This property will be set when the view controller instance is presented
+   * as a modal view controller from another view controller. You may use this
+   * to access the modal view instance that the view controller is contained
+   * within in order to dismiss the modal view or perform other actions as
+   * documented in [[Aphid.UI.ModalView]].
   **/
   modalView: false,
 
   /**
-   * Aphid.UI.ViewController#modalViewController -> Aphid.UI.ViewController | false
+   * Aphid.UI.ViewController#navigationController -> Aphid.UI.NavigationController | false
    *
-   * The currently presented modal view controller whose parent is this view
-   * controller, or false if no view controller is currently modal.
+   * The navigation controller instance, if applicable, that this view
+   * controller instance is a member of.
   **/
-  modalViewController: false,
+  navigationController: false,
 
   /**
    * Aphid.UI.ViewController#parentViewController -> Aphid.UI.ViewController | false
@@ -40,42 +55,22 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   parentViewController: false,
 
   /**
-   * Aphid.UI.ViewController#navigationController -> Aphid.UI.NavigationController | false
+   * Aphid.UI.ViewController#presentedModalView -> Aphid.UI.ModalView | false
+   *
+   * The [[Aphid.UI.ModalView]] instance that is currently presented from this
+   * view controller instance, or false if no view controller is currently
+   * modal.
   **/
-  navigationController: false,
-
-  // Initialization ----------------------------------------------------------
+  presentedModalView: false,
 
   /**
-   * new Aphid.UI.ViewController([options])
+   * Aphid.UI.ViewController#presentedViewController -> Aphid.UI.ViewController | false
    *
-   * - options (Hash): Initial property values to set on the View Controller instance
-   *
-   * Initializes a new View Controller instance with the given *options*.
+   * The [[Aphid.UI.ViewController]] instance that is currently presented as
+   * the modal view controller, or false if no view controller is currently
+   * modal.
   **/
-  initialize: function($super, options)
-  {
-    $super(options);
-  },
-
-  // Accessors ---------------------------------------------------------------
-
-  /*
-   * Aphid.UI.ViewController#getModalView() -> Aphid.UI.ModalView
-   *
-   * Returns the [[Aphid.UI.ModalView]] instance that will contain the
-   * presented modal view controller. This accessor will lazily initialize the
-   * instance, if necessary.
-   */
-  getModalView: function()
-  {
-    if (!this.modalView)
-      this.modalView = new Aphid.UI.ModalView({
-        viewController: this,
-        delegate: this
-      });
-    return this.modalView;
-  },
+  presentedViewController: false,
 
   // Modal View Controllers --------------------------------------------------
 
@@ -90,7 +85,6 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   **/
   presentModalViewController: function(viewController)
   {
-    $L.info("presentModalViewController", this);
     this.presentModalViewControllerAnimated(viewController, false);
   },
 
@@ -145,25 +139,43 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
       return;
     }
 
+    // Instantiate the Presented Modal View instance
+    if (!this.get("presentedModalView"))
+      this.set("presentedModalView", new Aphid.UI.ModalView({
+        delegate: this,
+        parentViewController: this
+      }));
+
     $L.info('Adding "' + viewController.displayName + '" as a subview to "' + (this.displayName || "unknown") + '" (animated: ' + animated + ')', this);
 
-    // Display the Overlay
-    $AppDelegate.get("mainWindow").displayOverlayAnimated(animated);
-
-    // Add the Modal View Controller to the Modal View
-    this.get("modalView").setView(viewController);
-
-    // Display the Modal View in the Main Window
-    if (animated)
-      $AppDelegate.get("mainWindow").addSubviewAnimated(this.get("modalView"));
-    else
-      $AppDelegate.get("mainWindow").addSubview(this.get("modalView"));
-
-    // Set the current Modal View Controller to the presented instance
-    this.set("modalViewController", viewController);
+    // Set the Modal View on the View Controller instance
+    viewController.set("modalView", this.get("presentedModalView"));
 
     // Set the Parent View Controller to this instance
     viewController.set("parentViewController", this);
+
+    // Set the View Controller aon the Presented Modal View
+    this.set("presentedModalView.viewController", viewController);
+
+    // Store the view controller that was presented in the modal view in the
+    // `presentedViewController` instance property of the view controller that
+    // is responsible for displaying it.
+    this.set("presentedViewController", viewController);
+
+    // Post a Notification
+    this.postNotification("ModalViewControllerPresentedNotification", this.get("presentedViewController"));
+
+    // Present the View Controller
+    if (animated)
+    {
+      $AppDelegate.get("mainWindow").displayOverlayAnimated(animated);
+      $AppDelegate.get("mainWindow").addSubviewAnimated(this.get("presentedModalView"));
+    }
+    else
+    {
+      $AppDelegate.get("mainWindow").displayOverlay();
+      $AppDelegate.get("mainWindow").addSubview(this.get("presentedModalView"));
+    }
   },
 
   /**
@@ -171,7 +183,6 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
    *
    * Dismisses the current modal view controller, if present.
   **/
-  // TODO if this is called on the modal view controller itself, it should be forwarded to its parent view controller
   dismissModalViewController: function()
   {
     this.dismissModalViewControllerAnimated(false);
@@ -189,25 +200,31 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   dismissModalViewControllerAnimated: function(animated)
   {
     if (Object.isUndefined(animated)) animated = true;
-    if (!this.get("modalViewController")) return;
+    if (!this.get("presentedModalView") || !this.get("presentedViewController")) return;
 
     // Hide the Overlay
     $AppDelegate.get("mainWindow").dismissOverlayAnimated(animated);
 
+    // Post a Notification
+    this.postNotification("ModalViewControllerDismissedNotification", this.get("presentedViewController"));
+
     // Hide the Modal View Container
     if (animated)
     {
-      this.get("modalView").removeFromSuperviewAnimated();
-      this.get("modalViewController").removeFromSuperviewAnimated();
+      this.get("presentedModalView").removeFromSuperviewAnimated();
+      this.get("presentedViewController").removeFromSuperviewAnimated();
     }
     else
     {
-      this.get("modalView").removeFromSuperview();
-      this.get("modalViewController").removeFromSuperview();
+      this.get("presentedModalView").removeFromSuperview();
+      this.get("presentedViewController").removeFromSuperview();
     }
 
-    // Unset the Modal View Controller
-    this.set("modalViewController", false);
+    // Reset the Modal State
+    this.set("presentedModalView", false);
+    this.set("presentedViewController.modalView", false);
+    this.set("presentedViewController.parentViewController", false);
+    this.set("presentedViewController", false);
   }
 
 });

@@ -41,12 +41,51 @@
 
       var TestViewController;
       var TestModalViewController;
+      var TestObserver;
 
       new Test.Unit.Runner({
 
         setup: function() { with(this) {
-          TestViewController = Class.create(Aphid.UI.ViewController, {});
-          TestModalViewController = Class.create(Aphid.UI.ViewController, {});
+          TestViewController = Aphid.Class.create("TestViewController", Aphid.UI.ViewController, {});
+          TestModalViewController = Aphid.Class.create("TestModalViewController", Aphid.UI.ViewController, {});
+          TestObserver = Aphid.Class.create("TestObserver", Aphid.Support.Object, {
+
+            initialize: function($super, options)
+            {
+              $super(options);
+              this.startObserving();
+            },
+
+            startObserving: function()
+            {
+              this.addObserver(this.handleModalViewControllerPresentedNotification, "ModalViewControllerPresentedNotification");
+              this.addObserver(this.handleModalViewControllerDismissedNotification, "ModalViewControllerDismissedNotification");
+            },
+
+            stopObserving: function()
+            {
+              this.removeObservers();
+            },
+
+            modalViewControllerPresentedNotificationPosted: false,
+            handleModalViewControllerPresentedNotification: function(model)
+            {
+              this.modalViewControllerPresentedNotificationPosted = true;
+            },
+
+            modalViewControllerDismissedNotificationPosted: false,
+            handleModalViewControllerDismissedNotification: function(sender, info)
+            {
+              this.modalViewControllerDismissedNotificationPosted = true;
+            },
+
+            resetNotifications: function()
+            {
+              this.modalViewControllerPresentedNotificationPosted = false;
+              this.modalViewControllerDismissedNotificationPosted = false;
+            }
+
+          });
         }},
 
         /*
@@ -59,48 +98,120 @@
         }},
 
         /*
-         * Ensures that modal view controllers can be presented and dismissed.
+         * Ensures that modal views can be presented.
         **/
-        testShouldPresentAndDismissModalViewController: function() { with(this) {
+        testShouldPresentModalViewController: function() { with(this) {
           var viewController      = new TestViewController({ element: $('testView') });
           var modalViewController = new TestModalViewController({ element: $('testModalView') });
+
           // Present
           viewController.presentModalViewController(modalViewController);
-          assert(viewController._modalViewOverlay, "_modalViewOverlay should not be false");
-          assert(viewController._modalViewOverlay.visible(), "_modalViewOverlay should be visible");
-          assert(viewController._modalViewContainer, "_modalViewContainer should not be false");
-          assert(viewController._modalViewContainer.visible(), "_modalViewContainer should be visible");
-          assertEqual(modalViewController, viewController.modalViewController, "modalViewController should equal the presented view controller instance");
+          assert($AppDelegate.get("mainWindow.overlayVisible"), "mainWindow#overlayVisible should not be false");
+          assertInstanceOf(Aphid.UI.ModalView, viewController.get("presentedModalView"), "viewController#presentedModalView should be an instance of Aphid.UI.ModalView");
+          assertEqual(modalViewController, viewController.get("presentedViewController"), "viewController#presentedViewController should equal the presented view controller instance");
+          assertEqual(viewController, modalViewController.get("parentViewController"), "modalViewController#parentViewController should be equal to viewController");
+          assertEqual(viewController.get("presentedModalView"), modalViewController.get("modalView"), "modalViewController#modalView should be equal to viewController#presentedModalView");
+
           // Dismiss
           viewController.dismissModalViewController();
-          assert(!viewController._modalViewOverlay.visible(), "_modalViewOverlay should not be visible");
-          assert(!viewController._modalViewContainer.visible(), "_modalViewContainer should not be visible");
-          assert(!viewController.modalViewController, "modalViewController should be false");
         }},
 
         /*
-         * Ensures that modal view controllers can be presented and dismissed
-         * with animation.
+         * Ensures that modal views can be presented with animation.
         **/
-        testShouldPresentAndDismissModalViewControllerAnimated: function() { with(this) {
-          var viewController      = new TestViewController({ element: $('testViewAnimated') });
-          var modalViewController = new TestModalViewController({ element: $('testModalViewAnimated') });
+        testShouldPresentModalViewControllerAnimated: function() { with(this) {
+          var viewController      = new TestViewController({ element: $('testView') });
+          var modalViewController = new TestModalViewController({ element: $('testModalView') });
+
           // Present
           viewController.presentModalViewControllerAnimated(modalViewController);
-          assert(viewController._modalViewOverlay, "_modalViewOverlay should not be false");
-          assert(viewController._modalViewContainer, "_modalViewContainer should not be false");
-          assertEqual(modalViewController, viewController.modalViewController, "modalViewController should equal the presented view controller instance");
-          wait(1000, function() { with(this) {
-            assert(viewController._modalViewOverlay.visible(), "_modalViewOverlay should be visible");
-            assert(viewController._modalViewContainer.visible(), "_modalViewContainer should be visible");
+          wait(2000, function() { with(this) {
+            assert($AppDelegate.get("mainWindow.overlayVisible"), "mainWindow#overlayVisible should not be false");
+            assertInstanceOf(Aphid.UI.ModalView, viewController.get("presentedModalView"), "viewController#presentedModalView should be an instance of Aphid.UI.ModalView");
+            assertEqual(modalViewController, viewController.get("presentedViewController"), "viewController#presentedViewController should equal the presented view controller instance");
+            assertEqual(modalViewController, viewController.get("presentedViewController"), "viewController#presentedViewController should equal the presented view controller instance");
+            assertEqual(viewController, modalViewController.get("parentViewController"), "modalViewController#parentViewController should be equal to viewController");
+            assertEqual(viewController.get("presentedModalView"), modalViewController.get("modalView"), "modalViewController#modalView should be equal to viewController#presentedModalView");
+
             // Dismiss
-            viewController.dismissModalViewControllerAnimated();
-            wait(1000, function() { with(this) {
-              assert(!viewController._modalViewOverlay.visible(), "_modalViewOverlay should not be visible");
-              assert(!viewController._modalViewContainer.visible(), "_modalViewContainer should not be visible");
-              assert(!viewController.modalViewController, "modalViewController should be false");
-            }});
+            viewController.dismissModalViewController();
           }});
+        }},
+
+        /*
+         * Ensures that modal views can be dismissed.
+        **/
+        testShouldDismissModalViewController: function() { with(this) {
+          var viewController      = new TestViewController({ element: $('testView') });
+          var modalViewController = new TestModalViewController({ element: $('testModalView') });
+
+          // Present
+          viewController.presentModalViewController(modalViewController);
+
+          // Dismiss
+          viewController.dismissModalViewController();
+          assert(!$AppDelegate.get("mainWindow.overlayVisible"), "mainWindow#overlayVisible should not be true");
+          assert(!viewController.get("presentedModalView"), "viewController#presentedModalView should be false");
+          assert(!viewController.get("presentedViewController"), "viewController#presentedViewController should be false");
+          assert(!modalViewController.get("parentViewController"), "modalViewController#parentViewController should be false");
+          assert(!modalViewController.get("modalView"), "modalViewController#modalView should be false");
+        }},
+
+        /*
+         * Ensures that modal views can be dismissed with animation.
+        **/
+        testShouldDismissModalViewControllerAnimated: function() { with(this) {
+          var viewController      = new TestViewController({ element: $('testView') });
+          var modalViewController = new TestModalViewController({ element: $('testModalView') });
+
+          // Present
+          viewController.presentModalViewController(modalViewController);
+
+          // Dismiss
+          viewController.dismissModalViewControllerAnimated();
+          wait(2000, function() { with(this) {
+            assert(!$AppDelegate.get("mainWindow.overlayVisible"), "mainWindow#overlayVisible should not be true");
+            assert(!viewController.get("presentedModalView"), "viewController#presentedModalView should be false");
+            assert(!viewController.get("presentedViewController"), "viewController#presentedViewController should be false");
+            assert(!modalViewController.get("parentViewController"), "modalViewController#parentViewController should be false");
+            assert(!modalViewController.get("modalView"), "modalViewController#modalView should be false");
+          }});
+        }},
+
+        // Notification Tests ------------------------------------------------
+
+        /*
+         * Ensures that the ModalViewControllerPresentedNotification
+         * notification is posted when a modal view controller is presented.
+        **/
+        testShouldPostModalViewControllerPresentedNotification: function() { with(this) {
+          var testObserver        = new TestObserver(),
+              viewController      = new TestViewController({ element: $('testView') }),
+              modalViewController = new TestModalViewController({ element: $('testModalView') });
+
+          // Present
+          viewController.presentModalViewController(modalViewController);
+          assert(testObserver.modalViewControllerPresentedNotificationPosted, "The 'ModalViewControllerPresentedNotification' notification should have been posted by viewController");
+
+          // Dismiss
+          viewController.dismissModalViewController();
+        }},
+
+        /*
+         * Ensures that the ModalViewControllerDismissedNotification
+         * notification is posted when a modal view controller is dismissed.
+        **/
+        testShouldPostModalViewControllerDismissedNotification: function() { with(this) {
+          var testObserver        = new TestObserver(),
+              viewController      = new TestViewController({ element: $('testView') }),
+              modalViewController = new TestModalViewController({ element: $('testModalView') });
+
+          // Present
+          viewController.presentModalViewController(modalViewController);
+
+          // Dismiss
+          viewController.dismissModalViewController();
+          assert(testObserver.modalViewControllerDismissedNotificationPosted, "The 'ModalViewControllerDismissedNotification' notification should have been posted by viewController");
         }}
 
       }, { testLog: "logSection" });

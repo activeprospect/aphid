@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Aphid.UI.ModalView Tests</title>
+    <link rel="stylesheet" href="../../../Build/Resources/Stylesheets/Aphid.css" />
+    <link rel="stylesheet" href="../../Tests.css" />
+    <script src="../../../Build/Library/Aphid.Combined.js"></script>
+    <script src="../../../Vendor/script.aculo.us/src/unittest.js"></script>
+  </head>
+  <body class="testCase">
+
+    <header>
+      <h1>Aphid.UI.ModalView Tests</h1>
+    </header>
+
+    <!-- Test Case Description -->
+    <section id="descriptionSection">
+      <p>
+      </p>
+    </section>
+
+    <!-- Test Elements -->
+    <section id="testElements">
+      <section id="testView"></section>
+      <section id="testModalView"></section>
+      <section id="testViewAnimated"></section>
+      <section id="testModalViewAnimated"></section>
+    </section>
+
+    <!-- Log Section -->
+    <section id="logSection">
+    </section>
+
+    <!-- Tests -->
+    <script>
+
+      var TestViewController;
+
+      new Test.Unit.Runner({
+
+        setup: function() { with(this) {
+          TestViewController = Aphid.Class.create("TestViewController", Aphid.UI.ViewController, {
+
+            dismissModalViewControllerCalled: false,
+            dismissModalViewController: function($super)
+            {
+              this.dismissModalViewControllerCalled = true;
+              $super();
+            },
+
+            dismissModalViewControllerAnimatedCalled: false,
+            dismissModalViewControllerAnimated: function($super, animated)
+            {
+              this.dismissModalViewControllerAnimatedCalled = true;
+              $super(animated);
+            }
+
+          });
+        }},
+
+        /*
+         * Ensure that new instances of Aphid.UI.ModalView can be initialized.
+        **/
+        testShouldInitializeModalView: function() { with(this) {
+          var modalView = new Aphid.UI.ModalView();
+          assertInstanceOf(Aphid.UI.ModalView, modalView, "modalView should be an instance of Aphid.UI.ModalView");
+        }},
+
+        /*
+         * Ensures that modal views can be dismissed by the view controller
+         * when calling the dismiss method on the modal view.
+        **/
+        testShouldDismiss: function() { with(this) {
+          var viewController = new TestViewController();
+
+          viewController.presentModalViewController(new Aphid.UI.ViewController());
+          viewController.get("presentedModalView").dismiss();
+          assert(viewController.dismissModalViewControllerCalled, "viewController#dismissModalViewControllerCalled should be true");
+        }},
+
+        /*
+         * Ensures that modal views can be dismissed with animation by the
+         * view controller when calling the dismiss method on the modal view.
+        **/
+        testShouldDismissAnimated: function() { with(this) {
+          var viewController = new TestViewController();
+
+          viewController.presentModalViewController(new Aphid.UI.ViewController());
+          viewController.get("presentedModalView").dismissAnimated();
+          wait(2000, function() { with(this) {
+            assert(viewController.dismissModalViewControllerAnimatedCalled, "viewController#dismissModalViewControllerAnimatedCalled should be true");
+          }});
+        }},
+
+        /*
+         * Ensures that modal views can be dismissed by pressing the ESC key.
+        **/
+        testShouldDismissOnEscape: function() { with(this) {
+          var viewController = new TestViewController();
+
+          viewController.presentModalViewController(new Aphid.UI.ViewController());
+          assert(viewController.get("presentedModalView")._handleKeyDownEventListener, "_handleKeyDownEventListener on viewController#presentedViewController should be defined");
+
+          // Since we can't reliably simulate keyboard events across browsers,
+          // just send an Object with the keyCode we're looking for to test
+          // the handler...
+          var testEventObject = { keyCode: 27 };
+          viewController.get("presentedModalView").handleKeyDownEvent(testEventObject);
+          assert(!viewController.get("presentedModalView"), "viewController#presentedModalView should no longer be defined");
+          assert(viewController.dismissModalViewControllerAnimatedCalled, "viewController#dismissModalViewControllerAnimatedCalled should be true");
+        }},
+
+        /*
+         * Ensures that modal views are only dismissed by pressing the ESC key
+         * when the modal view is configured to allow it.
+        **/
+        testShouldNotDismissOnEscapeUnlessConfigured: function() { with(this) {
+          var viewController = new Aphid.UI.ViewController();
+
+          viewController.presentModalViewController(new Aphid.UI.ViewController());
+          assert(viewController.get("presentedModalView")._handleKeyDownEventListener, "_handleKeyDownEventListener on viewController#presentedViewController should be defined");
+
+          // Disable Escape Key
+          viewController.set("presentedModalView.dismissOnEscape", false);
+
+          // Since we can't reliably simulate keyboard events across browsers,
+          // just send an Object with the keyCode we're looking for to test
+          // the handler...
+          var testEventObject = { keyCode: 27 };
+          viewController.get("presentedModalView").handleKeyDownEvent(testEventObject);
+          assert(viewController.get("presentedModalView"), "viewController#presentedModalView should still be defined");
+          assert(!viewController.dismissModalViewControllerAnimatedCalled, "viewController#dismissModalViewControllerAnimatedCalled should be false");
+
+          // Clean up...
+          viewController.dismissModalViewController();
+        }}
+
+      }, { testLog: "logSection" });
+    </script>
+
+  </body>
+</html>
