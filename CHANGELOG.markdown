@@ -3,6 +3,10 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.NavigationController] Added popToViewController and
+   popToRootViewController methods to complement popViewController for jumping
+   up the navigation stack.
+
  * [Aphid.Support.Object] Added convenience methods callDelegateMethod and
    hasDelegateMethod for calling delegate methods or checking for a valid
    method implemented by the delegate of an object.

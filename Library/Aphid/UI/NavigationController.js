@@ -70,22 +70,17 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
     $super(options);
   },
 
-  viewWillAppear: function()
-  {
-
-    // Display the rootViewController by default...
-    if (this.get("subviews").length == 0 && this.get("rootViewController"))
-      this.pushViewController(this.get("rootViewController"));
-
-  },
-
   // -------------------------------------------------------------------------
 
   setRootViewController: function(rootViewController)
   {
     this.rootViewController = rootViewController;
-    this.get("viewControllers").push(rootViewController);
-    rootViewController.set("navigationController", this);
+
+    // If there is no visibleViewController, push the specified view
+    // controller onto the navigation stack...
+    if (!this.get("visibleViewController"))
+      this.pushViewController(rootViewController);
+
     return rootViewController;
   },
 
@@ -181,7 +176,7 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
   },
 
   /*
-   * Aphid.UI.NavigationController#_pushViewController(viewController, animated, transition) -> null
+   * Aphid.UI.NavigationController#_pushViewController(viewController[, animated = true[, transition = Aphid.UI.View.SlideLeftTransition]]) -> null
    */
   _pushViewController: function(viewController, animated, transition)
   {
@@ -246,15 +241,79 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
     var poppedViewController = this.get("viewControllers").pop(),
         viewController       = this.get("viewControllers").last();
 
-    // Set the visibleViewController to the popped view controller
-    this.set("visibleViewController", viewController);
+    this._popToViewController(viewController);
+  },
 
-    // Present the previous view controller
+  /**
+   * Aphid.UI.NavigationController#popToViewController(viewController) -> null
+  **/
+  popToViewController: function(viewController)
+  {
+    return this._popToViewController(viewController, false);
+  },
+
+  /**
+   * Aphid.UI.NavigationController#popToViewControllerAnimated(viewController[, transition = Aphid.UI.View.SlideRightTransition]) -> null
+  **/
+  popToViewControllerAnimated: function(viewController, transition)
+  {
+    return this._popToViewController(viewController, true, transition);
+  },
+
+  /*
+   * Aphid.UI.NavigationController#_popToViewController(viewController[, animated = true[, transition = Aphid.UI.View.SlideRightTransition]]) -> null
+   */
+  _popToViewController: function(viewController, animated, transition)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    if (Object.isUndefined(transition)) transition = Aphid.UI.View.SlideRightTransition;
+    // Pop the view controller of the stack
+    var viewControllerIndex = this.get("viewControllers").indexOf(viewController),
+        viewController      = this.get("viewControllers")[viewControllerIndex];
+
+    // Present the popped view controller
     if (animated)
       this.get("contentView").setViewAnimated(viewController, true, transition);
     else
       this.get("contentView").setView(viewController);
 
+    // Set the visibleViewController to the popped view controller
+    this.set("visibleViewController", viewController);
+
+    // Iterate the stack and remove any popped view controllers
+    var poppedViewController;
+    for (var i = (this.get("viewControllers").length - 1); i > viewControllerIndex; --i)
+    {
+      poppedViewController = this.get("viewControllers")[i];
+      this.get("viewControllers").remove(poppedViewController);
+    }
+  },
+
+  /**
+   * Aphid.UI.NavigationController#popToRootViewController() -> null
+  **/
+  popToRootViewController: function()
+  {
+    return this._popToRootViewController(false);
+  },
+
+  /**
+   * Aphid.UI.NavigationController#popToRootViewControllerAnimated([transition = Aphid.UI.View.SlideRightTransition]) -> null
+  **/
+  popToRootViewControllerAnimated: function(transition)
+  {
+    return this._popToRootViewController(true, transition);
+  },
+
+  /**
+   * Aphid.UI.NavigationController#_popToRootViewController([animated = true[, transition = Aphid.UI.View.SlideRightTransition]]) -> null
+  **/
+  _popToRootViewController: function(animated, transition)
+  {
+    if (Object.isUndefined(animated)) animated = true;
+    if (Object.isUndefined(transition)) transition = Aphid.UI.View.SlideRightTransition;
+
+    this._popToViewController(this.get("rootViewController"));
   }
 
 });

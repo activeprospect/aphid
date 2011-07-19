@@ -69,6 +69,7 @@
           });
           assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
           assertEqual(testViewController, navigationController.get("rootViewController"), "navigationController#rootViewController should be equal to testViewController")
+          assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController")
         }},
 
         /*
@@ -124,20 +125,122 @@
          * stack with animation.
         **/
         testShouldPopViewControllerAnimated: function() { with(this) {
-          var rootViewController = new TestRootViewController();
-          var testViewController = new TestViewController();
-          var navigationController = new Aphid.UI.NavigationController({
-            rootViewController: rootViewController
-          });
+          var rootViewController = new TestRootViewController(),
+              testViewController = new TestViewController(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
           navigationController.pushViewController(testViewController);
           assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
           assertEqual(testViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to testViewController");
+
           navigationController.popViewControllerAnimated();
           wait(1000, function() { with(this) {
             assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
             assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
           }});
+        }},
+
+        /*
+         * Ensures that you can pop to a specific view controller in the
+         * navigation stack.
+        **/
+        testShouldPopToViewController: function() { with(this) {
+          var rootViewController = new TestRootViewController(),
+              firstTestViewController = new TestViewController(),
+              secondTestViewController = new TestViewController(),
+              thirdTestViewController = new TestViewController(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
+          navigationController.pushViewController(firstTestViewController);
+          navigationController.pushViewController(secondTestViewController);
+          navigationController.pushViewController(thirdTestViewController);
+          assertEqual(4, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(thirdTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to thirdTestViewController");
+
+          navigationController.popToViewController(firstTestViewController);
+          assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+          assertEqual(firstTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to firstTestViewController");
+          assert(navigationController.get("viewControllers").include(rootViewController));
+          assert(navigationController.get("viewControllers").include(firstTestViewController));
+        }},
+
+        /*
+         * Ensures that you can pop to a specific view controller in the
+         * navigation stack with animation.
+        **/
+        testShouldPopToViewControllerAnimated: function() { with(this) {
+          var rootViewController = new TestRootViewController(),
+              firstTestViewController = new TestViewController(),
+              secondTestViewController = new TestViewController(),
+              thirdTestViewController = new TestViewController(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
+          navigationController.pushViewController(firstTestViewController);
+          navigationController.pushViewController(secondTestViewController);
+          navigationController.pushViewController(thirdTestViewController);
+          assertEqual(4, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(thirdTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to thirdTestViewController");
+
+          navigationController.popToViewControllerAnimated(firstTestViewController);
+          wait(1000, function() { with(this) {
+            assertEqual(2, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+            assertEqual(firstTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to firstTestViewController");
+            assert(navigationController.get("viewControllers").include(rootViewController));
+            assert(navigationController.get("viewControllers").include(firstTestViewController));
+          }});
+        }},
+
+        /*
+         * Ensures that you can pop to the root view controller.
+        **/
+        testShouldPopToRootViewController: function() { with(this) {
+          var rootViewController = new TestRootViewController(),
+              firstTestViewController = new TestViewController(),
+              secondTestViewController = new TestViewController(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
+          navigationController.pushViewController(firstTestViewController);
+          navigationController.pushViewController(secondTestViewController);
+          assertEqual(3, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(secondTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to secondTestViewController");
+
+          navigationController.popToRootViewController();
+          assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+          assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
+        }},
+
+        /*
+         * Ensures that you can pop to the root view controller with
+         * animation.
+        **/
+        testShouldPopToRootViewControllerAnimated: function() { with(this) {
+          var rootViewController = new TestRootViewController(),
+              firstTestViewController = new TestViewController(),
+              secondTestViewController = new TestViewController(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
+          navigationController.pushViewController(firstTestViewController);
+          navigationController.pushViewController(secondTestViewController);
+          assertEqual(3, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 2");
+          assertEqual(secondTestViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to secondTestViewController");
+
+          navigationController.popToRootViewControllerAnimated();
+          wait(1000, function() { with(this) {
+            assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
+            assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
+          }});
         }}
+
 
       }, { testLog: "logSection" });
     </script>
