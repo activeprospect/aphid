@@ -1,16 +1,69 @@
 /**
  * class Aphid.UI.ViewController < Aphid.UI.View
  *
- * You should use view controllers for major views that are responsible for
- * many subviews (including view controller subviews). Situations where a
- * view controller may be desirable over a view would be the main interfaces
- * of a web application.
+ * View controllers are simply views with some additional logic and scope
+ * requirements baked in. You should use a view controller in place of a view
+ * when you need to manage the interaction between a view and the model layer
+ * and/or when you need to manage multiple on-screen views at once.
  *
  * View controllers are typically long-lived and include additional callbacks
  * and delegates that notify the class of view state changes, such as
  * notifying that the view will be displayed or hidden, etc.
  *
- * # Notifications
+ * # Modal View Controllers
+ *
+ * View controllers may present other view controllers in a modal fashion to
+ * the user. Modal view controllers will be presented above all other views in
+ * the window with an overlay over the rest of the views that prevents any
+ * user interaction to all but the modal view.
+ *
+ * ## Presenting a Modal View Controller
+ *
+ * Presenting a view controller as modal can be done by calling either
+ * [[Aphid.UI.ViewController#presentModalViewController <code>presentModalViewController</code>]]
+ * or
+ * [[Aphid.UI.ViewController#presentModalViewControllerAnimated <code>presentModalViewControllerAnimated</code>]]
+ * with the view controller instance to be presented. This will instantiate a
+ * new instance of [[Aphid.UI.ModalView]] (as the
+ * [[Aphid.UI.ViewController#presentedModalView <code>presentedModalView</code>]]
+ * property) and set the passed view controller as its view:
+ *
+ *     var MyViewController = Aphid.Class.create("MyViewController", Aphid.UI.ViewController, {
+ *       ...
+ *       addWidget: function()
+ *       {
+ *         var addViewController = new AddViewController({ ... });
+ *         this.presentModalViewController(addViewController);
+ *       }
+ *       ...
+ *     });
+ *
+ *
+ * ## Dismissing a Modal View Controller
+ *
+ * Dismissing a modal view controller can be done by calling either
+ * [[Aphid.UI.ViewController#dismissModalViewController <code>dismissModalViewController</code>]]
+ * or
+ * [[Aphid.UI.ViewController#dismissModalViewControllerAnimated <code>dismissModalViewControllerAnimated</code>]]
+ * on the view controller that was responsible for presenting the modal view:
+ *
+ *     var MyViewController = Aphid.Class.create("MyViewController", Aphid.UI.ViewController, {
+ *       ...
+ *       widgetAdded: function()
+ *       {
+ *         this.dismissModalViewController();
+ *       }
+ *       ...
+ *     });
+ *
+ * You may also dismiss a modal view from the controller that is currently
+ * being displayed in a modal fashion. You do this by calling either the
+ * [[Aphid.UI.ModalView#dismiss]] or [[Aphid.UI.ModalView#dismissAnimated]]
+ * on the modal view instance on the presented view controller. The modal
+ * view instance is set on the presented view controller as the
+ * [[Aphid.UI.ViewController#modalView modalView]] instance property.
+ *
+ * # Posted Notifications
  *
  *  - **`ModalViewControllerPresentedNotification`** — Posted when a view
  *    controller is presented as modal.
@@ -179,7 +232,7 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   },
 
   /**
-   * Aphid.UI.View#dismissModalViewController() -> null
+   * Aphid.UI.ViewController#dismissModalViewController() -> null
    *
    * Dismisses the current modal view controller, if present.
   **/
@@ -189,7 +242,7 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
   },
 
   /**
-   * Aphid.UI.View#dismissModalViewController([animated = true]) -> null
+   * Aphid.UI.ViewController#dismissModalViewControllerAnimated([animated = true]) -> null
    *
    *  - animated (Boolean): true if the view controller should be dismissed
    *    with animation
