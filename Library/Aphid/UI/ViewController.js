@@ -32,8 +32,8 @@
  *       ...
  *       addWidget: function()
  *       {
- *         var addViewController = new AddViewController({ ... });
- *         this.presentModalViewController(addViewController);
+ *         var addWidgetViewController = new AddWidgetViewController();
+ *         this.presentModalViewController(addWidgetViewController);
  *       }
  *       ...
  *     });
@@ -63,12 +63,12 @@
  * view instance is set on the presented view controller as the
  * [[Aphid.UI.ViewController#modalView modalView]] instance property.
  *
- * # Posted Notifications
+ * # Notifications
  *
- *  - **`ModalViewControllerPresentedNotification`** — Posted when a view
+ *  - `ModalViewControllerPresentedNotification` — Posted when a view
  *    controller is presented as modal.
  *
- *  - **`ModalViewControllerDismissedNotification`** — Posted when a view
+ *  - `ModalViewControllerDismissedNotification` — Posted when a view
  *    controller has been dismissed from a modal state.
  *
 **/
@@ -124,6 +124,16 @@ Aphid.UI.ViewController = Aphid.Class.create("Aphid.UI.ViewController", Aphid.UI
    * modal.
   **/
   presentedViewController: false,
+
+  // Constructor -------------------------------------------------------------
+
+  /**
+   * new Aphid.UI.ViewController()
+  **/
+  initialize: function($super, options)
+  {
+    $super(options);
+  },
 
   // Modal View Controllers --------------------------------------------------
 
