@@ -56,6 +56,14 @@ Aphid.UI.PopoverView = Aphid.Class.create("Aphid.UI.PopoverView", Aphid.UI.View,
   viewWillAppear: function()
   {
     this.calculatePosition();
+
+    // Observe for ModalViewControllerPresentedNotification
+    this.addObserver(this.removeFromSuperviewAnimated, "ModalViewControllerPresentedNotification");
+  },
+
+  viewWillDisappear: function()
+  {
+    this.removeObserver("ModalViewControllerPresentedNotification");
   },
 
   // -------------------------------------------------------------------------

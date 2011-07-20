@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Aphid.UI.PopoverView] Visible popover view instances will now
+   automatically dismiss when a modal view is presented.
+
  * [Aphid.UI.NavigationController] Added popToViewController and
    popToRootViewController methods to complement popViewController for jumping
    up the navigation stack.
