@@ -239,8 +239,28 @@
             assertEqual(1, navigationController.get("viewControllers").length, "navigationController#viewControllers should have a length of 1");
             assertEqual(rootViewController, navigationController.get("visibleViewController"), "navigationController#visibleViewController should be equal to rootViewController");
           }});
-        }}
+        }},
 
+        /*
+         * Ensure that setting the modalView property will propagate the
+         * property to all of the view controllers in the navigation stack.
+        **/
+        testShouldSetModalViewOnViewControllers: function() { with(this) {
+          var rootViewController = new TestRootViewController(),
+              firstTestViewController = new TestViewController(),
+              secondTestViewController = new TestViewController(),
+              testModalView = new Aphid.UI.ModalView(),
+              navigationController = new Aphid.UI.NavigationController({
+                rootViewController: rootViewController
+              });
+
+          navigationController.pushViewController(firstTestViewController);
+          navigationController.pushViewController(secondTestViewController);
+          navigationController.set("modalView", testModalView);
+          assertEqual(testModalView, navigationController.get("rootViewController.modalView"), "The modalView property on navigationController#rootViewController should be equal to testModalView");
+          assertEqual(testModalView, navigationController.get("viewControllers")[1].get("modalView"), "The modalView property of each viewController should be equal to testModalView");
+          assertEqual(testModalView, navigationController.get("viewControllers")[2].get("modalView"), "The modalView property of each viewController should be equal to testModalView");
+        }}
 
       }, { testLog: "logSection" });
     </script>

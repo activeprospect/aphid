@@ -138,11 +138,16 @@ Aphid.UI.NavigationController = Aphid.Class.create("Aphid.UI.NavigationControlle
     return title;
   },
 
-  _previousViewController: function()
+  setModalView: function(modalView)
   {
-    var currentIndex           = this.get("viewControllers").indexOf(this.get("visibleViewController")),
-        previousViewController = this.get("viewControllers")[currentIndex - 1];
-    return previousViewController;
+    this.modalView = modalView;
+
+    // Set the modalView on each view controller we manage...
+    this.get("viewControllers").each(function(viewController) {
+      viewController.set("modalView", modalView);
+    }, this);
+
+    return modalView;
   },
 
   // Navigation Stack --------------------------------------------------------
