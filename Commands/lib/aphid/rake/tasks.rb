@@ -60,6 +60,16 @@ task :build => [ :clean, :prepare ] do
     end
   end
 
+  begin
+    require "ruby-growl"
+    $GROWL = Growl.new("localhost", PROJECT_NAME, ["Build Succeeded", "Build Failed"])
+  rescue LoadError
+    header "Growl Support Notice"
+    puts "To enable Growl notifications during automated builds, you will need to install ruby-growl by running:\n\n"
+    puts "  $ gem install ruby-growl"
+    puts "\nOnce installed, you must also enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+  end
+
   header "Building #{PROJECT_NAME}" do
 
     # Copy Application Template
@@ -117,6 +127,15 @@ task :build => [ :clean, :prepare ] do
     # Update Buildstamp
     File.open("Build/.buildstamp", 'w') do |file|
       file.puts Time.now.to_i
+    end
+
+    if $GROWL and ($WATCHING and not $FAILED) or not STDIN.tty?
+      begin
+        $GROWL.notify "Build Succeeded", "#{PROJECT_NAME} Build Succeeded",
+          "Automated build of #{PROJECT_NAME} has completed successfully."
+      rescue Errno::ECONNREFUSED
+        puts "ERROR: Connection to Growl was refused. You must enable the options \"Listen for incoming notifications\" and \"Allow remote application registration\" in your Growl settings.\n\n"
+      end
     end
 
   end

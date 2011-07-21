@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Tools] Always display Growl notifications when not building from the
+   terminal.
+
  * [Aphid.UI.PopoverView] Visible popover view instances will now
    automatically dismiss when a modal view is presented.
 
