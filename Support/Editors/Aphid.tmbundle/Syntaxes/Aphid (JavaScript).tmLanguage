@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Aphid (JavaScript)</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>match</key>
+			<string>\b(Aphid)\b</string>
+			<key>name</key>
+			<string>support.class.aphid.js</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.js.aphid</string>
+	<key>uuid</key>
+	<string>2359D905-89D1-4C5D-A7F5-853B277D8BC8</string>
+</dict>
+</plist>

@@ -3,6 +3,9 @@
 
 ## Version 0.9.3 - *Not Yet Released*
 
+ * [Support/Editors] Added a TextMate bundle that adds commands and other
+   shortcuts specific to Aphid.
+
  * [Tools] Always display Growl notifications when not building from the
    terminal.
 

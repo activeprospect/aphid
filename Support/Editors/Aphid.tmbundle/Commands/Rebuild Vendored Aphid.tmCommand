@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>saveModifiedFiles</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby -KU
+
+require "#{ENV['TM_SUPPORT_PATH']}/lib/tm/detach"
+
+TextMate.detach do
+  if File.exist? "#{$TM_PROJECT_DIRECTORY}/Vendor/Aphid"
+    `cd "$TM_PROJECT_DIRECTORY/Vendor/Aphid"`
+    `rake build`
+  end
+  `cd "$TM_PROJECT_DIRECTORY"`
+end
+
+</string>
+	<key>input</key>
+	<string>none</string>
+	<key>keyEquivalent</key>
+	<string>@R</string>
+	<key>name</key>
+	<string>Rebuild Vendored Aphid</string>
+	<key>output</key>
+	<string>discard</string>
+	<key>scope</key>
+	<string>source.js.aphid</string>
+	<key>uuid</key>
+	<string>3DB7E9B8-571E-46F1-8FE8-1DB6A8354B9F</string>
+</dict>
+</plist>
