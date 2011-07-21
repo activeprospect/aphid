@@ -9,24 +9,32 @@
 
 require "#{ENV['TM_SUPPORT_PATH']}/lib/tm/detach"
 
-puts "Building Project — Please Wait…"
+if File.exist? "#{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"
+  puts "Generating Aphid &amp; Project Documentation — Please Wait…"
+else
+  puts "Generating Project Documentation — Please Wait…"
+end
 
 TextMate.detach do
+  if File.exist? "{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"
+    `cd "{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"`
+    `rake docs`
+  end
   `cd "{ENV['TM_PROJECT_DIRECTORY']}"`
-  `rake build`
+  `rake docs`
 end
 </string>
 	<key>input</key>
 	<string>none</string>
 	<key>keyEquivalent</key>
-	<string>@r</string>
+	<string>@D</string>
 	<key>name</key>
-	<string>Build</string>
+	<string>Generate All Documentation</string>
 	<key>output</key>
 	<string>showAsTooltip</string>
 	<key>scope</key>
 	<string>source.js.aphid</string>
 	<key>uuid</key>
-	<string>379848B3-D44A-412A-BAB4-663499D1A149</string>
+	<string>1E2C010F-706B-406F-88DC-41250E86E0F8</string>
 </dict>
 </plist>

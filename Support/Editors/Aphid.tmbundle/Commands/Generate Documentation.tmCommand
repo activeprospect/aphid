@@ -9,24 +9,24 @@
 
 require "#{ENV['TM_SUPPORT_PATH']}/lib/tm/detach"
 
-puts "Building Project — Please Wait…"
+puts "Generating Documentation — Please Wait…"
 
 TextMate.detach do
   `cd "{ENV['TM_PROJECT_DIRECTORY']}"`
-  `rake build`
+  `rake docs`
 end
 </string>
 	<key>input</key>
 	<string>none</string>
 	<key>keyEquivalent</key>
-	<string>@r</string>
+	<string>@d</string>
 	<key>name</key>
-	<string>Build</string>
+	<string>Generate Documentation</string>
 	<key>output</key>
 	<string>showAsTooltip</string>
 	<key>scope</key>
 	<string>source.js.aphid</string>
 	<key>uuid</key>
-	<string>379848B3-D44A-412A-BAB4-663499D1A149</string>
+	<string>61496510-2E8D-405A-A6FF-B676117DCCE5</string>
 </dict>
 </plist>

@@ -9,12 +9,19 @@
 
 require "#{ENV['TM_SUPPORT_PATH']}/lib/tm/detach"
 
+if File.exist? "#{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"
+  puts "Building Vendored Aphid &amp; Project — Please Wait…"
+else
+  puts "Building Project — Please Wait…"
+end
+
 TextMate.detach do
-  if File.exist? "#{$TM_PROJECT_DIRECTORY}/Vendor/Aphid"
-    `cd "$TM_PROJECT_DIRECTORY/Vendor/Aphid"`
+  if File.exist? "{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"
+    `cd "{ENV['TM_PROJECT_DIRECTORY']}/Vendor/Aphid"`
     `rake build`
   end
-  `cd "$TM_PROJECT_DIRECTORY"`
+  `cd "{ENV['TM_PROJECT_DIRECTORY']}"`
+  `rake build`
 end
 
 </string>
@@ -23,9 +30,9 @@ end
 	<key>keyEquivalent</key>
 	<string>@R</string>
 	<key>name</key>
-	<string>Rebuild Vendored Aphid</string>
+	<string>Build All</string>
 	<key>output</key>
-	<string>discard</string>
+	<string>showAsTooltip</string>
 	<key>scope</key>
 	<string>source.js.aphid</string>
 	<key>uuid</key>

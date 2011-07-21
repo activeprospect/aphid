@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>command</key>
+	<string>if [[ ! -f "$TM_NEW_FILE" ]]; then
+   TM_YEAR=`date +%Y` \
+   TM_DATE=`date +%Y-%m-%d` \
+   perl -pe 's/\$\{([^}]*)\}/$ENV{$1}/g' \
+      &lt; ViewController.js &gt; "$TM_NEW_FILE"
+fi</string>
+	<key>extension</key>
+	<string>txt</string>
+	<key>name</key>
+	<string>View Controller</string>
+	<key>uuid</key>
+	<string>9AB9585F-3A11-4350-88E3-123FD2FAC03F</string>
+</dict>
+</plist>

@@ -8,9 +8,13 @@
 	<array>
 		<dict>
 			<key>match</key>
-			<string>\b(Aphid)\b</string>
+			<string>\b(Aphid(\.[A-Z][A-Za-z]+)*)\b</string>
 			<key>name</key>
 			<string>support.class.aphid.js</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>source.js.prototype</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
