@@ -22,6 +22,7 @@ TextMate.detach do
   end
   `cd "{ENV['TM_PROJECT_DIRECTORY']}"`
   `rake build`
+  `ps -xc | grep -sq Safari &amp;&amp; osascript -e 'tell app "Safari"' -e 'activate' -e 'do JavaScript "window.location.reload();" in first document' -e 'end tell'`
 end
 
 </string>
@@ -34,7 +35,7 @@ end
 	<key>output</key>
 	<string>showAsTooltip</string>
 	<key>scope</key>
-	<string>source.js.aphid</string>
+	<string>source.js.aphid, text.html.aphid, source.css.less.aphid</string>
 	<key>uuid</key>
 	<string>3DB7E9B8-571E-46F1-8FE8-1DB6A8354B9F</string>
 </dict>

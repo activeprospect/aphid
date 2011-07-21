@@ -11,7 +11,6 @@
 			<string>------------------------------------</string>
 			<string>61496510-2E8D-405A-A6FF-B676117DCCE5</string>
 			<string>1E2C010F-706B-406F-88DC-41250E86E0F8</string>
-			<string>------------------------------------</string>
 		</array>
 		<key>submenus</key>
 		<dict/>
@@ -20,7 +19,9 @@
 	<string>Aphid</string>
 	<key>ordering</key>
 	<array>
+		<string>79083253-5B23-49BB-8827-0DCAB8CC2F70</string>
 		<string>2359D905-89D1-4C5D-A7F5-853B277D8BC8</string>
+		<string>B99CB9D3-3EA8-4F5A-98C4-1662CDCD00C2</string>
 		<string>379848B3-D44A-412A-BAB4-663499D1A149</string>
 		<string>3DB7E9B8-571E-46F1-8FE8-1DB6A8354B9F</string>
 		<string>61496510-2E8D-405A-A6FF-B676117DCCE5</string>

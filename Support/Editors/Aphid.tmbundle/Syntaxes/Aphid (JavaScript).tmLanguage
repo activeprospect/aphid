@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>Aphid (JavaScript)</string>
+	<string>JavaScript (Aphid)</string>
 	<key>patterns</key>
 	<array>
 		<dict>

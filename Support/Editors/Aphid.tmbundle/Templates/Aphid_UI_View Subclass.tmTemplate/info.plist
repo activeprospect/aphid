@@ -10,9 +10,13 @@
       &lt; View.js &gt; "$TM_NEW_FILE"
 fi</string>
 	<key>extension</key>
-	<string>txt</string>
+	<string>js</string>
+	<key>keyEquivalent</key>
+	<string>~@t</string>
 	<key>name</key>
 	<string>View</string>
+	<key>scope</key>
+	<string>source.js.aphid</string>
 	<key>uuid</key>
 	<string>35BB9CBD-9102-49FD-8FA3-BBD75D7D074B</string>
 </dict>

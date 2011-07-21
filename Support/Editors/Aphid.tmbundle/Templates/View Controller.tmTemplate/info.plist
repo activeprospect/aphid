@@ -10,9 +10,13 @@
       &lt; ViewController.js &gt; "$TM_NEW_FILE"
 fi</string>
 	<key>extension</key>
-	<string>txt</string>
+	<string>js</string>
+	<key>keyEquivalent</key>
+	<string>~@t</string>
 	<key>name</key>
 	<string>View Controller</string>
+	<key>scope</key>
+	<string>source.js.aphid</string>
 	<key>uuid</key>
 	<string>9AB9585F-3A11-4350-88E3-123FD2FAC03F</string>
 </dict>

@@ -10,9 +10,13 @@
       &lt; Model.js &gt; "$TM_NEW_FILE"
 fi</string>
 	<key>extension</key>
-	<string>txt</string>
+	<string>js</string>
+	<key>keyEquivalent</key>
+	<string>~@t</string>
 	<key>name</key>
 	<string>Model</string>
+	<key>scope</key>
+	<string>source.js.aphid</string>
 	<key>uuid</key>
 	<string>E1A756A0-8A1E-4E2A-AB42-582312A865A2</string>
 </dict>
