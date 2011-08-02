@@ -1,2 +1,87 @@
 
 /* View Controller -------------------------------------------------------- */
+
+
+
+/* View Controllers inside Modal Views ------------------------------------ */
+
+.ModalView .ViewController
+{
+  .border-radius(5px);
+  background-image: url("../Images/Patterns/Background.png");
+
+  /* Header Bar ----------------------------------------------------------- */
+
+  > header
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 64px;
+    line-height: 64px;
+
+    background-color: #464d53;
+    .linear-gradient(#464d53, #2b3036);
+
+    -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.1),
+      inset 1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset -1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset 0px -1px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.1),
+      inset 1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset -1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset 0px -1px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.1),
+      inset 1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset -1px 0px 0px rgba(255, 255, 255, 0.05),
+      inset 0px -1px 0px rgba(0, 0, 0, 0.5);
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+
+    h1
+    {
+      line-height: inherit;
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+                   "Helvetica Neue", sans-serif;
+      font-weight: 300;
+      font-size: (64px / 3) !important;
+      color: rgb(255, 255, 255);
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.9);
+      text-align: center;
+    }
+  }
+
+  /* Content View --------------------------------------------------------- */
+
+  > .contentView
+  {
+    position: absolute;
+    top: 65px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    -moz-border-radius-bottomright: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  > .contentView:only-child
+  {
+    top: 0; /* Don't push down if there is no header element */
+  }
+
+}
