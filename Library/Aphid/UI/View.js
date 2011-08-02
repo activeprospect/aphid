@@ -505,17 +505,18 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
     this._viewWillAppear(animated);
 
     // Make Subview Visible, if necessary
-    if (this.get("hidden") || view.get("hidden"))
+    if (!animated && (this.get("hidden") || view.get("hidden")))
     {
       if (!view.get("hidden"))
-        view.get("element").setStyle({ "visibility": "visible", opacity: 1 });
+        view.get("element").setStyle({ visibility: "visible", opacity: 1 });
       this._viewDidAppear(animated);
     }
 
     // Display Animated
-    else if (animated)
+    if (animated)
     {
-      view.get("element").setStyle({ "visibility": "visible", "opacity": 0 });
+      view.set("hidden", false);
+      view.get("element").setStyle({ visibility: "visible", opacity: 0 });
       switch (transition)
       {
 
@@ -1304,7 +1305,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
   {
     var element = this.get("element");
     if (!element.childElements() || element.childElements().length === 0) return;
-    
+
     // Any elements with either a custom view class or outlet declaration
     // should be instantiated as a View...
     var viewElements = element.select("*[data-view-class], *[data-outlet]");
@@ -1415,7 +1416,7 @@ Aphid.UI.View = Aphid.Class.create("Aphid.UI.View", Aphid.Support.Object, {
         $L.warn('Unable to connect outlet "' + outlet + '" to view controller as the controller does not define a matching member variable', this);
         return;
       }
-    
+
       $L.info('Connected outlet "' + outlet + '" to view controller', this);
       target[outlet] = view;
     }, this);
