@@ -44,6 +44,37 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
   **/
   loaded: false,
 
+  // Initialization ----------------------------------------------------------
+
+  initialize: function($super, options)
+  {
+    $super(options);
+  },
+
+  /*
+   * Aphid.UI.ListView#_initializeStaticImageElement() -> null
+   */
+  _initializeStaticImageElement: function()
+  {
+    var imageElement = this.get("element").down("img");
+    if (imageElement) this.set("imageElement", imageElement);
+  },
+
+  // View Callbacks ----------------------------------------------------------
+
+  viewDidLoad: function($super)
+  {
+    $super();
+    this._initializeStaticImageElement();
+    this._startObservingImageEvents();
+  },
+
+  viewWillAppear: function()
+  {
+    if (!this.get("loaded"))
+      this.get("imageElement").hide();
+  },
+
   // Image Management --------------------------------------------------------
 
   /*
@@ -85,20 +116,6 @@ Aphid.UI.ImageView = Aphid.Class.create("Aphid.UI.ImageView", Aphid.UI.View, {
     this.set("image", false);
     this.get("imageElement").hide();
     this.get("imageElement").removeAttribute("src");
-  },
-
-  // View Callbacks ----------------------------------------------------------
-
-  viewDidLoad: function($super)
-  {
-    $super();
-    this._startObservingImageEvents();
-  },
-
-  viewWillAppear: function()
-  {
-    if (!this.get("loaded"))
-      this.get("imageElement").hide();
   },
 
   // Event Handlers ----------------------------------------------------------
