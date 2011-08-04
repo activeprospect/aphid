@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require "date"
+
 module Aphid
   module Rake
     class Publish
