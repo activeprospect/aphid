@@ -111,9 +111,9 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
       red    = parseInt(colors[0].substr(4, 3), 10);
       green  = parseInt(colors[1], 10);
       blue   = parseInt(colors[2], 10);
-      this.barColor = { red: red, green: green, blue: blue };
+      this.set("barColor", { red: red, green: green, blue: blue });
     }
-    else this.barColor = { red: 85, green: 85, blue: 85 };
+    else this.set("barColor", { red: 85, green: 85, blue: 85 });
     this._startAnimation();
   },
 
@@ -138,7 +138,7 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _startAnimation: function()
   {
-    this.isAnimating = true;
+    this.set("isAnimating", true);
     this._animateNextFrame(0);
   },
 
@@ -149,7 +149,7 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _stopAnimation: function()
   {
-    this.isAnimating = false;
+    this.set("isAnimating", false);
     this._clearFrame(this.get("canvasContext"));
   },
 
@@ -160,10 +160,10 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
   {
     this._clearFrame(context);
     context.save();
-    context.translate(this.centerPosition.x, this.centerPosition.y);
-    for (var i = 0; i < this.barCount; i++)
+    context.translate(this.get("centerPosition").x, this.get("centerPosition").y);
+    for (var i = 0; i < this.get("barCount"); i++)
     {
-      var currentBar = (offset + i) % this.barCount,
+      var currentBar = (offset + i) % this.get("barCount"),
           pos        = this._calculatePosition(currentBar);
       context.save();
       context.translate(pos.x, pos.y);
@@ -179,8 +179,8 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _drawBlock: function(context, barNumber)
   {
-    context.fillStyle = this._makeRGBA(this.barColor.red, this.barColor.green, this.barColor.blue, (this.barCount + 1 - barNumber) / (this.barCount + 1));
-    context.fillRect(-this.barSize.width / 2, 0, this.barSize.width, this.barSize.height);
+    context.fillStyle = this._makeRGBA(this.get("barColor").red, this.get("barColor").green, this.get("barColor").blue, (this.get("barCount") + 1 - barNumber) / (this.get("barCount") + 1));
+    context.fillRect(-this.get("barSize").width / 2, 0, this.get("barSize").width, this.get("barSize").height);
   },
 
   /*
@@ -188,8 +188,8 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _animateNextFrame: function()
   {
-    if (!this.isAnimating) return;
-    this._currentOffset = (this._currentOffset + 1) % this.barCount;
+    if (!this.get("isAnimating")) return;
+    this._currentOffset = (this._currentOffset + 1) % this.get("barCount");
     this._draw(this.get("canvasContext"), this._currentOffset);
     this._animateNextFrame.bind(this).delay(0.05);
   },
@@ -207,7 +207,7 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
    */
   _calculateAngle: function(barNumber)
   {
-    return 2 * barNumber * Math.PI / this.barCount;
+    return 2 * barNumber * Math.PI / this.get("barCount");
   },
 
   /*
@@ -217,8 +217,8 @@ Aphid.UI.LoadingIndicatorView = Aphid.Class.create("Aphid.UI.LoadingIndicatorVie
   {
     var angle = this._calculateAngle(barNumber);
     return {
-      y: (this.innerRadius * Math.cos(-angle)),
-      x: (this.innerRadius * Math.sin(-angle)),
+      y: (this.get("innerRadius") * Math.cos(-angle)),
+      x: (this.get("innerRadius") * Math.sin(-angle)),
       angle: angle
     };
   },
