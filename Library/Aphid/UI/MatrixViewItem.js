@@ -57,7 +57,7 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
    * the element and setting [[Aphid.UI.MatrixViewItem#isSelected]] to
    * `false`. This method returns the matrix view item instance.
   **/
-  deselect: function()
+  deselect: function($super)
   {
     return $super();
   },
