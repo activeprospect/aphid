@@ -27,6 +27,9 @@
 
     <!-- Test Elements -->
     <section id="testElements">
+      <div id="testElementWithStaticImageElement">
+        <img src="Foo.png" />
+      </div>
     </section>
 
     <!-- Log Section -->
@@ -67,7 +70,7 @@
           });
 
           TestDelegate = Aphid.Class.create("TestDelegate", {
-            
+
             imageViewDidLoadCalled: false,
             imageViewDidLoad: function(imageView)
             {
@@ -98,17 +101,14 @@
           assertInstanceOf(Aphid.UI.ImageView, imageView, "imageView should be an instance of Aphid.UI.ImageView");
         }},
 
-        // /**
-        //  * Ensures that calling the "imageElement" accessor on a newly
-        //  * initialized ImageView lazily initializes the image element and adds
-        //  * it to the ImageView instance's element.
-        // **/
-        // testShouldLazilyInitializeImageElement: function() { with(this) {
-        //   var imageView = new Aphid.UI.ImageView();
-        //   assert(!imageView.get("element").down("img"), "imageView should not have an &lt;img/&gt; element immediately after initialization");
-        //   imageView.get("imageElement");
-        //   assert(imageView.get("element").down("img"), "imageView should have an &lt;img/&gt; element after calling the imageElement accessor");
-        // }},
+        /**
+         * Ensures that new instances of Aphid.UI.ImageView can be initialized
+         * with a static image element (i.e. from an outlet).
+        **/
+        testShouldInitializeImageViewWithStaticImageElement: function() { with(this) {
+          var imageView = new Aphid.UI.ImageView({ element: $("testElementWithStaticImageElement") });
+          assertEqual($("testElementWithStaticImageElement").down("img"), imageView.get("imageElement"));
+        }},
 
         /**
          * Ensures that you can set the image (by URL) on the ImageView
