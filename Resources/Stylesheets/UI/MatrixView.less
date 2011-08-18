@@ -38,6 +38,10 @@ ul.MatrixView
     padding: 5px;
     .border-radius(3px);
 
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+
     &:nth-of-type(even)
     {
       background-color: transparent;
@@ -49,9 +53,15 @@ ul.MatrixView
   {
     background-color: #bac7d1;
     .linear-gradient(#bac7d1, #94a3b1);
-    -webkit-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25), inset -1px -1px -1px rgba(0, 0, 0, 0.05), 2px 2px 2px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25), inset -1px -1px -1px rgba(0, 0, 0, 0.05), 2px 2px 2px rgba(0, 0, 0, 0.15);
-    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.25), inset -1px -1px -1px rgba(0, 0, 0, 0.05), 2px 2px 2px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25),
+      inset 1px 1px 0 rgba(255, 255, 255, 0.5),
+      inset -1px -1px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25),
+      inset 1px 1px 0 rgba(255, 255, 255, 0.5),
+      inset -1px -1px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25),
+      inset 1px 1px 0 rgba(255, 255, 255, 0.5),
+      inset -1px -1px 0 rgba(0, 0, 0, 0.5);
   }
 
 }
