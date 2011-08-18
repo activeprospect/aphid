@@ -45,12 +45,9 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
    * element and setting [[Aphid.UI.MatrixViewItem#isSelected]] to `true`.
    * This method returns the matrix view item instance.
   **/
-  select: function()
+  select: function($super)
   {
-    $L.debug("Selected...", this);
-    this.get("element").addClassName('selected');
-    this.set("isSelected", true);
-    return this;
+    return $super();
   },
 
   /**
@@ -62,11 +59,10 @@ Aphid.UI.MatrixViewItem = Aphid.Class.create("Aphid.UI.MatrixViewItem", Aphid.UI
   **/
   deselect: function()
   {
-    $L.debug("Deselected...", this);
-    this.get("element").removeClassName('selected');
-    this.set("isSelected", false);
-    return this;
+    return $super();
   },
+
+  // Event Handlers ----------------------------------------------------------
 
   handleMouseDownEvent: function(event)
   {
