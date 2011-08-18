@@ -3,6 +3,13 @@
  *
  * List view items belonging to instances of [[Aphid.UI.ListView]] are
  * required to be instances of this class, [[Aphid.UI.ListViewItem]].
+ *
+ * # Callback Methods
+ *
+ *  * `didSelectItem()` - Called when the item has been selected.
+ *
+ *  * `didDeselectItem()` - Called when the item has been deselected.
+ *
 **/
 
 Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.View, {
@@ -58,9 +65,9 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   **/
   select: function()
   {
-    $L.debug("Selected...", this);
     this.get("element").addClassName("selected");
     this.set("isSelected", true);
+    this._didSelectItem();
     return this;
   },
 
@@ -73,9 +80,9 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   **/
   deselect: function()
   {
-    $L.debug("Deselected...", this);
     this.get("element").removeClassName('selected');
     this.set("isSelected", false);
+    this._didDeselectItem();
     return this;
   },
 
@@ -94,6 +101,18 @@ Aphid.UI.ListViewItem = Aphid.Class.create("Aphid.UI.ListViewItem", Aphid.UI.Vie
   {
     var listView = this.get("listView");
     listView.openItem(this);
+  },
+
+  // Callback Methods --------------------------------------------------------
+
+  _didSelectItem: function()
+  {
+    if (this.didSelectItem) this.didSelectItem();
+  },
+
+  _didDeselectItem: function()
+  {
+    if (this.didDeselectItem) this.didDeselectItem();
   }
 
 });
