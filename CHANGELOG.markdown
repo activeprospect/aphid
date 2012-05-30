@@ -1,7 +1,7 @@
 
 # Aphid Release History
 
-## Version 0.9.3 - *Not Yet Released*
+## Version 0.9.3 - May 30th, 2012
 
  * [Support/Editors] Added a TextMate bundle that adds commands and other
    shortcuts specific to Aphid.
